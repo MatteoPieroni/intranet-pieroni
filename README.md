@@ -1,12 +1,12 @@
-# Auth0 JavaScript Login
+# Auth0 AngularJS Centralized Login
 
-This sample demonstrates how to add authentication to a JavaScript application with Auth0. The sample makes use of Auth0's hosted login page which provides centralized authentication.
+This sample demonstrates how to add authentication to an AngularJS application using Auth0's Lock widget from the hosted login page. The sample get its dependencies from npm and a small Node.js server is provided to run the application.
 
 ## Getting Started
 
-If you haven't already done so, [sign up](https://auth0.com) for your free Auth0 account and create a new client in the [dashboard](https://manage.auth0.com). Find the **domain** and **client ID** from the settings area and add the URL for your application to the **Allowed Callback URLs** box. If you are serving the application with the provided `serve` library, that URL is `http://localhost:3000`.
+If you haven't already done so, [sign up](https://auth0.com) for your free Auth0 account and create a new client in the [dashboard](https://manage.auth0.com). Find the **domain** and **client ID** from the settings area and add the URL for your application to the **Allowed Callback URLs** box. If you are using the server provided in this sample, that URL is `http://localhost:3000/callback`.
 
-Clone the repo or download it from the JavaScript quickstart page in Auth0's documentation.
+Clone the repo or download it from the AngularJS quickstart page in Auth0's documentation. Install the dependencies for the app.
 
 ```bash
 cd 01-Login
@@ -19,13 +19,21 @@ If you download the sample from the quickstart page, it will come pre-populated 
 
 ## Run the Application
 
-The `serve` module provided with this sample can be run with the `start` command.
+A small express server is used to serve the application.
 
 ```bash
 npm start
 ```
 
 The application will be served at `http://localhost:3000`.
+
+## Turning Off HTML5 Mode
+
+By default, the sample is run in HTML5 mode. This means that routes in the URL will not have a hash. If you wish to not use HTML5 mode, comment on this line in `app.js`:
+
+```js
+$locationProvider.html5Mode(true);
+```
 
 ## Run the Application With Docker
 
@@ -62,6 +70,5 @@ If you have found a bug or if you have a feature request, please report them at 
 ## License
 
 This project is licensed under the MIT license. See the [LICENSE](LICENSE.txt) file for more info.
-
 
 
