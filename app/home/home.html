@@ -1,0 +1,17 @@
+<div layout="row" ng-if="vm.auth.isAuthenticated()">
+	<div flex="100" class="link-container" ng-repeat="link in links">
+		<div flex-xs="50" flex-sm="33" flex="25" class="link">
+			<md-card>
+				<md-card-content>
+					{{link.description}}
+				</md-card-content>
+				 <md-card-actions layout="row" layout-align="end center">
+				   <md-button><a href="{{link.link}}" target="_blank">{{link.link_text}}</a></md-button>
+				 </md-card-actions>
+			</md-card>
+		</div>
+	</div>
+</div>
+<div ng-if="!vm.auth.isAuthenticated()">
+
+</div>
