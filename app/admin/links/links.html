@@ -1,0 +1,85 @@
+<div layout="row" layout-align="center none" ng-if="vm.auth.isAuthenticated()">
+	<md-content flex="100">
+		<h1 style="text-align: center">Link Dashboard</h1>
+		<md-card>
+        	<md-card-header>
+	          <md-card-header-text>
+	            <span class="md-title">Clicca un link per modificarlo</span>
+	          </md-card-header-text>
+	          <!--<md-card-avatar>
+	            <md-icon class="md-avatar-icon" md-svg-icon="img/icons/menu.svg"></md-icon>
+	          </md-card-avatar>-->
+		    <md-button class="md-primary md-raised" ng-click="showLinkDialog($event)">
+		      Aggiungi
+		    </md-button>
+	        </md-card-header>
+        	<md-card-content>
+				<md-list flex>
+			        <md-list-item class="md-3-line link__dummy" ng-show="loadingLinks">
+			          <span class="admin-link__color admin-link__color--dummy"></span>
+			          <div class="md-list-item-text" layout="column">
+			            <h3></h3>
+			            <h4></h4>
+			            <p></p>
+			          </div>
+			        </md-list-item>
+			        <md-list-item class="md-3-line noright" ng-repeat="link in links" ng-click="modLink(link); showLinkDialog($event)">
+			          <span class="admin-link__color" ng-style="getLinkStyle(link.color)"></span>
+			            <h3>{{ link.description }}</h3>
+			            <p>{{ link.link }}</p>
+			        </md-list-item>
+			    </md-list>
+			</md-card-content>
+		</md-card>
+		<div style="visibility: hidden">
+		    <div class="md-dialog-container" id="myDialog">
+		      <md-dialog layout-padding><div flex-xs="100" class="link">
+					<div>
+						<h4>Anteprima Link</h4>
+						<md-card ng-style="getLinkStyle(formLinks.color)">
+							<md-card-content>
+								{{formLinks.linkDescription}}
+							</md-card-content>
+							 <md-card-actions layout="row" layout-align="end center" ng-style="getLinkFooterStyle(formLinks.color)">
+							   <md-button><a href="{{formLinks.linkAddress}}" target="_blank">Vai</a></md-button>
+							 </md-card-actions>
+						</md-card>
+					</div>
+					<form layout="row" name="linkForm" layout-wrap>
+						<md-input-container flex="100">
+							<label for="linkAddressField">Indirizzo Link</label>
+							<input type="url" name="linkAddressField" id="linkAddressField" ng-model="formLinks.linkAddress" required />
+						</md-input-container>
+						<md-input-container flex-xs="100" flex="50">
+							<label for="linkDescriptionField">Descrizione Link</label>
+							<input type="text" flex="100" name="linkDescriptionField" id="linkDescriptionField" ng-model="formLinks.linkDescription" required />
+						</md-input-container>
+						<div flex="100">
+							<h4>Scegli il colore</h4>
+							<md-radio-group ng-model="formLinks.color" layout="row" layout-align="space-between center">
+						      <md-radio-button value="grey" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="deepOrange" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="red" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="green" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="indigo" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="lightBlue" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="teal" class="bg-selector"></md-radio-button>
+						      <md-radio-button value="amber" class="bg-selector"></md-radio-button>
+						    </md-radio-group>
+						</div>
+					</form>
+    				<md-dialog-actions layout="row">
+						<md-button ng-show="moddingLink" ng-click="showRemoveConfirmation($event)">Rimuovi Link</md-button>
+						<span flex></span>
+						<md-button ng-click="nullLink()">Annulla</md-button>
+						<md-button ng-hide="moddingLink" ng-click="addLink()" ng-disabled="linkForm.linkDescriptionField.$invalid || linkForm.linkAddressField.$invalid">Aggiungi Link</md-button>
+						<md-button ng-show="moddingLink" ng-click="moddedLink()" ng-disabled="linkForm.linkDescriptionField.$invalid || linkForm.linkAddressField.$invalid">Modifica Link</md-button>
+					</md-dialog-actions>
+		      </md-dialog>
+		    </div>
+		</div>
+  </md-content>
+</div>
+<div ng-if="!vm.auth.isAuthenticated()">
+
+</div>

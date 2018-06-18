@@ -4,21 +4,26 @@
 
   angular
     .module('app')
-    .service('authService', authService);
+    .service('lockService', lockService);
 
-  authService.$inject = ['$state', 'angularAuth0', '$timeout'];
+  lockService.$inject = ['$window','$state', 'angularAuth0', '$timeout', 'lock'];
 
-  function authService($state, angularAuth0, $timeout) {
+  function lockService($window, $state, angularAuth0, $timeout, lock) {
 
     function login() {
-      angularAuth0.authorize();
-    }
+      lock.show()
+    };
     
-    function handleAuthentication() {
-      angularAuth0.parseHash(function(err, authResult) {
+    function handleAuthentication(cb) {
+
+      lock.interceptHash();
+
+      lock.on('authenticated', function(authResult) {
         if (authResult && authResult.accessToken && authResult.idToken) {
           setSession(authResult);
-          $state.go('home');
+          $state.reload($state.current).then(function() {
+            cb();
+          });
         } else if (err) {
           $timeout(function() {
             $state.go('home');
@@ -26,6 +31,7 @@
           console.log(err);
           alert('Error: ' + err.error + '. Check the console for further details.');
         }
+          //localStorage.setItem('accessToken', authResult.accessToken);
       });
     }
 
@@ -44,7 +50,9 @@
       localStorage.removeItem('access_token');
       localStorage.removeItem('id_token');
       localStorage.removeItem('expires_at');
-      $state.go('home');
+      localStorage.removeItem('scopes');
+      localStorage.removeItem('profile');
+      $window.location.href = '/';
     }
     
     function isAuthenticated() {
@@ -65,16 +73,18 @@
     }
     var userProfile;
 
-    function getProfile(cb) {
+    function getProfile() {
       var accessToken = localStorage.getItem('access_token');
       if (!accessToken) {
         throw new Error('Access Token must exist to fetch profile');
       }
-      angularAuth0.client.userInfo(accessToken, function(err, profile) {
-        if (profile) {
-          setUserProfile(profile);
+      lock.getUserInfo(accessToken, function(error, profile) {
+        if (!error) {
+          alert("hello " + profile.name);
+          localStorage.setItem('profile', JSON.stringify(profile));
+        } else {
+          console.log("Error fetching profile")
         }
-        cb(err, profile);
       });
     }
 

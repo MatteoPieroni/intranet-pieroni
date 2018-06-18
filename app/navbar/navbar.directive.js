@@ -4,7 +4,8 @@
   
   angular
     .module('app')
-    .directive('navbar', navbar);
+    .directive('navbar', navbar)
+    .controller('NavbarController', navbarController);
     
   function navbar() {
     return {
@@ -14,11 +15,13 @@
     }
   }
 
-  navbarController.$inject = ['authService'];
+  navbarController.$inject = ['$state', 'lockService', '$scope', '$timeout', 'navbarService', '$log'];
     
-  function navbarController(authService) {
+  function navbarController($state, lockService, $scope, $timeout, navbarService, $log) {
     var vm = this;
-    vm.auth = authService;
-  }
-  
+    $scope.state = $state;
+    $scope.lock = lockService;
+    $scope.isSidebarOpen = navbarService.getStatus;
+    navbarService.init();
+  };
 })();

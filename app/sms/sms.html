@@ -1,0 +1,33 @@
+<div class="breadcrumbs">
+	<p>
+		<md-button ui-sref="home">Dashboard</md-button> / <span> Sms </span>
+	</p>
+</div>
+<div ng-if="lock.isAuthenticated()" class="phone-container">
+	<div class="error-message">
+		<p class="alert">{{error.message}}</p> 
+	</div>
+	<div class="phone">
+		<form name="smsForm">
+			<div class="phone__header">
+				<p>Messaggio</p>
+				<input type="number" required placeholder="numero" name="smsNum" ng-model="formSms.recipient" />
+			</div>
+			<div class="phone__screen">
+				<p ng-repeat="message in sentSms">
+					<span class="phone__screen--number">{{message.number}}</span>
+					{{message.message}}
+					<span class="phone__screen--time" am-time-ago="message.tempo"></span>
+				</p>
+			</div>
+			<div class="phone__text">
+		          	<textarea placeholder="Scrivi il tuo messaggio" ng-model="formSms.message" required name="smsMessaggio"></textarea>
+				<div class="phone__send">
+					<md-progress-circular md-mode="indeterminate" ng-if="sending"></md-progress-circular>
+					<md-icon class="phone__send--button" ng-click="sendSms()" ng-if="!sending" ng-disabled="smsForm.smsNum.$invalid || smsForm.smsMessaggio.$invalid">send</md-icon>
+				</div>
+			</div>
+		</form>
+		
+	</md-card>
+</div>

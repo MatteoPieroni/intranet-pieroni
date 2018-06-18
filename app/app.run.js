@@ -6,12 +6,12 @@
     .module('app')
     .run(run);
 
-  run.$inject = ['authService'];
+  run.$inject = ['$rootScope', 'lockService', 'amMoment', 'firebaseService'];
     
-  function run(authService) {
-    // Handle the authentication
-    // result in the hash
-    authService.handleAuthentication();
+  function run($rootScope, lockService, amMoment, firebaseService) {
+    //authService.handleAuthentication();
+    lockService.handleAuthentication(firebaseService.init);
+    amMoment.changeLocale('it');
   }
 
 })();

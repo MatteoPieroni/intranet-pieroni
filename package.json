@@ -4,22 +4,29 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "npm-check"
+    "test": "npm-check",
+    "scss": "node-sass -w --output-style compressed -r ./app/sass --output ./"
   },
   "author": "Auth0",
   "license": "MIT",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.5",
-    "angular": "^1.6.1",
-    "angular-animate": "^1.7.0",
-    "angular-aria": "^1.7.0",
+    "angular": "^1.7.2",
+    "angular-animate": "^1.7.2",
+    "angular-aria": "^1.7.2",
     "angular-auth0": "^3.0.0",
-    "angular-messages": "^1.7.0",
+    "angular-messages": "^1.7.2",
+    "angular-moment": "^1.2.0",
     "angularfire": "^2.3.0",
-    "auth0-js": "^9.0.1",
+    "auth0-js": "^9.6.1",
+    "auth0-lock": "^11.7.2",
+    "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
     "express": "^4.14.0",
-    "firebase": "^5.0.4"
+    "firebase": "^5.0.4",
+    "node-sass": "^4.9.0",
+    "node-skebby": "^1.0.2",
+    "request": "^2.87.0"
   },
   "devDependencies": {
     "npm-check": "^5.5.2"

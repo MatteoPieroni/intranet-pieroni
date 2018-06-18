@@ -1,0 +1,23 @@
+<div ng-controller="ToolbarController" ng-if="lock.isAuthenticated()">
+  <md-toolbar class="toolbar-nav">
+    <div class="md-toolbar-tools">
+      <md-button class="md-primary" ng-click="openSidenav()" ng-if="!isSidebarOpen()">
+        <md-icon>
+          menu
+        </md-icon>
+      </md-button>
+      <md-button class="md-primary" ng-click="closeSidenav()" ng-if="isSidebarOpen()">
+        <md-icon>
+          close
+        </md-icon>
+      </md-button>
+      <md-button class="md-primary" ng-if="state.current.name !== 'home'">
+        <md-icon ui-sref="home">
+          home
+        </md-icon>
+      </md-button>
+      <span flex></span>
+      <img src="http://www.pieroni.it/wp-content/uploads/2015/05/pieroni_logo_definitivo_V2.png" alt="Logo Pieroni" class="toolbar-nav__logo" />
+    </div>
+  </md-toolbar>  
+</div>

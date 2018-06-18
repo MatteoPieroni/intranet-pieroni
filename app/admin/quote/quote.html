@@ -1,0 +1,57 @@
+<div layout="row" layout-align="center none" ng-if="vm.auth.isAuthenticated()">
+	<md-content flex="100" class="md-padding">
+ 		<h1 class="md-display-2">Quote</h1>
+		<div flex="100">
+				<md-card flex="50" ng-repeat="quote in quotes">
+						<md-card-avatar>
+							<img ng-src="{{quote.url}}"/>
+							<md-button class="md-fab" aria-label="Modifica Foto" ng-click="openQuoteImageMod($event)">
+					            <md-icon></md-icon>
+					        </md-button>
+						</md-card-avatar>
+						<md-card-content>
+							<p>{{quote.text}}</p>
+						</md-card-content>
+						<md-card-actions layout="row">
+							<md-button ng-click="modQuoteText(quote); openQuoteTextMod($event)">Modifica testo</md-button>
+						</md-card-actions>
+				</md-card>
+		</div>
+		<div style="visibility: hidden">
+		    <div class="md-dialog-container" id="quote-text-dialog">
+		      <md-dialog layout-padding>
+		      	<div flex-xs="100" class="link">
+						<md-dialog-content>
+							<form name="quoteForm">
+								<md-card-content>
+									<md-input-container class="md-block">
+							          <label>Cambia il testo della citazione</label>
+							          <textarea ng-model="formQuote.text" name="quoteText" md-maxlength="150" rows="5" md-select-on-focus></textarea>
+							        </md-input-container>
+								</md-card-content>
+							</form>
+						</md-dialog-content>
+    				<md-dialog-actions layout="row">
+						<md-button ng-click="nullModText()">Annulla</md-button>
+						<md-button ng-hide="moddingLink" ng-click="saveQuoteText()" ng-disabled="quoteForm.quoteText.$invalid">Salva</md-button>
+					</md-dialog-actions>
+				</div>
+		      </md-dialog>
+		    </div>
+		</div>
+		<div style="visibility: hidden">
+		    <div class="md-dialog-container" id="quote-image-dialog">
+		      <md-dialog>
+					<upload folder="images"></upload>
+				<md-dialog-actions layout="row">
+					<md-button ng-click="nullModImage()" md-autofocus>Annulla</md-button>
+					<md-button ng-hide="moddingLink" ng-click="saveQuoteImage()" ng-disabled="!selectedQuoteImage">Salva</md-button>
+				</md-dialog-actions>
+		      </md-dialog>
+		    </div>
+		</div>
+    </md-content>
+</div>
+<div ng-if="!vm.auth.isAuthenticated()">
+
+</div>
