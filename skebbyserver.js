@@ -72,7 +72,7 @@ function getSMSHistory(auth, dateFirst, dateLast, pageSize, callback) {
 
 module.exports = {
     log: function() {
-        login("PieroniSrl", "Pier@term2007", function(error, auth) {
+        login("YUORLOGIN", "YOURPASSWORD", function(error, auth) {
             if(!error) {
                 console.log(auth);
             } else {
@@ -81,7 +81,7 @@ module.exports = {
         })
     },
     send: function(smsData, res) {
-        login("PieroniSrl", "Pier@term2007",
+        login("YOURLOGIN", "YOURPASSWORD",
           function(error, auth) {
               if (!error) {
                   sendSMS(auth, smsData,
@@ -106,7 +106,7 @@ module.exports = {
           });
     },
     getHistory: function(starting, ending, size, res) {
-        login("PieroniSrl", "Pier@term2007",
+        login("YOURLOGIN", "YOURPASSWORD",
             function(error, auth) {
                 if(!error) {
                     getSMSHistory(auth, starting, ending, size, 
