@@ -10,12 +10,12 @@
         // Initialize Firebase
         if (!firebase.apps.length) {
           var config = {
-            apiKey: "AIzaSyA7XzDXxEuhPoLwD3l02qcHeLWovVCAH-Y",
-            authDomain: "intranet-pieroni.firebaseapp.com",
-            databaseURL: "https://intranet-pieroni.firebaseio.com",
-            projectId: "intranet-pieroni",
-            storageBucket: "intranet-pieroni.appspot.com",
-            messagingSenderId: "775811721929"
+            apiKey: "",
+            authDomain: "",
+            databaseURL: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: ""
           };
           firebase.initializeApp(config);
         }
