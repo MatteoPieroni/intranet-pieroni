@@ -6,9 +6,9 @@
     .module('app')
     .service('lockService', lockService);
 
-  lockService.$inject = ['$window','$state', 'angularAuth0', '$timeout', 'lock'];
+  lockService.$inject = ['$window','$state', 'angularAuth0', '$timeout', 'lock', 'firebaseService'];
 
-  function lockService($window, $state, angularAuth0, $timeout, lock) {
+  function lockService($window, $state, angularAuth0, $timeout, lock, firebaseService) {
 
     function login() {
       lock.show()
@@ -21,8 +21,9 @@
       lock.on('authenticated', function(authResult) {
         if (authResult && authResult.accessToken && authResult.idToken) {
           setSession(authResult);
+          cb();
           $state.reload($state.current).then(function() {
-            cb();
+            
           });
         } else if (err) {
           $timeout(function() {

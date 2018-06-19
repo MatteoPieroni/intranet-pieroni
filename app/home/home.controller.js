@@ -99,7 +99,7 @@
     };
 
     if($scope.lock.isAuthenticated()) {
-	  	
+    	
     	// Get Firebase Links
 		var ref = firebaseService.dbRef('links/');
 		$scope.links = $firebaseObject(ref);

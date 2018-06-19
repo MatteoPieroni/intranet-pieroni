@@ -17,185 +17,120 @@
 	  };
 	});
 
-  adminController.$inject = ['authService', '$scope', '$firebaseAuth', '$firebaseObject', '$firebaseArray'];
+  adminController.$inject = ['lockService', '$scope', '$firebaseAuth', '$firebaseObject', 'moment', '$http'];
 
-    	  // Initialize Firebase
-		  if (!firebase.apps.length) {
-		  	var config = {
-			    apiKey: "AIzaSyA7XzDXxEuhPoLwD3l02qcHeLWovVCAH-Y",
-			    authDomain: "intranet-pieroni.firebaseapp.com",
-			    databaseURL: "https://intranet-pieroni.firebaseio.com",
-			    projectId: "intranet-pieroni",
-			    storageBucket: "intranet-pieroni.appspot.com",
-			    messagingSenderId: "775811721929"
-			  };
-			  firebase.initializeApp(config);
-			}
-  function adminController(authService, $scope, $firebaseAuth, $firebaseObject, $firebaseArray) {
-    var vm = this;
-    vm.auth = authService;
-    // Get profile Info from Auth0
-    vm.profile;
+  	function adminController(lockService, $scope, $firebaseAuth, $firebaseObject, moment, $http) {
+    	var vm = this;
+    	$scope.lock = lockService;
 
-    if(vm.auth.isAuthenticated) {
+    	if($scope.lock.isAuthenticated()) {
+    		 // Set loaded state to show loading svg
+		    $scope.loaded = false;
 
-		  var ref = firebase.database().ref('links/');
-		  $scope.links = $firebaseObject(ref);
-		  // init page dummy link
-		  $scope.loadingLinks = true;
-		  $scope.links.$loaded()
-		  .then(function() {
-		  	$scope.loadingLinks = false;
-		    console.log($scope.links);
-		  })
-		  .catch(function(err) {
-		    console.error(err);
-		  });
+		    $scope.today = {};
+			$scope.todayCalendar = new Date();
+		    // Set welcome card
 
-		  // Form init
-		  $scope.formLinks = {};
-		  // initialize color for preview card GREY
-		  $scope.formLinks.color = 'grey';
-		  // initialize button for saving links
-		  $scope.moddingLink = false;
+		    // Month Cards
+		    var time = {
+		    	months: {
+		    		gennaio: 'january',
+			    	febbraio: 'february',
+			    	marzo: 'march',
+			    	aprile: 'april',
+			    	maggio: 'may',
+			    	giugno: 'june',
+			    	luglio: 'july',
+			    	agosto: 'august',
+			    	settembre: 'september',
+			    	ottobre: 'october',
+			    	novembre: 'november',
+			    	dicembre: 'december'
+			    },
+			    hours: {
+			    	morning: 'Buongiorno',
+			    	afternoon: 'Buon pomeriggio',
+			    	evening: 'Buonasera',
+			    	night: 'Buonanotte'
+			    }
+		    }
 
-			$scope.getLinkStyle = function(col) {
-				return {
-					backgroundColor: getColor.normalColor(col)
+		    // Date Object
+		    function setDateObj () {
+		    	var now = moment(new Date()).format('DD,MMMM,HH,mm');
+		    	var nowArr = now.split(',');
+				$scope.today.day = nowArr[0];
+				$scope.today.month = nowArr[1];
+				$scope.today.hour = nowArr[2];
+				$scope.today.minute = nowArr[3];
+				$scope.today.img = time.months[nowArr[1]];
+				switch (nowArr[2]) {
+					case '07':
+					case '08':
+					case '09':
+					case '10':
+					case '11':
+						$scope.greeting = time.hours.morning
+						break;
+					case '12':
+					case '13':
+					case '14':
+					case '15':
+					case '16':
+					case '17':
+						$scope.greeting = time.hours.afternoon
+						break;
+					case '18':
+					case '19':
+					case '20':
+					case '21':
+					case '22':
+					case '23':
+						$scope.greeting = time.hours.evening
+						break;
+					case '00':
+					case '01':
+					case '02':
+					case '03':
+					case '04':
+					case '05':
+					case '06':
+						$scope.greeting = time.hours.night
+						break;
+					default:
+						$scope.greeting = time.hours.morning
+						break;
 				}
-			};
-			$scope.getLinkFooterStyle = function(col) {
-				return {
-					backgroundColor: getColor.darkColor(col)
-				}
-			};
-
-			$scope.cleanForm = function(formEl) {
-		        formEl.id = "";
-		        formEl.linkDescription = "";
-		        formEl.linkAddress = "";
-		        formEl.linkText = "";
-		        formEl.color = 'grey';
-			}
-		  
-		  // Add Link
-		  $scope.addLink = function () {
-	        // Create a unique ID
-	        var timestamp = new Date().valueOf();
-
-	        var link = {
-	            id: timestamp,
-	            description: $scope.formLinks.linkDescription,
-	            link: $scope.formLinks.linkAddress,
-	            link_text: $scope.formLinks.linkText,
-	            color: $scope.formLinks.color
-	        };
-
-	        //console.log(link);
-
-	        // Get a key for a new Post.
-	        var newLinkKey = firebase.database().ref().child('links').push().key;
-	        // Write the new post's data simultaneously in the posts list and the user's post list.
-	        var updates = {};
-	        updates['/links/' + newLinkKey] = link;
-	        return firebase.database().ref().update(updates);
-	        console.log('Succesfully added');
-	        $scope.cleanForm($scope.formLinks);
-	    };
-	    $scope.modLink = function (link) {
-	    	$scope.editingLink = angular.copy(link);
-	    	$scope.formLinks.id = $scope.editingLink.id;
-	        $scope.formLinks.linkDescription = $scope.editingLink.description;
-	        $scope.formLinks.linkAddress = $scope.editingLink.link;
-	        $scope.formLinks.linkText = $scope.editingLink.link_text;
-	        $scope.formLinks.color = $scope.editingLink.color;
-	        $scope.moddingLink = true;
-	    };
-	    $scope.moddedLink = function() {
-	    	var moddingId = $scope.formLinks.id;
-	        var link = {
-	        	id: $scope.formLinks.id,
-	            description: $scope.formLinks.linkDescription,
-	            link: $scope.formLinks.linkAddress,
-	            link_text: $scope.formLinks.linkText,
-	            color: $scope.formLinks.color
-	        };
-	        var updates = link;
-
-	        //return firebase.database().ref().update(updates);
-	        ref.orderByChild("id").equalTo(moddingId).on("child_added", function (snapshot) {
-                //console.log(snapshot.key);
-                var linkRef = firebase.database().ref('links/' + snapshot.key);
-                //console.log(itemRef);
-                linkRef.update(updates);
-            });
-	        //updates['/links/' + ] = link;
-	        $scope.cleanForm($scope.formLinks);
-	        $scope.moddingLink = false;
-
-	        console.log('Succesfully modded');
-	    };
-	    $scope.removeLink = function() {
-	    	var moddingId = $scope.formLinks.id;
-
-	        //return firebase.database().ref().update(updates);
-	        ref.orderByChild("id").equalTo(moddingId).on("child_added", function (snapshot) {
-                //console.log(snapshot.key);
-                var linkRef = firebase.database().ref('links/' + snapshot.key);
-                //console.log(itemRef);
-                linkRef.remove();
-            });
-	        //updates['/links/' + ] = link;
-	        $scope.cleanForm($scope.formLinks);
-	        $scope.moddingLink = false;
-
-	        console.log('Succesfully removed');
-	    };
-	    var imageQuoteRef = firebase.database().ref('quote/files')
-	    $scope.images = $firebaseObject(imageQuoteRef);
-	    $scope.fileSelected = false;
-	    $scope.selectFile = function() {
-	    	var files = event.target.files[0].name;
-	    	var button = document.querySelector('.file-upload-label');
-	    	button.innerHTML = files;
-	    	button.style.backgroundColor = '#4caf50'
-	    }
-	    var storage = firebase.storage();
-		var storageRef = storage.ref();
-		var quoteFileRef = storageRef.child('quote/');
-		$scope.uploadFile = function(file) {
-			console.log("Let's upload a file!");
-			console.log(file);
-			//console.log($scope.quoteFile);
-			var id = new Date().valueOf();
-			var uploadTask = storageRef.child('quote/' + id + file.name).put(file);
-
-			uploadTask.on('state_changed', function(snapshot){
-			  // Observe state change events such as progress, pause, and resume
-			  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-			  var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-			  console.log('Upload is ' + progress + '% done');
-			}, function(error) {
-			  // Handle unsuccessful uploads
-			}, function() {
-			  // Handle successful uploads on complete
-			  // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-			  uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-			    console.log('File available at', downloadURL);
-			    // Get a key for a new Post.
-		        var newLinkKey = firebase.database().ref().child('quote/files/').push().key;
-		        // Write the new post's data simultaneously in the posts list and the user's post list.
-		        var updates = {};
-		        updates['quote/files/' + newLinkKey] = {url: downloadURL};
-		        return firebase.database().ref().update(updates);
-			  });
-			});
-	    };
-	    $scope.selectImage = function(url) {
-	    	var updates = {};
-	    	updates['quote/active/'] = url;
-	    	return firebase.database().ref().update(updates)
-	    }
-    }
-  }
+		    };
+		    // Set Background Image Related to Month
+		    setDateObj();
+		    $scope.welcomeCardBackground = function() {
+		    	return {
+		    		backgroundImage: 'url(assets/' + $scope.today.img + '.jpg)'
+		    	};
+		    };
+		    // Set icons for different groups
+		    var fbGroupsIcons = {
+		    	SECRET: 'lock',
+		    	OPEN: 'public',
+		    	CLOSED: 'lock_open' 
+		    }
+		    // Get Facebook Workplace Groups from Api
+		    $http.post('/fbapi/getgroups').then(
+	             function(response){
+	               // success callback
+	               	$scope.fbGroups = response.data.data;
+	               	$scope.fbGroups.forEach(el => {
+	               		el.icon = fbGroupsIcons[el.privacy]
+	               	});
+	               	console.log($scope.fbGroups)
+	             }, 
+	             function(response){
+	               // failure callback,handle error here
+	               $scope.errorFb = response.err;
+	             }
+	   		);
+    	}
+    
+	}
 })();

@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.5",
-    "angular": "^1.7.2",
+    "angular": "^1.7.1",
     "angular-animate": "^1.7.2",
     "angular-aria": "^1.7.2",
     "angular-auth0": "^3.0.0",
@@ -23,6 +23,7 @@
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
     "express": "^4.14.0",
+    "fbgraph": "^1.4.4",
     "firebase": "^5.0.4",
     "node-sass": "^4.9.0",
     "node-skebby": "^1.0.2",
