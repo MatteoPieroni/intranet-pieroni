@@ -11,6 +11,8 @@
     var vm = this;
     $scope.lock = lockService;
 
+    firebaseService.init();
+
     // Lock login on page load
     $scope.lock.login();
 

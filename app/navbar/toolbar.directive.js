@@ -15,12 +15,16 @@
     }
   }
 
-  toolbarController.$inject = ['$state', 'lockService', '$scope', '$timeout', 'navbarService'];
+  toolbarController.$inject = ['$state', 'lockService', '$scope', '$timeout', 'navbarService', 'uiService', '$rootScope'];
     
-  function toolbarController($state, lockService, $scope, $timeout, navbarService) {
+  function toolbarController($state, lockService, $scope, $timeout, navbarService, uiService, $rootScope) {
     var vm = this;
     $scope.state = $state;
     $scope.lock = lockService;
+
+    // Enable dark UI
+    $scope.uiColorToggler = uiService.toggleUiColor;
+    $scope.uiColorStatus = uiService.getUiColor();
 
     $scope.isSidebarOpen = navbarService.getStatus;
     $scope.openSidenav = navbarService.open;

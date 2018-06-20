@@ -22,9 +22,10 @@
         if (authResult && authResult.accessToken && authResult.idToken) {
           setSession(authResult);
           cb();
-          $state.reload($state.current).then(function() {
-            
-          });
+          /*$state.reload('home').then(function() {
+            cb();
+          });*/
+          $state.transitionTo('home', {}, { reload: true, inherit: false, notify: true });
         } else if (err) {
           $timeout(function() {
             $state.go('home');

@@ -15,7 +15,7 @@
 </style>
   </head>
   <body>
-    <div ng-app="app" class="app-container">
+    <div ng-app="app" class="app-container {{bodyClass}}" ng-class="{'light' : uiColorClass() === false, 'dark' : uiColorClass() === true}">
         <toolbar></toolbar>
         <div class="layout-container">
             <navbar layout="column"></navbar>
@@ -62,6 +62,7 @@
     <script type="text/javascript" src="app/callback/callback.controller.js"></script>
     <script type="text/javascript" src="app/auth/auth.service.js"></script>
     <script type="text/javascript" src="app/services/lock.service.js"></script>
+    <script type="text/javascript" src="app/services/ui.service.js"></script>
     <script type="text/javascript" src="app/js/angular-file-model.js"></script>
     <script type="text/javascript" src="node_modules/moment/moment.js"></script>
     <script type="text/javascript" src="node_modules/moment/locale/it.js"></script>

@@ -3,86 +3,74 @@
   'use strict';
   angular
     .module('app')
-    .controller('AdminLinksController', adminLinksController)
-    .directive('customOnChange', function() {
-	  return {
-	    restrict: 'A',
-	    link: function (scope, element, attrs) {
-	      var onChangeFunc = scope.$eval(attrs.customOnChange);
-	      element.on('change', onChangeFunc);
-	      element.on('$destroy', function() {
-	        element.off();
-	      });
-	    }
-	  };
-	});
+    .controller('AdminLinksController', adminLinksController);
 
-  adminLinksController.$inject = ['authService', '$scope', '$mdDialog', '$firebaseAuth', '$firebaseObject', 'firebaseService'];
+  adminLinksController.$inject = ['lockService', '$scope', '$mdDialog', '$firebaseObject', 'firebaseService'];
 
-  function adminLinksController(authService, $scope, $mdDialog, $firebaseAuth, $firebaseObject, firebaseService) {
+  function adminLinksController(lockService, $scope, $mdDialog, $firebaseObject, firebaseService) {
     var vm = this;
-    vm.auth = authService;
+    $scope.lock = lockService;
 
-    if(vm.auth.isAuthenticated) {
+    $scope.loaded = false;
+
+    if($scope.lock.isAuthenticated) {
     	firebaseService.init();
-		  var ref = firebase.database().ref('links/');
-		  $scope.links = $firebaseObject(ref);
-		  // init page dummy link
-		  $scope.loadingLinks = true;
-		  $scope.links.$loaded()
-		  .then(function() {
-		  	$scope.loadingLinks = false;
-		    console.log($scope.links);
-		  })
-		  .catch(function(err) {
-		    console.error(err);
-		  });
+		// Get Firebase Links
+		var ref = firebaseService.dbRef('links/');
+		$scope.links = $firebaseObject(ref);
+		$scope.links.$loaded()
+			.then(function() {
+				$scope.loaded = true;
+			})
+			.catch(function(err) {
+				$scope.errMessage = err;
+			});
 
-		  // Form init
-		  $scope.formLinks = {};
-		  // initialize color for preview card GREY
-		  $scope.formLinks.color = 'grey';
-		  // initialize button for modding links
-		  $scope.moddingLink = false;
+		// Form init
+		$scope.formLinks = {};
+		// initialize color for preview card GREY
+		$scope.formLinks.color = 'grey';
+		// initialize button for modding links
+		$scope.moddingLink = false;
 
-			$scope.getLinkStyle = function(col) {
-				return {
-					backgroundImage: 'url(assets/' + getColor.normalColor(col) + '.jpg)'
-				}
-			};
-			$scope.getLinkFooterStyle = function(col) {
-				return {
-					backgroundColor: getColor.darkColor(col)
-				}
-			};
-
-			$scope.cleanForm = function(formEl) {
-		        formEl.id = "";
-		        formEl.linkDescription = "";
-		        formEl.linkAddress = "";
-		        formEl.color = 'grey';
+		// Function for getting link color
+		$scope.getLinkStyle = function(col) {
+			return {
+				backgroundImage: 'linear-gradient(to right, #' + getColor.normalColor(col) + ' 0%, #' + getColor.darkColor(col) + ' 100%)'
 			}
+		};
 
-			$scope.showLinkDialog = function(ev) {
-				$mdDialog.show({
-				  contentElement: '#myDialog',
-				  parent: angular.element(document.body),
-				  targetEvent: ev,
-				  clickOutsideToClose: false,
-				  multiple: true
-				});
-			};
+		// Function for cleaning form
+		$scope.cleanForm = function(formEl) {
+	        formEl.id = "";
+	        formEl.linkDescription = "";
+	        formEl.linkAddress = "";
+	        formEl.color = 'grey';
+		}
 
-			$scope.nullLink = function() {
-				$mdDialog.hide();
-	        	$scope.cleanForm($scope.formLinks);
-			}
+		// Init Dialog for adding/editing links
+		$scope.showLinkDialog = function(ev) {
+			$mdDialog.show({
+			  contentElement: '#myDialog',
+			  parent: angular.element(document.body),
+			  targetEvent: ev,
+			  clickOutsideToClose: false,
+			  multiple: true
+			});
+		};
+
+		// Cancel current action in adding/editing link dialog
+		$scope.nullLink = function() {
+			$mdDialog.hide();
+        	$scope.cleanForm($scope.formLinks);
+		}
 		  
-		  // Add Link
-		  $scope.addLink = function () {
+	  	// Add Link
+	  	$scope.addLink = function () {
 	        // Create a unique ID
 	        var timestamp = new Date().valueOf();
 
+	        // Get form data
 	        var link = {
 	            id: timestamp,
 	            description: $scope.formLinks.linkDescription,
@@ -90,26 +78,32 @@
 	            color: $scope.formLinks.color
 	        };
 
-	        //console.log(link);
-
 	        // Get a key for a new Post.
-	        var newLinkKey = firebase.database().ref().child('links').push().key;
-	        // Write the new post's data simultaneously in the posts list and the user's post list.
+		    var newLinkKey = firebaseService.addChild('links');
+		    // Get update data
 	        var updates = {};
+	        // Set update data to form data
 	        updates['/links/' + newLinkKey] = link;
+	        // Update Data
+	        firebaseService.dbUpdate(updates);
+	        // Clean form
 	        $scope.cleanForm($scope.formLinks);
 	        console.log('Succesfully added');
+	        // Hide Dialog
 	        $mdDialog.hide();
-	        return firebase.database().ref().update(updates);
 	    };
+
+	    // Select link to edit annd copy values to form
 	    $scope.modLink = function (link) {
 	    	$scope.editingLink = angular.copy(link);
 	    	$scope.formLinks.id = $scope.editingLink.id;
 	        $scope.formLinks.linkDescription = $scope.editingLink.description;
 	        $scope.formLinks.linkAddress = $scope.editingLink.link;
 	        $scope.formLinks.color = $scope.editingLink.color;
+	        // Set to true for UI buttons
 	        $scope.moddingLink = true;
 	    };
+	    // Save edited link to firebase
 	    $scope.moddedLink = function() {
 	    	var moddingId = $scope.formLinks.id;
 	        var link = {
@@ -119,21 +113,18 @@
 	            color: $scope.formLinks.color
 	        };
 	        var updates = link;
-
-	        //return firebase.database().ref().update(updates);
-	        ref.orderByChild("id").equalTo(moddingId).on("child_added", function (snapshot) {
-                //console.log(snapshot.key);
-                var linkRef = firebase.database().ref('links/' + snapshot.key);
-                //console.log(itemRef);
-                linkRef.update(updates);
-            });
-	        //updates['/links/' + ] = link;
+	        // Update record using Id
+	        firebaseService.updateById(moddingId, 'links/', updates)
+	        // Clean form
 	        $scope.cleanForm($scope.formLinks);
+	        // Set to false
 	        $scope.moddingLink = false;
 
 	        console.log('Succesfully modded');
+	        // Hide dialog
 	        $mdDialog.hide();
 	    };
+	    // Dialog for confirming Remove Action
 	    $scope.showRemoveConfirmation = function(ev) {
 			var confirm = $mdDialog.confirm()
 	          .title('Sei sicuro di voler cancellare il link?')
@@ -157,17 +148,21 @@
 			    }, function() {
 			    });
 	    }
+	    // Function for removing link from database
 	    $scope.removeLink = function() {
+	    	// Get Id
 	    	var moddingId = $scope.formLinks.id;
 
 	        //return firebase.database().ref().update(updates);
-	        ref.orderByChild("id").equalTo(moddingId).on("child_added", function (snapshot) {
+	        /*ref.orderByChild("id").equalTo(moddingId).on("child_added", function (snapshot) {
                 //console.log(snapshot.key);
                 var linkRef = firebase.database().ref('links/' + snapshot.key);
                 //console.log(itemRef);
                 linkRef.remove();
-            });
+            });*/
+            firebaseService.removeById(moddingId, 'links/');
 	        //updates['/links/' + ] = link;
+	        // Clean form
 	        $scope.cleanForm($scope.formLinks);
 	        $scope.moddingLink = false;
 

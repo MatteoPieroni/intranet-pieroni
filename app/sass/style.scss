@@ -13,6 +13,10 @@ img {
   flex-grow: 1;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .background-cover {
   background-position:center;
   background-size:cover;
@@ -23,20 +27,24 @@ img {
 THEMEING NG MATERIAL
 ********************/
 md-content.md-theme-pieroni, md-content {
-  background: #f6fafd;
+  background: inherit;
 }
 .md-button.md-primary:not([disabled]) md-icon {
-  color: #000;
+  color: inherit;
 }
 md-toolbar.md-default-theme:not(.md-menu-toolbar),
 md-toolbar:not(.md-menu-toolbar) {
-  background: #ee8900;
+  background: inherit;
 }
 .md-theme-pieroni {
   &__background {
     background: #f6fafd;
     color: #000;
   }
+}
+
+.height-no-100 {
+  max-height: unset !important;
 }
 
 .loading {
@@ -68,6 +76,60 @@ body {
   display:flex;
   flex-wrap: wrap;
   overflow:hidden;
+  &.light {
+    background: #f6fafd;
+    toolbar {
+      background: #fff;
+      md-icon {
+        color: #333;
+      }
+    }
+    navbar {
+      md-icon {
+        color: #333;
+      }
+    }
+    .md-pieroni-background {
+      background: #f6fafd;
+    }
+  }
+  &.dark {
+    background: #2c3868;
+    toolbar {
+      background: #1b223f;
+      md-icon {
+        color: #fff;
+      }
+    }
+    navbar {
+      md-icon {
+        color: #fff;
+      }
+    }
+    .md-theme-pieroni__background {
+      background: #2c3868;
+    }
+    .welcome * {
+      color: #fff;
+    }
+    .breadcrumbs * {
+      color: #fff;
+    }
+    .fb-groups md-card {
+      background: #212c59;
+      * {
+        color: #fff;
+      }
+    }
+    md-calendar, table.md-calendar {
+      background: #171d37;
+      color: #fff;
+    }
+    .md-calendar-day-header {
+      background: #13172a;
+      color: #fff;
+    }
+  }
 }
 
 .layout-container {
@@ -78,11 +140,213 @@ body {
 // NAV
 toolbar {
   width:100%;
+  .toggleWrapper {
+  overflow: hidden;
+  padding: 0 35px;
+  
+  input {
+    position: absolute;
+    left: -99em;
+  }
+}
+
+// Day Night Toggle by Banjamin Réthoré - https://codepen.io/bnthor/pen/WQBNxO
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  width: 90px - 90 / 3;
+  height: 50px - 50 / 3;
+  background-color: #83D8FF;
+  border-radius: 90px - 90 / 3 - 6;
+  transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  
+  &:before {
+    content: 'AM';
+    position: absolute;
+    left: -50px + 50 / 3;
+    top: 15px - 15 / 3;
+    font-size: 18px - 18 / 3;
+    color: #333;
+  }
+  
+  &:after {
+    content: 'PM';
+    position: absolute;
+    right: -48px + 48 / 3;
+    top: 15px - 15 / 3;
+    font-size: 18px - 18 / 3;
+    color: #6873b7;
+  }
+}
+
+.toggle__handler {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  top: 3px - 3 / 3;
+  left: 3px - 3 / 3;
+  width: 50px - 50 / 3 - 6;
+  height: 50px - 50 / 3 - 6;
+  background-color: #FFCF96;
+  border-radius: 50px - 50 / 3;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform:  rotate(-45deg);
+  
+  .crater {
+    position: absolute;
+    background-color: #E8CDA5;
+    opacity: 0;
+    transition: opacity 200ms ease-in-out;
+    border-radius: 100%;
+  }
+  
+  .crater--1 {
+    top: 18px - 18 / 3;
+    left: 10px - 10 / 3;
+    width: 4px - 4 / 3;
+    height: 4px - 4 / 3;
+  }
+  
+  .crater--2 {
+    top: 28px - 28 / 3;
+    left: 22px - 22 / 3;
+    width: 6px - 6 / 3;
+    height: 6px - 6 / 3;
+  }
+  
+  .crater--3 {
+    top: 10px - 10 / 3;
+    left: 25px - 25 / 3;
+    width: 8px - 8 / 3;
+    height: 8px - 8 / 3;
+  }
+}
+
+.star {
+  position: absolute;
+  background-color: #ffffff;
+  transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  border-radius: 50%;
+}
+
+.star--1 {
+  top: 10px - 10 / 3;
+  left: 35px - 35 / 3;
+  z-index: 0;
+  width: 30px - 30 / 3;
+  height: 3px - 3 / 3;
+}
+
+.star--2 {
+  top: 18px - 18 / 3;
+  left: 28px - 28 / 3;
+  z-index: 1;
+  width: 30px - 30 / 3;
+  height: 3px - 3 / 3;
+}
+
+.star--3 {
+  top: 27px - 27 / 3;
+  left: 40px - 40 / 3;
+  z-index: 0;
+  width: 30px - 30 / 3;
+  height: 3px - 3 / 3;
+}
+    
+.star--4,
+.star--5,
+.star--6 {
+  opacity: 0;
+  transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.star--4 {
+  top: 16px - 16 / 3;
+  left: 11px - 11 / 3;
+  z-index: 0;
+  width: 2px - 2 / 3;
+  height: 2px - 2 / 3;
+  transform: translate3d(3px - 3 / 3,0,0);
+}
+
+.star--5 {
+  top: 32px - 32 / 3;
+  left: 17px - 17 / 3;
+  z-index: 0;
+  width: 3px - 3 / 3;
+  height: 3px - 3 / 3;
+  transform: translate3d(3px - 3 / 3,0,0);
+}
+
+.star--6 {
+  top: 36px - 36 / 3;
+  left: 28px - 28 / 3;
+  z-index: 0;
+  width: 2px - 2 / 3;
+  height: 2px - 2 / 3;
+  transform: translate3d(3px - 3 / 3,0,0);
+}
+
+input:checked {
+  + .toggle {
+    background-color: #749DD6;
+  
+    &:before {
+      color: #fff;
+    }
+
+    &:after {
+      color: #6873b7;
+    }
+    
+    .toggle__handler {
+      background-color: #FFE5B5;
+      transform: translate3d(40px - 40 / 3, 0, 0) rotate(0);
+  
+      .crater { opacity: 1; }
+    }
+    
+    .star--1 {
+      width: 2px - 2 / 3;
+      height: 2px - 2 / 3;
+    }
+    
+    .star--2 {
+      width: 4px - 4 / 3;
+      height: 4px - 4 / 3;
+      transform: translate3d(-5px + 5 / 3, 0, 0);
+    }
+    
+    .star--3 {
+      width: 2px - 2 / 3;
+      height: 2px - 2 / 3;
+      transform: translate3d(-7px + 7 / 3, 0, 0);
+    }
+    
+    .star--4,
+    .star--5,
+    .star--6 {
+      opacity: 1;
+      transform: translate3d(0,0,0);
+    }
+    .star--4 {
+      transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+    .star--5 {
+      transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+    .star--6 {
+      transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+  }
+}
 }
 md-toolbar.md-default-theme:not(.md-menu-toolbar),
 md-toolbar:not(.md-menu-toolbar) {
   &.toolbar-nav {
-    background: #fff;
+    background: inherit;
   }
 }
 .toolbar-nav {
@@ -94,7 +358,7 @@ md-toolbar:not(.md-menu-toolbar) {
 }
 navbar {
   width:auto;
-  max-width: 15vw;
+  //max-width: 15vw;
   .sidenav.md-theme-pieroni__background {
     width:15vw;
     md-list-item {
@@ -239,7 +503,7 @@ SMS
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100% - 48px);
+  //height: calc(100% - 48px);
 }
 .phone {
   position:relative;
@@ -275,6 +539,7 @@ SMS
   margin-left: -3px;
   padding: .5rem;
   width: calc(100% - 7px);
+  max-height:calc(10vh - 1rem);
   background: #5041f5;
   p {
     margin: .5rem auto 1rem auto;
@@ -346,6 +611,7 @@ SMS
   justify-content: space-between;
   margin: 0 1px;
   width: calc(100% - 2px);
+  max-height: 10vh;
   background: #fff;
   overflow: hidden;
   box-shadow: 0px -9px 16px -14px;
@@ -369,6 +635,14 @@ ADMIN
 ****************************/
 
 // ADMIN DASHBOARD
+.links-container {
+  .link__links {
+    background-image: linear-gradient(to right, rgb(0, 150, 136) 0%, rgb(0, 121, 107) 100%);
+  }
+  .link__quote {
+    background-image: linear-gradient(to right, rgb(255, 193, 7) 0%, rgb(255, 160, 0) 100%);
+  }
+}
 .analytics {
   position: relative;
   width: calc(100% - 1rem);
@@ -384,6 +658,12 @@ ADMIN
 }
 .bottom-container {
   justify-content: space-between;
+  > div:first-child {
+    flex: 1 1 auto;
+  }
+  .bottom-wrapper {
+    flex: 4 1;
+  }
 }
 .fb-groups {
   max-height: 40vh;
@@ -392,10 +672,73 @@ ADMIN
   }
 }
 .calendar-wrapper {
-  width:304px;
+  md-calendar {
+    flex-grow: 1;
+  }
 }
 
 // ADMIN LINKS
+
+.admin-links-container {
+  margin: 0 auto;
+  @media screen and (min-width:768px) {
+    max-width:85%;
+  }
+  @media screen and (min-width:1024px) {
+    max-width: 70%;
+  }
+  @media screen and (min-width:1200px) {
+    max-width: 60%;
+  }
+  md-toolbar {
+    background-image: linear-gradient(to right, #ee8900, #ee9400, #ed9e01, #eca808, #ebb212);
+    color: #000;
+  }
+  md-card-content {
+    max-height: 65vh;
+    overflow: auto;
+    h4 {
+      margin-bottom: 0;
+    }
+    p {
+      margin-top: 0;
+    }
+  }
+}
+
+.dark {
+  .admin-links-container {
+    md-toolbar {
+      background:#13172a;
+      color: #fff;
+    }
+    md-card-content {
+      background: #171d37;
+      color: #fff;
+    }
+  }
+}
+
+md-dialog {
+  &.dark {
+    background: #212c59;
+    color: #fff;
+    label, md-input-container:not(.md-input-invalid).md-input-has-value label {
+      color: #fff;
+      &:after {
+        color: rgba(255,255,255,0.54) !important;
+      }
+    }
+    input {
+      color: #fff;
+      border-color: #fff;
+    }
+  }
+  md-card {
+    margin: 2rem auto;
+    max-width: 50%;
+  }
+}
 
 .color-selector {
   width:30px;
@@ -425,7 +768,7 @@ md-radio-button .md-on {
 }
 
 // Set colors for colors associated with links
-/*$color-selector: (
+$color-selector: (
   grey: (#607d8d, #455a64),
   deepOrange: (#ff5722, #e64a19),
   amber:  (#ffc107, #ffa000),
@@ -434,9 +777,9 @@ md-radio-button .md-on {
   lightBlue: (#03a9f4, #0288d1),
   indigo: (#3f51b5, #303f9f),
   red: (#f44336, #d32f2f)
-);*/
+);
 
-$bg-selector: (
+/*$bg-selector: (
   grey: ('bg-001'),
   deepOrange: ('bg-016'),
   amber:  ('bg-041'),
@@ -445,20 +788,20 @@ $bg-selector: (
   lightBlue: ('bg-012'),
   indigo: ('bg-031'),
   red: ('bg-005')
-);
+);*/
  
-/*.color-selector {
+.color-selector {
   @each $name, $colors in $color-selector {
     $firstcolor: nth($colors, 1);
     $secondcolor: nth($colors, 2);
      
     &[value="#{$name}"] .md-off {
-      background-img: $firstcolor;
+      background-image: linear-gradient(to right, #{$firstcolor} 0%, #{$secondcolor} 100%);
     }
   }
-}*/
+}
  
-.bg-selector {
+/*.bg-selector {
   @each $name, $bg in $bg-selector {
     &[value="#{$name}"] .md-off {
       background-image: url("assets/#{$bg}.jpg");
@@ -469,7 +812,7 @@ $bg-selector: (
     background-size:cover;
     background-repeat: no-repeat;
   }
-}
+}*/
 
 .admin-link__color, .admin-link__color--dummy {
   display:block;

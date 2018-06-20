@@ -1,7 +1,15 @@
+<div class="breadcrumbs">
+	<p>
+		<md-button ui-sref="home">Dashboard</md-button> / <span>   Admin </span>
+	</p>
+</div>
 <div layout="row" layout-align="center none" ng-if="lock.isAuthenticated()">
-	<md-content flex="100">
+	<div class="loading" ng-if="!loaded">
+  		<img src="assets/loading.svg" alt="loading">
+	</div>
+	<md-content flex="100" class="height-no-100" ng-if="loaded">
 		<div layout="row" flex-wrap class="links-container">
-			<md-card flex="33" flex-xs="50" flex-sm="50" layout="column" layout-align="end stretch" class="background-cover">
+			<md-card flex="33" flex-xs="50" flex-sm="50" layout="column" layout-align="end stretch" class="background-cover link__links">
 				<md-card-content layout="column" layout-align="space-between stretch">
 			        <md-card-title class="link-item__title">
 			          <md-card-title-text>
@@ -17,7 +25,7 @@
 					</md-card-actions>
 				</md-card-content>
 			</md-card>
-			<md-card flex="33" flex-xs="50" flex-sm="50" layout="column" layout-align="end stretch" class="background-cover">
+			<md-card flex="33" flex-xs="50" flex-sm="50" layout="column" layout-align="end stretch" class="background-cover link__quote">
 				<md-card-content layout="column" layout-align="space-between stretch">
 			        <md-card-title class="link-item__title">
 			          <md-card-title-text>
@@ -37,7 +45,7 @@
 		<md-card class="analytics">
 			<iframe width="null" height="null" src="https://datastudio.google.com/embed/reporting/1dz6oZiYFmpwE04TxWsMRf7Xoi9hZZjDD/page/c4IT" frameborder="0" style="border:0" allowfullscreen></iframe>
 		</md-card>
-		<div layout="row" layout-wrap class="bottom-container" ng-if="!loaded">
+		<div layout="row" layout-wrap class="bottom-container" ng-if="loaded">
 			<div layout="column" flex-xs="100">
 				<md-card class="flex__grow background-cover welcome">
 					<md-card-content>
@@ -63,8 +71,9 @@
 				          </md-card-header-text>
 				        </md-card-header>
 			        	<md-card-content>
+			        		<span>{{errorFb}}</span>
 							<md-list flex>
-						        <md-list-item class="md-1-line noright" ng-repeat="group in fbGroups">
+						        <md-list-item ng-repeat="group in fbGroups">
 						            <p><a ng-href="https://pieroni.facebook.com/groups/{{group.id}}/" target="_blank">{{ group.name }}</a></p>
 						            <md-button class="md-icon-button">
 						            	<md-tooltip md-direction="right">{{group.privacy}}</md-tooltip>
@@ -75,7 +84,7 @@
 						</md-card-content>
 					</md-card>
 				</div>
-				<div layout="column calendar-wrapper">
+				<div layout="column" class="calendar-wrapper">
 					<md-card class="flex__grow calendar">
 						<md-calendar ng-model="todayCalendar"></md-calendar>
 					</md-card>

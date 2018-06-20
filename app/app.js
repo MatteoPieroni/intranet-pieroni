@@ -11,7 +11,8 @@
     '$locationProvider',
     '$urlRouterProvider',
     'angularAuth0Provider',
-    'lockProvider'
+    'lockProvider',
+    '$mdDateLocaleProvider'
   ];
   var REQUESTED_SCOPES = 'openid profile read:data write:data';
 
@@ -21,6 +22,7 @@
     $urlRouterProvider,
     angularAuth0Provider,
     lockProvider,
+    $mdDateLocaleProvider,
     $rootScope
   ) {
 
@@ -116,6 +118,13 @@
       redirectUri: AUTH0_CALLBACK_URL,
       scope: REQUESTED_SCOPES*/
     });
+
+    $mdDateLocaleProvider.firstDayOfWeek = 1; 
+ 
+    $mdDateLocaleProvider.months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'dicembre']; 
+    $mdDateLocaleProvider.shortMonths = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']; 
+    $mdDateLocaleProvider.days = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']; 
+    $mdDateLocaleProvider.shortDays = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
 
     function checkForScopes(scopes) {
       return function checkAuthentication($transition$) {

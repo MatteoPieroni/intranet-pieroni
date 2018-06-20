@@ -3,23 +3,11 @@
   'use strict';
   angular
     .module('app')
-    .controller('AdminController', adminController)
-    .directive('customOnChange', function() {
-	  return {
-	    restrict: 'A',
-	    link: function (scope, element, attrs) {
-	      var onChangeFunc = scope.$eval(attrs.customOnChange);
-	      element.on('change', onChangeFunc);
-	      element.on('$destroy', function() {
-	        element.off();
-	      });
-	    }
-	  };
-	});
+    .controller('AdminController', adminController);
 
-  adminController.$inject = ['lockService', '$scope', '$firebaseAuth', '$firebaseObject', 'moment', '$http'];
+  adminController.$inject = ['lockService', '$scope', '$firebaseObject', 'moment', '$http'];
 
-  	function adminController(lockService, $scope, $firebaseAuth, $firebaseObject, moment, $http) {
+  	function adminController(lockService, $scope, $firebaseObject, moment, $http) {
     	var vm = this;
     	$scope.lock = lockService;
 
@@ -123,10 +111,11 @@
 	               	$scope.fbGroups.forEach(el => {
 	               		el.icon = fbGroupsIcons[el.privacy]
 	               	});
-	               	console.log($scope.fbGroups)
+	               	$scope.loaded = true;
 	             }, 
 	             function(response){
 	               // failure callback,handle error here
+	               $scope.loaded = true;
 	               $scope.errorFb = response.err;
 	             }
 	   		);

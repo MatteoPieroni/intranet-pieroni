@@ -1,70 +1,80 @@
-<div layout="row" layout-align="center none" ng-if="vm.auth.isAuthenticated()">
-	<md-content flex="100">
-		<h1 style="text-align: center">Link Dashboard</h1>
-		<md-card>
-        	<md-card-header>
-	          <md-card-header-text>
-	            <span class="md-title">Clicca un link per modificarlo</span>
-	          </md-card-header-text>
-	          <!--<md-card-avatar>
-	            <md-icon class="md-avatar-icon" md-svg-icon="img/icons/menu.svg"></md-icon>
-	          </md-card-avatar>-->
-		    <md-button class="md-primary md-raised" ng-click="showLinkDialog($event)">
-		      Aggiungi
-		    </md-button>
-	        </md-card-header>
+<div class="breadcrumbs">
+	<p>
+		<md-button ui-sref="home">Dashboard</md-button> / <md-button ui-sref="admin">Admin</md-button> / <md-button disabled>   Gestione Link </md-button>
+	</p>
+</div>
+<div layout="row" layout-align="center none" ng-if="lock.isAuthenticated()">
+	<div class="loading" ng-if="!loaded">
+  		<img src="assets/loading.svg" alt="loading">
+	</div>
+	<md-content flex="100" class="no-height-100" ng-if="loaded">
+		<md-card class="admin-links-container">
+			<md-toolbar md-scroll-shrink class="md-to-change">
+		      <div class="md-toolbar-tools">
+		        <h2 flex md-truncate>Clicca un link per modificarlo</h2>
+		        <md-button class="md-icon-button ui-to-change md-raised" ng-click="showLinkDialog($event)">
+			      <md-icon>
+			      	add
+			      </md-icon>
+			    </md-button>
+		      </div>
+		    </md-toolbar>
         	<md-card-content>
+        		<span>{{errMessage}}</span>
 				<md-list flex>
-			        <md-list-item class="md-3-line link__dummy" ng-show="loadingLinks">
-			          <span class="admin-link__color admin-link__color--dummy"></span>
-			          <div class="md-list-item-text" layout="column">
-			            <h3></h3>
-			            <h4></h4>
-			            <p></p>
-			          </div>
-			        </md-list-item>
-			        <md-list-item class="md-3-line noright" ng-repeat="link in links" ng-click="modLink(link); showLinkDialog($event)">
-			          <span class="admin-link__color" ng-style="getLinkStyle(link.color)"></span>
-			            <h3>{{ link.description }}</h3>
-			            <p>{{ link.link }}</p>
+			        <md-list-item class="md-2-line noright" ng-repeat="link in links" ng-click="modLink(link); showLinkDialog($event)">
+						<span class="md-avatar admin-link__color" ng-style="getLinkStyle(link.color)"></span>
+						<md-list-item-text>
+				          	<h4>{{ link.description }}</h4>
+				            <p>{{ link.link }}</p>
+			        	</md-list-item-text>
 			        </md-list-item>
 			    </md-list>
 			</md-card-content>
 		</md-card>
 		<div style="visibility: hidden">
 		    <div class="md-dialog-container" id="myDialog">
-		      <md-dialog layout-padding><div flex-xs="100" class="link">
+		      <md-dialog layout-padding ng-class="{'light' : uiColorClass() === false, 'dark' : uiColorClass() === true}"><div flex-xs="100" class="link">
 					<div>
-						<h4>Anteprima Link</h4>
+						<h4 class="text-center">Anteprima Link</h4>
 						<md-card ng-style="getLinkStyle(formLinks.color)">
-							<md-card-content>
-								{{formLinks.linkDescription}}
+							<md-card-content layout="column" layout-align="space-between stretch">
+						        <md-card-title class="link-item__title">
+						          <md-card-title-text>
+						            <span class="md-subheadline">{{formLinks.linkDescription}}</span>
+						          </md-card-title-text>
+						        </md-card-title>
+								 <md-card-actions layout="row" layout-align="end center">
+								   <a href="{{formLinks.linkAddress}}" target="_blank">
+								   	<md-button>
+								   		<md-icon class="link-item__icon">arrow_forward</md-icon>
+								   	</md-button>
+								   </a>
+								</md-card-actions>
 							</md-card-content>
-							 <md-card-actions layout="row" layout-align="end center" ng-style="getLinkFooterStyle(formLinks.color)">
-							   <md-button><a href="{{formLinks.linkAddress}}" target="_blank">Vai</a></md-button>
-							 </md-card-actions>
+							<md-card-content>
 						</md-card>
 					</div>
 					<form layout="row" name="linkForm" layout-wrap>
 						<md-input-container flex="100">
-							<label for="linkAddressField">Indirizzo Link</label>
-							<input type="url" name="linkAddressField" id="linkAddressField" ng-model="formLinks.linkAddress" required />
-						</md-input-container>
-						<md-input-container flex-xs="100" flex="50">
 							<label for="linkDescriptionField">Descrizione Link</label>
 							<input type="text" flex="100" name="linkDescriptionField" id="linkDescriptionField" ng-model="formLinks.linkDescription" required />
 						</md-input-container>
+						<md-input-container flex="100">
+							<label for="linkAddressField">Indirizzo Link</label>
+							<input type="url" name="linkAddressField" id="linkAddressField" ng-model="formLinks.linkAddress" required />
+						</md-input-container>
 						<div flex="100">
-							<h4>Scegli il colore</h4>
-							<md-radio-group ng-model="formLinks.color" layout="row" layout-align="space-between center">
-						      <md-radio-button value="grey" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="deepOrange" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="red" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="green" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="indigo" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="lightBlue" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="teal" class="bg-selector"></md-radio-button>
-						      <md-radio-button value="amber" class="bg-selector"></md-radio-button>
+							<h4 class="text-center">Scegli il colore</h4>
+							<md-radio-group ng-model="formLinks.color" layout="row" layout-align="center center">
+						      <md-radio-button value="grey" class="color-selector"></md-radio-button>
+						      <md-radio-button value="deepOrange" class="color-selector"></md-radio-button>
+						      <md-radio-button value="red" class="color-selector"></md-radio-button>
+						      <md-radio-button value="green" class="color-selector"></md-radio-button>
+						      <md-radio-button value="indigo" class="color-selector"></md-radio-button>
+						      <md-radio-button value="lightBlue" class="color-selector"></md-radio-button>
+						      <md-radio-button value="teal" class="color-selector"></md-radio-button>
+						      <md-radio-button value="amber" class="color-selector"></md-radio-button>
 						    </md-radio-group>
 						</div>
 					</form>
@@ -80,6 +90,6 @@
 		</div>
   </md-content>
 </div>
-<div ng-if="!vm.auth.isAuthenticated()">
+<div ng-if="!lock.isAuthenticated()">
 
 </div>
