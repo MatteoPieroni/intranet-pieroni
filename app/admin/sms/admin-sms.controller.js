@@ -2,17 +2,44 @@
 	'use strict';
 	angular
 		.module('app')
-		.controller('AdminSmsController', adminSmsController);
+		.controller('AdminSmsController', adminSmsController)
+		.filter("dateFilter", function() {
+		  	return function(items, from, to) {
+		        var result = [];        
+		        for (var i=0; i<items.length; i++){
+		            var tf = items[i].time;
+		            if (tf >= from && tf <= to)  {
+		                result.push(items[i]);
+		            }
+		        }            
+		        return result;
+		  	};
+		});
 
-	adminSmsController.$inject = ['lockService', '$scope', '$http', '$filter', 'moment'];
+	adminSmsController.$inject = ['lockService', '$scope', '$http', '$filter', 'moment', 'firebaseService', '$firebaseArray'];
 
-	function adminSmsController(lockService, $scope, $http, $filter, moment) {
+	function adminSmsController(lockService, $scope, $http, $filter, moment, firebaseService, $firebaseArray) {
 		var vm = this;
 		$scope.lock = lockService;
 
 		// Set for UI loading
 		$scope.loaded = false;
 		if(lockService.isAuthenticated()) {
+
+			// Firebase init
+			firebaseService.init();
+
+			// Get sms chronology from firebase
+			var ref = firebaseService.dbRef('sms/');
+			$scope.smsHistoryIntranet = $firebaseArray(ref);
+			$scope.smsHistoryIntranet.$loaded()
+				.then(function() {
+					$scope.loaded = true;
+				})
+				.catch(function(err) {
+					$scope.errMessage = err;
+				});
+
 			// Prepare object to get data from Api
 		    $scope.smsHistory = {};
 
@@ -29,7 +56,6 @@
 						// success callback
 						//console.log(response);
 						$scope.smsHistory = response.data.smshistory;
-						$scope.loaded = true;
 					}, 
 					function(response){
 						// failure callback,handle error here
@@ -40,6 +66,18 @@
 		   	// Set default dates over 1 week
 		   	var defaultDateFirst = moment(new Date()).subtract(7, 'days').format('YYYYMMDDHHmmss');
 		   	var defaultDateLast = moment(new Date()).format('YYYYMMDDHHmmss');
+		   	$scope.myDateFirstIntranet = moment(new Date()).subtract(7, 'days');
+		   	$scope.myDateLastIntranet = moment(new Date());
+
+		   	// Set filter for intranet sms
+		   	$scope.selectedDatesIntranet = function(dateSms, date1, date2) {
+		   		if(dateSms >= date1 && dateSms <= date2) {
+		   			return true
+		   		} else {
+		   			return false
+		   		};
+		   	};
+
 		   	// First call to Api on page load
 		   	getHistory(defaultDateFirst, defaultDateLast);
 
@@ -65,12 +103,15 @@
 
 			// Function for clearing form after the Api gets called from date form
 			function clearDate () {
+				$scope.myDateFirst = '';
+				$scope.myDateLast = '';
 				$scope.dateSelected = false;
 			}
 			// Format first date data for Api call
 			$scope.dateFirstSelected = function(date) {
 				$scope.dateSelected = true;
 				dateRange.firstDate = moment(date).format('YYYYMMDDHHmmss');
+				//return date;
 			}
 			// Function to call Api using defined dates
 			$scope.updateDate = function(date) {
@@ -78,7 +119,8 @@
 				dateRange.lastDate = moment(date).format('YYYYMMDDHHmmss');
 				getHistory(dateRange.firstDate, dateRange.lastDate);
 				clearDate();
+				//return date;
 			}
 		}
 	}
-})();	
+})();

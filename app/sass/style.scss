@@ -1011,3 +1011,70 @@ md-list md-list-item {
     height:auto;
   }
 }
+
+// ADMIN SMS
+.admin-sms-container {
+  md-tab-content {
+    md-content {
+      max-height: 50vh;
+      overflow:auto;
+    }
+  }
+  md-tabs {
+    md-ink-bar {
+      background-color: #ee8900;
+      color: #ee8900;
+    }
+    .md-tab .md-ripple-container {
+      color: #ee8900;
+    }
+  }
+  .admin-sms {
+    &__intranet {
+      &--toolbar {
+        background: #f1f1f1;
+        background-image:none;
+        .md-datepicker-button md-icon svg {
+          fill: #333;
+        }
+      }
+    }
+    &__skebby {
+      &--toolbar {
+        background: #f1f1f1;
+        background-image:none;
+        .md-datepicker-button md-icon svg {
+          fill: #333;
+        }
+      }
+    }
+  }
+}
+.dark {
+  .admin-sms-container {
+    > md-card-content {
+      background: #171d37;
+    }
+    md-tabs .md-tab {
+      color: #fff;
+    }
+    .admin-sms__intranet--toolbar, .admin-sms__skebby--toolbar {
+      .md-datepicker-button md-icon svg {
+        fill: #fff;
+      }
+      input {
+        color: #fff;
+      }
+    }
+    .admin-sms__intranet--item {
+      background: #212c59;
+      color: #fff;
+      .md-subhead {
+        color: rgba(255,255,255,0.54)
+      }
+    }
+    md-list {
+      color: #fff;
+    }
+  }
+}

@@ -8,25 +8,55 @@
   		<img src="assets/loading.svg" alt="loading">
 	</div>
 	<md-content flex="100" ng-if="loaded">
-		<md-card>
-			<md-card-header>
-	          <md-card-header-text>
-	            <span class="md-subhead">Max 50 invii</span>
-	          </md-card-header-text>
-		    <md-datepicker ng-model="myDateFirst" ng-change="dateFirstSelected(myDateFirst)" md-placeholder="Enter date" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
-		    <md-datepicker ng-model="myDateLast" ng-change="updateDate(myDateLast)" md-placeholder="Enter date" md-min-date="minDate" md-max-date="maxDate" ng-disabled="!dateSelected"></md-datepicker>
-	        </md-card-header>
+		<md-card class="admin-sms-container">
         	<md-card-content>
-				<md-list flex>
-			        <md-list-item class="md-1-line noright">
-			            <p>Sms Inviati</p>
-			            <p>Giorno di invio</p>
-			        </md-list-item>
-			        <md-list-item class="md-2-line noright" ng-repeat="sms in smsHistory" ng-click="null">
-			            <p>{{sms.num_recipietns}}</p>
-			            <p>{{sms.create_time | amParse:'YYYYMMDDHHmmss' | amLocal | amDateFormat: 'dddd, DD MMMM YYYY, HH:mm:ss'}}</p>
-			        </md-list-item>
-			    </md-list>
+        		<md-tabs md-dynamic-height md-border-bottom>
+			      <md-tab label="inviati da intranet">
+				      <md-toolbar class="admin-sms__intranet--toolbar">
+				        <div class="md-toolbar-tools">
+							<span class="md-subhead"></span>
+							<span flex></span>
+							<md-datepicker ng-model="myDateFirstIntranet" md-placeholder="Seleziona data" md-max-date="maxDate"></md-datepicker>
+							<md-datepicker ng-model="myDateLastIntranet" md-placeholder="Seleziona data" md-max-date="maxDate"></md-datepicker>
+				        </div>
+				      </md-toolbar>
+			        <md-content layout="row" class="md-padding">
+			        	<md-card flex-xs="50" flex-sm="33" flex="25" class="admin-sms__intranet--item" ng-repeat="sms in smsHistoryIntranet | dateFilter:myDateFirstIntranet:myDateLastIntranet | orderBy: '-time'">
+			        		<md-card-header>
+			        			<md-card-header-text>
+			        				<span class="md-title">{{sms.number}}</span>
+			        				<span class="md-subhead">{{sms.time | amDateFormat:'DD/MM/YYYY - HH:mm'}}</span>
+			        			</md-card-header-text>
+			        		</md-card-header>
+			        		<md-card-content>
+			        			{{sms.message}}
+			        		</md-card-content>
+			        	</md-card>
+			        </md-content>
+			      </md-tab>
+			      <md-tab label="tutti">
+				      <md-toolbar class="admin-sms__skebby--toolbar">
+				        <div class="md-toolbar-tools">
+							<span class="md-subhead">Max 50 invii</span>
+							<span flex></span>
+							<md-datepicker ng-model="myDateFirst" ng-change="dateFirstSelected(myDateFirst)" md-placeholder="Seleziona data" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
+							<md-datepicker ng-model="myDateLast" ng-change="updateDate(myDateLast)" md-placeholder="Seleziona data" md-min-date="minDate" md-max-date="maxDate" ng-disabled="!dateSelected"></md-datepicker>
+				        </div>
+				      </md-toolbar>
+			        <md-content class="md-padding">
+						<md-list flex>
+					        <md-list-item class="md-1-line noright">
+					            <p>Sms Inviati</p>
+					            <p>Giorno di invio</p>
+					        </md-list-item>
+					        <md-list-item class="md-2-line noright" ng-repeat="sms in smsHistory | orderBy: '-create_time'" ng-click="null">
+					            <p>{{sms.num_recipietns}}</p>
+					            <p>{{sms.create_time | amParse:'YYYYMMDDHHmmss' | amLocal | amDateFormat: 'dddd, DD MMMM YYYY, HH:mm:ss'}}</p>
+					        </md-list-item>
+					    </md-list>	
+			        </md-content>
+			      </md-tab>
+			    </md-tabs>
 			</md-card-content>
 		</md-card>
 	</md-content>
