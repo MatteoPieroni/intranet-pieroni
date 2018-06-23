@@ -1,6 +1,13 @@
-<div layout="row" layout-align="center none" ng-if="vm.auth.isAuthenticated()">
-	<md-content flex="100">
-		<h1 style="text-align: center">Cronologia Invio SMS</h1>
+<div class="breadcrumbs">
+	<p>
+		<md-button ui-sref="home">Dashboard</md-button> / <md-button ui-sref="admin">Admin</md-button> / <md-button disabled>   Cronologia Sms </md-button>
+	</p>
+</div>
+<div layout="row" layout-align="center none" ng-if="lock.isAuthenticated()">
+	<div class="loading" ng-if="!loaded">
+  		<img src="assets/loading.svg" alt="loading">
+	</div>
+	<md-content flex="100" ng-if="loaded">
 		<md-card>
 			<md-card-header>
 	          <md-card-header-text>
@@ -23,7 +30,4 @@
 			</md-card-content>
 		</md-card>
 	</md-content>
-</div>
-<div ng-if="!vm.auth.isAuthenticated()">
-	Ciao
 </div>
