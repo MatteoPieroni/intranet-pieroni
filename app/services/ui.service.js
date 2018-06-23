@@ -7,6 +7,15 @@
 
     function uiService () {
 
+      var disabledStatus = false;
+
+      function getDisabledStatus() {
+        return disabledStatus;
+      };
+      function setDisabledStatus(newStatus) {
+        disabledStatus = newStatus;
+      };
+
       function toggleUiColor() {
         let uiColorSet = JSON.parse(localStorage.getItem('ui_color'));
         uiColorSet = !uiColorSet;
@@ -26,7 +35,9 @@
 
       return {
         getUiColor: getUiColor,
-        toggleUiColor: toggleUiColor
+        toggleUiColor: toggleUiColor,
+        getDisabledStatus: getDisabledStatus,
+        setDisabledStatus: setDisabledStatus
       }
     };
 

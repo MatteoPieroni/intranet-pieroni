@@ -5,11 +5,14 @@
     .module('app')
     .controller('HomeController', homeController);
 
-  homeController.$inject = ['$scope', '$firebaseObject', 'lockService', 'firebaseService', 'moment'];
+  homeController.$inject = ['$rootScope', '$scope', '$firebaseObject', 'lockService', 'firebaseService', 'moment'];
 
-  function homeController($scope, $firebaseObject, lockService, firebaseService, moment) {
+  function homeController($rootScope, $scope, $firebaseObject, lockService, firebaseService, moment) {
     var vm = this;
     $scope.lock = lockService;
+
+    // Set body class
+    $rootScope.bodyClass = 'not-authenticated';
 
     firebaseService.init();
 
@@ -101,6 +104,8 @@
     };
 
     if($scope.lock.isAuthenticated()) {
+
+    	$rootScope.bodyClass = 'authenticated';
     	
     	// Get Firebase Links
 		var ref = firebaseService.dbRef('links/');

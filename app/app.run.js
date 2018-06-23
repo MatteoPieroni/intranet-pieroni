@@ -12,7 +12,6 @@
     //authService.handleAuthentication();
     lockService.handleAuthentication(firebaseService.init);
     amMoment.changeLocale('it');
-    $rootScope.bodyClass = '';
     $rootScope.uiColorClass = uiService.getUiColor;
     $rootScope.$watch(
       // This function returns the value being watched. It is called for each turn of the $digest loop

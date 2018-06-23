@@ -32,7 +32,7 @@
 			        .hideDelay(3000)
 			    );
 			};
-
+			
 			$scope.readableTime = function(time) {
 				moment(time).fromNow();
 			};

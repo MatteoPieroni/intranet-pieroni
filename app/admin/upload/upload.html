@@ -1,25 +1,27 @@
 <div ng-controller="UploadController">
-          <md-toolbar>
-            <div class="md-toolbar-tools">
-              <span class="md-subhead">Clicca un'immagine per selezionarla</span>
-              <span flex></span>
-              <md-button class="md-icon-button" ng-click="upload()">
-                <md-icon aria-label="Close dialog"></md-icon>
-              </md-button>
-            </div>
-          </md-toolbar>
-          <div ng-show="uploading">
-            <form ng-submit="uploadFile(quoteFile)">
-              <input type="file" name="file" id="file" accept="jpg" file-model="quoteFile" class="form-control inputfile" custom-on-change="selectFile">
-              <label for="file" class="file-upload-label md-raised md-button">{{selectButtonText}}</label>
-              <md-button type="submit" class="btn btn-primary">Upload File</md-button>
-            </form>
-          </div>
-          <md-grid-list md-cols="1" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="4" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
-              <md-grid-tile ng-repeat="image in images" ng-click="selectImage(image)" md-rowspan="1" md-colspan="1" >
-                <img class="admin-quote__image" src="{{image.url}}" />
-              </md-grid-tile>
-          </md-grid-list>
-
-      
-    </div>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <span class="md-subhead">Clicca un'immagine per selezionarla</span>
+          <span flex></span>
+          <md-button class="md-icon-button" ng-click="upload()" ng-hide="uploadRequest">
+            <md-icon aria-label="Aggiungi immagine">add</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" ng-click="unUpload()" ng-show="uploadRequest">
+            <md-icon aria-label="Chiudi finestra di caricamento">close</md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+      <div class="upload-dropdown" ng-show="uploadRequest">
+        <form ng-submit="uploadFile(quoteFile)">
+          <input type="file" name="file" id="file" accept="jpg" file-model="quoteFile" class="form-control inputfile" custom-on-change="selectFile">
+          <label for="file" class="file-upload-label md-raised md-button">{{selectButtonText}}</label>
+          <md-button type="submit" ng-hide="uploading"><md-icon>cloud_upload</md-icon></md-button>
+          <md-progress-circular md-mode="indeterminate" ng-show="uploading"></md-progress-circular>
+        </form>
+      </div>
+      <md-grid-list md-cols="2" md-cols-sm="3" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+          <md-grid-tile class="background-cover admin-upload__file-container" ng-repeat="file in files" ng-click="selectFileInList(file)" ng-style="{'background-image': 'url(' + file.url + ')'}" md-rowspan="1" md-colspan="1" >
+            <img class="admin-upload__file" src="{{file.url}}" />
+          </md-grid-tile>
+      </md-grid-list>
+</div>
