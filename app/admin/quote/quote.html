@@ -3,7 +3,7 @@
 		<md-button ui-sref="home">Dashboard</md-button> / <md-button ui-sref="admin">Admin</md-button> / <md-button disabled>   Gestione Citazione </md-button>
 	</p>
 </div>
-<div layout="row" layout-align="center none" ng-if="lock.isAuthenticated()">
+<div layout="row" layout-align="center none" ng-if="firebaseUser">
 	<div class="loading" ng-if="!loaded">
   		<img src="assets/loading.svg" alt="loading">
 	</div>
@@ -63,7 +63,4 @@
 		    </div>
 		</div>
     </md-content>
-</div>
-<div ng-if="!vm.auth.isAuthenticated()">
-
 </div>

@@ -1,4 +1,4 @@
-<div ng-controller="ToolbarController" ng-if="lock.isAuthenticated()">
+<div ng-controller="ToolbarController" ng-if="firebaseUser">
   <md-toolbar class="toolbar-nav">
     <div class="md-toolbar-tools">
       <md-button ng-click="openSidenav()" ng-if="!isSidebarOpen()">

@@ -3,25 +3,25 @@
   'use strict';
 
   angular
-    .module('app', ['auth0.auth0', 'ui.router', 'ngMaterial', 'ngMessages', 'firebase', 'file-model', 'angularMoment', 'auth0.lock'])
-    .config(config);
+    .module('app', ['ui.router', 'ngMaterial', 'ngMessages', 'firebase', 'file-model', 'angularMoment'])
+    .config(config)
+    .factory("Auth", ["$firebaseAuth",
+      function($firebaseAuth) {
+        return $firebaseAuth();
+      }
+    ]);
 
   config.$inject = [
     '$stateProvider',
     '$locationProvider',
     '$urlRouterProvider',
-    'angularAuth0Provider',
-    'lockProvider',
     '$mdDateLocaleProvider'
   ];
-  var REQUESTED_SCOPES = 'openid profile read:data write:data';
 
   function config(
     $stateProvider,
     $locationProvider,
     $urlRouterProvider,
-    angularAuth0Provider,
-    lockProvider,
     $mdDateLocaleProvider,
     $rootScope
   ) {
@@ -31,93 +31,116 @@
         url: '/login',
         controller: 'LoginController',
         templateUrl: 'app/login/login.html',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        resolve: {
+          // controller will not be loaded until $waitForSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $waitForSignIn returns a promise so the resolve waits for it to complete
+            return Auth.$waitForSignIn();
+          }]
+        }
       })
       .state('home', {
         url: '/',
         controller: 'HomeController',
         templateUrl: 'app/home/home.html',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
+        }
       })
       .state('sms', {
         url: '/sms',
         controller: 'SmsController',
         templateUrl: 'app/sms/sms.html',
-        controllerAs: 'vm'
-      })
-      .state('callback', {
-        url: '/callback',
-        controller: 'CallbackController',
-        templateUrl: 'app/callback/callback.html',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
+        }
       })
       .state('admin', {
         url: '/admin',
         controller: 'AdminController',
         templateUrl: 'app/admin/admin.html',
         controllerAs: 'vm',
-        onEnter: checkForScopes(['write:data'])
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
+        }
     })
       .state('adminLinks', {
         url: '/admin/links',
         controller: 'AdminLinksController',
         templateUrl: 'app/admin/links/links.html',
         controllerAs: 'vm',
-        onEnter: checkForScopes(['write:data'])
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
+        }
     })
       .state('adminQuote', {
         url: '/admin/quote',
         controller: 'AdminQuoteController',
         templateUrl: 'app/admin/quote/quote.html',
         controllerAs: 'vm',
-        onEnter: checkForScopes(['write:data'])
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
+        }
     })
       .state('adminSms', {
         url: '/admin/sms',
         controller: 'AdminSmsController',
         templateUrl: 'app/admin/sms/sms.html',
         controllerAs: 'vm',
-        onEnter: checkForScopes(['write:data'])
-    });
-    lockProvider.init({
-      clientID: AUTH0_CLIENT_ID,
-      domain: AUTH0_DOMAIN,
-      options: {
-        allowAutocomplete: true,
-        allowShowPassword: true,
-        autofocus:true,
-        avatar:null,
-        container: 'lock-container',
-        language: 'it',
-        auth: {
-          redirect: true,
-          redirectUrl: AUTH0_CALLBACK_URL,
-          responseType: 'token id_token',
-          sso: true,
-          params: {
-              scope: 'openid profile read:data write:data'
-          }
-        },
-        theme: {
-          logo: 'http://www.pieroni.it/wp-content/uploads/2015/05/pieroni_logo_definitivo_V2.png',
-          primaryColor: '#ee8900'
-        },
-        languageDictionary: {
-          emailInputPlaceholder: 'miamail@pieroni.it',
-          passwordInputPlaceholder: 'La tua password',
-          title: 'Benvenuto/a!'
+        resolve: {
+          // controller will not be loaded until $requireSignIn resolves
+          // Auth refers to our $firebaseAuth wrapper in the factory below
+          "currentAuth": ["Auth", function(Auth) {
+            // $requireSignIn returns a promise so the resolve waits for it to complete
+            // If the promise is rejected, it will throw a $stateChangeError (see above)
+            return Auth.$requireSignIn();
+          }]
         }
-      }
     });
-    // Initialization for the angular-auth0 library
-    angularAuth0Provider.init({
-      clientID: AUTH0_CLIENT_ID,
-      domain: AUTH0_DOMAIN/*,
-      responseType: 'token id_token',
-      audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
-      redirectUri: AUTH0_CALLBACK_URL,
-      scope: REQUESTED_SCOPES*/
-    });
+
+    var fireConfig = {
+          apiKey: "AIzaSyA7XzDXxEuhPoLwD3l02qcHeLWovVCAH-Y",
+          authDomain: "intranet-pieroni.firebaseapp.com",
+          databaseURL: "https://intranet-pieroni.firebaseio.com",
+          projectId: "intranet-pieroni",
+          storageBucket: "intranet-pieroni.appspot.com",
+          messagingSenderId: "775811721929"
+        };
+    firebase.initializeApp(fireConfig);
 
     $mdDateLocaleProvider.firstDayOfWeek = 1; 
  
@@ -125,16 +148,6 @@
     $mdDateLocaleProvider.shortMonths = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']; 
     $mdDateLocaleProvider.days = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']; 
     $mdDateLocaleProvider.shortDays = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
-
-    function checkForScopes(scopes) {
-      return function checkAuthentication($transition$) {
-        var $state = $transition$.router.stateService;
-        var auth = $transition$.injector().get('authService');
-        if (!auth.isAuthenticated() || !auth.userHasScopes(scopes)) {
-          return $state.target('home');
-        }
-      }
-    }
 
     $urlRouterProvider.otherwise('/');
 

@@ -6,59 +6,32 @@
     .module('app')
     .controller('LoginController', loginController);
 
-  loginController.$inject = ['authService', '$rootScope', 'angularAuth0'];
+  loginController.$inject = ['$scope', 'Auth', 'currentAuth', '$state'];
 
-  function loginController(authService, $rootScope, angularAuth0) {
+  function loginController($scope, Auth, currentAuth, $state) {
 
     var vm = this;
-    vm.auth = authService;
 
-    vm.signup = signup;
-    vm.login = login;
-    vm.loginSocial = loginSocial;
+    $scope.auth = Auth;
+    $scope.firebaseUser = currentAuth;
 
-    //////
+    $scope.formFire = {};
+    $scope.fireLogin = function() {
+      var user = $scope.formFire.user;
+      var pass = $scope.formFire.pass;
 
-    function signup(email, password) {
-      $rootScope.webAuth.signup({
-          connection: 'Username-Password-Authentication',
-          email: email,
-          password: password
-      }, function (err) {
-          if (err) return alert('Something went wrong: ' + err.message);
-          else login(email, password);
+      Auth.$signInWithEmailAndPassword(user, pass).then(function(firebaseUser) {
+          console.log("Signed in as:", firebaseUser.user.email);
+        }).catch(function(error) {
+          console.error("Authentication failed:", error);
       });
     }
-
-    function login(username, password) {
-      $rootScope.webAuth.client.login({
-        realm: 'Username-Password-Authentication',
-        username: username,
-        password: password,
-        scope: 'openid',
-        responseType: 'code'
-      },
-      function(err, authResult) {
-        if (err) {
-          console.log(err);
-          //alert(`Error: ${err.description}`);
-          return;
-        } else {
-          vm.auth.handleAuthentication(authResult);
-        }
-      });
-    }
-
-    function loginSocial(type) {
-      let social = (type == 0) ? 'facebook' : 'google-oauth2'; 
-      $rootScope.webAuth.authorize({
-        connection: social,
-        responseType: 'token',
-        scope: 'openid',
-        redirectUri: 'http://localhost:3000/callback'
-      });
-    }
-
+    Auth.$onAuthStateChanged(function(firebaseUser, toState, toParams, fromState, fromParams) {
+      if(firebaseUser) {
+        $state.go('home');
+        console.log('Signed In')
+      }
+    });
   }
 
 })();

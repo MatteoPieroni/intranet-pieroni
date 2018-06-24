@@ -1,41 +1,58 @@
-(function () {
-  'use strict';
-
-  angular
-    .module('app')
-    .service('firebaseService', firebaseService);
-
+(function () { 
+  'use strict'; 
+ 
+  angular 
+    .module('app') 
+    .service('firebaseService', firebaseService); 
+ 
     function firebaseService () {
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyA7XzDXxEuhPoLwD3l02qcHeLWovVCAH-Y",
-        authDomain: "intranet-pieroni.firebaseapp.com",
-        databaseURL: "https://intranet-pieroni.firebaseio.com",
-        projectId: "intranet-pieroni",
-        storageBucket: "intranet-pieroni.appspot.com",
-        messagingSenderId: "775811721929"
-      };
-      function init () {
-        if (!firebase.apps.length) {
-          firebase.initializeApp(config);
-        };
+      function dbRef(child) { 
+        return firebase.database().ref(child) 
+      } 
+      function dbChild(child) { 
+        return firebase.database().ref().child(child) 
+      } 
+      function dbUpdate(update) { 
+        return firebase.database().ref().update(update) 
       }
-      function dbRef(child) {
-        return firebase.database().ref(child)
+      function addChild(parent) {
+        return firebase.database().ref().child(parent).push().key;
       }
-      function dbChild(child) {
-        return firebase.database().ref().child(child)
+      function getChildBy$Id(ID, parent) {
+        dbRef(parent).orderByChild("$id").equalTo(ID)
       }
-      function dbUpdate(update) {
-        return firebase.database().ref().update(update)
+      function updateById(ID, parent, newData) {
+        dbRef(parent).orderByChild("id").equalTo(ID).on("child_added", function (snapshot) {
+            var itemRef = firebase.database().ref(parent + snapshot.key);
+            itemRef.update(newData);
+        });
       }
-      // we could do additional work here too
+      function removeById(ID, parent) {
+        dbRef(parent).orderByChild("id").equalTo(ID).on("child_added", function (snapshot) {
+            var itemRef = firebase.database().ref(parent + snapshot.key);
+            itemRef.remove();
+        });
+      }
+      function removeByUrl(url, parent, cb) {
+        dbRef(parent).orderByChild("url").equalTo(url).on("child_added", function (snapshot) {
+            var itemRef = firebase.database().ref(parent + snapshot.key);
+            itemRef.remove().then(
+              cb()
+            ).catch(function(error) {
+              alert('C\'è stato un problema con la rimozione dell\'immagine. Prova ancora o contatta l\'amministratore. Errore:' + error);
+            });
+        });
+      }
+      // we could do additional work here too 
       return {
-        init: init,
         dbRef: dbRef,
-        dbChild: dbChild,
-        dbUpdate: dbUpdate
-      }
-    };
-
+        dbChild: dbChild, 
+        dbUpdate: dbUpdate,
+        addChild: addChild,
+        getChildBy$Id: getChildBy$Id,
+        updateById: updateById,
+        removeById: removeById,
+        removeByUrl: removeByUrl
+      } 
+    };  
 })();

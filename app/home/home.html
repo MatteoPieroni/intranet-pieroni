@@ -1,4 +1,4 @@
-<md-content flex layout-wrap ng-if="lock.isAuthenticated()">
+<md-content flex layout-wrap ng-if="firebaseUser">
 	<div class="loading" ng-if="!loaded">
   		<img src="assets/loading.svg" alt="loading">
 	</div>
@@ -7,7 +7,7 @@
 			<md-card class="flex__grow background-cover welcome">
 				<md-card-content>
 					<p class="md-display-3 welcome__greeting">
-						{{greeting}}!
+						{{greeting}} {{user.nome}}!
 					</p>
 					<p>
 						<span class="todayDay md-display-4 welcome__day">{{today.day}}</span> 
@@ -52,15 +52,4 @@
 			</md-card>
 		</div>
 	</div>
-</md-content>
-<md-content ng-hide="lock.isAuthenticated()" flex layout="row" layout-padding layout-align="center center" class="login">
-	<md-card layout="row" layout-align="center center">
-		<div flex="50" class="login__first" ng-if="!lock.isAuthenticated()">
-			<h1>Benvenuto nella intranet Pieroni!</h1>
-			<h2>Esegui il login a destra per entrare</h2>
-		</div>
-		<div flex="50" class="login__second">
-			<div id="lock-container"></div>
-		</div>
-</md-card>
 </md-content>

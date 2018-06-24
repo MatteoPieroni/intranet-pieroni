@@ -16,18 +16,15 @@
 		  	};
 		});
 
-	adminSmsController.$inject = ['lockService', '$scope', '$http', '$filter', 'moment', 'firebaseService', '$firebaseArray'];
+	adminSmsController.$inject = ['currentAuth', '$scope', '$http', '$filter', 'moment', 'firebaseService', '$firebaseArray'];
 
-	function adminSmsController(lockService, $scope, $http, $filter, moment, firebaseService, $firebaseArray) {
+	function adminSmsController(currentAuth, $scope, $http, $filter, moment, firebaseService, $firebaseArray) {
 		var vm = this;
-		$scope.lock = lockService;
+		$scope.firebaseUser = currentAuth;
 
 		// Set for UI loading
 		$scope.loaded = false;
-		if(lockService.isAuthenticated()) {
-
-			// Firebase init
-			firebaseService.init();
+		if($scope.firebaseUser) {
 
 			// Get sms chronology from firebase
 			var ref = firebaseService.dbRef('sms/');

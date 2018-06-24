@@ -1,13 +1,15 @@
-<h2>Signup with Login</h2>
-<input type="email" class="signup-email" ng-model="vm.email" />
-<input type="password" class="signup-password" ng-model="vm.passwordSignup" />
-<input type="button" class="signup-db" value="Signup" ng-click="vm.signup(vm.email, vm.passwordSignup)" />
-
-<h2>Login</h2>
-<input type="email" class="login-email" ng-model="vm.username" />
-<input type="password" class="login-password" ng-model="vm.passwordLogin" />
-<input type="button" class="login-db" value="Login" ng-click="vm.login(vm.username, vm.passwordLogin)" />
-
-<h2>Login Social</h2>
-<input type="button" class="login-db" value="Facebook" ng-click="vm.loginSocial(0)" />
-<input type="button" class="login-db" value="Google" ng-click="vm.loginSocial(1)" />
+<md-content ng-hide="firebaseUser" flex layout="row" layout-padding layout-align="center center" class="login">
+	<md-card layout="row" layout-align="center center">
+		<div flex="50" class="login__first" ng-if="!firebaseUser">
+			<h1>Benvenuto nella intranet Pieroni!</h1>
+			<h2>Esegui il login a destra per entrare</h2>
+		</div>
+		<div flex="50" class="login__second">
+			<form name="signFirebase">
+				<input type="text" name="user" ng-model="formFire.user" />
+				<input type="text" name="password" ng-model="formFire.pass" />
+				<button ng-click="fireLogin()">Login</button>
+			</form>
+		</div>
+</md-card>
+</md-content>

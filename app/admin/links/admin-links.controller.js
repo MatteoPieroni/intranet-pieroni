@@ -5,16 +5,15 @@
     .module('app')
     .controller('AdminLinksController', adminLinksController);
 
-  adminLinksController.$inject = ['lockService', '$scope', '$mdDialog', '$firebaseObject', 'firebaseService'];
+  adminLinksController.$inject = ['currentAuth', '$scope', '$mdDialog', '$firebaseObject', 'firebaseService'];
 
-  function adminLinksController(lockService, $scope, $mdDialog, $firebaseObject, firebaseService) {
+  function adminLinksController(currentAuth, $scope, $mdDialog, $firebaseObject, firebaseService) {
     var vm = this;
-    $scope.lock = lockService;
+    $scope.firebaseUser = currentAuth;
 
     $scope.loaded = false;
 
-    if($scope.lock.isAuthenticated) {
-    	firebaseService.init();
+    if($scope.firebaseUser) {
 		// Get Firebase Links
 		var ref = firebaseService.dbRef('links/');
 		$scope.links = $firebaseObject(ref);
@@ -93,7 +92,7 @@
 	        $mdDialog.hide();
 	    };
 
-	    // Select link to edit annd copy values to form
+	    // Select link to edit and copy values to form
 	    $scope.modLink = function (link) {
 	    	$scope.editingLink = angular.copy(link);
 	    	$scope.formLinks.id = $scope.editingLink.id;

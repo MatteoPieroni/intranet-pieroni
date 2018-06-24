@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const skebby = require('./skebbyserver');
 const fb = require('./workplaceserver');
+const perm = require('./permissionserver');
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -38,4 +39,7 @@ app.post('/smsapi/gethistory', function(req, res) {
 });
 app.post('/fbapi/getgroups', function(req, res) {
   fb.getGroups(res);
-})
+});
+app.post('/permissionsapi', function(req, res) {
+  perm.grantPermit(req.body.email, res);
+});

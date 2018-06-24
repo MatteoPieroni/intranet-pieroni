@@ -3,7 +3,7 @@
 		<md-button ui-sref="home">Dashboard</md-button> / <md-button ui-sref="admin">Admin</md-button> / <md-button disabled>   Cronologia Sms </md-button>
 	</p>
 </div>
-<div layout="row" layout-align="center none" ng-if="lock.isAuthenticated()">
+<div layout="row" layout-align="center none" ng-if="firebaseUser">
 	<div class="loading" ng-if="!loaded">
   		<img src="assets/loading.svg" alt="loading">
 	</div>
@@ -31,6 +31,11 @@
 			        		<md-card-content>
 			        			{{sms.message}}
 			        		</md-card-content>
+			        		<md-card-actions layout="row" layout-align="end center">
+			        			<md-button>
+			        				{{sms.sender}}
+			        			</md-button>
+			        		</md-card-actions>
 			        	</md-card>
 			        </md-content>
 			      </md-tab>

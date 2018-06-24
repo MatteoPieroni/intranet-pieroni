@@ -15,13 +15,23 @@
     }
   }
 
-  navbarController.$inject = ['$state', 'lockService', '$scope', '$timeout', 'navbarService', '$log'];
+  navbarController.$inject = ['$state', '$rootScope', '$scope', '$timeout', 'navbarService', '$log', '$firebaseAuth', 'fireAuthService'];
     
-  function navbarController($state, lockService, $scope, $timeout, navbarService, $log) {
+  function navbarController($state, $rootScope, $scope, $timeout, navbarService, $log, $firebaseAuth, fireAuthService) {
     var vm = this;
+    // Set for links
     $scope.state = $state;
-    $scope.lock = lockService;
+    $scope.authObj = $firebaseAuth();
+
+    // Check if sidebar is open
     $scope.isSidebarOpen = navbarService.getStatus;
+    // Init sidebar as closed
     navbarService.init();
+
+    // Function for logging out
+    $scope.fireLogout = function() {
+      fireAuthService.removeSession();
+      $scope.authObj.$signOut();
+    }
   };
 })();

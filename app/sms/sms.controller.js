@@ -4,15 +4,15 @@
 		.module('app')
 		.controller('SmsController', smsController);
 
-	smsController.$inject = ['lockService', '$scope', '$http', '$filter', 'moment', '$state', 'firebaseService', '$mdToast'];
+	smsController.$inject = ['currentAuth', '$rootScope', '$scope', '$http', '$filter', 'moment', '$state', 'firebaseService', '$mdToast'];
 
-	function smsController(lockService, $scope, $http, $filter, moment, $state, firebaseService, $mdToast) {
+	function smsController(currentAuth, $rootScope, $scope, $http, $filter, moment, $state, firebaseService, $mdToast) {
 		var vm = this;
-		$scope.lock = lockService;
+		$scope.firebaseUser = currentAuth;
 
-		if($scope.lock.isAuthenticated()) {
+		if($scope.firebaseUser) {
 			// Init firebase
-			firebaseService.init();
+			//firebaseService.init();
 			// Init SMS Form
 			$scope.formSms = {};
 			// Function for Cleaning Form
@@ -34,18 +34,14 @@
 			        .hideDelay(3000)
 			    );
 			};
-			
-			$scope.readableTime = function(time) {
-				moment(time).fromNow();
-			};
 
 			function smsToChron (obj) {
 		        // Get a key for a new Post.
-			    var newLinkKey = firebaseService.addChild('sms');
+			    var newLinkKey = firebaseService.addChild('sms/' + $scope.firebaseUser.uid);
 			    // Get update data
 		        var updates = {};
 		        // Set update data to form data
-		        updates['/sms/' + newLinkKey] = obj;
+		        updates['/sms/' + $scope.firebaseUser.uid + newLinkKey] = obj;
 		        // Update Data
 		        firebaseService.dbUpdate(updates);
 		        console.log('Succesfully added to chronology');
@@ -76,7 +72,9 @@
 	                   	   	var smsChronObj = {
 	                   	   		number: data.num,
 	                   	   		message: data.messaggio,
-	                   	   		time: newItem
+	                   	   		time: newItem,
+	                   	   		sender: $rootScope.user.nome + ' ' +$rootScope.user.cognome,
+	                   	   		senderUID : $scope.firebaseUser.uid
 	                   	   	};
 	                   	   	// Push data to firebase db
 	                   	   	smsToChron(smsChronObj);

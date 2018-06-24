@@ -5,13 +5,13 @@
     .module('app')
     .controller('AdminController', adminController);
 
-  adminController.$inject = ['lockService', '$scope', '$firebaseObject', 'moment', '$http'];
+  adminController.$inject = ['currentAuth', '$scope', '$firebaseObject', 'moment', '$http'];
 
-  	function adminController(lockService, $scope, $firebaseObject, moment, $http) {
+  	function adminController(currentAuth, $scope, $firebaseObject, moment, $http) {
     	var vm = this;
-    	$scope.lock = lockService;
+    	$scope.firebaseUser = currentAuth;
 
-    	if($scope.lock.isAuthenticated()) {
+    	if($scope.firebaseUser) {
     		 // Set loaded state to show loading svg
 		    $scope.loaded = false;
 

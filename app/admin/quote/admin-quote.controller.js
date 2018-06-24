@@ -5,17 +5,13 @@
     .module('app')
     .controller('AdminQuoteController', adminQuoteController);
 
-  adminQuoteController.$inject = ['lockService', '$scope', '$mdDialog', '$firebaseObject', 'firebaseService', 'uploadService', '$mdToast'];
+  adminQuoteController.$inject = ['currentAuth', '$scope', '$mdDialog', '$firebaseObject', 'firebaseService', 'uploadService', '$mdToast'];
 
-  function adminQuoteController(lockService, $scope, $mdDialog, $firebaseObject, firebaseService, uploadService, $mdToast) {
+  function adminQuoteController(currentAuth, $scope, $mdDialog, $firebaseObject, firebaseService, uploadService, $mdToast) {
     var vm = this;
-    $scope.lock = lockService;
+    $scope.firebaseUser = currentAuth;
 
-    if($scope.lock.isAuthenticated) {
-
-    	// Init Firebase
-    	firebaseService.init();
-
+    if($scope.firebaseUser) {
     	// Get Quote reference from Firebase and assign to $scope
 		var quoteRef = firebaseService.dbRef('quote');
 		$scope.quotes = $firebaseObject(quoteRef);

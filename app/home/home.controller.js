@@ -5,19 +5,14 @@
     .module('app')
     .controller('HomeController', homeController);
 
-  homeController.$inject = ['$rootScope', '$scope', '$firebaseObject', 'lockService', 'firebaseService', 'moment'];
+  homeController.$inject = ['$rootScope', '$scope' , '$firebaseObject', 'firebaseService', 'moment', 'Auth', 'currentAuth'];
 
-  function homeController($rootScope, $scope, $firebaseObject, lockService, firebaseService, moment) {
+  function homeController($rootScope, $scope , $firebaseObject, firebaseService, moment, Auth, currentAuth) {
     var vm = this;
-    $scope.lock = lockService;
+    $scope.firebaseUser = currentAuth;
 
     // Set body class
     $rootScope.bodyClass = 'not-authenticated';
-
-    firebaseService.init();
-
-    // Lock login on page load
-    $scope.lock.login();
 
     // Set loaded state to show loading svg
     $scope.loaded = false;
@@ -103,7 +98,7 @@
     	};
     };
 
-    if($scope.lock.isAuthenticated()) {
+    if($scope.firebaseUser) {
 
     	$rootScope.bodyClass = 'authenticated';
     	

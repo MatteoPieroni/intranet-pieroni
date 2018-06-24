@@ -3,7 +3,7 @@
 		<md-button ui-sref="home">Dashboard</md-button> / <md-button disabled>Sms</md-button>
 	</p>
 </div>
-<div ng-if="lock.isAuthenticated()" class="phone-container">
+<div ng-if="firebaseUser" class="phone-container">
 	<div class="error-message">
 		<p class="alert">{{error.message}}</p> 
 	</div>

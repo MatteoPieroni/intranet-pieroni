@@ -3,11 +3,10 @@
     .module('app')
     .controller('UploadController', uploadController);
 
-  uploadController.$inject = ['lockService', '$scope','$firebaseObject', 'firebaseService', 'uploadService', 'uiService', '$interval'];
+  uploadController.$inject = ['$scope','$firebaseObject', 'firebaseService', 'uploadService', 'uiService', '$interval'];
     
-  function uploadController(lockService, $scope, $firebaseObject, firebaseService, uploadService, uiService, $interval) {
+  function uploadController($scope, $firebaseObject, firebaseService, uploadService, uiService, $interval) {
     var vm = this;
-    $scope.lock = lockService;
 
     // Set uploadRequest Status for UI
     $scope.uploadRequest = false;
@@ -20,8 +19,6 @@
       $scope.uploadRequest = false;
     }
 
-    // Init Firebase
-    firebaseService.init();
     // Get folder to upload image on firebase
     var folder = $scope.folder;
     // Get form data
