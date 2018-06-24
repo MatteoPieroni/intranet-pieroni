@@ -1,12 +1,12 @@
 <div ng-controller="ToolbarController" ng-if="lock.isAuthenticated()">
   <md-toolbar class="toolbar-nav">
     <div class="md-toolbar-tools">
-      <md-button class="" ng-click="openSidenav()" ng-if="!isSidebarOpen()">
+      <md-button ng-click="openSidenav()" ng-if="!isSidebarOpen()">
         <md-icon>
           menu
         </md-icon>
       </md-button>
-      <md-button class="" ng-click="closeSidenav()" ng-if="isSidebarOpen()">
+      <md-button ng-click="closeSidenav()" ng-if="isSidebarOpen()">
         <md-icon>
           close
         </md-icon>
@@ -30,7 +30,8 @@
       <!--<md-switch ng-model="uiColorStatus" ng-click="uiColorToggler()" aria-label="Dark UI">
       </md-switch>-->
       <span flex></span>
-      <img src="http://www.pieroni.it/wp-content/uploads/2015/05/pieroni_logo_definitivo_V2.png" alt="Logo Pieroni" class="toolbar-nav__logo" />
+      <img src="https://firebasestorage.googleapis.com/v0/b/intranet-pieroni.appspot.com/o/logo%2Flogo-colore.png?alt=media&token=1c9372cf-adaf-4c93-bbf1-f99dbdf1d467" alt="Logo Pieroni" class="toolbar-nav__logo toolbar-nav__logo--col" ng-hide="uiColorStatus" />
+      <img src="https://firebasestorage.googleapis.com/v0/b/intranet-pieroni.appspot.com/o/logo%2Flogo-bianco-nero.png?alt=media&token=e9cdbc53-3fda-4d10-b415-d0ef8ac48aaa" alt="Logo Pieroni" class="toolbar-nav__logo toolbar-nav__logo--bn" ng-show="uiColorStatus" />
     </div>
   </md-toolbar>  
 </div>
