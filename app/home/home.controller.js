@@ -11,9 +11,6 @@
     var vm = this;
     $scope.firebaseUser = currentAuth;
 
-    // Set body class
-    $rootScope.bodyClass = 'not-authenticated';
-
     // Set loaded state to show loading svg
     $scope.loaded = false;
     $scope.today = {};

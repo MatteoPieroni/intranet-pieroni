@@ -1,15 +1,36 @@
 <md-content ng-hide="firebaseUser" flex layout="row" layout-padding layout-align="center center" class="login">
-	<md-card layout="row" layout-align="center center">
+	<md-card layout="row" layout-align="center center" class="md-whiteframe-15dp">
 		<div flex="50" class="login__first" ng-if="!firebaseUser">
 			<h1>Benvenuto nella intranet Pieroni!</h1>
 			<h2>Esegui il login a destra per entrare</h2>
 		</div>
-		<div flex="50" class="login__second">
+		<div flex="50" class="login__second md-whiteframe-7dp">
+			<h3 class="login__second--header">Inserisci i tuoi dati</h3>
 			<form name="signFirebase">
-				<input type="text" name="user" ng-model="formFire.user" />
-				<input type="text" name="password" ng-model="formFire.pass" />
-				<button ng-click="fireLogin()">Login</button>
+				<md-input-container class="md-block">
+			        <label>Email</label>
+			        <input required type="email" name="email" ng-model="formFire.user" ng-pattern="/^.+@.+\..+$/" />
+
+			        <div ng-messages="signFirebase.email.$error" role="alert">
+			          <div ng-message-exp="['required', 'pattern']">
+			            Sembra che tu non abbia inserito un'indirizzo email valido.
+			          </div>
+			        </div>
+			    </md-input-container>
+				<md-input-container class="md-block">
+			        <label>Password</label>
+			        <input required type="password" name="password" ng-model="formFire.pass" />
+
+			        <div ng-messages="signFirebase.password.$error" role="alert">
+			          <div ng-message-exp="['required']">
+			            Devi inserire una password per accedere.
+			          </div>
+			        </div>
+			    </md-input-container>
+				<md-button ng-disabled="signFirebase.email.$invalid || signFirebase.password.$invalid" class="md-raised" ng-click="fireLogin()">Login</md-button>
+				<p class="md-warn md-hue-2" ng-if="error">{{errorAuth}}</p>
 			</form>
+			<p>
 		</div>
 </md-card>
 </md-content>

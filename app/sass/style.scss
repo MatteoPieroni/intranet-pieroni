@@ -422,7 +422,7 @@ div.container {
 }
 
 /****************************
-HOME
+LOGIN
 ****************************/
 // Login styles
 .not-authenticated {
@@ -437,12 +437,36 @@ HOME
   }
   .login {
     height: 100%;
+    md-content {
+      padding: 0;
+    }
     md-card {
       padding: 2rem;
       background-image: linear-gradient(to right, #ee8900, #ee9400, #ed9e01, #eca808, #ebb212);
+      @media screen and (min-width:768px) {
+        width:85vw;
+      }
+      @media screen and (min-width:1024px) {
+        width: 65vw;
+      }
+      @media screen and (min-width:1200px) {
+        width: 50vw;
+      }
+    }
+    .login__second {
+      padding: 2rem;
+      background: #fff;
+      .login__second--header {
+        margin-bottom: 2rem;
+        font-weight: 300;
+      }
     }
   }
 }
+
+/****************************
+HOME
+****************************/
 
 div[layout="row"] {
   margin-top: 1rem;

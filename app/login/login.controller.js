@@ -6,11 +6,14 @@
     .module('app')
     .controller('LoginController', loginController);
 
-  loginController.$inject = ['$scope', 'Auth', 'currentAuth', '$state'];
+  loginController.$inject = ['$rootScope', '$scope', 'Auth', 'currentAuth', '$state'];
 
-  function loginController($scope, Auth, currentAuth, $state) {
+  function loginController($rootScope, $scope, Auth, currentAuth, $state) {
 
     var vm = this;
+
+    // Set body class
+    $rootScope.bodyClass = 'not-authenticated';
 
     $scope.auth = Auth;
     $scope.firebaseUser = currentAuth;
@@ -21,8 +24,12 @@
       var pass = $scope.formFire.pass;
 
       Auth.$signInWithEmailAndPassword(user, pass).then(function(firebaseUser) {
-          console.log("Signed in as:", firebaseUser.user.email);
+          //console.log("Signed in as:", firebaseUser.user.email);
         }).catch(function(error) {
+          if(error.code === "auth/wrong-password") {
+            $scope.error = true;
+            $scope.errorAuth = 'Non siamo riusciti a trovare questa combinazione di email e password. Ricontrolla i dati e riprova!'
+          }
           console.error("Authentication failed:", error);
       });
     }

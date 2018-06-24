@@ -19,7 +19,6 @@
         $rootScope.user = null;
       } else {
         // Get profile info from database query and set to rootscope and localStorage
-        console.log(firebaseUser)
         var userProfileRef = firebaseService.dbRef('users/' + firebaseUser.uid);
         var userObject = $firebaseObject(userProfileRef);
         userObject.$loaded().then(
