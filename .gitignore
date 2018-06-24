@@ -3,10 +3,9 @@ node_modules/
 
 package-lock.json
 
-auth0-variables.js
+permissionserver.js
 
 skebbyserver.js
 
 workplaceserver.js
-
-app/services/firebase.service.js
+adminmail\.js
