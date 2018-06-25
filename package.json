@@ -1,13 +1,13 @@
 {
-  "name": "centralized-login",
-  "version": "0.0.0",
+  "name": "Pieroni Intranet",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "test": "npm-check",
     "scss": "node-sass -w --output-style compressed -r ./app/sass --output ./"
   },
-  "author": "Auth0",
+  "author": "Matteo Pieroni",
   "license": "MIT",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.5",

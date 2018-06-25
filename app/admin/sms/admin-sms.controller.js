@@ -38,7 +38,7 @@
 				});
 
 			// Prepare object to get data from Api
-		    $scope.smsHistory = {};
+		    $scope.smsHistory = [];
 
 		    // Function for getting history from Api
 		   	function getHistory (dateFirst, dateLast) {

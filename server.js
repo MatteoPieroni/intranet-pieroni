@@ -15,7 +15,7 @@ app.get('/*', function(req, res) {
 });
 
 const hostname = 'localhost';
-const port = 3000;
+const port = 80;
 
 const server = app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);  
