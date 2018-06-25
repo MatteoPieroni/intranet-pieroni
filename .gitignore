@@ -1,11 +1,9 @@
-
 node_modules/
 
 package-lock.json
 
 permissionserver.js
 
-skebbyserver.js
-
 workplaceserver.js
-adminmail\.js
+
+skebby_auth\.js
