@@ -18,7 +18,7 @@ const hostname = 'localhost';
 const port = 3000;
 
 const server = app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);  
+  console.log(`Server running at https://${hostname}:${port}/`);  
 });
 
 app.post('/smsapi/send', function(req, res) {
