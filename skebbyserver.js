@@ -1,4 +1,5 @@
 const request = require('request');
+const skebbyUser = require('./skebby_auth');
 
 var BASEURL = 'https://api.skebby.it/API/v1.0/REST/';
 
@@ -72,7 +73,7 @@ function getSMSHistory(auth, dateFirst, dateLast, pageSize, callback) {
 
 module.exports = {
     log: function() {
-        login("YOUR_USER", "YOUR_PASSWORD", function(error, auth) {
+        login(skebbyUser.user, skebbyUser.password, function(error, auth) {
             if(!error) {
                 console.log(auth);
             } else {
@@ -81,7 +82,7 @@ module.exports = {
         })
     },
     send: function(smsData, res) {
-        login("YOUR_USER", "YOUR_PASSWORD",
+        login(skebbyUser.user, skebbyUser.password,
           function(error, auth) {
               if (!error) {
                   sendSMS(auth, smsData,
@@ -106,7 +107,7 @@ module.exports = {
           });
     },
     getHistory: function(starting, ending, size, res) {
-        login("YOUR_USER", "YOUR_PASSWORD",
+        login(skebbyUser.user, skebbyUser.password,
             function(error, auth) {
                 if(!error) {
                     getSMSHistory(auth, starting, ending, size, 
