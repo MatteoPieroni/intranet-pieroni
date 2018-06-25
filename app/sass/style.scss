@@ -461,6 +461,18 @@ LOGIN
         font-weight: 300;
       }
     }
+    .reset-link {
+      margin: 1rem 0;
+    }
+    .message {
+      padding: 1rem;
+      &--success {
+        background: #02bb12;
+      }
+      &--error {
+        background: rgb(216,67,21);
+      }
+    }
   }
 }
 

@@ -6,7 +6,7 @@
 		</div>
 		<div flex="50" class="login__second md-whiteframe-7dp">
 			<h3 class="login__second--header">Inserisci i tuoi dati</h3>
-			<form name="signFirebase">
+			<form name="signFirebase" ng-hide="resetting">
 				<md-input-container class="md-block">
 			        <label>Email</label>
 			        <input required type="email" name="email" ng-model="formFire.user" ng-pattern="/^.+@.+\..+$/" />
@@ -27,10 +27,29 @@
 			          </div>
 			        </div>
 			    </md-input-container>
+			    <div layout="row" class="reset-link">
+			    	<a ng-click="showReset()">Resetta la password</a>
+			    </div>
 				<md-button ng-disabled="signFirebase.email.$invalid || signFirebase.password.$invalid" class="md-raised" ng-click="fireLogin()">Login</md-button>
-				<p class="md-warn md-hue-2" ng-if="error">{{errorAuth}}</p>
 			</form>
-			<p>
+			<form name="resetFirebase" ng-show="resetting">
+				<md-input-container class="md-block">
+			        <label>Email</label>
+			        <input required type="email" name="resetEmail" ng-model="resetForm.emailReset" ng-pattern="/^.+@.+\..+$/" />
+
+			        <div ng-messages="signFirebase.email.$error" role="alert">
+			          <div ng-message-exp="['required', 'pattern']">
+			            Sembra che tu non abbia inserito un'indirizzo email valido.
+			          </div>
+			        </div>
+			    </md-input-container>
+			    <div layout="row" layout-sm="column" layout-align="space-around" ng-if="resetLoader">
+			      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+			    </div>
+				<md-button ng-disabled="resetFirebase.resetEmail.$invalid" ng-hide="resetLoader" class="md-raised" ng-click="resetPassword()">Resetta la password</md-button>
+			</form>
+			<p class="message message--error" ng-if="error">{{errorAuth}}</p>
+			<p class="message message--success" ng-if="resetMessage">{{resetMessage}}</p>
 		</div>
 </md-card>
 </md-content>
