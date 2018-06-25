@@ -6,7 +6,7 @@
 		</div>
 		<div flex="50" class="login__second md-whiteframe-7dp">
 			<h3 class="login__second--header">Inserisci i tuoi dati</h3>
-			<form name="signFirebase" ng-hide="resetting">
+			<form name="signFirebase" ng-submit="fireLogin()" ng-hide="resetting">
 				<md-input-container class="md-block">
 			        <label>Email</label>
 			        <input required type="email" name="email" ng-model="formFire.user" ng-pattern="/^.+@.+\..+$/" />
@@ -30,7 +30,10 @@
 			    <div layout="row" class="reset-link">
 			    	<a ng-click="showReset()">Resetta la password</a>
 			    </div>
-				<md-button ng-disabled="signFirebase.email.$invalid || signFirebase.password.$invalid" class="md-raised" ng-click="fireLogin()">Login</md-button>
+			    <div layout="row" layout-sm="column" layout-align="space-around" ng-if="loginLoader">
+			      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+			    </div>
+				<md-button type="submit" ng-disabled="signFirebase.email.$invalid || signFirebase.password.$invalid" ng-hide="loginLoader" class="md-raised">Login</md-button>
 			</form>
 			<form name="resetFirebase" ng-show="resetting">
 				<md-input-container class="md-block">

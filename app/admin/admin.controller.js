@@ -5,9 +5,9 @@
     .module('app')
     .controller('AdminController', adminController);
 
-  adminController.$inject = ['currentAuth', '$scope', '$firebaseObject', 'moment', '$http'];
+  adminController.$inject = ['currentAuth', '$scope', '$firebaseObject', 'moment', '$http', '$timeout'];
 
-  	function adminController(currentAuth, $scope, $firebaseObject, moment, $http) {
+  	function adminController(currentAuth, $scope, $firebaseObject, moment, $http, $timeout) {
     	var vm = this;
     	$scope.firebaseUser = currentAuth;
 
@@ -90,8 +90,12 @@
 						break;
 				}
 		    };
-		    // Set Background Image Related to Month
-		    setDateObj();
+		    // Function to keep clock updated
+		    function updateClock() {
+		    	setDateObj();
+		    	$timeout(updateClock, 60000)
+		    }
+		    updateClock();
 		    $scope.welcomeCardBackground = function() {
 		    	return {
 		    		backgroundImage: 'url(assets/' + $scope.today.img + '.jpg)'

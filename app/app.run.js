@@ -10,7 +10,7 @@
     
   function run($rootScope, $state, amMoment, firebaseService, $firebaseObject, uiService, Auth, $transitions, $trace, fireAuthService) {
     //$trace.enable("TRANSITION");
-    
+
     // Set up listener for change in auth state
     Auth.$onAuthStateChanged(function(firebaseUser, toState, toParams, fromState, fromParams) {
       // Redirect to login
@@ -40,8 +40,12 @@
         //console.log('signed in');
       }
     });
+    // Set up Object to collect various admin states **POSSIBLE TODO set states as children**
+    const adminRoutes = {
+      to: function (state) { if(state.name === 'admin' || state.name === 'adminLinks' || state.name === 'adminQuote' || state.name === 'adminSms') {return true} else {return false} }
+    };
     // Set up control for isAdmin in admin routes change
-    $transitions.onEnter({ entering: 'admin'}, function($transition) {
+    $transitions.onEnter(adminRoutes, function($transition) {
       var permissions = fireAuthService.checkPermissions();
 
       // Check for permissions then call server to check user email (for security reasons)

@@ -17,14 +17,22 @@
 
     $scope.auth = Auth;
     $scope.firebaseUser = currentAuth;
-
+    // Init loader as false for login UI
+    $scope.loginLoader = false;
+    // Object for form data
     $scope.formFire = {};
+    // Function for logging in
     $scope.fireLogin = function() {
       var user = $scope.formFire.user;
       var pass = $scope.formFire.pass;
+      // Clear errors if after error
+      $scope.error = false;
+      $scope.errorAuth = '';
+      $scope.loginLoader = true;
 
       Auth.$signInWithEmailAndPassword(user, pass).then(function(firebaseUser) {
           //console.log("Signed in as:", firebaseUser.user.email);
+          $scope.loginLoader = false;
         }).catch(function(error) {
           if(error.code === "auth/wrong-password") {
             $scope.error = true;

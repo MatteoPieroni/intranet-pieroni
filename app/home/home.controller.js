@@ -5,9 +5,9 @@
     .module('app')
     .controller('HomeController', homeController);
 
-  homeController.$inject = ['$rootScope', '$scope' , '$firebaseObject', 'firebaseService', 'moment', 'Auth', 'currentAuth'];
+  homeController.$inject = ['$rootScope', '$scope' , '$firebaseObject', 'firebaseService', 'moment', 'Auth', 'currentAuth', '$timeout'];
 
-  function homeController($rootScope, $scope , $firebaseObject, firebaseService, moment, Auth, currentAuth) {
+  function homeController($rootScope, $scope , $firebaseObject, firebaseService, moment, Auth, currentAuth, $timeout) {
     var vm = this;
     $scope.firebaseUser = currentAuth;
 
@@ -87,8 +87,13 @@
 				break;
 		}
     };
-    // Set Background Image Related to Month
-    setDateObj();
+    // Function to keep clock updated
+    function updateClock() {
+    	setDateObj();
+    	$timeout(updateClock, 60000)
+    }
+    updateClock();
+    
     $scope.welcomeCardBackground = function() {
     	return {
     		backgroundImage: 'url(assets/' + $scope.today.img + '.jpg)'

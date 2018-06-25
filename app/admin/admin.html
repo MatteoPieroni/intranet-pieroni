@@ -41,6 +41,22 @@
 					</md-card-actions>
 				</md-card-content>
 			</md-card>
+			<md-card flex="33" flex-xs="50" flex-sm="50" layout="column" layout-align="end stretch" class="background-cover link__sms">
+				<md-card-content layout="column" layout-align="space-between stretch">
+			        <md-card-title class="link-item__title">
+			          <md-card-title-text>
+			            <span class="md-subheadline">Visualizza gli Sms</span>
+			          </md-card-title-text>
+			        </md-card-title>
+					 <md-card-actions layout="row" layout-align="end center">
+					   	<a ui-sref="adminSms">
+						   	<md-button>
+						   		<md-icon class="link-item__icon">arrow_forward</md-icon>
+						   	</md-button>
+					   	</a>
+					</md-card-actions>
+				</md-card-content>
+			</md-card>
 		</div>
 		<md-card class="analytics">
 			<iframe width="null" height="null" src="https://datastudio.google.com/embed/reporting/1dz6oZiYFmpwE04TxWsMRf7Xoi9hZZjDD/page/c4IT" frameborder="0" style="border:0" allowfullscreen></iframe>
@@ -50,7 +66,7 @@
 				<md-card class="flex__grow background-cover welcome">
 					<md-card-content>
 						<p class="md-display-3 welcome__greeting">
-							{{greeting}}!
+							{{greeting}} {{user.nome}}!
 						</p>
 						<p>
 							<span class="todayDay md-display-4 welcome__day">{{today.day}}</span> 
