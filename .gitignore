@@ -1,9 +1,7 @@
 node_modules/
 
-package-lock.json
+adminmail\.js
 
-permissionserver.js
-
-workplaceserver.js
+fb_auth\.js
 
 skebby_auth\.js
