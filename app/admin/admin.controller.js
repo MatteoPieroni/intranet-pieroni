@@ -41,7 +41,7 @@
 			    	evening: 'Buonasera',
 			    	night: 'Buonanotte'
 			    }
-		    }
+		    };
 
 		    // Date Object
 		    function setDateObj () {
@@ -88,13 +88,13 @@
 					default:
 						$scope.greeting = time.hours.morning
 						break;
-				}
-		    };
+				};
+		    }
 		    // Function to keep clock updated
 		    function updateClock() {
 		    	setDateObj();
 		    	$timeout(updateClock, 60000)
-		    }
+		    };
 		    updateClock();
 		    $scope.welcomeCardBackground = function() {
 		    	return {
@@ -106,14 +106,14 @@
 		    	SECRET: 'lock',
 		    	OPEN: 'public',
 		    	CLOSED: 'lock_open' 
-		    }
+		    };
 		    // Get Facebook Workplace Groups from Api
 		    $http.post('/fbapi/getgroups').then(
 	             function(response){
 	               // success callback
 	               	$scope.fbGroups = response.data.data;
 	               	$scope.fbGroups.forEach(el => {
-	               		el.icon = fbGroupsIcons[el.privacy]
+	               		el.icon = fbGroupsIcons[el.privacy];
 	               	});
 	               	$scope.loaded = true;
 	             }, 
