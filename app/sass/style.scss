@@ -122,7 +122,7 @@ body {
       }
     }
     navbar {
-      md-icon {
+      md-icon, p {
         color: #fff;
       }
     }
@@ -706,6 +706,90 @@ SMS
     }
   }
 }
+
+/****************************
+COSTO TRASPORTI 
+****************************/
+.trans-cost {
+  #map {
+    margin: 0 auto;
+    width: calc(100% - 8px);
+    height: 30vh;
+  }
+
+  div.map-search__container {
+    position: relative;
+    margin-top:-2rem;
+    md-input-container {
+      width: 100%;
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .md-chips md-chip.searched-places__single {
+    cursor: pointer;
+    background: #ee8900;
+    color: #fff;
+    transition: all .15s ease-in;
+    &:hover {
+      box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+      background: #ebb212;
+    }
+    &.disabled {
+      cursor: default;
+      background: #ccc;
+      color: #000;
+      outline: none;
+    }
+  }
+
+  .not-searched {
+    md-card-content {
+      padding:0;
+      p {
+        margin-top: 1rem;
+        font-size: 1rem;
+        text-align: center;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .map-details__origin {
+    md-card-title-text {
+      text-align: center;
+    }
+  }
+
+  .map-details__fastest {
+    background: #66BB6A;
+    color: #fff;
+  }
+}
+.dark .trans-cost {
+  div.map-search__container {
+    md-card-content {
+      background: #171d37;
+      * {
+        color: #fff;
+      }
+      md-input-container .md-input {
+        border-color: rgba(255,255,225,.20);
+        color: #fff;
+        &::-webkit-input-placeholder {
+          color: rgba(255,255,225,.30);
+        }
+      }
+    }
+  }
+  .map-details__origin:not(.map-details__fastest) {
+    background: #212c59;
+    color: #fff;
+  }
+}
+
 
 /****************************
 ADMIN

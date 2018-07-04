@@ -6,8 +6,16 @@
     .service('firebaseService', firebaseService); 
  
     function firebaseService () {
-      function dbRef(child) { 
-        return firebase.database().ref(child) 
+      function dbRef(child, limit, orderBy) { 
+        if(limit === undefined && orderBy === undefined) {
+          return firebase.database().ref(child)
+        } else if(limit !== undefined && orderBy === undefined) {
+          return firebase.database().ref(child).limitToLast(limit)
+        } else if(limit === undefined && orderBy !== undefined) {
+          return firebase.database().ref(child).orderByChild(orderBy)
+        } else {
+          return firebase.database().ref(child).orderByChild(orderBy).limitToLast(limit)
+        }
       } 
       function dbChild(child) { 
         return firebase.database().ref().child(child) 
