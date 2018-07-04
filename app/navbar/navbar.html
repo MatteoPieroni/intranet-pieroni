@@ -9,6 +9,10 @@
           <md-icon>sms</md-icon>
           <p ng-if="isSidebarOpen()">Skebby Sms</p>
         </md-list-item>
+        <md-list-item class="md-1-line" ng-click="toggleLeft()" ui-sref="costoTrasporto" ui-sref-active="active">
+          <md-icon>local_shipping</md-icon>
+          <p ng-if="isSidebarOpen()">Costo Trasporto</p>
+        </md-list-item>
         <md-list-item class="md-1-line" ng-click="toggleLeft()" ui-sref="admin" ui-sref-active="active" ng-if="user.isAdmin">
           <md-icon>settings</md-icon>
           <p ng-if="isSidebarOpen()">Area Amministratori</p>

@@ -1,0 +1,96 @@
+<div class="breadcrumbs">
+    <p>
+        <md-button ui-sref="home">Dashboard</md-button> / <md-button disabled>Costo Trasporto</md-button>
+    </p>
+</div>
+<md-content class="trans-cost">
+    <div class="loading" ng-if="!loaded">
+        <img src="assets/loading.svg" alt="loading">
+    </div>
+    <div id="map" ng-show="loaded"></div>
+    <div layout="row" layout-align="center center" class="map-search__container" ng-show="loaded">
+        <md-card flex="100">
+            <md-card-content>
+                <md-input-container>
+                    <label>Inserisci l'indirizzo</label>
+                    <input id="autocomplete" placeholder="Inserisci l'indirizzo" type="text" />
+                </md-input-container>
+                        <md-chips>
+                            <md-chip class="searched-places__single" ng-repeat="place in searchedPlaces" ng-class="{'disabled' : waiting}" ng-click="waiting || reselect(place)">
+                                {{place.formatted_address}}
+                            </md-chip>
+                        </md-chips>
+            </md-card-content>
+        </md-card>
+    </div>
+    <div class="not-searched" layout="row" layout-align="center center" ng-if="!searched">
+        <md-card flex="100" flex-sm="60" flex-md="45" flex-lg="30">
+            <md-card-content>
+                <p>
+                    Cerca qualcosa per cominciare
+                </p>
+                <img src="assets/truck-animation.gif" alt="Non hai ancora cercato niente" class="map-search__image" />
+            </md-card-content>
+        </md-card>
+    </div>
+    <div layout="row" layout-wrap class="map-details__container" ng-if="searched">
+        <div flex="100">
+            <md-card class="map-details__origin map-details__fastest md-whiteframe-7dp">
+                <md-card-title>
+                    <md-card-title-text>
+                        <strong>{{nearestName}}</strong> è il magazzino più vicino a <strong>{{destinationName}}</strong>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content layout="row" layout-align="space-around center">
+                    <div>
+                        <p>Costo</p>
+                        <p>
+                            <strong>{{totalCost}} €</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <p>Distanza</p>
+                        <p>
+                            <strong>{{nearestKm}} km</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <p>Tempo</p>
+                        <p>
+                            <strong>{{nearestDistanza}} min</strong>
+                        </p>
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div flex="100" flex-md="50" flex-lg="50" ng-repeat="origin in origins">
+            <md-card class="map-details__origin md-whiteframe-4dp">
+                <md-card-title>
+                    <md-card-title-text>
+                        <strong>{{origin.name}}</strong>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content layout="row" layout-align="space-around center">
+                    <div>
+                        <p>Costo</p>
+                        <p>
+                            <strong>{{origin.cost}} €</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <p>Distanza</p>
+                        <p>
+                            <strong>{{origin.km}} km</strong>
+                        </p>
+                    </div>
+                    <div>
+                        <p>Tempo</p>
+                        <p>
+                            <strong>{{origin.distanza}} min</strong>
+                        </p>
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </div>
+</md-content>

@@ -116,11 +116,11 @@
 	               		el.icon = fbGroupsIcons[el.privacy];
 	               	});
 	               	$scope.loaded = true;
-	             }, 
-	             function(response){
+	             }).catch( 
+	             function(error){
 	               // failure callback,handle error here
 	               $scope.loaded = true;
-	               $scope.errorFb = response.err;
+	               console.log(error);
 	             }
 	   		);
     	}
