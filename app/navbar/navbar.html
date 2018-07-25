@@ -25,6 +25,10 @@
           <md-icon>format_quote</md-icon>
           <p ng-if="isSidebarOpen()">- Gestisci Citazione</p>
         </md-list-item>
+        <md-list-item class="md-1-line" ng-click="toggleLeft()" ui-sref="adminSigns" ui-sref-active="active" ng-if="user.isAdmin">
+          <md-icon>format_size</md-icon>
+          <p ng-if="isSidebarOpen()">- Crea Cartelli</p>
+        </md-list-item>
         <md-list-item class="md-1-line" ng-click="toggleLeft()" ui-sref="adminSms" ui-sref-active="active" ng-if="user.isAdmin">
           <md-icon>sms_failed</md-icon>
           <p ng-if="isSidebarOpen()">- Cronologia Sms</p>

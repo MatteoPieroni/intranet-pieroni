@@ -23,6 +23,7 @@
     "firebase": "^5.0.4",
     "node-sass": "^4.9.0",
     "node-skebby": "^1.0.2",
+    "pdfmake": "^0.1.37",
     "request": "^2.87.0"
   },
   "devDependencies": {
