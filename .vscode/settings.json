@@ -1,0 +1,4 @@
+{
+  "tslint.jsEnable": true,
+  "tslint.packageManager": "yarn"
+}
