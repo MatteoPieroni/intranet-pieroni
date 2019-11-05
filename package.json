@@ -20,9 +20,11 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.1.2",
     "firebase": "^7.2.3",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "react-router-dom": "^5.1.2"
   },
   "scripts": {
     "start": "webpack-dev-server --open",

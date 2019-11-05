@@ -42,12 +42,14 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'index_bundle.js',
+    publicPath: '/',
   },
 
   devServer: {
     contentBase: './dist',
     compress: true,
     port: 9000,
+    historyApiFallback: true,
   },
 
   plugins: [

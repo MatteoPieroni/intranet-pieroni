@@ -24,7 +24,8 @@
       "ban-single-arg-parens"
     ],
     "arrow-return-shorthand": true,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "jsx-no-multiline-js": false
   },
   "rulesDirectory": []
 }

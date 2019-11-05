@@ -1,6 +1,17 @@
-import * as React from 'react';
-import ReactDOM = require('react-dom');
+import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom';
 
-export const App = () => <h1 className="ca">Bello</h1>;
+import { fireApp, fireAuth } from './services/firebase';
+import { UserProvider } from './shared/context/user';
+
+import { Routes } from './components/Routes';
+
+export const App = () => (
+  <>
+    <UserProvider>
+      <Routes />
+    </UserProvider>
+  </>
+);
 
 ReactDOM.render(<App />, document.getElementById('app'));
