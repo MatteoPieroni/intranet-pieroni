@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ProviderProps, Context } from 'react';
 import { fireAuth, fireDb } from '../../services/firebase';
+import { IUser } from '../../services/firebase/types';
 
-export const UserContext: React.Context<any> = React.createContext({
-  id: null,
-  isAdmin: null,
-  email: null,
-  name: null,
-});
+export const UserContext: Context<any> = React.createContext(null);
 
 interface IUserProviderProps {
   children: JSX.Element;
@@ -17,40 +13,42 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
   const [hasLoaded, setHasLoaded] = useState(false);
   // contains the actual user object
   const [user, setUser] = useState({
-    id: null,
-    isAdmin: null,
-    email: null,
-    name: null,
+    id: '',
+    isAdmin: false,
+    email: '',
+    name: '',
   });
 
   const logOut: () => void = async () => {
     await fireAuth.logout();
 
     setUser({
-      id: null,
+      id: '',
       isAdmin: null,
-      email: null,
-      name: null,
+      email: '',
+      name: '',
     });
   };
 
   useEffect(() => {
-    console.log('hasLoaded', fireAuth.getCurrentUser());
     setHasLoaded(!!fireAuth.getCurrentUser());
   }, [user]);
 
   useEffect(() => {
     const fetchUserObject: (userId: string) => void = async userId => {
-      const userObject = await fireDb.getUser(userId);
-      setUser({
-        id: userId,
-        ...userObject,
-      });
+      try {
+        const userObject = await fireDb.getUser(userId);
+        setUser({
+          id: userId,
+          ...userObject,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const unsubscribe = fireAuth.subscribeToAuthChanges(authUser => {
       if (authUser) {
-        console.log('loggedin');
         try {
           fetchUserObject(authUser.uid);
         } catch (error) {
