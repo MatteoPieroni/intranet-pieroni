@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ILink, IQuote } from '../services/firebase/types';
 
 import { listenToLinks, getQuote } from '../services/firebase/db';
+import { Quote } from '../components/Quote';
+import { Links } from '../components/Links';
 
 export const Home: () => JSX.Element = () => {
   const [links, setLinks] = useState([] as ILink[]);
@@ -41,7 +43,8 @@ export const Home: () => JSX.Element = () => {
       <h1>
         Home
       </h1>
-      {links && links.map(link => link.id)}
+      {links && <Links links={links} />}
+      {quote && <Quote source={quote.url} text={quote.text} />}
     </main>
   );
 };

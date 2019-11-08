@@ -30,7 +30,7 @@
     "react-router-dom": "^5.1.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server",
     "build": "webpack",
     "test": "jest",
     "tdd": "jest --watch"
