@@ -12,10 +12,11 @@ import {
 import { useUser } from '../shared/hooks/useUser';
 
 import { PrivateRoute } from './PrivateRoute';
+import { AdminRoute } from './AdminRoute';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { AuthLoading } from './AuthLoading';
-import { Header } from './Header';
+import { EditLinks } from '../pages/EditLinks';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -28,24 +29,33 @@ export const Routes: () => JSX.Element = () => {
         hasLoaded ? (
           id ? (
             <>
-              <Redirect to="home" />
+              <Switch>
+                <Route path="/login">
+                  <Login />
+                </Route>
+                <Route path="/authLoading">
+                  <AuthLoading />
+                </Route>
+                <PrivateRoute path="/home">
+                  <Home />
+                </PrivateRoute>
+                <AdminRoute path="/admin">
+                  <EditLinks />
+                </AdminRoute>
+              </Switch>
             </>
-          ) :
-            <Redirect to="login" />
-        ) :
+          ) : (
+              <>
+                <Switch>
+                  <Route path="/login">
+                    <Login />
+                  </Route>
+                </Switch>
+                <Redirect to="login" />
+              </>
+            )) :
           <div>Loading;...</div >
       }
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/authLoading">
-          <AuthLoading />
-        </Route>
-        <PrivateRoute path="/home">
-          <Home />
-        </PrivateRoute>
-      </Switch>
     </Router>
   );
 };

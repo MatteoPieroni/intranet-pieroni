@@ -12,22 +12,22 @@ interface IPrivateRouteProps {
   path: string;
 }
 
-export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ children, ...rest }) => {
+export const AdminRoute: (props: IPrivateRouteProps) => JSX.Element = ({ children, ...rest }) => {
   const [user] = useUser();
-  const { id } = user;
+  const { isAdmin } = user;
 
   return (
     <Route
       {...rest}
       // tslint:disable-next-line: jsx-no-lambda
       render={({ location }) =>
-        id ? (
+        isAdmin ? (
           <>
             <Header />
             {children}
           </>
         ) : (
-            null
+            <Redirect to="home" />
           )
       }
     />
