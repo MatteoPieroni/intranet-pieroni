@@ -5,6 +5,7 @@ import { ILink, IQuote } from '../services/firebase/types';
 import { listenToLinks, getQuote } from '../services/firebase/db';
 import { Quote } from '../components/Quote';
 import { Links } from '../components/Links';
+import { WelcomeMessage } from '../components/WelcomeMessage';
 
 export const Home: () => JSX.Element = () => {
   const [links, setLinks] = useState([] as ILink[]);
@@ -35,14 +36,12 @@ export const Home: () => JSX.Element = () => {
     fetchQuote();
   }, []);
 
-  console.log('links', { links });
-  console.log('quote', { quote });
-
   return (
     <main>
       <h1>
         Home
       </h1>
+      <WelcomeMessage />
       {links && <Links links={links} />}
       {quote && <Quote source={quote.url} text={quote.text} />}
     </main>
