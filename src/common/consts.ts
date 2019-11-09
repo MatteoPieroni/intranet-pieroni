@@ -1,4 +1,4 @@
-const MONTHS: string[] = [
+export const MONTHS: string[] = [
   'gennaio',
   'febbraio',
   'marzo',
@@ -13,7 +13,7 @@ const MONTHS: string[] = [
   'dicembre',
 ];
 
-const GREETINGS: { morning: string, afternoon: string, evening: string, night: string } = {
+export const GREETINGS: { morning: string, afternoon: string, evening: string, night: string } = {
   morning: 'Buongiorno',
   afternoon: 'Buon pomeriggio',
   evening: 'Buonasera',

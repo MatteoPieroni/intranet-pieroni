@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../shared/hooks/useUser';
+import { GREETINGS, MONTHS } from '../common/consts';
 
 interface IGreeting {
   greeting: string;
