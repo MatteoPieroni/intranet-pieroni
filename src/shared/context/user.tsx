@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ProviderProps, Context } from 'react';
 import { fireAuth, fireDb } from '../../services/firebase';
 import { IUser } from '../../services/firebase/types';
+import { normaliseUserForState } from '../../utils/normaliseUserForState';
 
 export const UserContext: Context<any> = React.createContext(null);
 
@@ -17,6 +18,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
     isAdmin: false,
     email: '',
     name: '',
+    surname: '',
   });
 
   const logOut: () => void = async () => {
@@ -27,6 +29,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
       isAdmin: null,
       email: '',
       name: '',
+      surname: '',
     });
   };
 
@@ -38,10 +41,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
     const fetchUserObject: (userId: string) => void = async userId => {
       try {
         const userObject = await fireDb.getUser(userId);
-        setUser({
-          id: userId,
-          ...userObject,
-        });
+        setUser(normaliseUserForState(userId, userObject));
       } catch (error) {
         console.log(error);
       }

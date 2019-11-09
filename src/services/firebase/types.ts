@@ -15,7 +15,8 @@ export type ListenToDbCollection = (callback: ListenCallback) => () => void;
 
 // objects
 export interface IDbUser {
-  name: string;
+  nome: string;
+  cognome: string;
   email: string;
   isAdmin: boolean;
 }
@@ -23,6 +24,7 @@ export interface IDbUser {
 export interface IUser {
   id: string;
   name: string;
+  surname: string;
   email: string;
   isAdmin: boolean;
 }
