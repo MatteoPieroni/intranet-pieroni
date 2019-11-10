@@ -36,6 +36,7 @@
     "start": "webpack-dev-server",
     "build": "webpack",
     "test": "jest",
-    "tdd": "jest --watch"
+    "tdd": "jest --watch",
+    "lint": "eslint './src/**/*.{ts,tsx}'"
   }
 }
