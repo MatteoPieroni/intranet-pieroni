@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // auth
 export type Subscriber = (user: firebase.User | null) => void;
 export interface ILogin {

@@ -10,7 +10,7 @@ export const Login = () => {
 
   console.log({ id });
 
-  const login = () => fireAuth.login({ email: '', password: '' });
+  const login: () => void = () => fireAuth.login({ email: '', password: '' });
 
   return (
     id ?

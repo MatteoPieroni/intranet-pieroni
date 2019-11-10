@@ -19,8 +19,8 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
   return (
     <Route
       {...rest}
-      // tslint:disable-next-line: jsx-no-lambda
-      render={({ location }) =>
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      render={() =>
         id ? (
           <>
             <Header />

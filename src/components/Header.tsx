@@ -1,11 +1,7 @@
 import React from 'react';
 import { useUser } from '../shared/hooks/useUser';
 
-interface IHeaderProps {
-
-}
-
-export const Header: (props: IHeaderProps) => JSX.Element = () => {
+export const Header: () => JSX.Element = () => {
 
   const [, , logout] = useUser();
 

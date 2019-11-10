@@ -34,8 +34,9 @@ const GetDbRecords: Types.GetDbRecords = recordString => {
 const listenToDb: Types.ListenToDb = (recordString, callback) => {
   try {
     fireDb.ref(recordString).on('value', snapshot => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data: any = snapshot.val();
-      const hasData: boolean = !!data;
+      const hasData = !!data;
 
       if (hasData) {
         callback(false, normaliseObjectKeysToArray(data));
@@ -47,6 +48,7 @@ const listenToDb: Types.ListenToDb = (recordString, callback) => {
     callback(true);
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return () => fireDb.ref(recordString).off();
 };
 
