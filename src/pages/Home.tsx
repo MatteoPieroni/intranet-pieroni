@@ -1,40 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { ILink, IQuote } from '../services/firebase/types';
 
-import { listenToLinks, getQuote } from '../services/firebase/db';
 import { Quote } from '../components/Quote';
 import { Links } from '../components/Links';
 import { WelcomeMessage } from '../components/WelcomeMessage';
+import { useLinks } from '../shared/hooks/useLinks';
+import { useQuote } from '../shared/hooks/useQuote';
 
 export const Home: () => JSX.Element = () => {
-  const [links, setLinks] = useState([] as ILink[]);
-  const [quote, setQuote] = useState({} as IQuote);
-
-  useEffect(() => {
-    const unListenToLinks = listenToLinks((hasError, dbLinks) => {
-      if (!hasError) {
-        setLinks(dbLinks);
-      }
-    });
-
-    return unListenToLinks;
-  }, []);
-
-  useEffect(() => {
-    const fetchQuote = async () => {
-      try {
-        const dbQuote = await getQuote();
-        if (dbQuote) {
-          setQuote(dbQuote);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchQuote();
-  }, []);
+  const links = useLinks();
+  const quote = useQuote();
 
   return (
     <main>
