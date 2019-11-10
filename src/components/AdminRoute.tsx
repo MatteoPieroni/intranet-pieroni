@@ -19,7 +19,6 @@ export const AdminRoute: (props: IPrivateRouteProps) => JSX.Element = ({ childre
   return (
     <Route
       {...rest}
-      // tslint:disable-next-line: jsx-no-lambda
       render={({ location }) =>
         isAdmin ? (
           <>
