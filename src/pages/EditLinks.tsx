@@ -9,7 +9,7 @@ export const EditLinks: React.FC = () => {
   return (
     <>
       <div>Links</div>
-      {links && <Links links={links} />}
+      {links && <Links links={links} editable />}
     </>
   );
 };

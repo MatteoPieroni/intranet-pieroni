@@ -13,6 +13,7 @@ export type GetDbCollection = () => Promise<IImage[] | ISms[] | IDbPlace[]>;
 export type ListenCallback = (hasError: boolean | undefined, data?: any) => void;
 export type ListenToDb = (recordString: string, callback: ListenCallback) => () => void;
 export type ListenToDbCollection = (callback: ListenCallback) => () => void;
+export type UpdateRecord = (recordString: string, id: string, data: any) => Promise<any | Error>;
 
 // objects
 export interface IDbUser {

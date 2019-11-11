@@ -53,3 +53,16 @@ const listenToDb: Types.ListenToDb = (recordString, callback) => {
 };
 
 export const listenToLinks: Types.ListenToDbCollection = callback => listenToDb('/links', callback);
+
+const updateRecord: Types.UpdateRecord = (recordString, id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const update = await fireDb.ref(`${recordString}/${id}`).update(data);
+      resolve(update);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const updateLink: (id: string, data: Types.ILink) => Promise<Types.ILink | Error> = async (id, data) => await updateRecord('/links', id, data);
