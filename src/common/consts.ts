@@ -19,3 +19,6 @@ export const GREETINGS: { morning: string; afternoon: string; evening: string; n
   evening: 'Buonasera',
   night: 'Buonanotte',
 };
+
+export const ERROR_INVALID_URL = 'Questo url non è valido. Ricontrolla per favore';
+export const ERROR_EMPTY_FIELD = 'Questo campo è obbligatorio';
