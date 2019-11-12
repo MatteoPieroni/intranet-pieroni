@@ -5,6 +5,8 @@ interface IFieldProps {
   name: string;
   label?: string;
   hidden?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export const Field: React.FC<IFieldProps> = ({ name, label, hidden, ...rest }) => {

@@ -16,7 +16,7 @@ import { AdminRoute } from './AdminRoute';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { AuthLoading } from './AuthLoading';
-import { EditLinks } from '../pages/EditLinks';
+import { Admin } from '../pages/Admin';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -40,7 +40,7 @@ export const Routes: () => JSX.Element = () => {
                   <Home />
                 </PrivateRoute>
                 <AdminRoute path="/admin">
-                  <EditLinks />
+                  <Admin />
                 </AdminRoute>
               </Switch>
             </>
