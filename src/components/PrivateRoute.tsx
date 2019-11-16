@@ -6,6 +6,7 @@ import {
 
 import { useUser } from '../shared/hooks/useUser';
 import { Header } from './Header';
+import { Template } from './Template';
 
 interface IPrivateRouteProps {
   children: JSX.Element | JSX.Element[];
@@ -24,7 +25,9 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
         id ? (
           <>
             <Header />
-            {children}
+            <Template>
+              {children}
+            </Template>
           </>
         ) : (
             null
