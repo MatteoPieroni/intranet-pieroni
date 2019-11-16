@@ -1,5 +1,9 @@
 import React from 'react';
-import { ILink } from '../services/firebase/types';
+import styled from '@emotion/styled';
+
+import { ILink, EColor } from '../services/firebase/types';
+import { Icon } from './icons';
+import { getLightColor } from '../common/styles';
 
 interface ISavedLinkProps {
   link: ILink;
@@ -7,19 +11,67 @@ interface ISavedLinkProps {
   editLink: (link: ILink) => void;
 }
 
+interface ITheme {
+  color: EColor;
+}
+
+const StyledLink: React.FC<ITheme> = styled.li`
+  display: block;
+  border: 1px solid #ddd;
+  border-left: 5px solid;
+  border-left-color: #${(props: ITheme): string => props.color ? getLightColor(props.color) : '000'};
+  background: #fff;
+  
+  a {
+    position: relative;
+    display: inline-block;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #333;
+    text-transform: uppercase;
+    text-decoration: none;
+    overflow: hidden;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0.5rem;
+      left: 1.5rem;
+      background: #333;
+      width: 0;
+      height: .2rem;
+      transition: all .25s ease-in-out;
+    }
+
+    &:hover {
+      &:after {
+        width: 50%;
+      }
+    }
+  }
+
+  svg {
+    float: right;
+    margin-left: 1rem;
+  }
+`;
+
 export const SavedLink: React.FC<ISavedLinkProps> = ({ link, editable, editLink }) => {
   const { link: url, description, color } = link;
 
-  const handleClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void = (e) => {
+  const handleClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void = (event) => {
     event.preventDefault();
     editLink(link);
   };
 
   return (
-    <li>
+    <StyledLink color={color}>
       <a href={!editable ? url : ''} target="_blank" rel="noopener noreferrer" onClick={editable ? handleClick : null}>
         {description}
+        <Icon.ArrowRight />
       </a>
-    </li>
+    </StyledLink>
   );
 };

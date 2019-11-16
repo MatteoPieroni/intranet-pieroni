@@ -31,8 +31,19 @@ export interface IUser {
   isAdmin: boolean;
 }
 
+export enum EColor {
+  grey = 'grey',
+  deepOrange = 'deepOrange',
+  amber = 'amber',
+  green = 'green',
+  teal = 'teal',
+  lightBlue = 'lightBlue',
+  indigo = 'indigo',
+  red = 'red'
+}
+
 export interface ILink {
-  color: string;
+  color: EColor;
   description: string;
   id: string;
   link: string;

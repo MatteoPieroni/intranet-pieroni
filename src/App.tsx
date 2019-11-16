@@ -9,6 +9,9 @@ const globalCss = css`
   body {
     font-family: Roboto, Helvetica Neue, sans-serif;
   }
+  div, ul, p, a, li {
+    box-sizing: border-box;
+  }
 `;
 
 export const App: React.FC = () => (

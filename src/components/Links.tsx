@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from '@emotion/styled';
 
 import { ILink } from '../services/firebase/types';
 import { SavedLink } from './SavedLink';
@@ -9,6 +10,18 @@ interface ILinkProps {
   links: ILink[];
   editable?: boolean;
 }
+
+const StyledLinksList = styled.ul`
+  padding: 1rem 0;
+  
+  li {
+    margin-bottom: .5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`;
 
 export const Links: React.FC<ILinkProps> = ({ links, editable = false }) => {
   const editLink: (link: ILink) => void = async (link) => {
@@ -23,10 +36,13 @@ export const Links: React.FC<ILinkProps> = ({ links, editable = false }) => {
   };
 
   return (
-    <ul>
-      {links && links.map(link => (
-        <SavedLink key={link.id} link={link} editable={editable} editLink={editLink} />
-      ))}
-    </ul>
+    <>
+      <h2>Link utili</h2>
+      <StyledLinksList>
+        {links && links.map(link => (
+          <SavedLink key={link.id} link={link} editable={editable} editLink={editLink} />
+        ))}
+      </StyledLinksList>
+    </>
   )
 };
