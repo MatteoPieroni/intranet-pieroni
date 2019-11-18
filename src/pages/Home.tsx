@@ -11,12 +11,22 @@ const StyledPage = styled.main`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding: 1rem;
   
-  .quote-container {
+  .info-container {
 
     @media (min-width: 1024px) {
       max-width: 40%;
     }
+  }
+
+  .welcome-container {
+    margin-bottom: 1rem;
+  }
+
+  .links-container {
+    flex-grow: 1;
+    margin-left: 2rem;
   }
 `;
 
@@ -27,17 +37,19 @@ export const Home: () => JSX.Element = () => {
 
   return (
     <StyledPage>
-      <div className="welcome-container">
-        <WelcomeMessage />
+      <div className="info-container">
+        <div className="welcome-container">
+          <WelcomeMessage />
+        </div>
+        {quote && (
+          <div className="quote-container">
+            <Quote source={quote.url} text={quote.text} />
+          </div>
+        )}
       </div>
       {links && (
         <div className="links-container">
           <Links links={links} />
-        </div>
-      )}
-      {quote && (
-        <div className="quote-container">
-          <Quote source={quote.url} text={quote.text} />
         </div>
       )}
     </StyledPage>

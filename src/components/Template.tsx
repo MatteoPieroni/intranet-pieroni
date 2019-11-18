@@ -7,7 +7,8 @@ interface ITemplateProps {
 }
 
 const TemplateContainer = styled.div`
-  /* background: red; */
+  height: calc(100% - 3rem);
+  background: #374785;
 `;
 
 export const Template: React.FC<ITemplateProps> = ({ children }) => {

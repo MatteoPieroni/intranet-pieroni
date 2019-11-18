@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
+
 import { useUser } from '../shared/hooks/useUser';
 import { GREETINGS, MONTHS } from '../common/consts';
+import { Emoji } from './icons';
 
 interface IGreeting {
   greeting: string;
@@ -57,6 +60,46 @@ const getDateObj: () => IGreeting = () => {
   };
 };
 
+const StyledDiv = styled.div`
+  position: relative;
+  border-radius: 5px;
+  padding: 2rem;
+  background: #FFF;
+  color: #24305E;
+
+  .waving {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .date {
+    margin-bottom: .5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: .5rem;
+    font-size: 1.2rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .name {
+    font-weight: 900;
+  }
+
+  .uppercase {
+    text-transform: capitalize;
+  }
+`;
+
 export const WelcomeMessage: React.FC = () => {
   const [greetingObject, setGreetingObject] = useState(null);
   const [{ name }] = useUser();
@@ -77,14 +120,10 @@ export const WelcomeMessage: React.FC = () => {
   const { greeting, month, day, hour, minute } = greetingObject || {};
 
   return (
-    <div>
-
-      <div><p>{name}</p></div>
-      <div><p>{greeting}</p></div>
-      <div><p>{month}</p></div>
-      <div><p>{day}</p></div>
-      <div><p>{hour}</p></div>
-      <div><p>{minute}</p></div>
-    </div>
+    <StyledDiv>
+      <span className="waving"><Emoji.Wave /></span>
+      <div className="date"><p>{day} <span className="uppercase">{month}</span> - {hour}:{minute}</p></div>
+      <h1>{greeting},<br /><span className="name">{name}</span>!</h1>
+    </StyledDiv>
   );
 };

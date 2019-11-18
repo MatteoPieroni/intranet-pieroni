@@ -11,9 +11,16 @@ interface ILinkProps {
   editable?: boolean;
 }
 
+const StyledH2 = styled.h2`
+  font-size: 1.5rem;
+  color: #FFF;
+  text-transform: uppercase;
+`;
+
 const StyledLinksList = styled.ul`
   padding: 1rem 0;
-  
+  columns: 2;
+
   li {
     margin-bottom: .5rem;
 
@@ -37,7 +44,7 @@ export const Links: React.FC<ILinkProps> = ({ links, editable = false }) => {
 
   return (
     <>
-      <h2>Link utili</h2>
+      <StyledH2>Link utili</StyledH2>
       <StyledLinksList>
         {links && links.map(link => (
           <SavedLink key={link.id} link={link} editable={editable} editLink={editLink} />

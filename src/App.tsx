@@ -6,11 +6,20 @@ import { UserProvider } from './shared/context/user';
 import { Routes } from './components/Routes';
 
 const globalCss = css`
+  html, body {
+    height: 100%;
+  }
+
   body {
     font-family: Roboto, Helvetica Neue, sans-serif;
   }
+
   div, ul, p, a, li {
     box-sizing: border-box;
+  }
+
+  .main-app {
+    height: 100%;
   }
 `;
 
