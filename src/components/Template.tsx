@@ -7,7 +7,7 @@ interface ITemplateProps {
 }
 
 const TemplateContainer = styled.div`
-  height: calc(100% - 3rem);
+  min-height: calc(100% - 3rem);
   background: #374785;
 `;
 
