@@ -112,7 +112,7 @@ export const WelcomeMessage: React.FC = () => {
     const updateClock = setTimeout(setDateObj, 60000);
     setDateObj();
 
-    return () => {
+    return (): void => {
       clearTimeout(updateClock);
     };
   }, []);

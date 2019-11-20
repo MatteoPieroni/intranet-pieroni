@@ -13,8 +13,8 @@ export const Admin: React.FC = () => {
   return (
     <>
       <div>Links</div>
-      <LinksForm />
-      {links && <Links links={links} editable />}
+      <LinksForm onSave={() => null} />
+      {links && <Links links={links} />}
       <QuoteForm />
       {quote && <Quote source={quote.url} text={quote.text} />}
     </>

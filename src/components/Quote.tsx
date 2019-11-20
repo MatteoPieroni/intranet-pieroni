@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
+import { StyledH2 } from './styled';
+
 interface IQuoteProps {
   source: string;
   text: string;
@@ -8,6 +10,7 @@ interface IQuoteProps {
 
 const StyledQuote = styled.div`
   position: relative;
+  margin: 1rem 0;
 
   &:before {
     content: '';
@@ -37,9 +40,12 @@ const StyledQuote = styled.div`
 
 export const Quote: React.FC<IQuoteProps> = ({ source, text }) => {
   return (
-    <StyledQuote>
-      <p>{text}</p>
-      <img src={source} />
-    </StyledQuote>
+    <>
+      <StyledH2>Citazione del mese</StyledH2>
+      <StyledQuote>
+        <p>{text}</p>
+        <img src={source} />
+      </StyledQuote>
+    </>
   );
 };

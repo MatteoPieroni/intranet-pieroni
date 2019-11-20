@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { ILink, EColor } from '../services/firebase/types';
 import { Icon } from './icons';
 import { getLightColor } from '../common/styles';
+import { LinksForm } from './forms';
 
 interface ISavedLinkProps {
   link: ILink;
@@ -50,6 +51,12 @@ const StyledLink: React.FC<ITheme> = styled.li`
         width: 50%;
       }
     }
+
+    &.editing {
+      &:hover:after {
+        width: 0;
+      }
+    }
   }
 
   svg {
@@ -58,20 +65,20 @@ const StyledLink: React.FC<ITheme> = styled.li`
   }
 `;
 
-export const SavedLink: React.FC<ISavedLinkProps> = ({ link, editable, editLink }) => {
+export const SavedLink: React.FC<ISavedLinkProps> = ({ link, editable }) => {
   const { link: url, description, color } = link;
-
-  const handleClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void = (event) => {
-    event.preventDefault();
-    editLink(link);
-  };
 
   return (
     <StyledLink color={color}>
-      <a href={!editable ? url : ''} target="_blank" rel="noopener noreferrer" onClick={editable ? handleClick : null}>
+      <a href={!editable ? url : null} target="_blank" rel="noopener noreferrer" className={editable ? 'editing' : ''}>
         {description}
-        <Icon.ArrowRight />
+        {!editable && (
+          <Icon.ArrowRight />
+        )}
       </a>
+      {editable && (
+        <LinksForm initialState={link} onSave={(): void => null} />
+      )}
     </StyledLink>
   );
 };
