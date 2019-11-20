@@ -53,6 +53,8 @@ const StyledLink: React.FC<ITheme> = styled.li`
     }
 
     &.editing {
+      padding: 1rem .5rem 0;
+
       &:hover:after {
         width: 0;
       }
