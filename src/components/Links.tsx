@@ -13,7 +13,7 @@ interface ILinkProps {
   links: ILink[];
 }
 
-const StyledLinks = styled.ul`
+const StyledLinks = styled.div`
   .header {
     display: flex;
     justify-content: space-between;

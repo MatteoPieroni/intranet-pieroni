@@ -43,7 +43,7 @@ export const Home: () => JSX.Element = () => {
         </div>
         {quote && (
           <div className="quote-container">
-            <Quote source={quote.url} text={quote.text} />
+            <Quote quote={quote} />
           </div>
         )}
       </div>

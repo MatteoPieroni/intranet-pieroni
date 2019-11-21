@@ -7,7 +7,7 @@ import { Field } from '../formFields';
 import { validateUrl } from '../../utils/validation/validateUrl';
 
 interface IQuoteFormProps {
-  initialState?: FormikValues & true;
+  initialState?: IQuote;
 }
 
 interface IQuoteError {

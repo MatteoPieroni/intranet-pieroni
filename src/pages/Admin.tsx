@@ -12,11 +12,6 @@ export const Admin: React.FC = () => {
 
   return (
     <>
-      <div>Links</div>
-      <LinksForm onSave={() => null} />
-      {links && <Links links={links} />}
-      <QuoteForm />
-      {quote && <Quote source={quote.url} text={quote.text} />}
     </>
   );
 };
