@@ -36,7 +36,7 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
   const { id } = initialState;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const submitLink: (values: ILink, formikHelpers: FormikHelpers<any>) => Promise<void> = async (values) => {
+  const submitLink: (values: ILink, formikHelpers: FormikHelpers<any>) => Promise<void> = async (values, { resetForm }) => {
     const { id } = values;
     setIsSaving(true);
 
@@ -52,12 +52,16 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
       console.log(e);
     }
 
-    onSave();
+    if (typeof onSave === 'function') {
+      onSave();
+    }
+
     setIsSaving(false);
+    resetForm({});
     console.log(values);
   }
 
-  const deleteLink = () => {
+  const deleteLink = (): void => {
     const { id } = initialState;
     try {
       removeLink(id);

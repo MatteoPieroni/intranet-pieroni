@@ -51,6 +51,6 @@ const palette = {
   }
 };
 
-export const getLightColor: (color: EColor) => string = color => palette[color].n500;
+export const getLightColor: (color: EColor) => string = color => palette[color] && palette[color].n500;
 
-export const getDarkColor: (color: EColor) => string = color => palette[color].n700;
+export const getDarkColor: (color: EColor) => string = color => palette[color] && palette[color].n700;
