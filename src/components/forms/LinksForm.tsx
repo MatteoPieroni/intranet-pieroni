@@ -3,7 +3,7 @@ import { Formik, FormikValues, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
 import { ILink } from '../../services/firebase/types';
-import { updateLink } from '../../services/firebase/db';
+import { updateLink, addLink, removeLink } from '../../services/firebase/db';
 import { validateMandatoryInput } from '../../utils/validateMandatoryInput';
 import { validateUrl } from '../../utils/validation/validateUrl';
 import { Field } from '../formFields';
@@ -33,21 +33,37 @@ const StyledLinksForm = styled.div`
 
 export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, onSave }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const { id } = initialState;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const submitLink: (values: ILink, formikHelpers: FormikHelpers<any>) => Promise<void> = async (values) => {
     const { id } = values;
+    setIsSaving(true);
 
-    if (!id) {
-      // create link
-    }
+    try {
+      if (!id) {
+        await addLink(values);
+      }
 
-    if (id) {
-      await updateLink(id, values);
+      if (id) {
+        await updateLink(id, values);
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     onSave();
+    setIsSaving(false);
     console.log(values);
+  }
+
+  const deleteLink = () => {
+    const { id } = initialState;
+    try {
+      removeLink(id);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const validateLink: (values: ILink) => ILinkError = (values) => {
@@ -69,6 +85,10 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
           <Field name="link" label="Indirizzo" />
           <Field name="description" label="Descrizione" />
           <Field name="color" label="Colore" />
+          {id && (
+            <button type="button" onClick={deleteLink}>Rimuovi questo link</button>
+          )
+          }
           {isSaving ?
             <p>Sto salvando...</p> :
             <button type="submit">Salva questo link</button>

@@ -66,3 +66,35 @@ const updateRecord: Types.UpdateRecord = (recordString, id, data) => {
 };
 
 export const updateLink: (id: string, data: Types.ILink) => Promise<Types.ILink | Error> = async (id, data) => await updateRecord('/links', id, data);
+
+const addRecord: Types.AddRecord = (recordString, data, includeId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const newPostKey = fireDb.ref().child(recordString).push().key;
+      console.log({ includeId, newPostKey })
+      const add = await fireDb.ref(`${recordString}/${newPostKey}`).update({
+        ...data,
+        ...(includeId && { id: newPostKey }),
+      });
+      resolve(add);
+    } catch (e) {
+      reject(e)
+    }
+  });
+};
+
+export const addLink: (data: Types.ILink) => Promise<Types.ILink | Error> = async (data) => await addRecord('/links', data, true);
+
+const removeRecord: Types.RemoveRecord = (recordString, id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const remove = await fireDb.ref(`${recordString}/${id}`).remove();
+      resolve(remove);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const removeLink: (id: string) => Promise<any | Error> = async (id) => await removeRecord('/links', id);

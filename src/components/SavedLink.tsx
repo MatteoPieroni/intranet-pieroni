@@ -9,7 +9,6 @@ import { LinksForm } from './forms';
 interface ISavedLinkProps {
   link: ILink;
   editable: boolean;
-  editLink: (link: ILink) => void;
 }
 
 interface ITheme {

@@ -7,6 +7,7 @@ import { StyledH2 } from './styled';
 
 import { updateLink } from '../services/firebase/db';
 import { Icon } from './icons';
+import { NewLink } from './NewLink';
 
 interface ILinkProps {
   links: ILink[];
@@ -31,6 +32,9 @@ const StyledLinks = styled.ul`
 
   li {
     margin-bottom: .5rem;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
 
     &:last-child {
       margin-bottom: 0;
@@ -40,17 +44,6 @@ const StyledLinks = styled.ul`
 
 export const Links: React.FC<ILinkProps> = ({ links }) => {
   const [isEditing, setIsEditing] = useState(false);
-
-  const editLink: (link: ILink) => void = async (link) => {
-    const { id, link: linkUrl, description, color } = link;
-
-    try {
-      // await updateLink(id, link)
-      console.log('editing', link)
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <StyledLinks>
@@ -62,8 +55,9 @@ export const Links: React.FC<ILinkProps> = ({ links }) => {
       </div>
       <ul>
         {links && links.map(link => (
-          <SavedLink key={link.id} link={link} editable={isEditing} editLink={editLink} />
+          <SavedLink key={link.id} link={link} editable={isEditing} />
         ))}
+        {isEditing && <NewLink />}
       </ul>
     </StyledLinks>
   )
