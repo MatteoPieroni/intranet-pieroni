@@ -8,6 +8,7 @@ import { StyledH2 } from './styled';
 import { updateLink } from '../services/firebase/db';
 import { Icon } from './icons';
 import { NewLink } from './NewLink';
+import { Button } from './button';
 
 interface ILinkProps {
   links: ILink[];
@@ -16,13 +17,13 @@ interface ILinkProps {
 const StyledLinks = styled.div`
   .header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
   }
 
-  .icon {
-    width: 2rem;
-    text-align: center;
-    padding-top: .25rem;
+  .links-button .button {
+    border-bottom-color: #FFF;
+    color: #FFF;
   }
 
   ul {
@@ -49,9 +50,9 @@ export const Links: React.FC<ILinkProps> = ({ links }) => {
     <StyledLinks>
       <div className="header">
         <StyledH2>Link utili</StyledH2>
-        <span className="icon" onClick={(): void => setIsEditing(!isEditing)}>
-          <Icon.Pencil color="#fff" />
-        </span>
+        <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+          Modifica
+        </Button>
       </div>
       <ul>
         {links && links.map(link => (

@@ -7,6 +7,8 @@ import { updateLink, addLink, removeLink } from '../../services/firebase/db';
 import { validateMandatoryInput } from '../../utils/validateMandatoryInput';
 import { validateUrl } from '../../utils/validation/validateUrl';
 import { Field } from '../formFields';
+import { Icon } from '../icons';
+import { Button } from '../button';
 
 interface ILinksFormProps {
   initialState?: ILink;
@@ -28,6 +30,11 @@ const newLink = {
 const StyledLinksForm = styled.div`
   form {
     padding: .5rem;
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: space-between;
   }
 `;
 
@@ -89,14 +96,16 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
           <Field name="link" label="Indirizzo" />
           <Field name="description" label="Descrizione" />
           <Field name="color" label="Colore" />
-          {id && (
-            <button type="button" onClick={deleteLink}>Rimuovi questo link</button>
-          )
-          }
-          {isSaving ?
-            <p>Sto salvando...</p> :
-            <button type="submit">Salva questo link</button>
-          }
+          <div className="buttons-container">
+            {id && (
+              <Button onClick={deleteLink} icon={Icon.Trash} ghost>Rimuovi questo link</Button>
+            )
+            }
+            {isSaving ?
+              <p>Sto salvando...</p> :
+              <Button type="submit">Salva questo link</Button>
+            }
+          </div>
         </Form>
       </Formik>
     </StyledLinksForm>

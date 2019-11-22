@@ -60,7 +60,7 @@ const StyledLink: React.FC<ITheme> = styled.li`
     }
   }
 
-  svg {
+  .arrow {
     float: right;
     margin-left: 1rem;
   }
@@ -74,7 +74,7 @@ export const SavedLink: React.FC<ISavedLinkProps> = ({ link, editable }) => {
       <a href={!editable ? url : null} target="_blank" rel="noopener noreferrer" className={editable ? 'editing' : ''}>
         {description}
         {!editable && (
-          <Icon.ArrowRight />
+          <Icon.ArrowRight className="arrow" />
         )}
       </a>
       {editable && (

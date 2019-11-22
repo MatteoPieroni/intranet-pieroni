@@ -1,11 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faArrowRight, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
 
-interface IIconProps {
+export interface IIconProps {
   icon: IconProp;
   color?: string;
+  className?: string;
   rest?: IGenericProps;
 }
 
@@ -19,4 +20,8 @@ export const ArrowRight: React.FC<IGenericProps> = (props) => (
 
 export const Pencil: React.FC<IGenericProps> = (props) => (
   <Icon icon={faPen} {...props} />
+)
+
+export const Trash: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faTrash} {...props} />
 )
