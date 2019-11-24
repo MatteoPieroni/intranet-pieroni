@@ -5,9 +5,11 @@ import { StyledH2 } from './styled';
 import { Icon } from './icons';
 import { QuoteForm } from './forms';
 import { IQuote } from '../services/firebase/types';
+import { Button } from './button';
 
 interface IQuoteProps {
   quote: IQuote;
+  refresh: () => void;
 }
 
 const StyledQuote = styled.div`
@@ -17,10 +19,9 @@ const StyledQuote = styled.div`
     justify-content: space-between;
   }
 
-  .icon {
-    width: 2rem;
-    text-align: center;
-    padding-top: .25rem;
+  .links-button .button {
+    border-bottom-color: #FFF;
+    color: #FFF;
   }
 
   .quote {
@@ -37,7 +38,7 @@ const StyledQuote = styled.div`
       background: rgba(0,0,0,0.5);
     }
 
-    p {
+    p, .form {
       position: absolute;
       top: 50%;
       padding: 5%;
@@ -47,6 +48,11 @@ const StyledQuote = styled.div`
       transform: translateY(-50%);
     }
 
+    .form {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
     img {
       display: block;
       max-width: 100%;
@@ -54,27 +60,30 @@ const StyledQuote = styled.div`
   }
 `;
 
-export const Quote: React.FC<IQuoteProps> = ({ quote }) => {
+export const Quote: React.FC<IQuoteProps> = ({ quote, refresh }) => {
   const [isEditing, setIsEditing] = useState(false)
   const { url, text } = quote;
+
+  const onSave = () => {
+    refresh();
+    setIsEditing(false);
+  }
 
   return (
     <StyledQuote>
       <div className="header">
         <StyledH2>Citazione del mese</StyledH2>
-        <span className="icon" onClick={(): void => setIsEditing(!isEditing)}>
-          <Icon.Pencil color="#fff" />
-        </span>
+        <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+          Modifica
+        </Button>
       </div>
       <div className="quote">
         {isEditing ? (
-          <QuoteForm initialState={quote} />
+          <QuoteForm initialState={quote} className="form" onSave={onSave} />
         ) : (
-            <>
-              <p>{text}</p>
-              <img src={url} />
-            </>
+            <p>{text}</p>
           )}
+        <img src={url} />
       </div>
     </StyledQuote>
   );

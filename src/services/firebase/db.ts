@@ -66,6 +66,7 @@ const updateRecord: Types.UpdateRecord = (recordString, id, data) => {
 };
 
 export const updateLink: (id: string, data: Types.ILink) => Promise<Types.ILink | Error> = async (id, data) => await updateRecord('/links', id, data);
+export const updateQuote: (data: Types.IQuote) => Promise<Types.IQuote | Error> = async (data) => await updateRecord('/quote', 'active', data);
 
 const addRecord: Types.AddRecord = (recordString, data, includeId) => {
   return new Promise(async (resolve, reject) => {

@@ -25,14 +25,15 @@ const StyledField = styled.div`
   }
 `;
 
-export const Field: React.FC<IFieldProps> = ({ name, label, hidden, ...rest }) => {
+export const Field: React.FC<IFieldProps> = ({ name, label, hidden, className, ...rest }) => {
+
   return (
     <StyledField>
       {hidden ?
         <FormikField name={name} type="hidden" /> :
         <Fragment>
           <label htmlFor={name}>{label}</label>
-          <FormikField name={name} {...rest} className="field" />
+          <FormikField name={name} {...rest} className={className ? `field ${className}` : 'field'} />
           <ErrorMessage name={name} className="error" />
         </Fragment>
       }

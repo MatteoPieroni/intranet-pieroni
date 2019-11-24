@@ -33,7 +33,7 @@ const StyledPage = styled.main`
 
 export const Home: () => JSX.Element = () => {
   const links = useLinks();
-  const quote = useQuote();
+  const [quote, refreshQuote] = useQuote();
 
   return (
     <StyledPage>
@@ -43,7 +43,7 @@ export const Home: () => JSX.Element = () => {
         </div>
         {quote && (
           <div className="quote-container">
-            <Quote quote={quote} />
+            <Quote quote={quote} refresh={refreshQuote} />
           </div>
         )}
       </div>
