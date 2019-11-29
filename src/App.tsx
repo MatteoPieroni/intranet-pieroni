@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Global, css } from '@emotion/core';
 import 'reset-css';
 
@@ -20,6 +20,19 @@ const globalCss = css`
 
   .main-app {
     height: 100%;
+  }
+
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90vw;
+    background: #fff;
+    transform: translate(-50%, -50%);
+
+    @media (min-width: 1024px) {
+      width: 60vw;
+    }
   }
 `;
 

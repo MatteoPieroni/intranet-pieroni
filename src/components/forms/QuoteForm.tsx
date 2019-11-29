@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, FormikValues, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
@@ -8,7 +8,8 @@ import { Field } from '../formFields';
 import { validateUrl } from '../../utils/validation/validateUrl';
 import { Button } from '../button';
 import { updateQuote } from '../../services/firebase/db';
-import { useQuote } from '../../shared/hooks/useQuote';
+import { getImages } from '../../services/firebase/db';
+import { ImagesModal } from '../images-modal';
 
 interface IQuoteFormProps {
   initialState?: IQuote;
@@ -27,6 +28,14 @@ const newQuote = {
 }
 
 const StyledDiv = styled.div`
+  .edit-image {
+    margin-right: 1rem;
+    .button {
+      border-bottom-color: #fff;
+      color: #fff;
+    }
+  }
+
   .textarea {
     border: none;
     padding: 0.5rem;
@@ -42,7 +51,22 @@ const StyledDiv = styled.div`
 `;
 
 export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, className, onSave }) => {
+  const [images, setImages] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSelectingImage, setIsSelectingImage] = useState(false);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const storedImages = await getImages();
+        setImages(storedImages);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    fetchImages();
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const submitQuote: (values: IQuote, formikHelpers: FormikHelpers<any>) => Promise<void> = async (values) => {
@@ -75,11 +99,20 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
       <Formik initialValues={initialState} onSubmit={submitQuote} validate={validateQuote}>
         <Form className={className}>
           <Field name="text" as="textarea" label="Descrizione" className="textarea" />
-          {/* <Field name="url" label="Indirizzo" /> */}
+          <Button onClick={(): void => setIsSelectingImage(true)} ghost className="edit-image">Cambia immagine</Button>
           {isSaving ?
             <p>Sto salvando...</p> :
             <Button type="submit">Salva la citazione</Button>
           }
+          {isSelectingImage && (
+            <ImagesModal
+              images={images}
+              closeModal={(): void => setIsSelectingImage(false)}
+              isOpen={isSelectingImage}
+              contentLabel="Seleziona un'immagine"
+              className="images-modal"
+            />
+          )}
         </Form>
       </Formik>
     </StyledDiv>

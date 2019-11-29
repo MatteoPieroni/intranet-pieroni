@@ -8,7 +8,7 @@ export interface ILogin {
 
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
-export type GetDbRecords = (recordString: string) => Promise<ILink[] | IImage[] | ISms[] | IDbPlace[]>;
+export type GetDbRecords = (recordString: string) => Promise<any>;
 export type GetDbCollection = () => Promise<IImage[] | ISms[] | IDbPlace[]>;
 export type ListenCallback = (hasError: boolean | undefined, data?: any) => void;
 export type ListenToDb = (recordString: string, callback: ListenCallback) => () => void;
@@ -72,4 +72,8 @@ export interface IDbPlace {
   formatted_address: string;
   time: number;
   user: string;
+}
+
+export interface IStorageFile {
+  path: string;
 }

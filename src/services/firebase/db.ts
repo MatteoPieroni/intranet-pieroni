@@ -23,13 +23,17 @@ const GetDbRecords: Types.GetDbRecords = recordString => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any[] = normaliseObjectKeysToArray(ref.val());
 
-      resolve(ref.val());
+      resolve(data);
     } catch (error) {
       reject(error);
     }
   });
 };
+
+export const getImages: () => Promise<Types.IImage[]> = () => GetDbRecords('/images/');
 
 const listenToDb: Types.ListenToDb = (recordString, callback) => {
   try {

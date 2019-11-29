@@ -17,6 +17,7 @@ const StyledQuote = styled.div`
   .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .links-button .button {
@@ -42,14 +43,16 @@ const StyledQuote = styled.div`
       position: absolute;
       top: 50%;
       padding: 5%;
-      font-size: 1.8rem;
-      line-height: 2.3rem;
+      font-size: 1.2rem;
+      line-height: 1.5rem;
       color: #fff;
       transform: translateY(-50%);
     }
 
     .form {
       width: 100%;
+      font-size: 1.8rem;
+      line-height: 2.3rem;
       box-sizing: border-box;
     }
 
