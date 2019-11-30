@@ -89,6 +89,7 @@ const addRecord: Types.AddRecord = (recordString, data, includeId) => {
 };
 
 export const addLink: (data: Types.ILink) => Promise<Types.ILink | Error> = async (data) => await addRecord('/links', data, true);
+export const addSms: (data: Types.IDbSms) => Promise<Types.IDbSms | Error> = async (data) => await addRecord('/sms', data, false);
 
 const removeRecord: Types.RemoveRecord = (recordString, id) => {
   return new Promise(async (resolve, reject) => {

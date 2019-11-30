@@ -23,6 +23,9 @@ export const Header: () => JSX.Element = () => {
   return (
     <StyledHeader>
       <nav>
+        <NavLink to="/home">
+          Home
+        </NavLink>
         <NavLink to="/sms">
           Sms
         </NavLink>

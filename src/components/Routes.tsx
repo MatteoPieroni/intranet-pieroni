@@ -17,6 +17,7 @@ import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { AuthLoading } from './AuthLoading';
 import { Admin } from '../pages/Admin';
+import { Sms } from '../pages/Sms';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -38,6 +39,9 @@ export const Routes: () => JSX.Element = () => {
                 </Route>
                 <PrivateRoute path="/home">
                   <Home />
+                </PrivateRoute>
+                <PrivateRoute path="/sms">
+                  <Sms />
                 </PrivateRoute>
                 <AdminRoute path="/admin">
                   <Admin />

@@ -21,4 +21,5 @@ export const GREETINGS: { morning: string; afternoon: string; evening: string; n
 };
 
 export const ERROR_INVALID_URL = 'Questo url non è valido. Ricontrolla per favore';
+export const ERROR_INVALID_MOBILE = 'Questo numero non è valido. Ricontrolla per favore';
 export const ERROR_EMPTY_FIELD = 'Questo campo è obbligatorio';

@@ -9,7 +9,7 @@ export interface ILogin {
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
 export type GetDbRecords = (recordString: string) => Promise<any>;
-export type GetDbCollection = () => Promise<IImage[] | ISms[] | IDbPlace[]>;
+export type GetDbCollection = () => Promise<any>;
 export type ListenCallback = (hasError: boolean | undefined, data?: any) => void;
 export type ListenToDb = (recordString: string, callback: ListenCallback) => () => void;
 export type ListenToDbCollection = (callback: ListenCallback) => () => void;
@@ -60,9 +60,9 @@ export interface IImage {
   url: string;
 }
 
-export interface ISms {
+export interface IDbSms {
   message: string;
-  number: number;
+  number: string;
   sender: string;
   senderUID: string;
   time: number;
