@@ -11,7 +11,7 @@ interface IButtonProps {
   icon?: React.FC<{ className: string }>;
   children: string;
   ghost?: boolean;
-  type?: EButtonType | keyof typeof EButtonType;
+  type?: keyof typeof EButtonType;
   className?: string;
   onClick?: (event: React.MouseEvent) => void;
 }

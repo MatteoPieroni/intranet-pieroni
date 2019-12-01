@@ -43,7 +43,7 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
   const { id } = initialState;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const submitLink: (values: ILink, formikHelpers: FormikHelpers<any>) => Promise<void> = async (values, { resetForm }) => {
+  const submitLink: (values: ILink, formikHelpers: FormikHelpers<any>) => void = async (values, { resetForm }) => {
     const { id } = values;
     setIsSaving(true);
 

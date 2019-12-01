@@ -18,6 +18,16 @@ const globalCss = css`
     box-sizing: border-box;
   }
 
+  h1 {
+    margin-top: .5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 4px solid;
+    padding-bottom: .5rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
   .main-app {
     height: 100%;
   }
