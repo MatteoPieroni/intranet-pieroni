@@ -1,5 +1,5 @@
 import * as Types from './types';
-import { costFinder } from '../../../utils/formatMeasures';
+import { costFinder, mToKm, sToMin } from '../../../utils/formatMeasures';
 
 const Driver = class {
   private config: Types.IConfig;
@@ -12,6 +12,7 @@ const Driver = class {
   private Map: Types.TMap;
   private UnitSystem: Types.TUnitSystem;
   private MarkerService: Types.TMarker;
+  private Animation: Types.TAnimation;
   private Current: Types.TCurrent;
 
   constructor(mapsService: Types.TMaps, config: Types.IConfig) {
@@ -23,6 +24,7 @@ const Driver = class {
     this.MapService = mapsService.Map;
     this.MarkerService = mapsService.Marker;
     this.UnitSystem = mapsService.UnitSystem.METRIC;
+    this.Animation = mapsService.Animation;
 
     this.Current = {
       origins: [
@@ -72,11 +74,11 @@ const Driver = class {
   }
 
   // this function returns the callback passed to geocoder binding the icon for the result
-  private showGeocodedAddressOnMap: (address: any, asDestination: boolean) => Promise<void> = async (address, asDestination) => {
-    const { icons: { destination, origin } } = this.config;
+  private showGeocodedAddressOnMap: (address: Types.IGeocodePromise, asDestination: boolean, fastest?: boolean) => Promise<void> = async (address, asDestination, fastest) => {
+    const { icons: { destination, origin, faster } } = this.config;
     const { currentMarkers } = this.Current;
 
-    const icon = asDestination ? destination : origin;
+    const icon = asDestination ? destination : fastest ? faster : origin;
 
     try {
       const results = await this.geocodePromise(address);
@@ -84,12 +86,14 @@ const Driver = class {
       this.Map.fitBounds(this.BoundsService.extend(results[0].geometry.location));
       this.Current = {
         ...this.Current,
+        // push the markers in place, we want an animation for the quicker route
         currentMarkers: [
           ...currentMarkers,
           new this.MarkerService({
             map: this.Map,
             position: results[0].geometry.location,
-            icon: icon
+            icon: icon,
+            ...(fastest && { animation: this.Animation.DROP })
           })
         ]
       }
@@ -127,13 +131,21 @@ const Driver = class {
       );
     })
 
-    const calculatedRoutes = rows.map(({ elements }, i): Types.IRoute => ({
-      name: origins[i].name,
-      address: originAddresses[i],
-      duration: elements[0].duration.value,
-      km: elements[0].distance.value,
-      cost: this.calculateCost(elements[0].duration.value),
-    }));
+    const calculatedRoutes = rows.map(({ elements }, i): Types.IRoute => {
+      // gmaps returns the value in seconds
+      const duration = Math.floor(sToMin(elements[0].duration.value));
+      // gmaps returns the value in metres
+      const km = Math.floor(mToKm(elements[0].distance.value));
+      const cost = this.calculateCost(duration);
+
+      return ({
+        name: origins[i].name,
+        address: originAddresses[i],
+        duration,
+        km,
+        cost,
+      })
+    });
 
     this.Current = {
       ...this.Current,
@@ -191,11 +203,18 @@ const Driver = class {
 
     // get quickest route
     const quickestRoute = this.calculateQuickestRoute();
+    try {
+      await this.showGeocodedAddressOnMap({ address: quickestRoute.address }, false, true)
+    } catch (e) {
+      console.log(e);
+    }
     // get total
     this.Current = {
       ...this.Current,
       cost: this.calculateCost(quickestRoute.km),
     };
+
+    console.log(this.Current)
   }
 
 };

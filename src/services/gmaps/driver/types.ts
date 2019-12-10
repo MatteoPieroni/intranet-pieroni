@@ -28,6 +28,7 @@ export type TMarker = Constructable<{
   icon: string;
 }>
 export type TUnitSystem = any;
+export type TAnimation = any;
 export type TGeocodePromise = (results: IGeocodeResults[], status: keyof typeof EStatus) => void;
 export type TGeocodeCallback = (results: IGeocodeResults[]) => void;
 export type TDistanceMatrixService = {
@@ -81,6 +82,7 @@ export interface IConfig {
   icons: {
     destination: string;
     origin: string;
+    faster: string;
   };
 }
 
