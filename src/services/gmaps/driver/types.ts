@@ -40,6 +40,7 @@ export type TCurrent = {
   origins: IOrigin[];
   currentMarkers?: any;
   routes?: IRoute[];
+  destination?: string;
   cost?: string;
 }
 export type TListener = (data: TCurrent) => void;

@@ -28,8 +28,6 @@ export const Maps: React.FC = () => {
   }, []);
 
   const {
-    origins,
-    currentMarkers,
     routes,
     cost,
   } = routeData;

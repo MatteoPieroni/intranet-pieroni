@@ -72,7 +72,6 @@ const Driver = class {
         if (status !== 'OK') {
           reject(status);
         } else {
-          console.log(response);
           resolve(response);
         }
       });
@@ -108,13 +107,17 @@ const Driver = class {
     }
   };
 
+  private clearMarkers: () => void = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.Current.currentMarkers.forEach((marker: any) => marker.setMap(null));
+    this.Current.currentMarkers = [];
+  }
+
   private setDistances: (distanceMatrix: Types.IDistanceMatrixResults) => void = async (distanceMatrix) => {
     const { originAddresses, destinationAddresses, rows } = distanceMatrix;
     const { origins } = this.Current;
 
-    console.log('set distances', distanceMatrix)
-
-    // deleteMarkers(markersArray);
+    this.clearMarkers();
 
     // Geocode all addresses from origins
     originAddresses.forEach(async address => {
@@ -177,11 +180,16 @@ const Driver = class {
 
   public placeSelection: () => Promise<void> = async () => {
     const place = this.Autocomplete.getPlace();
-    //console.log(place)
-    const { geometry: { location } } = place;
+    const { geometry: { location }, formatted_address: destinationName } = place;
     const { distanceMatrixOptions } = this.config;
     const { origins } = this.Current;
     const originsNames = origins.map(origin => origin.name);
+
+    // set destination
+    this.Current = {
+      ...this.Current,
+      destination: destinationName,
+    }
 
     // get distances
     const distanceMatrix = await this.getDistanceMatrixPromise({
@@ -201,7 +209,7 @@ const Driver = class {
     } catch (e) {
       console.log(e);
     }
-    // get total
+    // set total
     this.Current = {
       ...this.Current,
       cost: this.calculateCost(quickestRoute.km),
