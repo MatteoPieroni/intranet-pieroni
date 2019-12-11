@@ -52,13 +52,22 @@ if (!gmaps) {
 
 export const TransportCost = class {
   private Driver: Types.TDriver;
+  private Listeners: Types.TListener[];
 
   constructor(driver: Types.TDriver, config: Types.IConfig) {
     this.Driver = new driver(gmaps, config);
+    this.Driver.subscribe(this.listenToChanges);
+    this.Listeners = [];
   }
 
-  initialise: () => void = () => {
+  public initialise: () => void = () => {
     this.Driver.initAutocomplete();
     this.Driver.initMap();
   }
+
+  private listenToChanges: (data: Types.TCurrent) => void = (data) => this.Listeners.forEach(listener => listener(data));
+
+  public subscribe: (listener: Types.TListener) => void = (listener) => this.Listeners = [...this.Listeners, listener];
+
+  public unsubscribe: (listener: Types.TListener) => void = (listener) => this.Listeners = [...this.Listeners].filter(inListener => inListener.toString() === listener.toString());
 }

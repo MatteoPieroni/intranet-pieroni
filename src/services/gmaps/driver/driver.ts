@@ -14,6 +14,7 @@ const Driver = class {
   private MarkerService: Types.TMarker;
   private Animation: Types.TAnimation;
   private Current: Types.TCurrent;
+  private Listeners: Types.TListener[];
 
   constructor(mapsService: Types.TMaps, config: Types.IConfig) {
     this.config = config;
@@ -25,12 +26,14 @@ const Driver = class {
     this.MarkerService = mapsService.Marker;
     this.UnitSystem = mapsService.UnitSystem.METRIC;
     this.Animation = mapsService.Animation;
+    this.Listeners = [];
 
     this.Current = {
       origins: [
         ...this.config.origins
       ],
-      currentMarkers: []
+      routes: [],
+      currentMarkers: [],
     }
   }
 
@@ -47,6 +50,10 @@ const Driver = class {
     this.Map = new this.MapService(document.getElementById(div), mapConfig);
   }
 
+  public subscribe: (listener: Types.TListener) => void = (listener) => this.Listeners = [...this.Listeners, listener];
+
+  private dispatch: () => void = () => this.Listeners.forEach((listener) => listener(this.Current));
+
   private geocodePromise: (place: Types.IGeocodePromise) => Promise<Types.IGeocodeResults[]> = (place) => {
     return new Promise((resolve, reject) => {
       this.GeocoderService.geocode(place, (results, status) => {
@@ -61,7 +68,6 @@ const Driver = class {
 
   private getDistanceMatrixPromise: (distanceObject: Types.IDistanceObject) => Promise<Types.IDistanceMatrixResults> = (distanceObject) => {
     return new Promise((resolve, reject) => {
-      console.log(distanceObject)
       this.DistanceMatrixService.getDistanceMatrix(distanceObject, (response, status) => {
         if (status !== 'OK') {
           reject(status);
@@ -73,7 +79,6 @@ const Driver = class {
     });
   }
 
-  // this function returns the callback passed to geocoder binding the icon for the result
   private showGeocodedAddressOnMap: (address: Types.IGeocodePromise, asDestination: boolean, fastest?: boolean) => Promise<void> = async (address, asDestination, fastest) => {
     const { icons: { destination, origin, faster } } = this.config;
     const { currentMarkers } = this.Current;
@@ -173,24 +178,11 @@ const Driver = class {
   public placeSelection: () => Promise<void> = async () => {
     const place = this.Autocomplete.getPlace();
     //console.log(place)
-    const { geometry: { location }, formatted_address: destinationName } = place;
+    const { geometry: { location } } = place;
     const { distanceMatrixOptions } = this.config;
     const { origins } = this.Current;
     const originsNames = origins.map(origin => origin.name);
 
-    // Define Object for firebase Db
-    // let placeToDb = {
-    //   // add time to fix retrieval in db in descending order
-    //   time: new Date().valueOf() * -1,
-    //   user: $rootScope.user.nome + ' ' + $rootScope.user.cognome,
-    //   formatted_address: place.formatted_address
-    // };
-
-    // // Insert searched place in Firebase db
-    // let newLinkKey = firebaseService.addChild('places');
-    // let updates = {};
-    // updates['/places/' + newLinkKey] = placeToDb;
-    // firebaseService.dbUpdate(updates);
     // get distances
     const distanceMatrix = await this.getDistanceMatrixPromise({
       origins: originsNames,
@@ -204,6 +196,7 @@ const Driver = class {
     // get quickest route
     const quickestRoute = this.calculateQuickestRoute();
     try {
+      // show the marker for quickest route on the map
       await this.showGeocodedAddressOnMap({ address: quickestRoute.address }, false, true)
     } catch (e) {
       console.log(e);
@@ -214,7 +207,7 @@ const Driver = class {
       cost: this.calculateCost(quickestRoute.km),
     };
 
-    console.log(this.Current)
+    this.dispatch();
   }
 
 };

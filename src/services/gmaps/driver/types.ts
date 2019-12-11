@@ -42,6 +42,13 @@ export type TCurrent = {
   routes?: IRoute[];
   cost?: string;
 }
+export type TListener = (data: TCurrent) => void;
+
+export type TTransportCost = {
+  initialise: () => void;
+  subscribe: (listener: TListener) => void;
+  unsubscribe: (listener: TListener) => void;
+}
 
 export interface IRoute {
   name: string;
