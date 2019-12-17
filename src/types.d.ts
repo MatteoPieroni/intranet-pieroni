@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'react-router-dom';
-declare module 'react-modal'
+declare module 'react-modal';
+declare module 'pdfmake';
 
 declare interface Window {
   google: {

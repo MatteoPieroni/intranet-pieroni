@@ -19,6 +19,7 @@ import { AuthLoading } from './AuthLoading';
 import { Admin } from '../pages/Admin';
 import { Sms } from '../pages/Sms';
 import { Maps } from '../pages/Maps';
+import { Pdf } from '../pages/Pdf';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -46,6 +47,9 @@ export const Routes: () => JSX.Element = () => {
                 </PrivateRoute>
                 <PrivateRoute path="/maps">
                   <Maps />
+                </PrivateRoute>
+                <PrivateRoute path="/cartello">
+                  <Pdf />
                 </PrivateRoute>
                 <AdminRoute path="/admin">
                   <Admin />

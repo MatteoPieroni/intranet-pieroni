@@ -36,6 +36,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "firebase": "^7.2.3",
     "formik": "^2.0.3",
+    "pdfmake": "^0.1.63",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-modal": "^3.11.1",
