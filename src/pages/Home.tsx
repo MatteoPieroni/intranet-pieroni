@@ -12,6 +12,10 @@ const StyledPage = styled.main`
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 1rem;
+
+  h1 {
+    color: #333;
+  }
   
   .info-container {
 
