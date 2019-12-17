@@ -212,7 +212,7 @@ const Driver = class {
     // set total
     this.Current = {
       ...this.Current,
-      cost: this.calculateCost(quickestRoute.km),
+      cost: quickestRoute.cost,
     };
 
     this.dispatch();
