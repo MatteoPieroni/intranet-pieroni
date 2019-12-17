@@ -27,6 +27,10 @@ const globalCss = css`
     font-weight: 600;
     color: #fff;
   }
+  
+  strong {
+    font-weight: 600;
+  }
 
   .main-app {
     height: 100%;
