@@ -16,3 +16,4 @@ export * from './saved-link';
 export * from './styled';
 export * from './template';
 export * from './welcome-message';
+export * from './loader';

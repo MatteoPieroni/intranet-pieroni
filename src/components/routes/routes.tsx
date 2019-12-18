@@ -16,6 +16,7 @@ import { Login } from '../../pages/Login';
 import { Sms } from '../../pages/Sms';
 import { Maps } from '../../pages/Maps';
 import { Pdf } from '../../pages/Pdf';
+import { Loader } from '../loader';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -62,7 +63,7 @@ export const Routes: () => JSX.Element = () => {
                 <Redirect to="login" />
               </>
             )) :
-          <div>Loading;...</div >
+          <Loader />
       }
     </Router>
   );
