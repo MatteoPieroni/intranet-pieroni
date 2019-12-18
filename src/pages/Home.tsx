@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
-import { Quote, Links, WelcomeMessage } from '../components';
+import { Quote, Links, WelcomeMessage, Loader } from '../components';
 import { useLinks, useQuote } from '../shared/hooks';
 
 const StyledPage = styled.main`
@@ -33,26 +33,37 @@ const StyledPage = styled.main`
 
 
 export const Home: () => JSX.Element = () => {
+  const [loading, setLoading] = useState(true);
   const links = useLinks();
-  const [quote, refreshQuote] = useQuote();
+  const [quote, refreshQuote, loadingQuote] = useQuote();
+
+  useEffect(() => {
+    if (loadingQuote) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [loadingQuote])
 
   return (
-    <StyledPage>
-      <div className="info-container">
-        <div className="welcome-container">
-          <WelcomeMessage />
+    !loading ? (
+      <StyledPage>
+        <div className="info-container">
+          <div className="welcome-container">
+            <WelcomeMessage />
+          </div>
+          {quote && (
+            <div className="quote-container">
+              <Quote quote={quote} refresh={refreshQuote} />
+            </div>
+          )}
         </div>
-        {quote && (
-          <div className="quote-container">
-            <Quote quote={quote} refresh={refreshQuote} />
+        {links && (
+          <div className="links-container">
+            <Links links={links} />
           </div>
         )}
-      </div>
-      {links && (
-        <div className="links-container">
-          <Links links={links} />
-        </div>
-      )}
-    </StyledPage>
+      </StyledPage>
+    ) : <Loader />
   );
 };
