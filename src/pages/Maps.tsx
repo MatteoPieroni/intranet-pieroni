@@ -66,7 +66,7 @@ export const Maps: React.FC = () => {
 
     return (): void => {
       clearTimeout(initMap);
-      mapsDriver.unsubscribe(setRouteData);
+      if (mapsDriver) mapsDriver.unsubscribe(setRouteData);
     }
   }, []);
 
