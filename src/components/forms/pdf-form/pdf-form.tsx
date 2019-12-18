@@ -31,6 +31,21 @@ const StyledSmsForm = styled.div`
     color: #000;
   }
 
+  h2 {
+    margin-bottom: .75rem;
+  }
+
+  .list {
+    margin-left: 1.2rem;
+    margin-bottom: 1.5rem;
+    list-style: unset;
+
+    li {
+      margin-bottom: .5rem;
+      line-height: 1.3rem
+    }
+  }
+
   .field-container {
     margin-bottom: .75rem;
   }
@@ -94,9 +109,25 @@ export const PdfForm: React.FC = () => {
   return (
     <StyledSmsForm>
       <h1>Stampa un cartello</h1>
+      <div className="instructions">
+        <p>
+          <h2>Ricordati di rispettare questi punti:</h2>
+          <ul className="list">
+            <li>
+              Sii concis*
+            </li>
+            <li>
+              Comincia (dove appropriato) con &#34;Si avvisa la gentila clientela...&#34;
+            </li>
+            <li>
+              Indica che il primo e l&#39;ultimo giorno sono compresi
+            </li>
+          </ul>
+        </p>
+      </div>
       <Formik initialValues={newPdf} onSubmit={printPdf} validate={validatePdf}>
         <Form>
-          <Field name="text" label="Testo" as="textarea" />
+          <Field name="text" label="Scrivi il tuo testo qui sotto" as="textarea" />
           <div className="buttons-container">
             {isSaving ?
               <p>Sto salvando...</p> :
@@ -107,6 +138,6 @@ export const PdfForm: React.FC = () => {
       </Formik>
       {success && <Notification variant="success" message={success} />}
       {fail && <Notification variant="fail" message={fail} />}
-    </StyledSmsForm>
+    </StyledSmsForm >
   )
 }
