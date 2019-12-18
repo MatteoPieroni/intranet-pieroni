@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,12 +11,13 @@ import { useUser } from '../../shared/hooks/useUser';
 import { PrivateRoute } from './private-route';
 import { AdminRoute } from './admin-route';
 import { AuthLoading } from '../auth-loading';
-import { Home } from '../../pages/Home';
-import { Login } from '../../pages/Login';
-import { Sms } from '../../pages/Sms';
-import { Maps } from '../../pages/Maps';
-import { Pdf } from '../../pages/Pdf';
 import { Loader } from '../loader';
+import { Login } from '../../pages/Login';
+
+const Home = React.lazy(() => import('../../pages/Home'));
+const Sms = React.lazy(() => import('../../pages/Sms'));
+const Maps = React.lazy(() => import('../../pages/Maps'));
+const Pdf = React.lazy(() => import('../../pages/Pdf'));
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -28,7 +29,7 @@ export const Routes: () => JSX.Element = () => {
       {
         hasLoaded ? (
           id ? (
-            <>
+            <Suspense fallback={<Loader />}>
               <Switch>
                 <Route path="/login">
                   <Login />
@@ -52,7 +53,7 @@ export const Routes: () => JSX.Element = () => {
                   <div>Admin</div>
                 </AdminRoute>
               </Switch>
-            </>
+            </Suspense>
           ) : (
               <>
                 <Switch>

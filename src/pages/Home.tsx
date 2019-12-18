@@ -67,3 +67,5 @@ export const Home: () => JSX.Element = () => {
     ) : <Loader />
   );
 };
+
+export default Home;

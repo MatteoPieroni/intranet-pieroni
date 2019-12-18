@@ -14,3 +14,5 @@ export const Sms: React.FC = () => {
     </StyledPage>
   )
 }
+
+export default Sms;

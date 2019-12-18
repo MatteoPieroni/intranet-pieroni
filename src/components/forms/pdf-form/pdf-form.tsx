@@ -110,20 +110,18 @@ export const PdfForm: React.FC = () => {
     <StyledSmsForm>
       <h1>Stampa un cartello</h1>
       <div className="instructions">
-        <p>
-          <h2>Ricordati di rispettare questi punti:</h2>
-          <ul className="list">
-            <li>
-              Sii concis*
+        <h2>Ricordati di rispettare questi punti:</h2>
+        <ul className="list">
+          <li>
+            Sii concis*
             </li>
-            <li>
-              Comincia (dove appropriato) con &#34;Si avvisa la gentila clientela...&#34;
+          <li>
+            Comincia (dove appropriato) con &#34;Si avvisa la gentila clientela...&#34;
             </li>
-            <li>
-              Indica che il primo e l&#39;ultimo giorno sono compresi
+          <li>
+            Indica che il primo e l&#39;ultimo giorno sono compresi
             </li>
-          </ul>
-        </p>
+        </ul>
       </div>
       <Formik initialValues={newPdf} onSubmit={printPdf} validate={validatePdf}>
         <Form>

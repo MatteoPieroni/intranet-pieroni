@@ -14,3 +14,5 @@ export const Pdf: React.FC = () => {
     </StyledPage>
   )
 }
+
+export default Pdf;

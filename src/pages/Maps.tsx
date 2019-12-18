@@ -102,3 +102,5 @@ export const Maps: React.FC = () => {
     </StyledPage>
   )
 }
+
+export default Maps;
