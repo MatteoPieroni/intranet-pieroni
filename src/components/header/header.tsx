@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import { useUser } from '../../shared/hooks/useUser';
-import { Logo } from '../logo/logo';
+import { useUser } from '../../shared/hooks';
+import { Logo } from '../logo';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -49,6 +49,9 @@ export const Header: () => JSX.Element = () => {
         </NavLink>
         <NavLink to="/maps">
           Costo trasporti
+        </NavLink>
+        <NavLink to="/cartello">
+          Crea cartello
         </NavLink>
         <button onClick={logout}>Log out</button>
       </nav>

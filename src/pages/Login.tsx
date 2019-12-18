@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { fireAuth } from '../services/firebase';
-import { useUser } from '../shared/hooks/useUser';
+import { useUser } from '../shared/hooks';
 
 export const Login = () => {
   const [user, hasLoaded] = useUser();

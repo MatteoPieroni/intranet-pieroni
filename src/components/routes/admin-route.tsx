@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   Route,
   Redirect,
 } from 'react-router-dom';
 
-import { useUser } from '../../shared/hooks/useUser';
-import { Header } from '../header/header';
+import { useUser } from '../../shared/hooks';
+import { Header } from '../header';
 
 interface IPrivateRouteProps {
   children: JSX.Element | JSX.Element[];

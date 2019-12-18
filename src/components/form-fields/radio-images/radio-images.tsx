@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import styled from '@emotion/styled';
-import { Field as FormikField, ErrorMessage, getIn, connect } from 'formik';
+import { ErrorMessage, getIn, connect } from 'formik';
+
 import { IImage } from '../../../services/firebase/types'
 
 interface IRadioImagesProps {

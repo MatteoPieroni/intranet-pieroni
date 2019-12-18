@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, FormikValues, FormikHelpers, Form } from 'formik';
+import { Formik, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
 import { ILink } from '../../../services/firebase/types';

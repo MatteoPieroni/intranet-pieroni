@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { useUser } from '../../shared/hooks/useUser';
 import { Redirect } from 'react-router-dom';
+
+import { useUser } from '../../shared/hooks';
 
 interface IAuthLoadingProps {
   to?: string;

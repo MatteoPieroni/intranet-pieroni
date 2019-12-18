@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+
 import { TransportCost, Driver, config } from '../services/gmaps';
 import { TTransportCost, TCurrent } from '../services/gmaps/driver/types';
-import { Route } from '../components/route/route';
+import { Route } from '../components';
 
 const StyledPage = styled.main`
   display: flex;

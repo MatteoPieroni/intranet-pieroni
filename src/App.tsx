@@ -3,7 +3,7 @@ import { Global, css } from '@emotion/core';
 import 'reset-css';
 
 import { UserProvider } from './shared/context/user';
-import { Routes } from './components/routes';
+import { Routes } from './components';
 
 const globalCss = css`
   html, body {

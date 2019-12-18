@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { Quote } from '../components/quote/quote';
-import { Links } from '../components/links/links';
-import { WelcomeMessage } from '../components/welcome-message/welcome-message';
-import { useLinks } from '../shared/hooks/useLinks';
-import { useQuote } from '../shared/hooks/useQuote';
+import { Quote, Links, WelcomeMessage } from '../components';
+import { useLinks, useQuote } from '../shared/hooks';
 
 const StyledPage = styled.main`
   display: flex;

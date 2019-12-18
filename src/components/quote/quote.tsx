@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { StyledH2 } from '../styled';
 import { Icon } from '../icons';
 import { QuoteForm } from '../forms';
-import { IQuote } from '../../services/firebase/types';
 import { Button } from '../button';
+import { IQuote } from '../../services/firebase/types';
 
 interface IQuoteProps {
   quote: IQuote;

@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   Route,
-  Redirect,
 } from 'react-router-dom';
 
 import { useUser } from '../../shared/hooks/useUser';

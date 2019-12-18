@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { IIconProps } from '../icons/Icon';
 
 enum EButtonType {
   submit = 'submit',

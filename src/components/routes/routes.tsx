@@ -3,20 +3,16 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
-  useHistory,
-  useLocation,
 } from 'react-router-dom';
 
 import { useUser } from '../../shared/hooks/useUser';
 
 import { PrivateRoute } from './private-route';
 import { AdminRoute } from './admin-route';
+import { AuthLoading } from '../auth-loading';
 import { Home } from '../../pages/Home';
 import { Login } from '../../pages/Login';
-import { AuthLoading } from '../auth-loading/auth-loading';
-import { Admin } from '../../pages/Admin';
 import { Sms } from '../../pages/Sms';
 import { Maps } from '../../pages/Maps';
 import { Pdf } from '../../pages/Pdf';
@@ -52,7 +48,7 @@ export const Routes: () => JSX.Element = () => {
                   <Pdf />
                 </PrivateRoute>
                 <AdminRoute path="/admin">
-                  <Admin />
+                  <div>Admin</div>
                 </AdminRoute>
               </Switch>
             </>

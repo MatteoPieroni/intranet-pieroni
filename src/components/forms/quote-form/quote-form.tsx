@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, FormikValues, FormikHelpers, Form } from 'formik';
+import { Formik, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
-import { IQuote } from '../../../services/firebase/types';
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
-import { Field } from '../../form-fields';
 import { validateUrl } from '../../../utils/validation/validateUrl';
-import { Button } from '../../button';
 import { updateQuote } from '../../../services/firebase/db';
 import { getImages } from '../../../services/firebase/db';
+import { IQuote } from '../../../services/firebase/types';
+import { Field } from '../../form-fields';
+import { Button } from '../../button';
 import { ImagesModal } from '../../images-modal';
 
 interface IQuoteFormProps {

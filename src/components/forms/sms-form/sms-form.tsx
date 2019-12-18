@@ -11,7 +11,7 @@ import { validateMobile } from '../../../utils/validation/validateMobile';
 import { formatMobile } from '../../../utils/formatMobile';
 import { validateCapsLock } from '../../../utils/validation/validateCapsLock';
 import { FORM_SUCCESS_MESSAGE, FORM_FAIL_MESSAGE } from '../../../common/consts';
-import { useUser } from '../../../shared/hooks/useUser';
+import { useUser } from '../../../shared/hooks';
 
 import { Field } from '../../form-fields';
 import { Button } from '../../button';

@@ -7,7 +7,7 @@ import { StyledH2 } from '../styled';
 
 import { updateLink } from '../../services/firebase/db';
 import { Icon } from '../icons';
-import { NewLink } from '../new-link/new-link';
+import { NewLink } from '../new-link';
 import { Button } from '../button';
 
 interface ILinkProps {
