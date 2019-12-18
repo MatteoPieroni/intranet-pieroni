@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { Quote } from '../components/Quote';
-import { Links } from '../components/Links';
-import { WelcomeMessage } from '../components/WelcomeMessage';
+import { Quote } from '../components/quote/quote';
+import { Links } from '../components/links/links';
+import { WelcomeMessage } from '../components/welcome-message/welcome-message';
 import { useLinks } from '../shared/hooks/useLinks';
 import { useQuote } from '../shared/hooks/useQuote';
 

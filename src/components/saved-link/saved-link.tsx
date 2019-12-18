@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { ILink, EColor } from '../services/firebase/types';
-import { Icon } from './icons';
-import { getLightColor } from '../common/styles';
-import { LinksForm } from './forms';
+import { ILink, EColor } from '../../services/firebase/types';
+import { Icon } from '../icons';
+import { getLightColor } from '../../common/styles';
+import { LinksForm } from '../forms';
 
 interface ISavedLinkProps {
   link: ILink;

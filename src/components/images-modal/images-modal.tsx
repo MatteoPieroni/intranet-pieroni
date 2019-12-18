@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import styled from '@emotion/styled';
 
 import { IImage } from '../../services/firebase/types';
-import { RadioImages } from '../formFields/radio-images';
+import { RadioImages } from '../form-fields/radio-images';
 
 interface IImagesModalProps {
   isOpen: boolean;

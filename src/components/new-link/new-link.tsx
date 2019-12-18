@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { EColor } from '../services/firebase/types';
-import { getLightColor } from '../common/styles';
-import { LinksForm } from './forms';
+import { EColor } from '../../services/firebase/types';
+import { getLightColor } from '../../common/styles';
+import { LinksForm } from '../forms';
 
 interface ITheme {
   color?: EColor;

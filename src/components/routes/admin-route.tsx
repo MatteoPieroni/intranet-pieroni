@@ -4,8 +4,8 @@ import {
   Redirect,
 } from 'react-router-dom';
 
-import { useUser } from '../shared/hooks/useUser';
-import { Header } from './Header';
+import { useUser } from '../../shared/hooks/useUser';
+import { Header } from '../header/header';
 
 interface IPrivateRouteProps {
   children: JSX.Element | JSX.Element[];

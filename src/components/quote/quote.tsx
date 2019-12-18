@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { StyledH2 } from './styled';
-import { Icon } from './icons';
-import { QuoteForm } from './forms';
-import { IQuote } from '../services/firebase/types';
-import { Button } from './button';
+import { StyledH2 } from '../styled';
+import { Icon } from '../icons';
+import { QuoteForm } from '../forms';
+import { IQuote } from '../../services/firebase/types';
+import { Button } from '../button';
 
 interface IQuoteProps {
   quote: IQuote;

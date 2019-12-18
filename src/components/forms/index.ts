@@ -1,3 +1,3 @@
-export { LinksForm } from './LinksForm';
-export { QuoteForm } from './QuoteForm';
+export { LinksForm } from './links-form/links-form';
+export { QuoteForm } from './quote-form/quote-form';
 export { SmsForm } from './sms-form';

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Formik, FormikValues, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
-import { ILink } from '../../services/firebase/types';
-import { updateLink, addLink, removeLink } from '../../services/firebase/db';
-import { validateMandatoryInput } from '../../utils/validateMandatoryInput';
-import { validateUrl } from '../../utils/validation/validateUrl';
-import { Field } from '../formFields';
-import { Icon } from '../icons';
-import { Button } from '../button';
+import { ILink } from '../../../services/firebase/types';
+import { updateLink, addLink, removeLink } from '../../../services/firebase/db';
+import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
+import { validateUrl } from '../../../utils/validation/validateUrl';
+import { Field } from '../../form-fields';
+import { Icon } from '../../icons';
+import { Button } from '../../button';
 
 interface ILinksFormProps {
   initialState?: ILink;

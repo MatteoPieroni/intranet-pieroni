@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { ILink } from '../services/firebase/types';
-import { SavedLink } from './SavedLink';
-import { StyledH2 } from './styled';
+import { ILink } from '../../services/firebase/types';
+import { SavedLink } from '../saved-link/saved-link';
+import { StyledH2 } from '../styled';
 
-import { updateLink } from '../services/firebase/db';
-import { Icon } from './icons';
-import { NewLink } from './NewLink';
-import { Button } from './button';
+import { updateLink } from '../../services/firebase/db';
+import { Icon } from '../icons';
+import { NewLink } from '../new-link/new-link';
+import { Button } from '../button';
 
 interface ILinkProps {
   links: ILink[];

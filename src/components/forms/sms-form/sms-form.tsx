@@ -13,7 +13,7 @@ import { validateCapsLock } from '../../../utils/validation/validateCapsLock';
 import { FORM_SUCCESS_MESSAGE, FORM_FAIL_MESSAGE } from '../../../common/consts';
 import { useUser } from '../../../shared/hooks/useUser';
 
-import { Field } from '../../formFields';
+import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { Notification } from '../../notification';
 

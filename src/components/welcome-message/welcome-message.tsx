@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
-import { useUser } from '../shared/hooks/useUser';
-import { GREETINGS, MONTHS } from '../common/consts';
-import { Emoji } from './icons';
+import { useUser } from '../../shared/hooks/useUser';
+import { GREETINGS, MONTHS } from '../../common/consts';
+import { Emoji } from '../icons';
 
 interface IGreeting {
   greeting: string;

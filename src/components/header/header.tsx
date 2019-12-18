@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import { useUser } from '../shared/hooks/useUser';
-import { Logo } from './Logo';
+import { useUser } from '../../shared/hooks/useUser';
+import { Logo } from '../logo/logo';
 
 const StyledHeader = styled.header`
   display: flex;

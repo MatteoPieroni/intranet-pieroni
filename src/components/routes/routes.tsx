@@ -9,17 +9,17 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { useUser } from '../shared/hooks/useUser';
+import { useUser } from '../../shared/hooks/useUser';
 
-import { PrivateRoute } from './PrivateRoute';
-import { AdminRoute } from './AdminRoute';
-import { Home } from '../pages/Home';
-import { Login } from '../pages/Login';
-import { AuthLoading } from './AuthLoading';
-import { Admin } from '../pages/Admin';
-import { Sms } from '../pages/Sms';
-import { Maps } from '../pages/Maps';
-import { Pdf } from '../pages/Pdf';
+import { PrivateRoute } from './private-route';
+import { AdminRoute } from './admin-route';
+import { Home } from '../../pages/Home';
+import { Login } from '../../pages/Login';
+import { AuthLoading } from '../auth-loading/auth-loading';
+import { Admin } from '../../pages/Admin';
+import { Sms } from '../../pages/Sms';
+import { Maps } from '../../pages/Maps';
+import { Pdf } from '../../pages/Pdf';
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
