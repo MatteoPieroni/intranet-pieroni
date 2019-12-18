@@ -1,32 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-
-import { pdfVfs } from '../common/pdfVfs';
-import { defineFilesystem, createSign } from '../services/pdf';
+import { PdfForm } from '../components/forms/pdf-form';
 
 const StyledPage = styled.main`
+  padding: 1rem;
 `;
 
 export const Pdf: React.FC = () => {
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    defineFilesystem(pdfVfs);
-
-    return (): void => {
-      defineFilesystem({});
-    };
-  }, [])
-
-  const printPdf = (): void => {
-    // const textWritten = text.toUpperCase();
-    createSign(text);
-  }
 
   return (
     <StyledPage>
-      <h1>Stampa un cartello</h1>
-      <button onClick={printPdf}>Stampa</button>
+      <PdfForm />
     </StyledPage>
   )
 }
