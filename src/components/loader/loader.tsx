@@ -2,9 +2,16 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const StyledDiv = styled.div`
-  /* body {
-    background: #eaecfa
-  } */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #eaecfa;
+    z-index: 1;
+  }
+
   width: 250px;
   height: 50px;
   line-height: 50px;
@@ -18,6 +25,7 @@ const StyledDiv = styled.div`
   font-weight: 900;
   color: #ce4233;
   letter-spacing: 0.2em;
+  z-index: 2;
   
   &::before, &::after {
     content: "";
@@ -44,6 +52,9 @@ const StyledDiv = styled.div`
   }
 `;
 
-export const Loader = () => (
-  <StyledDiv>Caricamento...</StyledDiv>
-)
+export const Loader: React.FC = () => (
+  <>
+    <div className="overlay" />
+    <StyledDiv>Caricamento...</StyledDiv>
+  </>
+);

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Global, css } from '@emotion/core';
 import 'reset-css';
 
-import { UserProvider } from './shared/context/user';
-import { Routes } from './components';
+import { Routes, Loader } from './components';
+const UserProvider = React.lazy(() => import('./shared/context/user'));
 
 const globalCss = css`
   html, body {
@@ -16,6 +16,12 @@ const globalCss = css`
 
   div, ul, p, a, li {
     box-sizing: border-box;
+  }
+
+  button {
+    border: none;
+    background: none;
+    font-family: Roboto, Helvetica Neue, sans-serif;
   }
 
   h1 {
@@ -52,9 +58,11 @@ const globalCss = css`
 
 export const App: React.FC = () => (
   <>
-    <Global styles={globalCss} />
-    <UserProvider>
-      <Routes />
-    </UserProvider>
+    <Suspense fallback={<Loader />}>
+      <Global styles={globalCss} />
+      <UserProvider>
+        <Routes />
+      </UserProvider>
+    </Suspense>
   </>
 );

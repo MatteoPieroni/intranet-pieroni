@@ -17,7 +17,7 @@ export const subscribeToAuthChanges: (subscriber: Types.Subscriber) => firebase.
 
 export const login: (data: Types.ILogin) => void | {} = async ({ email, password }) => {
   try {
-    await fireAuth.signInWithEmailAndPassword(process.env.EMAIL, process.env.PASSWORD);
+    await fireAuth.signInWithEmailAndPassword(email, password);
   } catch (error) {
     // Handle Errors here.
     const errorCode = error.code;

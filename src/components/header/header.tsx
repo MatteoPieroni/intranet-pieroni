@@ -16,8 +16,10 @@ const StyledHeader = styled.header`
     height: 2rem;
   }
 
-  a {
+  a, .log-out {
     padding: 0 1rem 0 0;
+    font-size: 1rem;
+    line-height: 1rem;
     color: #fff;
     font-weight: 600;
     vertical-align: middle;
@@ -31,6 +33,12 @@ const StyledHeader = styled.header`
     &.active {
       color: #f23c20;
     }
+  }
+
+  .log-out {
+    padding-left: 2rem;
+    background: none;
+    cursor: pointer;
   }
 `;
 
@@ -53,7 +61,7 @@ export const Header: () => JSX.Element = () => {
         <NavLink to="/cartello">
           Crea cartello
         </NavLink>
-        <button onClick={logout}>Log out</button>
+        <button className="log-out" onClick={logout}>Esci</button>
       </nav>
       <div className="logo-container">
         <Logo />

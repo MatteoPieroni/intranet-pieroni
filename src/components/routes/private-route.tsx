@@ -24,7 +24,7 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
         id ? (
           <>
             <Header />
-            <Template>
+            <Template withHeader>
               {children}
             </Template>
           </>

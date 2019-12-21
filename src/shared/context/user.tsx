@@ -1,6 +1,5 @@
-import React, { useState, useEffect, ProviderProps, Context } from 'react';
+import React, { useState, useEffect, Context } from 'react';
 import { fireAuth, fireDb } from '../../services/firebase';
-import { IUser } from '../../services/firebase/types';
 import { normaliseUserForState } from '../../utils/normaliseUserForState';
 
 export const UserContext: Context<any> = React.createContext(null);
@@ -68,3 +67,5 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
     </UserContext.Provider>
   );
 };
+
+export default UserProvider;

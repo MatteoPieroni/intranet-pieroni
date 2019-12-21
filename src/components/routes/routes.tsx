@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,7 +9,6 @@ import {
 import { useUser } from '../../shared/hooks/useUser';
 
 import { PrivateRoute } from './private-route';
-import { AdminRoute } from './admin-route';
 import { AuthLoading } from '../auth-loading';
 import { Loader } from '../loader';
 import { Login } from '../../pages/Login';
@@ -49,9 +48,6 @@ export const Routes: () => JSX.Element = () => {
                 <PrivateRoute path="/cartello">
                   <Pdf />
                 </PrivateRoute>
-                <AdminRoute path="/admin">
-                  <div>Admin</div>
-                </AdminRoute>
               </Switch>
             </Suspense>
           ) : (
