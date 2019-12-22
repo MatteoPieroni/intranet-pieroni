@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   template: path.resolve(__dirname, 'src/index.html'),
@@ -59,6 +58,5 @@ module.exports = {
 
   plugins: [
     HtmlWebpackPluginConfig,
-    new Dotenv(),
   ],
 };
