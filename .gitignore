@@ -1,7 +1,5 @@
 node_modules/
+.env
 
-adminmail\.js
-
-fb_auth\.js
-
-skebby_auth\.js
+dist/*
+!dist/assets/

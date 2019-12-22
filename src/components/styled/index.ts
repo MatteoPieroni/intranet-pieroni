@@ -1,0 +1,1 @@
+export { StyledH2 } from './h2';
