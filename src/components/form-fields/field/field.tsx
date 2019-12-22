@@ -40,7 +40,7 @@ const StyledField = styled.div<{ small: boolean }>`
 
   .error {
     font-size: 1em;
-    color: inherit;
+    color: #9e1500;
   }
 `;
 

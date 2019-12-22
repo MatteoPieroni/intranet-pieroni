@@ -29,10 +29,8 @@ export const Routes: () => JSX.Element = () => {
         hasLoaded ? (
           id ? (
             <Suspense fallback={<Loader />}>
+              <Redirect to="/home" />
               <Switch>
-                <Route path="/login">
-                  <Login />
-                </Route>
                 <Route path="/authLoading">
                   <AuthLoading />
                 </Route>

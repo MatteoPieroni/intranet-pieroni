@@ -25,6 +25,10 @@ const globalCss = css`
     color: #333;
     text-decoration: underline;
     cursor: pointer;
+
+    &:focus {
+      outline: 2px solid #D79922;
+    }
   }
 
   button {
