@@ -18,6 +18,14 @@ const globalCss = css`
     box-sizing: border-box;
   }
 
+  a {
+    position: relative;
+    letter-spacing: 1px;
+    color: #333;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
   button {
     border: none;
     background: none;

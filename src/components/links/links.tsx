@@ -5,7 +5,6 @@ import { ILink } from '../../services/firebase/types';
 import { SavedLink } from '../saved-link/saved-link';
 import { StyledH2 } from '../styled';
 
-import { updateLink } from '../../services/firebase/db';
 import { Icon } from '../icons';
 import { NewLink } from '../new-link';
 import { Button } from '../button';

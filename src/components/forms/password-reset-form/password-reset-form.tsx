@@ -3,26 +3,24 @@ import styled from '@emotion/styled';
 import { Formik, Form, FormikHelpers } from 'formik';
 
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
-import { FORM_SUCCESS_LOGIN } from '../../../common/consts';
+import { FORM_SUCCESS_RESET, FORM_FAIL_RESET } from '../../../common/consts';
 
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { Notification } from '../../notification';
-import { login } from '../../../services/firebase/auth';
+import { passwordReset } from '../../../services/firebase/auth';
 
-interface ILogin {
+interface IReset {
   email: string;
-  password: string;
 }
 
-interface ILoginFormProps {
+interface IResetFormProps {
   onSave?: () => void;
-  onReset: () => void;
+  onLogin: () => void;
 }
 
-interface ILoginError {
+interface IResetError {
   email?: string;
-  password?: string;
 }
 
 const StyledLoginForm = styled.div`
@@ -55,27 +53,26 @@ const StyledLoginForm = styled.div`
   }
 `;
 
-const newLogin: ILogin = {
+const newReset: IReset = {
   email: '',
-  password: '',
 }
 
-export const LoginForm: React.FC<ILoginFormProps> = ({ onReset }) => {
+export const PasswordResetForm: React.FC<IResetFormProps> = ({ onLogin }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState('');
   const [fail, setFail] = useState('');
 
-  const onSubmitSms: (values: ILogin, formikHelpers: FormikHelpers<any>) => void = async (values, { resetForm }) => {
+  const onSubmitReset: (values: IReset, formikHelpers: FormikHelpers<any>) => void = async (values, { resetForm }) => {
     setIsSaving(true);
     setSuccess('');
     setFail('');
 
     try {
-      const { email, password } = values;
+      const { email } = values;
 
-      await login({ email, password });
+      await passwordReset(email);
 
-      setSuccess(FORM_SUCCESS_LOGIN);
+      setSuccess(FORM_SUCCESS_RESET);
       resetForm({});
     } catch (e) {
       setFail(e.message);
@@ -84,35 +81,32 @@ export const LoginForm: React.FC<ILoginFormProps> = ({ onReset }) => {
     setIsSaving(false);
   }
 
-  const validateLogin: (values: ILogin) => ILoginError = (values) => {
-    const { email, password } = values;
+  const validateLogin: (values: IReset) => IResetError = (values) => {
+    const { email } = values;
     const emailError = validateMandatoryInput(email);
-    const passwordError = validateMandatoryInput(password);
 
     return {
       ...(emailError && { email: emailError }),
-      ...(passwordError && { password: passwordError }),
     }
   }
 
   return (
     <StyledLoginForm>
-      <h1>Entra nella intranet Pieroni</h1>
-      <Formik initialValues={newLogin} onSubmit={onSubmitSms} validate={validateLogin}>
+      <h1>Resetta la tua password</h1>
+      <Formik initialValues={newReset} onSubmit={onSubmitReset} validate={validateLogin}>
         <Form>
           <Field name="email" label="Email" />
-          <Field name="password" label="Password" type="password" />
           <div className="buttons-container">
             {isSaving ?
-              <p>Verificando...</p> :
-              <Button type="submit">Entra</Button>
+              <p>Inviando la mail...</p> :
+              <Button type="submit">Resetta la password</Button>
             }
           </div>
         </Form>
       </Formik>
       {success && <Notification variant="success" message={success} />}
       {fail && <Notification variant="fail" message={fail} />}
-      <a onClick={onReset}>Resetta la tua password</a>
+      <a onClick={onLogin}>Entra usando i tuoi dati</a>
     </StyledLoginForm>
   )
 }

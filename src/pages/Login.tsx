@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { useUser } from '../shared/hooks';
 import { LoginForm, Template } from '../components';
+import { PasswordResetForm } from '../components/forms/password-reset-form';
 
 export const Login: React.FC = () => {
+  const [resetting, setResetting] = useState(false);
   const [user] = useUser();
   const { id } = user;
 
@@ -13,7 +15,11 @@ export const Login: React.FC = () => {
       <Redirect to="/home" />
       : (
         <Template>
-          <LoginForm />
+          {resetting ? (
+            <PasswordResetForm onLogin={() => setResetting(false)} />
+          ) : (
+              <LoginForm onReset={() => setResetting(true)} />
+            )}
         </Template>
       )
   );

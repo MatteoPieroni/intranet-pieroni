@@ -6,6 +6,15 @@ export interface ILogin {
   password: string;
 }
 
+export enum ELoginErrors {
+  noUser = 'auth/user-not-found',
+  wrongEmail = 'auth/invalid-email',
+}
+
+export enum EResetErrors {
+  wrongEmail = 'auth/user-not-found',
+}
+
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
 export type GetDbRecords = (recordString: string) => Promise<any>;
