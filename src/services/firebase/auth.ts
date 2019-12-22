@@ -3,6 +3,7 @@ import { fireApp } from './app';
 import { FORM_FAIL_LOGIN_NO_USER, FORM_FAIL_LOGIN_EMAIL_BAD_FORMATTED, FORM_FAIL_LOGIN, FORM_FAIL_RESET_NO_USER, FORM_FAIL_RESET } from '../../common/consts';
 
 const fireAuth = fireApp.auth();
+fireAuth.languageCode = 'it';
 
 export const getCurrentUser: () => firebase.User = () => fireAuth.currentUser;
 
