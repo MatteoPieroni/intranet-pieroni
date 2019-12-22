@@ -2,7 +2,8 @@ import React, { Suspense } from 'react';
 import { Global, css } from '@emotion/core';
 import 'reset-css';
 
-import { Routes, Loader } from './components';
+import { Loader } from './components';
+const Routes = React.lazy(() => import('./components/routes'));
 const UserProvider = React.lazy(() => import('./shared/context/user'));
 
 const globalCss = css`
