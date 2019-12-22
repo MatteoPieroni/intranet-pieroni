@@ -106,7 +106,7 @@ export const PasswordResetForm: React.FC<IResetFormProps> = ({ onLogin }) => {
       </Formik>
       {success && <Notification variant="success" message={success} />}
       {fail && <Notification variant="fail" message={fail} />}
-      <a onClick={onLogin}>Entra usando i tuoi dati</a>
+      <a onClick={onLogin} href="#!">Entra usando i tuoi dati</a>
     </StyledLoginForm>
   )
 }
