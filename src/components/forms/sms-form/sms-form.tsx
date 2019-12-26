@@ -74,7 +74,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
 
       const finalNumber = formatMobile(number);
 
-      console.log(await sendSms({ number: finalNumber, message }));
+      await sendSms({ number: finalNumber, message });
 
       const historyData: IDbSms = {
         sender: `${name} ${surname}`,
@@ -84,7 +84,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
       }
       console.log(historyData);
 
-      // await addSms(historyData);
+      await addSms(historyData);
 
       setSuccess(FORM_SUCCESS_MESSAGE);
       resetForm({});
