@@ -1,11 +1,20 @@
 import { clearAuth, login } from "../../utils/login";
-import { submitForm, checkError } from "../../utils/forms";
+import { submitForm, checkError, inputCheckError } from "../../utils/forms";
 import { users } from "../../fixtures/users";
 
 describe('The website', () => {
 
   beforeEach(() => {
     clearAuth();
+  })
+
+  it('shows form errors for empty fields', () => {
+    cy.visit('login');
+
+    inputCheckError('input[name="email"]');
+      
+    inputCheckError('input[name="password"]');
+
   })
 
   it('shows an error message if the user does not exist', () => {
