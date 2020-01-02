@@ -14,6 +14,8 @@ export const login = (type = 'notAdmin') => {
   cy
     .get('button[type="submit"]')
     .click();
+
+  cy.wait(3000)
 }
 
 export const clearAuth = () => {
