@@ -44,7 +44,8 @@
     "react-dom": "^16.11.0",
     "react-modal": "^3.11.1",
     "react-router-dom": "^5.1.2",
-    "reset-css": "^5.0.1"
+    "reset-css": "^5.0.1",
+    "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",

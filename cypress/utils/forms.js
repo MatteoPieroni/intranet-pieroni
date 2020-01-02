@@ -5,13 +5,26 @@ export const submitForm = () => {
     .click();
 }
 
-export const checkError = (text = 'Ricontrolla per favore') => {
+export const formCheckError = (text = 'Ricontrolla per favore') => {
   cy
   .get('[data-testid="notification-fail"]')
   .contains(text);
 }
 
+export const formCheckSuccess = () => {
+  cy
+  .get('[data-testid="notification-success"]')
+  .length === 1;
+}
+
 // INPUTS
+export const setInput = (selector, value) => {
+  cy
+  .get(selector)
+  .focus()
+  .type(value);
+}
+
 export const inputCheckError = (selector, value) => {
   if (!value) {
     return cy

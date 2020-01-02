@@ -1,5 +1,5 @@
 import { clearAuth, login } from "../../utils/login";
-import { submitForm, checkError, inputCheckError } from "../../utils/forms";
+import { submitForm, formCheckError, inputCheckError, formCheckSuccess } from "../../utils/forms";
 import { users } from "../../fixtures/users";
 
 describe('The website', () => {
@@ -20,7 +20,7 @@ describe('The website', () => {
   it('shows an error message if the user does not exist', () => {
     login('fake');
 
-    checkError();
+    formCheckError();
   });
 
   it('logs in and redirects to the home', () => {
@@ -42,12 +42,15 @@ describe('The website', () => {
 
     submitForm();
 
-    checkError();
+    formCheckError();
   });
 
   it('allows users to reset their password and go back to login', () => {
-    cy.server()
-    cy.route('POST', 'https://www.googleapis.com/identitytoolkit', '')
+    cy.server();
+    cy.route('POST', 'https://www.googleapis.com/identitytoolkit/**', JSON.stringify({
+      kind: "identitytoolkit#GetOobConfirmationCodeResponse",
+      email: users.notAdmin.email,
+    }));
     
     cy.visit('/login');
 
@@ -60,6 +63,8 @@ describe('The website', () => {
       .type(users.notAdmin.email);
 
     submitForm();
+
+    formCheckSuccess();
   });
 
 });

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Global, css } from '@emotion/core';
 import 'reset-css';
+import 'whatwg-fetch';
 
 import { Loader } from './components';
 const Routes = React.lazy(() => import('./components/routes'));
