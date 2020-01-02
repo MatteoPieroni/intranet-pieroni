@@ -6,6 +6,7 @@ import { Icon } from '../icons';
 import { QuoteForm } from '../forms';
 import { Button } from '../button';
 import { IQuote } from '../../services/firebase/types';
+import { useUser } from '../../shared/hooks';
 
 interface IQuoteProps {
   quote: IQuote;
@@ -64,10 +65,12 @@ const StyledQuote = styled.div`
 `;
 
 export const Quote: React.FC<IQuoteProps> = ({ quote, refresh }) => {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
+  const [user] = useUser();
+  const { isAdmin } = user;
   const { url, text } = quote;
 
-  const onSave = () => {
+  const onSave = (): void => {
     refresh();
     setIsEditing(false);
   }
@@ -76,12 +79,14 @@ export const Quote: React.FC<IQuoteProps> = ({ quote, refresh }) => {
     <StyledQuote>
       <div className="header">
         <StyledH2>Citazione del mese</StyledH2>
-        <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
-          Modifica
-        </Button>
+        {isAdmin && (
+          <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+            Modifica
+          </Button>
+        )}
       </div>
       <div className="quote">
-        {isEditing ? (
+        {isAdmin && isEditing ? (
           <QuoteForm initialState={quote} className="form" onSave={onSave} />
         ) : (
             <p>{text}</p>
