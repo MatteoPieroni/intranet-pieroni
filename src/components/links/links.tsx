@@ -8,6 +8,7 @@ import { StyledH2 } from '../styled';
 import { Icon } from '../icons';
 import { NewLink } from '../new-link';
 import { Button } from '../button';
+import { useUser } from '../../shared/hooks';
 
 interface ILinkProps {
   links: ILink[];
@@ -44,20 +45,24 @@ const StyledLinks = styled.div`
 
 export const Links: React.FC<ILinkProps> = ({ links }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [user] = useUser();
+  const { isAdmin } = user;
 
   return (
     <StyledLinks>
       <div className="header">
         <StyledH2>Link utili</StyledH2>
-        <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
-          Modifica
-        </Button>
+        {isAdmin && (
+          <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+            Modifica
+          </Button>
+        )}
       </div>
       <ul>
         {links && links.map(link => (
-          <SavedLink key={link.id} link={link} editable={isEditing} />
+          <SavedLink key={link.id} link={link} editable={isAdmin && isEditing} />
         ))}
-        {isEditing && <NewLink />}
+        {isAdmin && isEditing && <NewLink />}
       </ul>
     </StyledLinks>
   )
