@@ -142,7 +142,7 @@ describe('Home Page for admins | Links', () => {
   });
 })
 
-describe('Home Page for admins | Links', () => {
+describe('Home Page for admins | Quote', () => {
   before(() => {
     login('admin');
   });
