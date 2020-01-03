@@ -98,7 +98,7 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
           <Field name="color" label="Colore" />
           <div className="buttons-container">
             {id && (
-              <Button onClick={deleteLink} icon={Icon.Trash} ghost>Rimuovi questo link</Button>
+              <Button onClick={deleteLink} icon={Icon.Trash} ghost testId="link-delete-button">Rimuovi questo link</Button>
             )
             }
             {isSaving ?

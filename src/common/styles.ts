@@ -48,6 +48,11 @@ const palette = {
     bg: 'bg-005',
     n500: 'F44336',
     n700: 'd32f2f'
+  },
+  test: {
+    bg: 'bg-test',
+    n500: '000',
+    n700: '000'
   }
 };
 

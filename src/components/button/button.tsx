@@ -12,6 +12,7 @@ interface IButtonProps {
   ghost?: boolean;
   type?: keyof typeof EButtonType;
   className?: string;
+  testId?: string;
   onClick?: (event: React.MouseEvent) => void;
 }
 
@@ -56,9 +57,9 @@ const StyledButton = styled.button<IButtonStyleProps>`
   }
 `;
 
-export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button' }) => {
+export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button', testId = '' }) => {
   return (
-    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className}>
+    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className} data-testid={testId}>
       <span className="button">
         {Icon && <Icon className="button-icon" />}
         <span className="text">{children}</span>
