@@ -27,7 +27,7 @@ describe('Home Page', () => {
 
     cy
       .get('.quote-container')
-      .find('img').length === 1;
+      .find('img').should('have.length', 1);
   });
 
 
