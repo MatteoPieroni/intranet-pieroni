@@ -36,6 +36,21 @@ export const setInput = (selector, value) => {
   .type(value);
 }
 
+export const clearAndSetInput = (selector, value) => {
+  if (typeof selector !== 'string') {
+    return selector
+      .focus()
+      .clear()
+      .type(value);
+  }
+
+  cy
+    .get(selector)
+    .focus()
+    .clear()
+    .type(value);
+}
+
 export const inputCheckError = (selector, value) => {
   if (typeof selector !== 'string') {
     return selector
