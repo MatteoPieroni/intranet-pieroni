@@ -48,6 +48,7 @@ describe('Home', () => {
   });
 
   it('sends an sms', () => {
+    // stub
     cy.server();
     cy.route('OPTIONS', apis.smsApi, '');
     cy.route('POST', apis.smsApi, JSON.stringify({
