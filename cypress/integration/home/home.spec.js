@@ -1,7 +1,7 @@
 import { login, clearAuth } from "../../utils/login";
 import { users } from "../../fixtures/users";
 
-describe('Home', () => {
+describe('Home Page', () => {
   before(() => {
     login();
   });

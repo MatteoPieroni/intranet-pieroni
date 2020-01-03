@@ -4,7 +4,7 @@ import { goTo } from "../../utils/navigation";
 
 const veryLongInput = 'abcdefghijklmnopqrstsuvxyz abcdefghijklmnopqrstsuvxyz abcdefghijklmnopqrstsuvxyz abcdefghijklmnopqrstsuvxyz abcdefghijklmnopqrstsuvxyz abcdefghijklmnopqrstsuvxyz';
 
-describe('Home', () => {
+describe('Sign Page', () => {
   before(() => {
     login();
   });

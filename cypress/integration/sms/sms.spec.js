@@ -3,7 +3,7 @@ import { inputCheckError, setInput, submitForm, formCheckError, formCheckSuccess
 import { goTo } from "../../utils/navigation";
 import { apis } from "../../fixtures/apis";
 
-describe('Home', () => {
+describe('Sms Page', () => {
   before(() => {
     login();
   });

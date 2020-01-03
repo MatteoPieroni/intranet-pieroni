@@ -2,7 +2,7 @@ import { clearAuth, login } from "../../utils/login";
 import { submitForm, formCheckError, inputCheckError, formCheckSuccess } from "../../utils/forms";
 import { users } from "../../fixtures/users";
 
-describe('The website', () => {
+describe('Login Page', () => {
 
   beforeEach(() => {
     clearAuth();
