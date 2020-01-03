@@ -14,16 +14,12 @@ describe('Sign Page', () => {
   });
   
   beforeEach(() => {
-    goTo('/cartello', {
-      onBeforeLoad: (win) => {
-        win.fetch = null
-      }
-    });
+    goTo('/cartello');
   });
 
   it('shows a form', () => {
     cy
-      .get('form').length === 1;
+      .get('form').should('have.length', 1);
   });
 
   it('shows errors in the form when there is no data', () => {

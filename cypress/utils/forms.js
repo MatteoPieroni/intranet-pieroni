@@ -14,7 +14,7 @@ export const formCheckError = (text = 'Ricontrolla per favore') => {
 export const formCheckSuccess = () => {
   cy
   .get('[data-testid="notification-success"]')
-  .length === 1;
+  .should('have.length', 1);
 }
 
 // INPUTS
@@ -32,7 +32,8 @@ export const inputCheckError = (selector, value) => {
       .focus()
       .blur()
       .parent()
-      .find('.error').length === 1;
+      .find('.error')
+      .should('have.length', 1);
     }
     
     cy
@@ -41,5 +42,6 @@ export const inputCheckError = (selector, value) => {
     .type(value)
     .blur()
     .parent()
-    .find('.error').length === 1;
+    .find('.error')
+    .should('have.length', 1);
 } 

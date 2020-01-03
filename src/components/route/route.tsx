@@ -35,7 +35,7 @@ const StyledDiv = styled.div<{ quickest?: boolean }>`
 export const Route: React.FC<IRouteProps> = ({ route, quickest }) => {
   const { name, cost, km, duration } = route;
   return (
-    <StyledDiv quickest={quickest}>
+    <StyledDiv quickest={quickest} data-testid={`route-result${quickest ? '-quickest' : ''}`}>
       <h2>{name}</h2>
       <p className="cost"><strong>{cost}€</strong> di trasporto</p>
       <ul className="other-details">
