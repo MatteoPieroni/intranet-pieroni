@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
-    "build:prod": "webpack --config webpack.prod.js",
+    "build": "webpack --config webpack.prod.js",
     "test": "jest",
     "tdd": "jest --watch",
     "lint": "eslint './src/**/*.{ts,tsx}'",
