@@ -70,8 +70,13 @@ export const SavedLink: React.FC<ISavedLinkProps> = ({ link, editable }) => {
   const { link: url, description, color } = link;
 
   return (
-    <StyledLink color={color}>
-      <a href={!editable ? url : null} target="_blank" rel="noopener noreferrer" className={editable ? 'editing' : ''}>
+    <StyledLink color={color} data-testid={color === 'test' ? 'test-link' : ''}>
+      <a
+        href={!editable ? url : null}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={editable ? 'editing' : ''}
+      >
         {description}
         {!editable && (
           <Icon.ArrowRight className="arrow" />

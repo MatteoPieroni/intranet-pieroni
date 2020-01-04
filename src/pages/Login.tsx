@@ -16,9 +16,9 @@ export const Login: React.FC = () => {
       : (
         <Template>
           {resetting ? (
-            <PasswordResetForm onLogin={() => setResetting(false)} />
+            <PasswordResetForm onLogin={(): void => setResetting(false)} />
           ) : (
-              <LoginForm onReset={() => setResetting(true)} />
+              <LoginForm onReset={(): void => setResetting(true)} />
             )}
         </Template>
       )

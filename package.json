@@ -6,6 +6,7 @@
   "author": "Matteo Pieroni <matteopieroni6@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^4.1.1",
     "@types/jest": "^24.0.22",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",
@@ -13,17 +14,20 @@
     "@typescript-eslint/eslint-plugin-tslint": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "css-loader": "^3.2.0",
+    "cypress": "^3.8.1",
     "dotenv-webpack": "^1.7.0",
     "eslint": "^6.6.0",
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-react": "^7.16.0",
     "html-webpack-plugin": "^4.0.0-beta.11",
     "jest": "^24.9.0",
+    "serve": "^11.3.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.6.4",
+    "wait-on": "^3.3.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
@@ -43,13 +47,17 @@
     "react-dom": "^16.11.0",
     "react-modal": "^3.11.1",
     "react-router-dom": "^5.1.2",
-    "reset-css": "^5.0.1"
+    "reset-css": "^5.0.1",
+    "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
+    "cypress:open": "cypress open",
     "build": "webpack --config webpack.prod.js",
-    "test": "jest",
+    "lint": "eslint './src/**/*.{ts,tsx}'",
+    "serve:ci": "serve -p 9000 dist & wait-on http://localhost:9000",
+    "start": "webpack-dev-server --config webpack.dev.js",
     "tdd": "jest --watch",
-    "lint": "eslint './src/**/*.{ts,tsx}'"
+    "test:unit": "jest",
+    "test:e2e": "cypress run"
   }
 }

@@ -7,7 +7,7 @@ interface IAuthLoadingProps {
   to?: string;
 }
 
-export const AuthLoading: (props: IAuthLoadingProps) => JSX.Element = ({ to }) => {
+export const AuthLoading: (props: IAuthLoadingProps) => JSX.Element = () => {
   const [user] = useUser();
   const { id } = user;
 

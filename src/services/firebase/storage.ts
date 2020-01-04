@@ -17,4 +17,4 @@ const listFiles: (folderString: string) => Promise<Types.IStorageFile[]> = (fold
   });
 };
 
-export const listImages = async () => await listFiles('/images');
+export const listImages = async (): Promise<Types.IStorageFile[]> => await listFiles('/images');

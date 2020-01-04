@@ -21,7 +21,7 @@ const StyledQuote = styled.div`
     align-items: center;
   }
 
-  .links-button .button {
+  .form-button .button {
     border-bottom-color: #FFF;
     color: #FFF;
   }
@@ -78,9 +78,9 @@ export const Quote: React.FC<IQuoteProps> = ({ quote, refresh }) => {
   return (
     <StyledQuote>
       <div className="header">
-        <StyledH2>Citazione del mese</StyledH2>
+        <StyledH2 data-testid="quote-title">Citazione del mese</StyledH2>
         {isAdmin && (
-          <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+          <Button icon={Icon.Pencil} ghost className="form-button" onClick={(): void => setIsEditing(!isEditing)}>
             Modifica
           </Button>
         )}

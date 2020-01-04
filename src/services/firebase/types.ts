@@ -50,7 +50,8 @@ export enum EColor {
   teal = 'teal',
   lightBlue = 'lightBlue',
   indigo = 'indigo',
-  red = 'red'
+  red = 'red',
+  test = 'test'
 }
 
 export interface ILink {

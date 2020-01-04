@@ -21,7 +21,7 @@ const StyledLinks = styled.div`
     justify-content: space-between;
   }
 
-  .links-button .button {
+  .form-button .button {
     border-bottom-color: #FFF;
     color: #FFF;
   }
@@ -51,9 +51,9 @@ export const Links: React.FC<ILinkProps> = ({ links }) => {
   return (
     <StyledLinks>
       <div className="header">
-        <StyledH2>Link utili</StyledH2>
+        <StyledH2 data-testid="links-title">Link utili</StyledH2>
         {isAdmin && (
-          <Button icon={Icon.Pencil} ghost className="links-button" onClick={(): void => setIsEditing(!isEditing)}>
+          <Button icon={Icon.Pencil} ghost className="form-button" onClick={(): void => setIsEditing(!isEditing)}>
             Modifica
           </Button>
         )}
