@@ -17,6 +17,12 @@ steps:
 
 - script: |
     yarn install
-    yarn test
+    yarn test:unit
+    yarn lint
+  displayName: 'install, lint, test unit'
+
+- script: |
     yarn build
-  displayName: 'install, test, build'
+    yarn serve:ci
+    yarn test:e2e
+  displayName: 'build, test e2e'
