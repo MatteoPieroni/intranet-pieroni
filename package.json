@@ -50,13 +50,13 @@
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
+    "cypress:open": "cypress open",
     "build": "webpack --config webpack.prod.js",
-    "test": "jest",
-    "tdd": "jest --watch",
     "lint": "eslint './src/**/*.{ts,tsx}'",
     "serve:ci": "serve -p 9000 dist & wait-on http://localhost:9000",
-    "teste2e": "cypress run",
-    "cypress:open": "cypress open"
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "tdd": "jest --watch",
+    "test:unit": "jest",
+    "test:e2e": "cypress run"
   }
 }
