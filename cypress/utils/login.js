@@ -1,7 +1,7 @@
 import { users } from '../fixtures/users';
 
 export const login = (type = 'notAdmin') => {
-  cy.visit('/login');
+  cy.visit('/');
 
   cy
     .get('input[name="email"]')

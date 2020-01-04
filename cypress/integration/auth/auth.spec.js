@@ -9,7 +9,7 @@ describe('Login Page', () => {
   })
 
   it('shows form errors for empty fields', () => {
-    cy.visit('login');
+    cy.visit('/');
 
     inputCheckError('input[name="email"]');
       
@@ -30,7 +30,7 @@ describe('Login Page', () => {
   });
 
   it('allows users to reset their password and errors when there is no password', () => {
-    cy.visit('/login');
+    cy.visit('/');
 
     cy
       .get('[data-testid="password-reset-link"]')
@@ -52,7 +52,7 @@ describe('Login Page', () => {
       email: users.notAdmin.email,
     }));
     
-    cy.visit('/login');
+    cy.visit('/');
 
     cy
       .get('[data-testid="password-reset-link"]')

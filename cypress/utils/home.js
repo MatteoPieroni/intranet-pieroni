@@ -46,7 +46,6 @@ export const resetQuote = () => {
   cy
     .get('.images-modal')
     .find('input[name="url"]')
-    .should('have.length', 3);
 
   cy
     .get('.images-modal')

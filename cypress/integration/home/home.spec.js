@@ -1,4 +1,5 @@
 import { login, clearAuth } from "../../utils/login";
+import { goTo } from '../../utils/navigation';
 import { users } from "../../fixtures/users";
 
 describe('Home Page', () => {
@@ -11,7 +12,7 @@ describe('Home Page', () => {
   });
 
   beforeEach(() => {
-    cy.visit('/home');
+    goTo('/home');
   });
 
   it('shows the user name', () => {

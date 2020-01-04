@@ -26,27 +26,23 @@ export const formCheckSuccess = () => {
 export const setInput = (selector, value) => {
   if (typeof selector !== 'string') {
     return selector
-      .focus()
       .type(value);
   }
 
   cy
   .get(selector)
-  .focus()
   .type(value);
 }
 
 export const clearAndSetInput = (selector, value) => {
   if (typeof selector !== 'string') {
     return selector
-      .focus()
       .clear()
       .type(value);
   }
 
   cy
     .get(selector)
-    .focus()
     .clear()
     .type(value);
 }
@@ -73,7 +69,6 @@ export const inputCheckError = (selector, value) => {
     
   cy
     .get(selector)
-    .focus()
     .type(value)
     .blur()
     .parent()

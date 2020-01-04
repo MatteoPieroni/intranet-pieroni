@@ -7,6 +7,7 @@ declare interface Window {
   google: {
     maps: any;
   };
+  Cypress: boolean;
 }
 
 interface IGenericProps {
