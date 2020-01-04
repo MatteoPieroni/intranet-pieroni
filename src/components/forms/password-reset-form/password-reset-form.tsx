@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Formik, Form, FormikHelpers } from 'formik';
 
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
-import { FORM_SUCCESS_RESET, FORM_FAIL_RESET } from '../../../common/consts';
+import { FORM_SUCCESS_RESET } from '../../../common/consts';
 
 import { Field } from '../../form-fields';
 import { Button } from '../../button';

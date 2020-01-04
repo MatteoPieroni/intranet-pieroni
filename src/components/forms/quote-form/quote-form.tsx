@@ -56,7 +56,7 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
   const [isSelectingImage, setIsSelectingImage] = useState(false);
 
   useEffect(() => {
-    const fetchImages = async () => {
+    const fetchImages = async (): Promise<void> => {
       try {
         const storedImages = await getImages();
         setImages(storedImages);

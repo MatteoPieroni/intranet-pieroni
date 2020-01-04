@@ -19,7 +19,7 @@ export const AdminRoute: (props: IPrivateRouteProps) => JSX.Element = ({ childre
   return (
     <Route
       {...rest}
-      render={() =>
+      render={(): React.ReactElement =>
         isAdmin ? (
           <>
             <Header />
