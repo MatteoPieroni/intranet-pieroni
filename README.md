@@ -21,7 +21,8 @@ This repository contains the code for Pieroni srl intranet.
 - Emotion
 
 ### Testing
-- Jest
+- Jest for unit tests
+- Cypress for E2E tests
 
 ### Others
 - Formik
@@ -29,6 +30,7 @@ This repository contains the code for Pieroni srl intranet.
 ### CI/CD
 - Webpack
 - Netlify
+- Azure DevOps Pipelines
 
 ## Contact me
 www.matteopieroni.com
