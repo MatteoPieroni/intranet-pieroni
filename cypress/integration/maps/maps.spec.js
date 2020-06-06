@@ -45,7 +45,7 @@ describe('Maps Page', () => {
       .get('[data-testid^="route-result"]', { multiple: true })
       .should('include.text', ' di trasporto')
       .should('include.text', 'di viaggio')
-      .should('include.text', '15 km di distanza');
+      .should('include.text', '16 km di distanza');
 
     // check quickest
     cy
