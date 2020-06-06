@@ -12,8 +12,6 @@ jobs:
   - job: Cypress_e2e_tests
     pool:
       vmImage: 'ubuntu-16.04'
-    strategy:
-      parallel: 4
     steps:
       - task: NodeTool@0
         inputs:
@@ -49,17 +47,15 @@ jobs:
       # To record on Cypress dashboard we need to set CYPRESS_RECORD_KEY environment variable.
       # For setting ci-build-id, BUILD_BUILDNUMBER is a good candidate
       - script: |
-          npx print-env AGENT
-          npx print-env BUILD
-          npx print-env SYSTEM
-          yarn install
           yarn test:unit
           yarn lint
         displayName: 'install, lint, test unit'
 
       - script: |
-          yarn ci:verify
-          yarn ci:info
+          npx print-env AGENT
+          npx print-env BUILD
+          npx print-env SYSTEM
+          yarn cy:verify
           yarn build
           yarn serve:ci
           yarn test:e2e

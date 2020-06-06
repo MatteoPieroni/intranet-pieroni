@@ -52,7 +52,6 @@
   },
   "scripts": {
     "cy:verify": "cypress verify",
-    "cy:info": "cypress info",
     "cypress:open": "cypress open",
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint './src/**/*.{ts,tsx}'",
