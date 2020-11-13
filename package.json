@@ -51,6 +51,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
+    "cy:verify": "cypress verify",
     "cypress:open": "cypress open",
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint './src/**/*.{ts,tsx}'",
