@@ -66,6 +66,8 @@ export interface IQuote {
   url: string;
 }
 
+export type IMail = string; 
+
 export interface IImage {
   url: string;
 }

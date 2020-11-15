@@ -17,6 +17,7 @@ const Home = React.lazy(() => import('../../pages/Home'));
 const Sms = React.lazy(() => import('../../pages/Sms'));
 const Maps = React.lazy(() => import('../../pages/Maps'));
 const Pdf = React.lazy(() => import('../../pages/Pdf'));
+const Mail = React.lazy(() => import('../../pages/Mail'));
 
 export const Routes: () => JSX.Element = () => {
   const [user, hasLoaded] = useUser();
@@ -45,6 +46,9 @@ export const Routes: () => JSX.Element = () => {
                 </PrivateRoute>
                 <PrivateRoute path="/cartello">
                   <Pdf />
+                </PrivateRoute>
+                <PrivateRoute path="/mail">
+                  <Mail />
                 </PrivateRoute>
               </Switch>
             </Suspense>

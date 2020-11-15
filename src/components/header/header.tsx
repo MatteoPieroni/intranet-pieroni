@@ -52,6 +52,9 @@ export const Header: () => JSX.Element = () => {
         <NavLink to="/home">
           Home
         </NavLink>
+        <NavLink to="/mail">
+          Mail
+        </NavLink>
         <NavLink to="/sms">
           Sms
         </NavLink>

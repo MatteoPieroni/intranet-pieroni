@@ -14,5 +14,10 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
     "geocode"
-  ]
+  ],
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true
+  }
 }
