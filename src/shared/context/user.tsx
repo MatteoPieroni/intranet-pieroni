@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Context } from 'react';
 import { fireAuth, fireDb } from '../../services/firebase';
+import { IDbUser } from '../../services/firebase/types';
 import { normaliseUserForState } from '../../utils/normaliseUserForState';
 
 export const UserContext: Context<any> = React.createContext(null);
@@ -51,6 +52,12 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
       if (authUser) {
         try {
           let userObject = await fetchUserObject(authUser.uid);
+
+          // if user is already logged in using old mail/pass method
+          if (authUser.providerData[0].providerId === 'password') {
+            logOut();
+          }
+
           // if it's the first login
           if (!userObject) {
             const userData = authUser.providerData?.[0];
