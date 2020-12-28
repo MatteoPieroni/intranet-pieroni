@@ -1,6 +1,12 @@
 import * as Types from './types';
 import { fireApp, microsoftProvider } from './app';
-import { FORM_FAIL_LOGIN_NO_USER, FORM_FAIL_LOGIN_EMAIL_BAD_FORMATTED, FORM_FAIL_LOGIN, FORM_FAIL_RESET_NO_USER, FORM_FAIL_RESET } from '../../common/consts';
+import {
+  FORM_FAIL_LOGIN_NO_USER,
+  FORM_FAIL_LOGIN,
+  FORM_FAIL_RESET_NO_USER,
+  FORM_FAIL_RESET,
+  FORM_FAIL_LOGIN_POPUP_CLOSED
+} from '../../common/consts';
 
 const fireAuth = fireApp.auth();
 fireAuth.languageCode = 'it';
@@ -26,8 +32,8 @@ export const loginErrorHandling: (code: keyof Types.ELoginErrors) => string = (c
   switch (codes) {
     case 'auth/user-not-found':
       return FORM_FAIL_LOGIN_NO_USER
-    case 'auth/invalid-email':
-      return FORM_FAIL_LOGIN_EMAIL_BAD_FORMATTED
+    case 'auth/popup-closed-by-user':
+      return FORM_FAIL_LOGIN_POPUP_CLOSED;
     default:
       return FORM_FAIL_LOGIN;
   }
