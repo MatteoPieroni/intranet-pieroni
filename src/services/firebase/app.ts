@@ -13,3 +13,5 @@ export const fireApp = firebase.initializeApp({
   messagingSenderId: process.env.MESSAGING_SENDER_ID,
   appId: process.env.APP_ID,
 });
+
+export const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com');
