@@ -15,8 +15,6 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
     }
   });
 };
-
-export const getUser: (id: string) => Promise<Types.IDbUser> = id => GetDbRecordById('/users/', id);
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
 export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
@@ -105,3 +103,6 @@ const removeRecord: Types.RemoveRecord = (recordString, id) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const removeLink: (id: string) => Promise<any | Error> = async (id) => await removeRecord('/links', id);
+
+export const getUser: (id: string) => Promise<Types.IDbUser | null> = id => GetDbRecordById('/users/', id);
+export const createUser: (id: string, user: Types.IDbUser) => Promise<Types.IDbUser | Error> = (id, data) => updateRecord('/users/', id, data);
