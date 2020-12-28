@@ -51,16 +51,16 @@ jobs:
           yarn lint
         displayName: 'install, lint, test unit'
 
-      - script: |
-          npx print-env AGENT
-          npx print-env BUILD
-          npx print-env SYSTEM
-          yarn cy:verify
-          yarn build
-          yarn serve:ci
-          yarn test:e2e
-        displayName: 'build, test e2e'
+      # - script: |
+      #     npx print-env AGENT
+      #     npx print-env BUILD
+      #     npx print-env SYSTEM
+      #     yarn cy:verify
+      #     yarn build
+      #     yarn serve:ci
+      #     yarn test:e2e
+      #   displayName: 'build, test e2e'
 
-        env:
-          # avoid warnings about terminal
-          TERM: xterm
+      #   env:
+      #     # avoid warnings about terminal
+      #     TERM: xterm
