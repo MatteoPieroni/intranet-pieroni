@@ -1,9 +1,20 @@
 import * as Types from './types';
-import { fireApp } from './app';
-import { FORM_FAIL_LOGIN_NO_USER, FORM_FAIL_LOGIN_EMAIL_BAD_FORMATTED, FORM_FAIL_LOGIN, FORM_FAIL_RESET_NO_USER, FORM_FAIL_RESET } from '../../common/consts';
+import { fireApp, microsoftProvider } from './app';
+import {
+  FORM_FAIL_LOGIN_NO_USER,
+  FORM_FAIL_LOGIN,
+  FORM_FAIL_RESET_NO_USER,
+  FORM_FAIL_RESET,
+  FORM_FAIL_LOGIN_POPUP_CLOSED
+} from '../../common/consts';
 
 const fireAuth = fireApp.auth();
 fireAuth.languageCode = 'it';
+
+microsoftProvider.setCustomParameters({
+  tenant: "pieroni.it",
+  'login_hint': '@pieroni.it',
+});
 
 export const getCurrentUser: () => firebase.User = () => fireAuth.currentUser;
 
@@ -21,8 +32,8 @@ export const loginErrorHandling: (code: keyof Types.ELoginErrors) => string = (c
   switch (codes) {
     case 'auth/user-not-found':
       return FORM_FAIL_LOGIN_NO_USER
-    case 'auth/invalid-email':
-      return FORM_FAIL_LOGIN_EMAIL_BAD_FORMATTED
+    case 'auth/popup-closed-by-user':
+      return FORM_FAIL_LOGIN_POPUP_CLOSED;
     default:
       return FORM_FAIL_LOGIN;
   }
@@ -40,6 +51,19 @@ export const resetErrorHandling: (code: keyof Types.EResetErrors) => string = (c
 export const login: (data: Types.ILogin) => void | {} = async ({ email, password }) => {
   try {
     await fireAuth.signInWithEmailAndPassword(email, password);
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = loginErrorHandling(errorCode);
+
+    throw new Error(
+      errorMessage
+    );
+  }
+};
+
+export const loginWithMicrosoft: () => void | {} = async () => {
+  try {
+    await fireAuth.signInWithPopup(microsoftProvider);
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = loginErrorHandling(errorCode);
