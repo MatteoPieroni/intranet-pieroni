@@ -50,7 +50,7 @@ export const Header: () => JSX.Element = () => {
   return (
     <StyledHeader>
       <nav>
-        <NavLink to="/home">
+        <NavLink to="/">
           Home
         </NavLink>
         {!loadingMail && (

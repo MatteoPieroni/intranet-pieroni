@@ -3,13 +3,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
 } from 'react-router-dom';
 
 import { useUser } from '../../shared/hooks/useUser';
 
 import { PrivateRoute } from './private-route';
-import { AuthLoading } from '../auth-loading';
 import { Loader } from '../loader';
 import { Login } from '../../pages/Login';
 
@@ -19,22 +17,15 @@ const Maps = React.lazy(() => import('../../pages/Maps'));
 const Pdf = React.lazy(() => import('../../pages/Pdf'));
 
 export const Routes: () => JSX.Element = () => {
-  const [user, hasLoaded] = useUser();
-
-  const { id } = user;
+  const [, hasLoaded] = useUser();
 
   return (
     <Router>
       {
         hasLoaded ? (
-          id ? (
             <Suspense fallback={<Loader />}>
-              <Redirect to="/home" />
               <Switch>
-                <Route path="/authLoading">
-                  <AuthLoading />
-                </Route>
-                <PrivateRoute path="/home">
+                <PrivateRoute exact path="/">
                   <Home />
                 </PrivateRoute>
                 <PrivateRoute path="/sms">
@@ -46,18 +37,12 @@ export const Routes: () => JSX.Element = () => {
                 <PrivateRoute path="/cartello">
                   <Pdf />
                 </PrivateRoute>
+                <Route path="/login">
+                  <Login />
+                </Route>
               </Switch>
             </Suspense>
-          ) : (
-              <>
-                <Switch>
-                  <Route path="/login">
-                    <Login />
-                  </Route>
-                </Switch>
-                <Redirect to="login" />
-              </>
-            )) :
+          ) :
           <Loader />
       }
     </Router>
