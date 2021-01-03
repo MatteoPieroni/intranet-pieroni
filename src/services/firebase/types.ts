@@ -89,3 +89,14 @@ export interface IDbPlace {
 export interface IStorageFile {
   path: string;
 }
+
+export interface IFile {
+  name: string;
+  filename: string;
+  folder?: string;
+}
+
+export interface IFolder {
+  id: string;
+  name: string;
+}

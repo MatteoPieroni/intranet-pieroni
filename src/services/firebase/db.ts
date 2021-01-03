@@ -18,7 +18,7 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
 export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
-const GetDbRecords: Types.GetDbRecords = recordString => {
+export const GetDbRecords: Types.GetDbRecords = recordString => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');
@@ -34,7 +34,7 @@ const GetDbRecords: Types.GetDbRecords = recordString => {
 
 export const getImages: () => Promise<Types.IImage[]> = () => GetDbRecords('/images/');
 
-const listenToDb: Types.ListenToDb = (recordString, callback) => {
+export const listenToDb: Types.ListenToDb = (recordString, callback) => {
   try {
     fireDb.ref(recordString).on('value', snapshot => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
