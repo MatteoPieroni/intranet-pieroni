@@ -3,6 +3,7 @@ import { IFile, IFolder } from "../../services/firebase/types";
 interface IOrganisedFolders {
 	[key: string]: {
 		name: string;
+		id: string;
 	};
 }
 interface IOrganisedData {
@@ -30,6 +31,7 @@ export const organiseData: (folders: IFolder[], files: IFile[]) => IOrganisedDat
 			{
 				[folder.id]: {
 					name: folder.name,
+					id: folder.id,
 				}
 			}
 		)
