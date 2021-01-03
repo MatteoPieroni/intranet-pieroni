@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import React, { useMemo, useState } from 'react';
 import { IFile, IFolder } from '../../services/firebase/types';
 import { organiseData } from '../../utils/file-system';
+import { File } from './file';
+import { SubFolder } from './subfolder';
 
 interface IFileSystemProps {
 	files: IFile[];
@@ -9,12 +11,22 @@ interface IFileSystemProps {
 }
 
 const StyledContainer = styled.div`
-	display: grid;
-	grid-template-columns: 20% 80%;
 	margin: 2rem auto;
-	padding: 1rem;
 	max-width: 80%;
 	background: #fff;
+
+	.current-folder {
+		width: 100%;
+		border: 2px solid black;
+		padding: .5rem;
+	}
+
+	.filesystem-container {
+		display: grid;
+		grid-gap: 10px;
+  	grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+	padding: 1rem;
+	}
 
 	.folders-menu {
 
@@ -43,46 +55,39 @@ export const FileSystem: React.FC<IFileSystemProps> = ({ files, folders }) => {
 	}, [folders, files]);
 
 	const shownFiles = organisedFilesystem.organisedFiles[currentFolder];
-
-	const getHandleSelectFolder: (folder: string) => () => void = (folder) => (): void => setCurrentFolder(folder);
-	const getHandleKeyboardSelectFolder: (folder: string) => (event: React.KeyboardEvent<HTMLButtonElement>) => void = 
-		(folder) => (event): void => {
-			if (event.key === 'Enter' || event.key === ' ') {
-				setCurrentFolder(folder);
-			}
-		};
+	const displayedFolder = currentFolder === 'home' ? 'Home' : `Home/${organisedFilesystem.organisedFiles[currentFolder].name}`
 
 	return (
 		<StyledContainer>
-			<div className="folders-menu">
-				<ul>
-					{organisedFilesystem.organisedFolders.map(folder => (
-						<li key={folder.id}>
-							<button onClick={getHandleSelectFolder(folder.id)}>{folder.name}</button>
-						</li>
-					))}
-				</ul>
+			<div className="current-folder">
+				{displayedFolder}
 			</div>
-			<div className="files-folder">
-				{shownFiles ? (
-					<>
-						{shownFiles.subfolders && Object.keys(shownFiles.subfolders).map((subfolder) => (
-							<div key={subfolder}>
-								<button
-									onDoubleClick={getHandleSelectFolder(subfolder)}
-									onKeyPress={getHandleKeyboardSelectFolder(subfolder)}
-								>
-									{shownFiles.subfolders[subfolder].name}
-								</button>
-							</div>
+			<div className="filesystem-container">
+				<div className="folders-menu">
+					<ul>
+						{organisedFilesystem.organisedFolders.map(folder => (
+							<li key={folder.id}>
+								<button onClick={(): void => setCurrentFolder(folder.id)}>{folder.name}</button>
+							</li>
 						))}
-						{shownFiles.files.map((file) => (
-							<div key={file.filename}><a href={`http://192.168.1.14/test/${file.filename}`} target="_blank" rel="noreferrer">{file.name}</a></div>
-						))}
-					</>
-				) : (
-					<p>Non ci sono file qui</p>
-				)}
+					</ul>
+				</div>
+				<div className="files-folder">
+					{shownFiles ? (
+						<>
+							{shownFiles.subfolders && Object.keys(shownFiles.subfolders).map((subfolder) => (
+								<SubFolder
+									key={shownFiles.subfolders[subfolder].name}
+									folder={shownFiles.subfolders[subfolder]}
+									onSelect={setCurrentFolder}
+								/>
+							))}
+							{shownFiles.files.map((file) => <File key={file.name} file={file} />)}
+						</>
+					) : (
+						<p>Non ci sono file qui</p>
+					)}
+				</div>
 			</div>
 		</StyledContainer>
 	)
