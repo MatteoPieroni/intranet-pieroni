@@ -16,7 +16,6 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
   });
 };
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
-export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
 export const GetDbRecord: Types.GetDbRecord = (recordString, normaliser) => {
   return new Promise(async (resolve, reject) => {

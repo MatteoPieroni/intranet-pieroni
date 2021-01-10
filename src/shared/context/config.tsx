@@ -15,7 +15,7 @@ export const ConfigProvider: (props: IConfigProviderProps) => JSX.Element = ({ c
   const [config, setConfig] = useState<IConfig>();
 
   useEffect(() => {
-    const fetchConfig = async () => {
+    const fetchConfig = async (): Promise<void> => {
         try {
           const fetchedConfig = await getConfig() as IConfig;
 

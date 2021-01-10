@@ -3,6 +3,7 @@ import { GetDbRecord } from '../../db';
 
 export const getConfig: Types.GetDbObject = () => GetDbRecord('/config', (data: Types.IDbConfig) => {
 	return {
-		smsApi: data.sms_api
+		smsApi: data.sms_api,
+		mailUrl: data.mail_url,
 	}
 });

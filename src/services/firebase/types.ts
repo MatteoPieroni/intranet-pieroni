@@ -94,7 +94,9 @@ export interface IStorageFile {
 
 export interface IDbConfig {
   sms_api: string;
+  mail_url: string;
 }
 export interface IConfig {
   smsApi: string;
+  mailUrl: string;
 }
