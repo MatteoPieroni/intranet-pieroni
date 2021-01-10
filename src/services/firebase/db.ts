@@ -18,6 +18,20 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
 export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
+export const GetDbRecord: Types.GetDbRecord = (recordString, normaliser) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const ref = await fireDb.ref(recordString).once('value');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: unknown = typeof normaliser === 'function' ? normaliser(ref.val()) : ref.val();
+
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 export const GetDbRecords: Types.GetDbRecords = recordString => {
   return new Promise(async (resolve, reject) => {
     try {

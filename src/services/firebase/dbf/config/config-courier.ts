@@ -1,4 +1,8 @@
 import * as Types from '../../types';
-import { GetDbRecords } from '../../db';
+import { GetDbRecord } from '../../db';
 
-export const getConfig: Types.GetDbCollection = () => GetDbRecords('/config');
+export const getConfig: Types.GetDbObject = () => GetDbRecord('/config', (data: Types.IDbConfig) => {
+	return {
+		smsApi: data.sms_api
+	}
+});

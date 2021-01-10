@@ -17,7 +17,7 @@ export const ConfigProvider: (props: IConfigProviderProps) => JSX.Element = ({ c
   useEffect(() => {
     const fetchConfig = async () => {
         try {
-          const fetchedConfig = await getConfig();
+          const fetchedConfig = await getConfig() as IConfig;
 
 					setConfig(fetchedConfig);
 					setHasLoaded(true);
@@ -33,7 +33,7 @@ export const ConfigProvider: (props: IConfigProviderProps) => JSX.Element = ({ c
   return (
     <ConfigContext.Provider value={config}>
 			{hasLoaded ? (
-				{children}
+				children
 			) : (
 				<Loader />
 			)}
