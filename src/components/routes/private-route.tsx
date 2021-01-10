@@ -3,6 +3,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { ConfigProvider } from '../../shared/context/config';
 
 import { useUser } from '../../shared/hooks/useUser';
 import { Header } from '../header/header';
@@ -31,7 +32,9 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
           <>
             <Header />
             <Template withHeader>
-              {children}
+              <ConfigProvider>
+                {children}
+              </ConfigProvider>
             </Template>
           </>
         ) : (
