@@ -30,12 +30,12 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
       render={(routerProps: IRouteRenderProps) =>
         id ? (
           <>
-            <Header />
-            <Template withHeader>
-              <ConfigProvider>
-                {children}
-              </ConfigProvider>
-            </Template>
+            <ConfigProvider>
+              <Header />
+              <Template withHeader>
+                  {children}
+              </Template>
+            </ConfigProvider>
           </>
         ) : (
           <Redirect

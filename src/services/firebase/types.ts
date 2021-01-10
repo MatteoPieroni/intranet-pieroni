@@ -17,7 +17,7 @@ export enum EResetErrors {
 
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
-export type GetDbRecord = (recordString: string, normaliser?: (data: unknown) => unknown) => Promise<unknown>;
+export type GetDbRecord = <T extends unknown, P extends unknown> (recordString: string, normaliser?: (data: T) => P) => Promise<P>;
 export type GetDbRecords = (recordString: string) => Promise<any>;
 export type GetDbObject = () => Promise<unknown>;
 export type GetDbCollection = () => Promise<any>;
@@ -96,7 +96,7 @@ export interface IDbConfig {
   sms_api: string;
   mail_url: string;
 }
-export interface IConfig {
+export type IConfig = {
   smsApi: string;
   mailUrl: string;
 }

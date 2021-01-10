@@ -21,8 +21,7 @@ export const GetDbRecord: Types.GetDbRecord = (recordString, normaliser) => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data: unknown = typeof normaliser === 'function' ? normaliser(ref.val()) : ref.val();
+      const data = typeof normaliser === 'function' ? normaliser(ref.val()) : ref.val();
 
       resolve(data);
     } catch (error) {
