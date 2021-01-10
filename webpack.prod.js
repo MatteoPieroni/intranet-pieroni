@@ -33,7 +33,6 @@ module.exports = merge(common, {
       'process.env.STORAGE_BUCKET': JSON.stringify(process.env.STORAGE_BUCKET),
       'process.env.MESSAGING_SENDER_ID': JSON.stringify(process.env.MESSAGING_SENDER_ID),
       'process.env.APP_ID': JSON.stringify(process.env.APP_ID),
-      'process.env.SMS_API': JSON.stringify(process.env.SMS_API),
     }),
     new JavaScriptObfuscator ({}, ['vendor.index_bundle.js'])
   ],

@@ -16,6 +16,7 @@ import { useUser } from '../../../shared/hooks';
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { Notification } from '../../notification';
+import { useConfig } from '../../../shared/hooks/useConfig';
 
 interface ISmsFormProps {
   onSave?: () => void;
@@ -61,6 +62,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
   const [success, setSuccess] = useState('');
   const [fail, setFail] = useState('');
   const [user] = useUser();
+  const config = useConfig();
 
   const { name, surname, id } = user;
 
@@ -74,7 +76,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
 
       const finalNumber = formatMobile(number);
 
-      await sendSms({ number: finalNumber, message });
+      await sendSms(config.smsApi, { number: finalNumber, message });
 
       const historyData: IDbSms = {
         sender: `${name} ${surname}`,
