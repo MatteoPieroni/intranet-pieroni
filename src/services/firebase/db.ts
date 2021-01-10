@@ -18,7 +18,7 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
 export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
-const GetDbRecords: Types.GetDbRecords = recordString => {
+export const GetDbRecords: Types.GetDbRecords = recordString => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');

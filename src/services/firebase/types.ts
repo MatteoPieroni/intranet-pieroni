@@ -89,3 +89,7 @@ export interface IDbPlace {
 export interface IStorageFile {
   path: string;
 }
+
+export interface IConfig {
+  smsApi: string;
+}
