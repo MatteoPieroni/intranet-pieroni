@@ -17,7 +17,12 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
 };
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
 
-export const GetDbRecord: Types.GetDbRecord = (recordString, normaliser) => {
+type IGetDbRecord = {
+  <T>(recordString: string): Promise<T>;
+  <T, P>(recordString: string, normaliser: (data: T) => P): Promise<P>;
+}
+
+export const GetDbRecord: IGetDbRecord = <T, P = undefined>(recordString: string, normaliser?: (data: T) => P) => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');

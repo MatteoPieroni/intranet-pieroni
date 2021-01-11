@@ -17,7 +17,6 @@ export enum EResetErrors {
 
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
-export type GetDbRecord = <T extends unknown, P extends unknown> (recordString: string, normaliser?: (data: T) => P) => Promise<P>;
 export type GetDbRecords = (recordString: string) => Promise<any>;
 export type GetDbObject = () => Promise<unknown>;
 export type GetDbCollection = () => Promise<any>;
