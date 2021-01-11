@@ -44,7 +44,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
 
         return userObject;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -77,7 +77,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
 
           setUser(normaliseUserForState(authUser.uid, userObject));
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       } else {
         setHasLoaded(true);

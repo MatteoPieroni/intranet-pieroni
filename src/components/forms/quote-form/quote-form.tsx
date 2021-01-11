@@ -61,7 +61,7 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
         const storedImages = await getImages();
         setImages(storedImages);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 
@@ -77,7 +77,7 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
       await updateQuote(values);
       typeof onSave === 'function' && onSave();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     setIsSaving(false);

@@ -103,7 +103,7 @@ const Driver = class {
       }
 
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -207,7 +207,7 @@ const Driver = class {
       // show the marker for quickest route on the map
       await this.showGeocodedAddressOnMap({ address: quickestRoute.address }, false, true)
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     // set total
     this.Current = {

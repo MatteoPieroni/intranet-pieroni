@@ -21,7 +21,7 @@ export const ConfigProvider: (props: IConfigProviderProps) => JSX.Element = ({ c
 					setConfig(fetchedConfig);
 					setHasLoaded(true);
         } catch (error) {
-					console.log(error);
+					console.error(error);
 					setHasLoaded(true);
         }
 		};

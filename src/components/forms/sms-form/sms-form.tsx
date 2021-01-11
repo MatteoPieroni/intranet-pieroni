@@ -81,14 +81,13 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
         time: Date.now(),
         ...values,
       }
-      console.log(historyData);
 
       await addSms(historyData);
 
       setSuccess(FORM_SUCCESS_MESSAGE);
       resetForm({});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setFail(FORM_FAIL_MESSAGE);
     }
 

@@ -20,7 +20,7 @@ export const useQuote: () => [IQuote, () => void, boolean] = () => {
           setQuote(dbQuote);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       setLoading(false);

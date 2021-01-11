@@ -56,7 +56,7 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
         await updateLink(id, values);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     if (typeof onSave === 'function') {
@@ -65,7 +65,6 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
 
     setIsSaving(false);
     resetForm({});
-    console.log(values);
   }
 
   const deleteLink = (): void => {
@@ -73,7 +72,7 @@ export const LinksForm: React.FC<ILinksFormProps> = ({ initialState = newLink, o
     try {
       removeLink(id);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
