@@ -18,6 +18,7 @@ export enum EResetErrors {
 // db
 export type GetDbRecordById = (recordString: string, id: string) => Promise<any>;
 export type GetDbRecords = (recordString: string) => Promise<any>;
+export type GetDbObject = () => Promise<unknown>;
 export type GetDbCollection = () => Promise<any>;
 export type ListenCallback = (hasError: boolean | undefined, data?: any) => void;
 export type ListenToDb = (recordString: string, callback: ListenCallback) => () => void;
@@ -88,4 +89,13 @@ export interface IDbPlace {
 
 export interface IStorageFile {
   path: string;
+}
+
+export interface IDbConfig {
+  sms_api: string;
+  mail_url: string;
+}
+export type IConfig = {
+  smsApi: string;
+  mailUrl: string;
 }

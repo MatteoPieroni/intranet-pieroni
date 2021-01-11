@@ -16,9 +16,26 @@ const GetDbRecordById: Types.GetDbRecordById = (recordString, id) => {
   });
 };
 export const getQuote: () => Promise<Types.IQuote> = () => GetDbRecordById('/quote', 'active');
-export const getMail: () => Promise<Types.IMail> = () => GetDbRecordById('/mail', 'active');
 
-const GetDbRecords: Types.GetDbRecords = recordString => {
+type IGetDbRecord = {
+  <T>(recordString: string): Promise<T>;
+  <T, P>(recordString: string, normaliser: (data: T) => P): Promise<P>;
+}
+
+export const GetDbRecord: IGetDbRecord = <T, P = undefined>(recordString: string, normaliser?: (data: T) => P) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const ref = await fireDb.ref(recordString).once('value');
+      const data = typeof normaliser === 'function' ? normaliser(ref.val()) : ref.val();
+
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const GetDbRecords: Types.GetDbRecords = recordString => {
   return new Promise(async (resolve, reject) => {
     try {
       const ref = await fireDb.ref(recordString).once('value');

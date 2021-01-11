@@ -1,8 +1,6 @@
 import * as Types from "./types";
 
-const apiUrl = process.env.SMS_API;
-
-export const sendSms: (values: Types.ISms) => Promise<Types.ISms> = (values) => {
+export const sendSms: (apiUrl: string, values: Types.ISms) => Promise<Types.ISms> = (apiUrl, values) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(apiUrl, {
