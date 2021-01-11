@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
-import { ILink } from '../../../services/firebase/types';
+import { ILink } from '../../../services/firebase/db';
 import { updateLink, addLink, removeLink } from '../../../services/firebase/db';
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { validateUrl } from '../../../utils/validation/validateUrl';

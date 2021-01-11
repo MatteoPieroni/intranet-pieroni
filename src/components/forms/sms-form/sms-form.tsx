@@ -2,21 +2,18 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Formik, Form, FormikHelpers } from 'formik';
 
-import { ISms } from '../../../services/sms/types';
-import { IDbSms } from '../../../services/firebase/types';
-import { sendSms } from '../../../services/sms';
-import { addSms } from '../../../services/firebase/db';
+import { sendSms, ISms } from '../../../services/sms';
+import { addSms, IDbSms } from '../../../services/firebase/db';
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { validateMobile } from '../../../utils/validation/validateMobile';
-import { formatMobile } from '../../../utils/formatMobile';
 import { validateCapsLock } from '../../../utils/validation/validateCapsLock';
+import { formatMobile } from '../../../utils/formatMobile';
 import { FORM_SUCCESS_MESSAGE, FORM_FAIL_MESSAGE } from '../../../common/consts';
-import { useUser } from '../../../shared/hooks';
+import { useUser, useConfig } from '../../../shared/hooks';
 
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { Notification } from '../../notification';
-import { useConfig } from '../../../shared/hooks/useConfig';
 
 interface ISmsFormProps {
   onSave?: () => void;

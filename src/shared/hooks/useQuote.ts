@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { IQuote } from '../../services/firebase/types';
-import { getQuote } from '../../services/firebase/db';
+import { getQuote, IQuote } from '../../services/firebase/db';
 
 export const useQuote: () => [IQuote, () => void, boolean] = () => {
   const [quote, setQuote] = useState({} as IQuote);

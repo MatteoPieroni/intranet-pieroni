@@ -6,7 +6,7 @@ import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { validateUrl } from '../../../utils/validation/validateUrl';
 import { updateQuote } from '../../../services/firebase/db';
 import { getImages } from '../../../services/firebase/db';
-import { IQuote } from '../../../services/firebase/types';
+import { IQuote } from '../../../services/firebase/db';
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { ImagesModal } from '../../images-modal';

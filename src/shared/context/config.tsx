@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Context } from 'react';
 import { Loader } from '../../components';
-import { getConfig } from '../../services/firebase/dbf';
-import { IConfig } from '../../services/firebase/types';
+import { getConfig, IConfig } from '../../services/firebase/db';
 
 export const ConfigContext: Context<IConfig> = React.createContext(null);
 

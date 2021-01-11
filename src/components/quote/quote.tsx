@@ -5,7 +5,7 @@ import { StyledH2 } from '../styled';
 import { Icon } from '../icons';
 import { QuoteForm } from '../forms';
 import { Button } from '../button';
-import { IQuote } from '../../services/firebase/types';
+import { IQuote } from '../../services/firebase/db';
 import { useUser } from '../../shared/hooks';
 
 interface IQuoteProps {

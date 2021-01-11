@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { listenToLinks } from '../../services/firebase/db';
-import { ILink } from '../../services/firebase/types';
+import { listenToLinks, ILink } from '../../services/firebase/db';
 
 export const useLinks: () => ILink[] = () => {
   const [links, setLinks] = useState([]);
