@@ -1,25 +1,7 @@
-// auth
-export type Subscriber = (user: firebase.User | null) => void;
-export interface ILogin {
-  email: string;
-  password: string;
-}
-
-export enum ELoginErrors {
-  noUser = 'auth/user-not-found',
-  wrongEmail = 'auth/invalid-email',
-}
-
-export enum EResetErrors {
-  wrongEmail = 'auth/user-not-found',
-}
-
-// db
 export interface IRecord<T> {
   [key: string]: T;
 }
 
-// objects
 export interface IDbUser {
   nome: string;
   cognome: string;
@@ -33,18 +15,6 @@ export interface IUser {
   surname: string;
   email: string;
   isAdmin: boolean;
-}
-
-export enum EColor {
-  grey = 'grey',
-  deepOrange = 'deepOrange',
-  amber = 'amber',
-  green = 'green',
-  teal = 'teal',
-  lightBlue = 'lightBlue',
-  indigo = 'indigo',
-  red = 'red',
-  test = 'test'
 }
 
 export interface ILink {
@@ -90,4 +60,16 @@ export interface IDbConfig {
 export type IConfig = {
   smsApi: string;
   mailUrl: string;
+}
+
+export enum EColor {
+  grey = 'grey',
+  deepOrange = 'deepOrange',
+  amber = 'amber',
+  green = 'green',
+  teal = 'teal',
+  lightBlue = 'lightBlue',
+  indigo = 'indigo',
+  red = 'red',
+  test = 'test'
 }
