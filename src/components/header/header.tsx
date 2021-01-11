@@ -50,7 +50,7 @@ export const Header: () => JSX.Element = () => {
   return (
     <StyledHeader>
       <nav>
-        <NavLink to="/">
+        <NavLink to="/" exact>
           Home
         </NavLink>
         <a href={config.mailUrl} target="_blank" rel="noopener noreferrer">

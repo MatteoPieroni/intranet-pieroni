@@ -92,7 +92,7 @@ export const PdfForm: React.FC = () => {
       setSuccess(FORM_SUCCESS_PDF);
       resetForm({});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setFail(FORM_FAIL_PDF);
     }
 

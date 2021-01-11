@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { ILink, EColor } from '../../services/firebase/types';
+import { ILink, EColor } from '../../services/firebase/db';
 import { getLightColor } from '../../common/styles';
 import { Icon } from '../icons';
 import { LinksForm } from '../forms';

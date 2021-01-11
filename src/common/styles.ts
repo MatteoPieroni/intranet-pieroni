@@ -1,4 +1,4 @@
-import { EColor } from "../services/firebase/types";
+import { EColor } from "../services/firebase/db";
 
 type IPalette = {
   [key: string]: {

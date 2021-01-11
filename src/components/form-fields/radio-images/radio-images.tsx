@@ -2,7 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled';
 import { ErrorMessage, getIn, connect } from 'formik';
 
-import { IImage } from '../../../services/firebase/types'
+import { IImage } from '../../../services/firebase/db'
 
 interface IRadioImagesProps {
   images: IImage[];

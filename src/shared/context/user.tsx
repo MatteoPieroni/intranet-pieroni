@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Context } from 'react';
-import { fireAuth, fireDb } from '../../services/firebase';
-import { IDbUser } from '../../services/firebase/types';
+import { fireAuth } from '../../services/firebase';
+import { createUser, getUser, IDbUser, IUser } from '../../services/firebase/db';
 import { normaliseUserForState } from '../../utils/normaliseUserForState';
 
-export const UserContext: Context<any> = React.createContext(null);
+export const UserContext: Context<[IUser, boolean, () => void]> = React.createContext(null);
 
 interface IUserProviderProps {
   children: JSX.Element;
@@ -40,11 +40,11 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
   useEffect(() => {
     const fetchUserObject: (userId: string) => Promise<IDbUser | null> = async userId => {
       try {
-        const userObject = await fireDb.getUser(userId);
+        const userObject = await getUser(userId);
 
         return userObject;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -63,7 +63,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
             const userData = authUser.providerData?.[0];
             const [name, surname] = userData.displayName.split(' ');
 
-            const newData = await fireDb.createUser(authUser.uid, {
+            const newData = await createUser(authUser.uid, {
               nome: name,
               cognome: surname,
               email: userData.email,
@@ -77,7 +77,7 @@ export const UserProvider: (props: IUserProviderProps) => JSX.Element = ({ child
 
           setUser(normaliseUserForState(authUser.uid, userObject));
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       } else {
         setHasLoaded(true);
