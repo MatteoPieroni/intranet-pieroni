@@ -29,8 +29,6 @@ export interface IQuote {
   url: string;
 }
 
-export type IMail = string; 
-
 export interface IImage {
   url: string;
 }
@@ -41,12 +39,6 @@ export interface IDbSms {
   sender: string;
   senderUID: string;
   time: number;
-}
-
-export interface IDbPlace {
-  formatted_address: string;
-  time: number;
-  user: string;
 }
 
 export interface IStorageFile {

@@ -1,10 +1,7 @@
-import * as Types from './db/types';
 import { fireApp, microsoftProvider } from './app';
 import {
   FORM_FAIL_LOGIN_NO_USER,
   FORM_FAIL_LOGIN,
-  FORM_FAIL_RESET_NO_USER,
-  FORM_FAIL_RESET,
   FORM_FAIL_LOGIN_POPUP_CLOSED
 } from '../../common/consts';
 
