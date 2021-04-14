@@ -65,3 +65,25 @@ export enum EColor {
   red = 'red',
   test = 'test'
 }
+
+export interface IDbFile {
+  categories_id: string[];
+  filename: string;
+  id: string;
+  label: string;
+  store_url: string;
+}
+
+export interface IFile {
+  categoriesId: string[];
+  filename: string;
+  id: string;
+  label: string;
+  storeUrl: string;
+}
+
+export interface ICategory {
+  id: string;
+  label: string;
+}
+

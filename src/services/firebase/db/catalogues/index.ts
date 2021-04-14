@@ -1,0 +1,1 @@
+export { CataloguesService } from './catalogues-service';

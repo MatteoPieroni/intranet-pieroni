@@ -57,9 +57,11 @@ export const getDbRecords: IGetDbRecords = <T, P = undefined>(recordString: stri
   });
 };
 
+export type CancellableListener = () => void;
+
 type IListenToDb = {
-  <T>(recordString: string, callback: (hasError: boolean, data: T | T[]) => void): void;
-  <T, P>(recordString: string, callback: (hasError: boolean, data?: T[] | P) => void, normaliser: (data: T) => P): void;
+  <T>(recordString: string, callback: (hasError: boolean, data: T[]) => void): CancellableListener;
+  <T, P>(recordString: string, callback: (hasError: boolean, data?: P) => void, normaliser: (data: T) => P): CancellableListener;
 }
 
 export const listenToDb: IListenToDb = <T, P extends Types.IRecord<T>, Q = undefined>(
