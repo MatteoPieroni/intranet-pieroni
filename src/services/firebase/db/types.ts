@@ -85,5 +85,7 @@ export interface IFile {
 export interface ICategory {
   id: string;
   label: string;
+  parent?: string;
+  depth: number;
 }
 

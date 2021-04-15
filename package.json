@@ -59,6 +59,7 @@
     "start": "webpack-dev-server --config webpack.dev.js",
     "tdd": "jest --watch",
     "test:unit": "jest",
+    "test:dev": "jest --watch",
     "test:e2e": "cypress run"
   }
 }

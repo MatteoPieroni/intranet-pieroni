@@ -1,74 +1,105 @@
-import { IFile, IFolder } from "../../services/firebase/types";
+import { IFile, ICategory } from "../../services/firebase/db";
 
-interface IOrganisedFolders {
-	[key: string]: {
-		name: string;
-		id: string;
-	};
+interface ICategoryWithFileCount extends ICategory {
+	fileCount: number;
 }
+
+export interface ICategoryWithSubfolders extends ICategoryWithFileCount {
+	subfolders: IOrganisedCategories<ICategoryWithSubfolders> | null;
+}
+
+export interface IOrganisedCategories<T> {
+	[key: string]: T;
+}
+
+interface IOrganisedFiles {
+	[key: string]: IFile[];
+}
+
 interface IOrganisedData {
-	[key: string]: {
-		name: string;
-		files: IFile[];
-		subfolders?: IOrganisedFolders;
-	};
+	files: IOrganisedFiles;
+	categories: IOrganisedCategories<ICategoryWithSubfolders>;
 }
 
-const homeFolder: {
-	name: string;
-	files: IFile[];
-	subfolders: IOrganisedFolders;
-} = {
-	name: 'Home',
-	files: [],
-	subfolders: {},
-}
-
-export const organiseData: (folders: IFolder[], files: IFile[]) => IOrganisedData = (folders, files) => {
-	const organisedFolders: IOrganisedFolders = folders.reduce((acc, folder) => ({
-		...acc,
-		...(folder && 
-			{
-				[folder.id]: {
-					name: folder.name,
-					id: folder.id,
-				}
+const transverseAndPlace: (tree: IOrganisedCategories<ICategoryWithSubfolders>, current: ICategoryWithFileCount) => IOrganisedCategories<ICategoryWithSubfolders> = (tree, { parent, ...current }) => {
+	if (tree[parent]) {
+		tree[parent].subfolders = {
+			...tree[parent].subfolders,
+			[current.id]: {
+				...current,
+				subfolders: null,
 			}
-		)
-	}), {});
+		}
 
-	const organisedHome = {
-		...homeFolder,
-		subfolders: organisedFolders
+		return tree;
 	}
 
-	return files.reduce((acc: IOrganisedData, file) => {
-		if (file.folder) {
-			return {
-				...acc,
-				[file.folder]: {
-					name: organisedFolders[file.folder].name,
-					files: [
-						...(acc[file.folder]?.files || []),
-						file,
-					],
-				}
-			}
+	for (const branchKey in tree) {
+		if (tree[branchKey].subfolders) {
+			transverseAndPlace(tree[branchKey].subfolders, { parent, ...current });
+		}
+	}
+}
+
+export const organiseFolders: (categories: ICategoryWithFileCount[]) => IOrganisedCategories<ICategoryWithSubfolders> = (categories) => {
+	const orderedTree: IOrganisedCategories<ICategoryWithSubfolders> = {};
+	const orderedCategories = categories.sort((curr, next) => curr.depth - next.depth);
+
+	orderedCategories.forEach(category => {
+		const { parent, ...cat } = category;
+
+		if (!parent) {
+			orderedTree[cat.id] = {
+				...cat,
+				subfolders: null,
+			};
+
+			return;
 		}
 
-		return {
-			...acc,
-			home: {
-				...acc.home,
-				files: [
-					...(acc.home?.files || []),
-					file,
-				],
-			}
-		}
-	},
-	// start with the home data already in
-	{
-		home: organisedHome,
+		transverseAndPlace(orderedTree, category);
 	});
+
+	return orderedTree;
 }
+
+export const organiseFiles: (files: IFile[]) => IOrganisedFiles = (files) => {
+	const fileList: IOrganisedFiles = {};
+
+	files.forEach(file => {
+		file.categoriesId.forEach(category => {
+			fileList[category] = [
+				...(fileList[category] || []),
+				file,
+			];
+		});
+	});
+
+	return fileList;
+}
+
+export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganisedData =
+	(categories, files) => {
+		const categoriesLookup: IOrganisedCategories<ICategoryWithFileCount> = categories
+			.reduce((acc, current) => ({
+				...acc,
+				[current.id]: {
+					...current,
+					fileCount: 0,
+				},
+			}), {});
+
+		files.forEach(({ categoriesId }) => {
+			categoriesId.forEach(cat => {
+				categoriesLookup[cat].fileCount = categoriesLookup[cat].fileCount + 1;
+			});
+		});
+
+		const organisedFolders = organiseFolders(Object.values(categoriesLookup));
+		const organisedFiles = organiseFiles(files);
+
+		return {
+			categories: organisedFolders,
+			files: organisedFiles,
+		}
+	};
