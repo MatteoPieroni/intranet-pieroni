@@ -5,10 +5,10 @@ interface ICategoryWithFileCount extends ICategory {
 }
 
 export interface ICategoryWithSubfolders extends ICategoryWithFileCount {
-	subfolders: IOrganisedCategories<ICategoryWithSubfolders> | null;
+	subfolders: IOrganisedCategoriesGeneric<ICategoryWithSubfolders> | null;
 }
 
-export interface IOrganisedCategories<T> {
+export interface IOrganisedCategoriesGeneric<T> {
 	[key: string]: T;
 }
 
@@ -16,12 +16,14 @@ interface IOrganisedFiles {
 	[key: string]: IFile[];
 }
 
-interface IOrganisedData {
+export type IOrganisedCategories = IOrganisedCategoriesGeneric<ICategoryWithSubfolders>;
+
+export interface IOrganisedData {
 	files: IOrganisedFiles;
-	categories: IOrganisedCategories<ICategoryWithSubfolders>;
+	categories: IOrganisedCategories;
 }
 
-const transverseAndPlace: (tree: IOrganisedCategories<ICategoryWithSubfolders>, current: ICategoryWithFileCount) => IOrganisedCategories<ICategoryWithSubfolders> = (tree, { parent, ...current }) => {
+const transverseAndPlace: (tree: IOrganisedCategoriesGeneric<ICategoryWithSubfolders>, current: ICategoryWithFileCount) => IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = (tree, { parent, ...current }) => {
 	if (tree[parent]) {
 		tree[parent].subfolders = {
 			...tree[parent].subfolders,
@@ -41,8 +43,8 @@ const transverseAndPlace: (tree: IOrganisedCategories<ICategoryWithSubfolders>, 
 	}
 }
 
-export const organiseFolders: (categories: ICategoryWithFileCount[]) => IOrganisedCategories<ICategoryWithSubfolders> = (categories) => {
-	const orderedTree: IOrganisedCategories<ICategoryWithSubfolders> = {};
+export const organiseFolders: (categories: ICategoryWithFileCount[]) => IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = (categories) => {
+	const orderedTree: IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = {};
 	const orderedCategories = categories.sort((curr, next) => curr.depth - next.depth);
 
 	orderedCategories.forEach(category => {
@@ -80,7 +82,7 @@ export const organiseFiles: (files: IFile[]) => IOrganisedFiles = (files) => {
 
 export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganisedData =
 	(categories, files) => {
-		const categoriesLookup: IOrganisedCategories<ICategoryWithFileCount> = categories
+		const categoriesLookup: IOrganisedCategoriesGeneric<ICategoryWithFileCount> = categories
 			.reduce((acc, current) => ({
 				...acc,
 				[current.id]: {

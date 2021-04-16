@@ -1,26 +1,46 @@
+import { IOrganisedData, organiseData } from "../../../../utils/file-system";
 import { CancellableListener } from "../db";
 import { IFile, ICategory, IDbFile } from "../types";
 import { ICatalogueListener, ICategoriesListener, listenToCatalogues, listenToCategories } from "./catalogues-couriers";
+
+type IFileListener = (fileSystem: IOrganisedData) => void;
 
 interface IFilesService {
 	listenToCatalogues: (callback: (hasError: boolean, data?: IFile[]) => void, normaliser: (data: IDbFile[]) => IFile[]) => CancellableListener;
 	listenToCategories: (callback: (hasError: boolean, data?: ICategory[]) => void) => CancellableListener;
 }
-type FilesystemListener = (filesystem: { catalogues?: IFile[]; categories?: ICategory[] }) => void;
 
 export class CataloguesServiceClass {
 	private listenToCatalogues: ICatalogueListener;
 	private listenToCategories: ICategoriesListener;
+	private files: IFile[];
+	private categories: ICategory[];
+	private subscribe: IFileListener;
 
 	constructor({ listenToCatalogues, listenToCategories }: IFilesService) {
 		this.listenToCatalogues = listenToCatalogues;
 		this.listenToCategories = listenToCategories;
 	}
 
-	listenToFilesystem(callback: FilesystemListener): () => void {
+	private updateAndNormalise(): IOrganisedData {
+		if (!this.files || !this.categories) {
+			return;
+		}
+
+		return organiseData(this.categories, this.files);
+	}
+
+	public listen(callback: IFileListener): CancellableListener {
+		this.subscribe = callback;
+
 		const unlistenerCatalogues = this.listenToCatalogues(
 			(error, catalogues) => {
-				callback({ catalogues });
+				this.files = catalogues;
+				const normalisedFilesystem = this.updateAndNormalise();
+
+				if (typeof this.subscribe === 'function') {
+					callback(normalisedFilesystem);
+				}
 			},
 			(data) => data.map(
 				({
@@ -36,10 +56,16 @@ export class CataloguesServiceClass {
 		);
 
 		const unlistenerCategories = this.listenToCategories((error, categories) => {
-			callback({ categories });
+			this.categories = categories;
+			const normalisedFilesystem = this.updateAndNormalise();
+
+			if (typeof this.subscribe === 'function') {
+				callback(normalisedFilesystem);
+			}
 		});
 
 		return (): void => {
+			this.subscribe = null;
 			unlistenerCatalogues();
 			unlistenerCategories();
 		}

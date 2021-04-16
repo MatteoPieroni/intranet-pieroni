@@ -1,4 +1,4 @@
-import { ICategoryWithSubfolders, IOrganisedCategories, organiseData, organiseFiles, organiseFolders } from './normaliser';
+import { ICategoryWithSubfolders, IOrganisedCategoriesGeneric, organiseData, organiseFiles, organiseFolders } from './normaliser';
 
 const cataloguesData = [
 	{
@@ -104,7 +104,7 @@ const categoriesDataWithFileCount = [
 	},
 ];
 
-const organisedCategoriesWithFileCount: IOrganisedCategories<ICategoryWithSubfolders> = {
+const organisedCategoriesWithFileCount: IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = {
 	['category-id-1']: {
 		id: 'category-id-1',
 		depth: 0,
@@ -176,7 +176,7 @@ const categoriesData = [
 	},
 ];
 
-const organisedCategories: IOrganisedCategories<ICategoryWithSubfolders> = {
+const organisedCategories: IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = {
 	['category-id-1']: {
 		id: 'category-id-1',
 		depth: 0,

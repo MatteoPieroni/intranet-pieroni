@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { IFile } from '../../services/firebase/types';
+import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
 
 interface IFileProps {
@@ -26,7 +26,7 @@ export const File: React.FC<IFileProps> = ({ file }) => (
 	<StyledFile>
 		<a href={`http://192.168.1.14/test/${file.filename}`} target="_blank" rel="noreferrer">
 			<Icon.PDFFile aria-hidden />
-			{file.name}
+			{file.label}
 		</a>
 	</StyledFile>
 );

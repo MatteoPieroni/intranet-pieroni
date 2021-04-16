@@ -1,15 +1,23 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { IFolder } from '../../services/firebase/types';
 import { Icon } from '../icons';
+import { ICategoryWithSubfolders, IOrganisedCategories } from '../../utils/file-system';
 
+interface IFoldersTreeProps {
+	folders: IOrganisedCategories;
+	onSelect: (folder: string) => void;
+}
 interface ISubFolderProps {
-	folder: IFolder;
+	folder: ICategoryWithSubfolders;
 	onSelect: (folder: string) => void;
 }
 
-const StyledFolder = styled.div`
+const StyledTree = styled.ul`
+	background: red;
+`;
+
+const StyledFolder = styled.li`
 	text-align: center;
 
 	svg {
@@ -34,8 +42,20 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect }) => {
 				onKeyPress={getHandleKeyboardSelectFolder(folder.id)}
 			>
 				<Icon.Folder aria-hidden />
-				{folder.name}
+				{folder.label}
 			</button>
+			{folder.subfolders && <FoldersTree folders={folder.subfolders} onSelect={onSelect} />}
 		</StyledFolder>
+	);
+};
+
+export const FoldersTree: React.FC<IFoldersTreeProps> = ({ folders, onSelect }) => {
+
+	return (
+		<StyledTree>
+			{Object.values(folders).map(folder => {
+				<SubFolder key={folder.id} folder={folder} onSelect={onSelect} />
+			})}
+		</StyledTree>
 	);
 };
