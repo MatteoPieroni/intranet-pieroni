@@ -18,18 +18,19 @@ const StyledContainer = styled.div`
 	.filesystem-container {
 		display: grid;
 		grid-gap: 10px;
-  	grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-	padding: 1rem;
+  	grid-template-columns: auto 1fr;
+		padding: 1rem;
 	}
 
 	.folders-menu {
-
+		> ul {
+			padding: 0;
+		}
 	}
 
 	.files-folder {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
-
 	}
 `;
 
@@ -72,7 +73,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 				</div>
 				<div className="filesystem-container">
 					<div className="folders-menu">
-						<FoldersTree folders={categories} onSelect={setCurrentFolder} />
+						<FoldersTree folders={categories} onSelect={setCurrentFolder} isRoot />
 					</div>
 					<div className="files-folder">
 						{shownFiles ? (

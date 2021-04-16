@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FileSystem } from '../components/file-system';
-import { CataloguesService } from '../services/firebase/db';
 import { useCatalogues } from '../shared/hooks/useCatalogues';
 
 export const CataloguesArchive: React.FC = () => {
