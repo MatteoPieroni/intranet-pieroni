@@ -6,7 +6,7 @@ import { ICatalogueListener, ICategoriesListener, listenToCatalogues, listenToCa
 type IFileListener = (fileSystem: IOrganisedData) => void;
 
 interface IFilesService {
-	listenToCatalogues: (callback: (hasError: boolean, data?: IFile[]) => void, normaliser: (data: IDbFile[]) => IFile[]) => CancellableListener;
+	listenToCatalogues: (callback: (hasError: boolean, data?: IFile[]) => void, normaliser: (data: { [key: string]: IDbFile }) => IFile[]) => CancellableListener;
 	listenToCategories: (callback: (hasError: boolean, data?: ICategory[]) => void) => CancellableListener;
 }
 
@@ -42,7 +42,7 @@ export class CataloguesServiceClass {
 					callback(normalisedFilesystem);
 				}
 			},
-			(data) => data.map(
+			(data) => Object.values(data).map(
 				({
 					categories_id: categoriesId,
 					store_url: storeUrl,

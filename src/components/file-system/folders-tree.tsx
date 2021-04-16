@@ -6,11 +6,11 @@ import { ICategoryWithSubfolders, IOrganisedCategories } from '../../utils/file-
 
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
-	onSelect: (folder: string) => void;
+	onSelect: (folder: { id: string; label: string }) => void;
 }
 interface ISubFolderProps {
 	folder: ICategoryWithSubfolders;
-	onSelect: (folder: string) => void;
+	onSelect: (folder: { id: string; label: string }) => void;
 }
 
 const StyledTree = styled.ul`
@@ -28,18 +28,18 @@ const StyledFolder = styled.li`
 `;
 
 export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect }) => {
-	const getHandleKeyboardSelectFolder: (folder: string) => (event: React.KeyboardEvent<HTMLButtonElement>) => void = 
-		(folderName) => (event) => {
+	const getHandleKeyboardSelectFolder: (folder: { id: string; label: string }) => (event: React.KeyboardEvent<HTMLButtonElement>) => void = 
+		(folder) => (event) => {
 			if (event.key === 'Enter' || event.key === ' ') {
-				onSelect(folderName)
+				onSelect(folder)
 			}
 		};
 
 	return (
 		<StyledFolder>
 			<button
-				onDoubleClick={(): void => onSelect(folder.id)}
-				onKeyPress={getHandleKeyboardSelectFolder(folder.id)}
+				onDoubleClick={(): void => onSelect(folder)}
+				onKeyPress={getHandleKeyboardSelectFolder(folder)}
 			>
 				<Icon.Folder aria-hidden />
 				{folder.label}
@@ -50,12 +50,11 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect }) => {
 };
 
 export const FoldersTree: React.FC<IFoldersTreeProps> = ({ folders, onSelect }) => {
-
 	return (
 		<StyledTree>
-			{Object.values(folders).map(folder => {
+			{Object.values(folders).map(folder => (
 				<SubFolder key={folder.id} folder={folder} onSelect={onSelect} />
-			})}
+			))}
 		</StyledTree>
 	);
 };

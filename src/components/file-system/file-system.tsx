@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import React, { useMemo, useState } from 'react';
-import { IOrganisedData, organiseData } from '../../utils/file-system';
+import React, { createContext, useContext, useMemo, useState } from 'react';
+import { IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
-import { FoldersTree, SubFolder } from './folders-tree';
+import { FoldersTree } from './folders-tree';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -33,45 +33,56 @@ const StyledContainer = styled.div`
 	}
 `;
 
-export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
-	const [currentFolder, setCurrentFolder] = useState('');
+interface ICurrentFolderContext {
+	currentFolder: {
+		id: string;
+		label: string;
+	};
+	setCurrentFolder: (folder: {
+		id: string;
+		label: string;
+	}) => void;
+}
 
-	const shownFiles = currentFolder ? files[currentFolder] : files;
-	const displayedFolder = currentFolder === 'home' ? 'Home' : `Home/${categories}`
+const CurrentFolderContext = createContext<Partial<ICurrentFolderContext>>({});
+export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext(CurrentFolderContext);
+
+export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
+	const [currentFolder, setCurrentFolder] = useState<{
+		id: string;
+		label: string;
+	}>();
+
+	const allFiles = useMemo(() => {
+		if (!files) {
+			return;
+		}
+
+		const allArrays = Object.values(files);
+		return allArrays.flat();
+	}, [files]);
+	const shownFiles = currentFolder ? files[currentFolder.id] : allFiles;
+	const displayedFolder = currentFolder?.id ? currentFolder.label: 'Home';
 
 	return (
-		<StyledContainer>
-			<div className="current-folder">
-				{displayedFolder}
-			</div>
-			<div className="filesystem-container">
-				<div className="folders-menu">
-					<FoldersTree folders={categories} onSelect={setCurrentFolder} />
-					{/* <ul>
-						{organisedFilesystem.organisedFolders.map(folder => (
-							<li key={folder.id}>
-								<button onClick={(): void => setCurrentFolder(folder.id)}>{folder.name}</button>
-							</li>
-						))}
-					</ul> */}
+		<CurrentFolderContext.Provider value={{currentFolder, setCurrentFolder}}>
+			<StyledContainer>
+				<div className="current-folder">
+					{displayedFolder}
 				</div>
-				<div className="files-folder">
-					{shownFiles ? (
-						<>
-							{/* {shownFiles.subfolders && Object.keys(shownFiles.subfolders).map((subfolder) => (
-								<SubFolder
-									key={shownFiles.subfolders[subfolder].name}
-									folder={shownFiles.subfolders[subfolder]}
-									onSelect={setCurrentFolder}
-								/>
-							))} */}
-							{Object.values(shownFiles).map((file) => <File key={file.label} file={file} />)}
-						</>
-					) : (
-						<p>Non ci sono file qui</p>
-					)}
+				<div className="filesystem-container">
+					<div className="folders-menu">
+						<FoldersTree folders={categories} onSelect={setCurrentFolder} />
+					</div>
+					<div className="files-folder">
+						{shownFiles ? (
+								Object.values(shownFiles).map((file) => <File key={file.id} file={file} />)
+						) : (
+							<p>Non ci sono file qui</p>
+						)}
+					</div>
 				</div>
-			</div>
-		</StyledContainer>
+			</StyledContainer>
+		</CurrentFolderContext.Provider>
 	)
 }

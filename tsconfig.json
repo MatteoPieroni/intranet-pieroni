@@ -4,6 +4,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "esnext",
+    "lib": ["es2019", "DOM"],
     "target": "es6",
     "jsx": "react",
     "esModuleInterop": true,
