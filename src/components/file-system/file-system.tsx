@@ -46,7 +46,7 @@ interface ICurrentFolderContext {
 }
 
 const baseHomeFolder = {
-	id: 'home',
+	id: '',
 	label: 'Home',
 	parent: '',
 	depth: -1,
@@ -60,7 +60,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 	const [currentFolder, setCurrentFolder] = useState<{
 		id: string;
 		label: string;
-	}>();
+	}>({ id: baseHomeFolder.id, label: baseHomeFolder.label });
 
 	const allFiles = useMemo(() => {
 		if (!files) {
@@ -70,7 +70,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 		const allArrays = Object.values(files);
 		return allArrays.flat();
 	}, [files]);
-	const shownFiles = currentFolder ? files[currentFolder.id] : allFiles;
+	const shownFiles = currentFolder?.id ? files[currentFolder.id] : allFiles;
 	const displayedFolder = currentFolder?.id ? currentFolder.label: 'Home';
 
 	const homeFolder = useMemo(() => {

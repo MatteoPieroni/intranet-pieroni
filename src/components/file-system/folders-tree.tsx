@@ -60,8 +60,9 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 `;
 
 export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, isRoot = false }) => {
-	const { show } = useContextMenu({ id: folder.id });
+	const { show } = useContextMenu({ id: folder.id || 'home' });
 	const [isCreating, setIsCreating] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
 	const { currentFolder } = useCurrentFolder();
 	const isActive = folder.id === currentFolder?.id;
 
@@ -80,7 +81,19 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, isRoot 
 	};
 
 	const createSubCategory: () => void = () => setIsCreating(true);
-	const saveSubCategory: () => void = () => setIsCreating(false);
+	const editSubCategory: () => void = () => setIsEditing(true);
+	const saveSubCategory: () => void = () => {
+		setIsCreating(false);
+		setIsEditing(false);
+	}
+	const newSubFolder: ICategoryWithSubfolders = {
+		parent: isRoot ? '' : folder.id,
+		label: '',
+		id: '',
+		depth: folder.depth + 1,
+		subfolders: null,
+		fileCount: 0,
+	}
 
 	const deleteCategory: () => Promise<void> = async () => {
 		await CataloguesService.removeCategory(folder.id);
@@ -91,24 +104,29 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, isRoot 
 	return (
 		<>
 			<Wrapper isActive={isActive}>
-				<button
-					onClick={handleSelect}
-					onKeyPress={handleKeyboardSelectFolder}
-					onContextMenu={show}
-				>
-					<Icon.Folder aria-hidden />
-					{folder.label} ({folder.fileCount})
-				</button>
+				{isEditing ? (
+						<CategoriesForm folder={folder} onSave={saveSubCategory} />
+					) : (
+						<button
+							onClick={handleSelect}
+							onKeyPress={handleKeyboardSelectFolder}
+							onContextMenu={show}
+						>
+							<Icon.Folder aria-hidden />
+							{folder.label} {isRoot ? '' : `(${folder.fileCount})`}
+						</button>
+				)}
 				{folder.subfolders ? (
 					<FoldersTree folders={folder.subfolders} onSelect={onSelect} initialIsExpanded={isRoot}>
-						{isCreating && (<CategoriesForm folder={{ ...folder, id: isRoot ? '' : folder.id }} onSave={saveSubCategory} />)}
+						{isCreating && (<CategoriesForm folder={newSubFolder} onSave={saveSubCategory} />)}
 					</FoldersTree>
 				) : (
-					isCreating && (<CategoriesForm folder={{ ...folder, id: isRoot ? '' : folder.id }} onSave={saveSubCategory} />)
+					isCreating && (<CategoriesForm folder={newSubFolder} onSave={saveSubCategory} />)
 				)}
 			</Wrapper>
-			<Menu id={folder.id}>
+			<Menu id={folder.id || 'home'}>
 				<Item onClick={createSubCategory}>Crea nuova sottocategoria</Item>
+				<Item onClick={editSubCategory} disabled={isRoot}>Rinomina categoria</Item>
 				<Item onClick={deleteCategory} disabled={isRoot}>Elimina categoria</Item>
 			</Menu>
 		</>

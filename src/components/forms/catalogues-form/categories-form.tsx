@@ -44,7 +44,13 @@ export const CategoriesForm: React.FC<ICategoriesFormProps> = ({ folder, onSave 
     setIsSaving(true);
 
     try {
-			await CataloguesService.addCategory({ parent: '', ...values });
+      if (!values.id) {
+				await CataloguesService.addCategory({ parent: '', ...values });
+      }
+
+      if (values.id) {
+				await CataloguesService.renameCategory(values);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -71,11 +77,9 @@ export const CategoriesForm: React.FC<ICategoriesFormProps> = ({ folder, onSave 
     }
   }
 
-	const initialCategory = { parent: folder.id, label: '', depth: (folder.depth + 1), id: '' };
-
   return (
     <StyledLinksForm>
-      <Formik initialValues={initialCategory} onSubmit={submitCategory} validate={validateCategory}>
+      <Formik initialValues={folder} onSubmit={submitCategory} validate={validateCategory}>
         <Form>
           <Field name="id" hidden />
           <Field name="label" label="Nome" />
