@@ -101,15 +101,15 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, isRoot 
 				</button>
 				{folder.subfolders ? (
 					<FoldersTree folders={folder.subfolders} onSelect={onSelect} initialIsExpanded={isRoot}>
-						{isCreating && (<CategoriesForm folder={folder} onSave={saveSubCategory} />)}
+						{isCreating && (<CategoriesForm folder={{ ...folder, id: isRoot ? '' : folder.id }} onSave={saveSubCategory} />)}
 					</FoldersTree>
 				) : (
-					isCreating && (<CategoriesForm folder={folder} onSave={saveSubCategory} />)
+					isCreating && (<CategoriesForm folder={{ ...folder, id: isRoot ? '' : folder.id }} onSave={saveSubCategory} />)
 				)}
 			</Wrapper>
 			<Menu id={folder.id}>
 				<Item onClick={createSubCategory}>Crea nuova sottocategoria</Item>
-				<Item onClick={deleteCategory}>Elimina categoria</Item>
+				<Item onClick={deleteCategory} disabled={isRoot}>Elimina categoria</Item>
 			</Menu>
 		</>
 	);
