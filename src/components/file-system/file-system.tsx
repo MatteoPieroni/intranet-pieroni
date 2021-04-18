@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
-import { FoldersTree } from './folders-tree';
+import { SubFolder } from './folders-tree';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -45,6 +45,14 @@ interface ICurrentFolderContext {
 	}) => void;
 }
 
+const baseHomeFolder = {
+	id: 'home',
+	label: 'Home',
+	parent: '',
+	depth: -1,
+	fileCount: 0,
+};
+
 const CurrentFolderContext = createContext<Partial<ICurrentFolderContext>>({});
 export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext(CurrentFolderContext);
 
@@ -65,6 +73,13 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 	const shownFiles = currentFolder ? files[currentFolder.id] : allFiles;
 	const displayedFolder = currentFolder?.id ? currentFolder.label: 'Home';
 
+	const homeFolder = useMemo(() => {
+		return {
+			...baseHomeFolder,
+			subfolders: categories,
+		}
+	}, [categories]);
+
 	return (
 		<CurrentFolderContext.Provider value={{currentFolder, setCurrentFolder}}>
 			<StyledContainer>
@@ -73,7 +88,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 				</div>
 				<div className="filesystem-container">
 					<div className="folders-menu">
-						<FoldersTree folders={categories} onSelect={setCurrentFolder} isRoot />
+						<SubFolder folder={homeFolder} onSelect={setCurrentFolder} isRoot />
 					</div>
 					<div className="files-folder">
 						{shownFiles ? (
