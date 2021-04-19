@@ -82,6 +82,11 @@ export interface IFile {
   storeUrl: string;
 }
 
+export interface IFileApi {
+  id: string;
+  categories: string;
+}
+
 export interface ICategory {
   id: string;
   label: string;

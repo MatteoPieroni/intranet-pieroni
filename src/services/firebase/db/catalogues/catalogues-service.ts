@@ -1,9 +1,22 @@
 import { IOrganisedData, organiseData } from "../../../../utils/file-system";
 import { CancellableListener } from "../db";
-import { IFile, ICategory, IDbFile } from "../types";
-import { ICatalogueListener, ICategoriesListener, listenToCatalogues, listenToCategories, addCategory, removeCategory, editCategory } from "./catalogues-couriers";
+import { IFile, ICategory, IDbFile, IFileApi } from "../types";
+import {
+	ICatalogueListener,
+	ICategoriesListener,
+	listenToCatalogues,
+	listenToCategories,
+	addCategory,
+	removeCategory,
+	editCategory,
+	changeCatalogueCategory,
+} from "./catalogues-couriers";
 
 type IFileListener = (fileSystem: IOrganisedData) => void;
+
+interface IFilesConfig {
+	apiUrl: string;
+}
 
 interface IFilesService {
 	listenToCatalogues: (callback: (hasError: boolean, data?: IFile[]) => void, normaliser: (data: { [key: string]: IDbFile }) => IFile[]) => CancellableListener;
@@ -11,6 +24,7 @@ interface IFilesService {
 	addCategory: (data: ICategory) => Promise<ICategory>;
 	editCategory: (data: ICategory) => Promise<ICategory>;
 	removeCategory: (id: string) => Promise<void>;
+	changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
 }
 
 export class CataloguesServiceClass {
@@ -19,16 +33,20 @@ export class CataloguesServiceClass {
 	private addCategoryCourier: (data: ICategory) => Promise<ICategory>;
 	private editCategory: (data: ICategory) => Promise<ICategory>;
 	private removeCategoryCourier: (id: string) => Promise<void>;
+	private changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
+	private config: IFilesConfig;
 	private files: IFile[];
 	private categories: ICategory[];
 	private subscribe: IFileListener;
 
-	constructor({ listenToCatalogues, listenToCategories, addCategory, removeCategory, editCategory }: IFilesService) {
-		this.listenToCatalogues = listenToCatalogues;
-		this.listenToCategories = listenToCategories;
-		this.addCategoryCourier = addCategory;
-		this.editCategory = editCategory;
-		this.removeCategoryCourier = removeCategory;
+	constructor(couriers: IFilesService, config: IFilesConfig) {
+		this.listenToCatalogues = couriers.listenToCatalogues;
+		this.listenToCategories = couriers.listenToCategories;
+		this.addCategoryCourier = couriers.addCategory;
+		this.editCategory = couriers.editCategory;
+		this.removeCategoryCourier = couriers.removeCategory;
+		this.changeCatalogueCategory = couriers.changeCatalogueCategory;
+		this.config = config;
 	}
 
 	private updateAndNormalise(): IOrganisedData {
@@ -91,6 +109,17 @@ export class CataloguesServiceClass {
 	public async removeCategory(id: string): Promise<void> {
 		await this.removeCategoryCourier(id);
 	}
+
+	public async changeFileCategory(id: string, categories: string): Promise<void> {
+		await this.changeCatalogueCategory(this.config.apiUrl, { id, categories });
+	}
 }
 
-export const CataloguesService = new CataloguesServiceClass({ listenToCatalogues, listenToCategories, addCategory, removeCategory, editCategory })
+export const CataloguesService = new CataloguesServiceClass({
+	listenToCatalogues,
+	listenToCategories,
+	addCategory,
+	removeCategory,
+	editCategory,
+	changeCatalogueCategory,
+}, { apiUrl: process.env.CATALOGUES_URL })
