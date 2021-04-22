@@ -19,7 +19,7 @@ const StyledContainer = styled.div`
 	.filesystem-container {
 		display: grid;
 		grid-gap: 10px;
-  	grid-template-columns: auto 1fr;
+  	grid-template-columns: minmax(auto, 250px) 1fr;
 		padding: 1rem;
 	}
 

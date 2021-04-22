@@ -26,7 +26,7 @@ interface ISubFolderProps {
 const StyledTree = styled.ul<{ isExpanded?: boolean }>`
 	margin-top: .75rem;
 	padding-left: 1rem;
-
+	width: 100%;
 	${(props): string => !props.isExpanded && `> li {
 		display: none;
 	}
@@ -34,8 +34,10 @@ const StyledTree = styled.ul<{ isExpanded?: boolean }>`
 `;
 
 const StyledFolder = styled.li<{ isActive?: boolean }>`
+	display: flex;
+	flex-wrap: wrap;
 	margin-bottom: .75rem;
-
+	justify-content: space-between;
 	.folder-label {
 		color: ${(props): string => props.isActive ? 'teal' : 'black'};
 		font-size: 1rem;
@@ -48,7 +50,10 @@ const StyledFolder = styled.li<{ isActive?: boolean }>`
 `;
 
 const StyledRootFolder = styled.div<{ isActive?: boolean }>`
+	display: flex;
+	flex-wrap: wrap;
 	margin-bottom: .75rem;
+	justify-content: space-between;
 
 	.folder-label {
 		font-size: 1rem;
