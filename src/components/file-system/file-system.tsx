@@ -3,6 +3,7 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 import { IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
+import { getCurrentFiles } from './utils/get-current-files';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -34,15 +35,15 @@ const StyledContainer = styled.div`
 	}
 `;
 
+export type ICurrentFolder = {
+	id: string;
+	label: string;
+};
+
 interface ICurrentFolderContext {
-	currentFolder: {
-		id: string;
-		label: string;
-	};
-	setCurrentFolder: (folder: {
-		id: string;
-		label: string;
-	}) => void;
+	currentFolders: ICurrentFolder[];
+	setCurrentFolder: (folder: ICurrentFolder) => void;
+	toggleSelectedFolder: (folder: ICurrentFolder) => void;
 }
 
 const baseHomeFolder = {
@@ -57,10 +58,7 @@ const CurrentFolderContext = createContext<Partial<ICurrentFolderContext>>({});
 export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext(CurrentFolderContext);
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
-	const [currentFolder, setCurrentFolder] = useState<{
-		id: string;
-		label: string;
-	}>({ id: baseHomeFolder.id, label: baseHomeFolder.label });
+	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
 
 	const allFiles = useMemo(() => {
 		if (!files) {
@@ -70,8 +68,13 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 		const allArrays = Object.values(files);
 		return allArrays.flat();
 	}, [files]);
-	const shownFiles = currentFolder?.id ? files[currentFolder.id] : allFiles;
-	const displayedFolder = currentFolder?.id ? currentFolder.label: 'Home';
+	const shownFiles = useMemo(() =>
+		currentFolders.length > 0 ? getCurrentFiles(currentFolders, files) : allFiles, [currentFolders, files]);
+	const displayedFolder = currentFolders.length > 0 ?
+		currentFolders.length > 1 ?
+			`${currentFolders.length} categorie` :
+			currentFolders[0].label
+		: 'Home';
 
 	const homeFolder = useMemo(() => {
 		return {
@@ -80,19 +83,32 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 		}
 	}, [categories]);
 
+	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
+
+	const toggleSelectedFolder = (folder: ICurrentFolder): void => {
+		const isPresent = currentFolders.some(currentFolders => currentFolders.id === folder.id);
+		
+		if (isPresent) {
+			setCurrentFolders(currentFolders.filter(currentFolders => currentFolders.id !== folder.id));
+			return;
+		}
+
+		setCurrentFolders([...currentFolders, folder]);
+	};
+
 	return (
-		<CurrentFolderContext.Provider value={{currentFolder, setCurrentFolder}}>
+		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolder}}>
 			<StyledContainer>
 				<div className="current-folder">
 					{displayedFolder}
 				</div>
 				<div className="filesystem-container">
 					<div className="folders-menu">
-						<SubFolder folder={homeFolder} onSelect={setCurrentFolder} isRoot />
+						<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
 					</div>
 					<div className="files-folder">
-						{shownFiles ? (
-								Object.values(shownFiles).map((file) => <File key={file.id} file={file} />)
+						{shownFiles.length > 0 ? (
+								shownFiles.map((file) => <File key={file.id} file={file} />)
 						) : (
 							<p>Non ci sono file qui</p>
 						)}

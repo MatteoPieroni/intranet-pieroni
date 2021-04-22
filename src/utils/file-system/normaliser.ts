@@ -12,7 +12,7 @@ export interface IOrganisedCategoriesGeneric<T> {
 	[key: string]: T;
 }
 
-interface IOrganisedFiles {
+export interface IOrganisedFiles {
 	[key: string]: IFile[];
 }
 
