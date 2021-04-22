@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faArrowRight, faPen, faTrash, faInfoCircle, faFilePdf, faFolder } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faPen, faTrash, faInfoCircle, faFilePdf, faFolder, faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
   icon: IconProp;
@@ -36,4 +36,12 @@ export const PDFFile: React.FC<IGenericProps> = (props) => (
 
 export const Folder: React.FC<IGenericProps> = (props) => (
   <Icon icon={faFolder} {...props} />
+)
+
+export const CaretUp: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faCaretUp} {...props} />
+)
+
+export const CaretDown: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faCaretDown} {...props} />
 )

@@ -19,11 +19,13 @@ const StyledContainer = styled.div`
 	.filesystem-container {
 		display: grid;
 		grid-gap: 10px;
-  	grid-template-columns: minmax(auto, 250px) 1fr;
-		padding: 1rem;
+  		grid-template-columns: minmax(auto, 250px) 1fr;
 	}
 
 	.folders-menu {
+		padding: 1rem;
+		background-color: #202228;
+
 		> ul {
 			padding: 0;
 		}
@@ -32,6 +34,7 @@ const StyledContainer = styled.div`
 	.files-folder {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
+		padding: 1rem;
 	}
 `;
 

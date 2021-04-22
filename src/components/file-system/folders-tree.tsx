@@ -7,12 +7,13 @@ import { ICurrentFolder, useCurrentFolder } from './file-system';
 import { Item, Menu, useContextMenu } from 'react-contexify';
 import { CataloguesService } from '../../services/firebase/db';
 import { CategoriesForm } from '../forms/catalogues-form/categories-form';
+import { CaretDown, CaretUp } from '../icons/Icon';
 
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
 	onSelect: (folder: ICurrentFolder) => void;
 	onToggle: (folder: ICurrentFolder) => void;
-	initialIsExpanded?: boolean;
+	isExpanded: boolean;
 }
 
 interface ISubFolderProps {
@@ -34,12 +35,10 @@ const StyledTree = styled.ul<{ isExpanded?: boolean }>`
 `;
 
 const StyledFolder = styled.li<{ isActive?: boolean }>`
-	display: flex;
-	flex-wrap: wrap;
 	margin-bottom: .75rem;
-	justify-content: space-between;
+
 	.folder-label {
-		color: ${(props): string => props.isActive ? 'teal' : 'black'};
+		/* color: ${(props): string => props.isActive ? 'teal' : 'black'}; */
 		font-size: 1rem;
 	}
 
@@ -50,10 +49,18 @@ const StyledFolder = styled.li<{ isActive?: boolean }>`
 `;
 
 const StyledRootFolder = styled.div<{ isActive?: boolean }>`
-	display: flex;
-	flex-wrap: wrap;
 	margin-bottom: .75rem;
-	justify-content: space-between;
+
+	.single-folder {
+		padding: 0.35rem;
+		background-color: #2a2e36;
+		color: #ffffff;
+		border-radius: 5px;
+	}
+
+	button {
+		color: #ffffff;
+	}
 
 	.folder-label {
 		font-size: 1rem;
@@ -65,10 +72,18 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 	}
 `;
 
-export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, onToggle, isRoot = false }) => {
+export const SubFolder: React.FC<ISubFolderProps> = ({
+	folder,
+	onSelect,
+	onToggle,
+	isRoot = false,
+}) => {
 	const { show } = useContextMenu({ id: folder.id || 'home' });
-	const [isCreating, setIsCreating] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(isRoot);
+	const toggleExpanded = (): void => setIsExpanded(!isExpanded);
+
 	const [isEditing, setIsEditing] = useState(false);
+	const [isCreating, setIsCreating] = useState(false);
 	const { currentFolders } = useCurrentFolder();
 	const isActive = useMemo(() => currentFolders.some(currentFolder => folder.id === currentFolder?.id), [currentFolders, folder]);
 
@@ -117,6 +132,9 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, onToggl
 								/>
 							)}
 							<Icon.Folder aria-hidden />
+							{folder.subfolders && <button onClick={toggleExpanded}>
+								{isExpanded ? <CaretUp /> : <CaretDown />}
+							</button>}
 							<button
 								onClick={handleSelect}
 								>
@@ -130,7 +148,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, onToggl
 							</div>
 				)}
 				{folder.subfolders ? (
-					<FoldersTree folders={folder.subfolders} onSelect={onSelect} initialIsExpanded={isRoot} onToggle={onToggle}>
+					<FoldersTree isExpanded={isExpanded} folders={folder.subfolders} onSelect={onSelect} onToggle={onToggle}>
 						{isCreating && (<CategoriesForm folder={newSubFolder} onSave={saveSubCategory} />)}
 					</FoldersTree>
 				) : (
@@ -146,17 +164,17 @@ export const SubFolder: React.FC<ISubFolderProps> = ({ folder, onSelect, onToggl
 	);
 };
 
-export const FoldersTree: React.FC<IFoldersTreeProps> = ({ folders, onSelect, onToggle, initialIsExpanded, children }) => {
-	const [isExpanded, setIsExpanded] = useState(initialIsExpanded);
-
-	const toggleExpanded = (): void => setIsExpanded(!isExpanded);
-
+export const FoldersTree: React.FC<IFoldersTreeProps> = ({ folders, onSelect, onToggle, isExpanded, children }) => {
 	return (
 		<>
-			<button onClick={toggleExpanded}>{isExpanded ? '-' : '+'}</button>
 			<StyledTree isExpanded={isExpanded}>
 				{Object.values(folders).map(folder => (
-					<SubFolder key={folder.id} folder={folder} onSelect={onSelect} onToggle={onToggle} />
+					<SubFolder
+						key={folder.id}
+						folder={folder}
+						onSelect={onSelect}
+						onToggle={onToggle}
+					/>
 				))}
 				{children}
 			</StyledTree>
