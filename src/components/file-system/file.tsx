@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Item, Menu, useContextMenu } from 'react-contexify';
 
-import { CataloguesService, IFile } from '../../services/firebase/db';
+import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
+import { Modal } from '../modal';
+import { CataloguesForm } from '../forms/catalogues-form';
 
 interface IFileProps {
 	file: IFile;
@@ -27,17 +29,8 @@ export const File: React.FC<IFileProps> = ({ file }) => {
 	const { show } = useContextMenu({ id: file.id });
 	const [isEditing, setIsEditing] = useState(false);
 
-	const editFile = async (): Promise<void> => {
-		setIsEditing(true);
-
-		try {
-			await CataloguesService.renameCatalogue('1', file);
-		} catch (e) {
-			console.error(e);
-		} finally {
-			setIsEditing(false);
-		}
-	}
+	const startEditing = (): void => setIsEditing(true);
+	const finishEditing = (): void => setIsEditing(false);
 
 	return (
 	<StyledFile>
@@ -46,8 +39,11 @@ export const File: React.FC<IFileProps> = ({ file }) => {
 			{file.label}
 		</a>
 		<Menu id={file.id}>
-			<Item onClick={editFile} disabled={isEditing}>Rinomina catalogo</Item>
+			<Item onClick={startEditing} disabled={isEditing}>Rinomina catalogo</Item>
 		</Menu>
+		<Modal isOpen={isEditing} closeModal={finishEditing}>
+			<CataloguesForm file={file} onSave={finishEditing} />
+		</Modal>
 	</StyledFile>
 )
 };

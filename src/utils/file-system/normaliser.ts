@@ -63,7 +63,7 @@ export const organiseFolders: (categories: ICategoryWithFileCount[]) => IOrganis
 	// create a lookup table with each category
 	// it must include the uncategorised value to make sure we catch any "loose" files
 	const orderedTree: IOrganisedCategoriesGeneric<ICategoryWithSubfolders> = {
-		uncategorised,
+		uncategorised: { ...uncategorised },
 	};
 	// order the categories by depth
 	const orderedCategories = categories.sort((curr, next) => curr.depth - next.depth);
@@ -125,7 +125,7 @@ export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganis
 				},
 			}), {});
 		// add the uncategorised cat to make sure we catch all "loose" files
-		categoriesLookup.uncategorised = uncategorised;
+		categoriesLookup.uncategorised = { ...uncategorised };
 
 		// for each file
 		files.forEach(({ categoriesId }) => {

@@ -121,7 +121,7 @@ export class CataloguesServiceClass {
 		await this.editCatalogue({
 			...rest,
 			label,
-			categories_id: categoriesId,
+			categories_id: categoriesId || [],
 			store_url: storeUrl,
 		});
 	}
