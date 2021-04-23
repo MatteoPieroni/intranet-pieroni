@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { IOrganisedData, organiseData } from "../../../../utils/file-system";
 import { CancellableListener } from "../db";
 import { IFile, ICategory, IDbFile, IFileApi } from "../types";
@@ -10,6 +11,7 @@ import {
 	removeCategory,
 	editCategory,
 	changeCatalogueCategory,
+	editCatalogue,
 } from "./catalogues-couriers";
 
 type IFileListener = (fileSystem: IOrganisedData) => void;
@@ -25,6 +27,7 @@ interface IFilesService {
 	editCategory: (data: ICategory) => Promise<ICategory>;
 	removeCategory: (id: string) => Promise<void>;
 	changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
+	editCatalogue: (data: IDbFile) => Promise<IDbFile>;
 }
 
 export class CataloguesServiceClass {
@@ -34,6 +37,7 @@ export class CataloguesServiceClass {
 	private editCategory: (data: ICategory) => Promise<ICategory>;
 	private removeCategoryCourier: (id: string) => Promise<void>;
 	private changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
+	private editCatalogue: (data: IDbFile) => Promise<IDbFile>;
 	private config: IFilesConfig;
 	private files: IFile[];
 	private categories: ICategory[];
@@ -46,6 +50,7 @@ export class CataloguesServiceClass {
 		this.editCategory = couriers.editCategory;
 		this.removeCategoryCourier = couriers.removeCategory;
 		this.changeCatalogueCategory = couriers.changeCatalogueCategory;
+		this.editCatalogue = couriers.editCatalogue;
 		this.config = config;
 	}
 
@@ -110,6 +115,17 @@ export class CataloguesServiceClass {
 		await this.removeCategoryCourier(id);
 	}
 
+	public async renameCatalogue(label: string, data: IFile): Promise<void> {
+		const { categoriesId, storeUrl, ...rest } = data;
+
+		await this.editCatalogue({
+			...rest,
+			label,
+			categories_id: categoriesId,
+			store_url: storeUrl,
+		});
+	}
+
 	public async changeFileCategory(id: string, categories: string): Promise<void> {
 		await this.changeCatalogueCategory(this.config.apiUrl, { id, categories });
 	}
@@ -122,4 +138,5 @@ export const CataloguesService = new CataloguesServiceClass({
 	removeCategory,
 	editCategory,
 	changeCatalogueCategory,
+	editCatalogue,
 }, { apiUrl: process.env.CATALOGUES_URL })

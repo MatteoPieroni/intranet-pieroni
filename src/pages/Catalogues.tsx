@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { CataloguesArchive } from '../catalogues-archive/catalogues-archive';
+import { CataloguesArchive } from '../components/catalogues-archive';
 import 'react-contexify/dist/ReactContexify.css';
 
 const StyledPage = styled.main`

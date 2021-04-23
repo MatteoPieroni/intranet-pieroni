@@ -1,6 +1,6 @@
 import React from 'react';
-import { FileSystem } from '../components/file-system';
-import { useCatalogues } from '../shared/hooks/useCatalogues';
+import { FileSystem } from '../file-system';
+import { useCatalogues } from '../../shared/hooks/useCatalogues';
 
 export const CataloguesArchive: React.FC = () => {
 	const filesystem = useCatalogues();

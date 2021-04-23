@@ -9,6 +9,7 @@ export const listenToCategories: ICategoriesListener = (callback) => listenToDb(
 export const addCategory: (data: Types.ICategory) => Promise<Types.ICategory> = async (data) => await addRecord('/catalogues-categories', data, true);
 export const editCategory: (data: Types.ICategory) => Promise<Types.ICategory> = async (data) => await updateRecord('/catalogues-categories', data.id, data);
 export const removeCategory: (id: string) => Promise<void> = async (id) => await removeRecord('/catalogues-categories', id);
+export const editCatalogue: (data: Types.IDbFile) => Promise<Types.IDbFile> = async (data) => await updateRecord('/catalogues', data.id, data);
 
 export const changeCatalogueCategory: (apiUrl: string, values: Types.IFileApi) => Promise<void> = (apiUrl, values) => {
 	return new Promise(async (resolve, reject) => {
