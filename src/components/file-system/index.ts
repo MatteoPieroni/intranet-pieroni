@@ -1,1 +1,1 @@
-export { FileSystem } from './file-system';
+export * from './file-system';

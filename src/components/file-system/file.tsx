@@ -39,9 +39,10 @@ export const File: React.FC<IFileProps> = ({ file }) => {
 			{file.label}
 		</a>
 		<Menu id={file.id}>
-			<Item onClick={startEditing} disabled={isEditing}>Rinomina catalogo</Item>
+			<Item onClick={startEditing} disabled={isEditing}>Modifica catalogo</Item>
 		</Menu>
-		<Modal isOpen={isEditing} closeModal={finishEditing}>
+		<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
+			<h2>Modifica catalogo</h2>
 			<CataloguesForm file={file} onSave={finishEditing} />
 		</Modal>
 	</StyledFile>

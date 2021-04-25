@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Formik, FormikHelpers, Form } from 'formik';
 import styled from '@emotion/styled';
 
 import { CataloguesService, IFile } from '../../../services/firebase/db';
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
+import { useCatalogueUtilities } from '../../file-system';
+import { Select, SelectOption } from '../../form-fields/select';
 
 interface ICataloguesFormProps {
 	file: IFile;
@@ -29,6 +31,7 @@ const StyledLinksForm = styled.div`
 export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave }) => {
   const [isSaving, setIsSaving] = useState(false);
 	const isMounted = useRef<boolean>();
+  const { categoriesLookup } = useCatalogueUtilities();
 
 	useEffect(() => {
 		isMounted.current = true;
@@ -43,7 +46,7 @@ export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave })
     setIsSaving(true);
 
     try {
-				await CataloguesService.renameCatalogue(values.label, file);
+      await CataloguesService.editCatalogue({ label: values.label, categoriesId: values.categoriesId }, file);
     } catch (e) {
       console.error(e);
     }
@@ -70,12 +73,19 @@ export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave })
     }
   }
 
+  const categoriesOptions: SelectOption[] = useMemo(() => 
+    Object.values(categoriesLookup).map(({ id, label }) => ({
+      label,
+      value: id,
+    })), [categoriesLookup, file]);
+
   return (
     <StyledLinksForm>
       <Formik initialValues={file} onSubmit={submitCatalogue} validate={validateCatalogue}>
         <Form>
           <Field name="id" hidden />
           <Field name="label" label="Nome" />
+          <Select name="categoriesId" options={categoriesOptions} isMulti />
           <div className="buttons-container">
             {isSaving ?
               <p>Sto salvando...</p> :
