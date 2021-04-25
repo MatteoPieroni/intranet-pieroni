@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { IOrganisedData, organiseData } from "../../../../utils/file-system";
 import { CancellableListener } from "../db";
-import { IFile, ICategory, IDbFile, IFileApi } from "../types";
+import { IFile, ICategory, IDbFile, IFileChanges } from "../types";
 import {
 	ICatalogueListener,
 	ICategoriesListener,
@@ -10,8 +10,7 @@ import {
 	addCategory,
 	removeCategory,
 	editCategory,
-	changeCatalogueCategory,
-	editCatalogue,
+	editCatalogue as editCatalogueCourier,
 } from "./catalogues-couriers";
 
 type IFileListener = (fileSystem: IOrganisedData) => void;
@@ -26,8 +25,7 @@ interface IFilesService {
 	addCategory: (data: ICategory) => Promise<ICategory>;
 	editCategory: (data: ICategory) => Promise<ICategory>;
 	removeCategory: (id: string) => Promise<void>;
-	changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
-	editCatalogue: (data: IDbFile) => Promise<IDbFile>;
+	editCatalogueCourier: (data: IDbFile) => Promise<IDbFile>;
 }
 
 export class CataloguesServiceClass {
@@ -36,8 +34,7 @@ export class CataloguesServiceClass {
 	private addCategoryCourier: (data: ICategory) => Promise<ICategory>;
 	private editCategory: (data: ICategory) => Promise<ICategory>;
 	private removeCategoryCourier: (id: string) => Promise<void>;
-	private changeCatalogueCategory: (url: string, values: IFileApi) => Promise<void>;
-	private editCatalogue: (data: IDbFile) => Promise<IDbFile>;
+	private editCatalogueCourier: (data: IDbFile) => Promise<IDbFile>;
 	private config: IFilesConfig;
 	private files: IFile[];
 	private categories: ICategory[];
@@ -49,8 +46,7 @@ export class CataloguesServiceClass {
 		this.addCategoryCourier = couriers.addCategory;
 		this.editCategory = couriers.editCategory;
 		this.removeCategoryCourier = couriers.removeCategory;
-		this.changeCatalogueCategory = couriers.changeCatalogueCategory;
-		this.editCatalogue = couriers.editCatalogue;
+		this.editCatalogueCourier = couriers.editCatalogueCourier;
 		this.config = config;
 	}
 
@@ -81,7 +77,7 @@ export class CataloguesServiceClass {
 					...rest
 				}) => ({
 					...rest,
-					categoriesId,
+					categoriesId: categoriesId || [],
 					storeUrl
 				})
 			)
@@ -115,19 +111,16 @@ export class CataloguesServiceClass {
 		await this.removeCategoryCourier(id);
 	}
 
-	public async renameCatalogue(label: string, data: IFile): Promise<void> {
-		const { categoriesId, storeUrl, ...rest } = data;
+	public async editCatalogue(values: IFileChanges, data: IFile): Promise<void> {
+		const { label, categoriesId } = values;
+		const { storeUrl, ...rest } = data;
 
-		await this.editCatalogue({
+		await this.editCatalogueCourier({
 			...rest,
 			label,
 			categories_id: categoriesId || [],
 			store_url: storeUrl,
 		});
-	}
-
-	public async changeFileCategory(id: string, categories: string): Promise<void> {
-		await this.changeCatalogueCategory(this.config.apiUrl, { id, categories });
 	}
 }
 
@@ -137,6 +130,5 @@ export const CataloguesService = new CataloguesServiceClass({
 	addCategory,
 	removeCategory,
 	editCategory,
-	changeCatalogueCategory,
-	editCatalogue,
+	editCatalogueCourier,
 }, { apiUrl: process.env.CATALOGUES_URL })

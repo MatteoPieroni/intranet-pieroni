@@ -11,7 +11,7 @@ export const editCategory: (data: Types.ICategory) => Promise<Types.ICategory> =
 export const removeCategory: (id: string) => Promise<void> = async (id) => await removeRecord('/catalogues-categories', id);
 export const editCatalogue: (data: Types.IDbFile) => Promise<Types.IDbFile> = async (data) => await updateRecord('/catalogues', data.id, data);
 
-export const changeCatalogueCategory: (apiUrl: string, values: Types.IFileApi) => Promise<void> = (apiUrl, values) => {
+export const changeCatalogueCategory: (apiUrl: string, values: Types.IFile) => Promise<void> = (apiUrl, values) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await fetch(apiUrl, {

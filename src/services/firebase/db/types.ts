@@ -75,16 +75,16 @@ export interface IDbFile {
 }
 
 export interface IFile {
-  categoriesId: string[];
+  categoriesId: string[] | undefined;
   filename: string;
   id: string;
   label: string;
   storeUrl: string;
 }
 
-export interface IFileApi {
-  id: string;
-  categories: string;
+export interface IFileChanges {
+  label: string;
+  categoriesId: string[];
 }
 
 export interface ICategory {
