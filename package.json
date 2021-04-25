@@ -43,6 +43,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "firebase": "^7.2.3",
     "formik": "^2.0.3",
+    "fuse.js": "^6.4.6",
     "pdfmake": "^0.1.63",
     "react": "^16.11.0",
     "react-contexify": "^5.0.0",
