@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
+import { useSearch } from '../../shared/hooks';
 import { ICategoriesLookup, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
@@ -68,14 +69,37 @@ export const useCatalogueUtilities = (): ICataloguesContext => useContext(Catalo
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
+	const { isSearching, onSearch, results } = useSearch(filesList, {
+			includeScore: false,
+			keys: ['label', 'categoriesId']
+		});
 
-	const shownFiles = useMemo(() =>
-		currentFolders.length > 0 ? getCurrentFiles(currentFolders, files) : filesList, [currentFolders, files]);
-	const displayedFolder = currentFolders.length > 0 ?
-		currentFolders.length > 1 ?
-			`${currentFolders.length} categorie` :
-			currentFolders[0].label
-		: 'Home';
+	const shownFiles = useMemo(() => {
+		if (isSearching) {
+			return results;
+		}
+
+		if (currentFolders.length > 0) {
+			return getCurrentFiles(currentFolders, files)
+		}
+		
+		return filesList;
+	}, [currentFolders, files, isSearching, results]);
+
+	const displayedFolder = (): string => {
+		if (isSearching) {
+			return 'Risultati di ricerca'
+		}
+
+		if (currentFolders.length > 1) {
+			return `${currentFolders.length} categorie`;
+		}
+		
+		if (currentFolders.length === 1) {
+			return currentFolders[0].label;
+		}
+		return 'Home'
+	};
 
 	const homeFolder = useMemo(() => {
 		return {
@@ -101,13 +125,20 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolder}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
 				<StyledContainer>
-					<div className="current-folder">
-						{displayedFolder}
+					<div>
+						<div className="current-folder">
+							{displayedFolder()}
+						</div>
+						<div className="search-field">
+							<input type="search" onChange={onSearch} />
+						</div>
 					</div>
 					<div className="filesystem-container">
-						<div className="folders-menu">
-							<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
-						</div>
+						{!isSearching && (
+							<div className="folders-menu">
+								<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
+							</div>
+						)}
 						<div className="files-folder">
 							{shownFiles.length > 0 ? (
 									shownFiles.map((file) => <File key={file.id} file={file} />)
