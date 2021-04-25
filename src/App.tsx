@@ -60,12 +60,22 @@ const globalCss = css`
     position: absolute;
     top: 50%;
     left: 50%;
+    padding: 1rem;
     width: 90vw;
     background: #fff;
     transform: translate(-50%, -50%);
+    box-shadow:0 1px 5px rgba(0,0,0,0.3);
 
     @media (min-width: 1024px) {
       width: 60vw;
+    }
+
+    &.modal-small {
+      @media (min-width: 1024px) {
+        min-width: 330px;
+        width: auto;
+        max-width: 60vw;
+      }
     }
   }
 `;

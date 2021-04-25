@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 import { Icon } from '../../icons';
 
-interface IFieldProps {
+export interface IFieldProps {
   name: string;
   label?: string;
   hidden?: boolean;
@@ -14,7 +14,7 @@ interface IFieldProps {
   [key: string]: any;
 }
 
-const StyledField = styled.div<{ small: boolean }>`
+export const StyledField = styled.div<{ small?: boolean }>`
   margin-bottom: .5rem;
   font-size: ${(props): string => props.small ? '1.5rem' : '1rem'};
 
