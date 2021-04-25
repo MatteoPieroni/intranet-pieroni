@@ -7,9 +7,10 @@ import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { useCatalogueUtilities } from '../../file-system';
 import { Select, SelectOption } from '../../form-fields/select';
+import { ICategoryWithFileCount, IEnrichedFile } from '../../../utils/file-system';
 
 interface ICataloguesFormProps {
-	file: IFile;
+	file: IFile | IEnrichedFile;
 	onSave: () => void;
 }
 
@@ -27,6 +28,10 @@ const StyledLinksForm = styled.div`
     justify-content: space-between;
   }
 `;
+
+const isFullCategory = (array: string[] | ICategoryWithFileCount[]): array is ICategoryWithFileCount[] => {
+  return !!(array as ICategoryWithFileCount[])?.[0]?.label;
+}
 
 export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave }) => {
   const [isSaving, setIsSaving] = useState(false);
@@ -46,7 +51,18 @@ export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave })
     setIsSaving(true);
 
     try {
-      await CataloguesService.editCatalogue({ label: values.label, categoriesId: values.categoriesId }, file);
+      const cleanedCategories = !isFullCategory(file.categoriesId) ?
+        file.categoriesId :
+        file.categoriesId.map((cat): string => {
+          return cat.id;
+        }) as string[];
+
+      const fileToPass = {
+        ...file,
+        categoriesId: cleanedCategories,
+      };
+
+      await CataloguesService.editCatalogue({ label: values.label, categoriesId: values.categoriesId }, fileToPass);
     } catch (e) {
       console.error(e);
     }

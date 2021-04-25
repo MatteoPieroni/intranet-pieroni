@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
+import { IFile } from '../../services/firebase/db';
 import { useSearch } from '../../shared/hooks';
 import { ICategoriesLookup, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
@@ -71,19 +72,19 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
-			keys: ['label', 'categoriesId']
+			keys: ['label', 'categoriesId.label']
 		});
 
-	const shownFiles = useMemo(() => {
+	const shownFiles: IFile[] = useMemo(() => {
 		if (isSearching) {
-			return results;
+			return results as unknown as IFile[];
 		}
 
 		if (currentFolders.length > 0) {
 			return getCurrentFiles(currentFolders, files)
 		}
 		
-		return filesList;
+		return filesList as unknown as IFile[];
 	}, [currentFolders, files, isSearching, results]);
 
 	const displayedFolder = (): string => {

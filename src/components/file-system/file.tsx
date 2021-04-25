@@ -6,9 +6,10 @@ import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
 import { Modal } from '../modal';
 import { CataloguesForm } from '../forms/catalogues-form';
+import { IEnrichedFile } from '../../utils/file-system';
 
 interface IFileProps {
-	file: IFile;
+	file: IFile | IEnrichedFile;
 }
 
 const StyledFile = styled.div`

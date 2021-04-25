@@ -1,6 +1,6 @@
 import { IFile, ICategory } from "../../services/firebase/db";
 
-interface ICategoryWithFileCount extends ICategory {
+export interface ICategoryWithFileCount extends ICategory {
 	fileCount: number;
 }
 
@@ -18,6 +18,14 @@ export interface IOrganisedFiles {
 	[key: string]: IFile[];
 }
 
+export interface IEnrichedFile {
+	categoriesId: ICategoryWithFileCount[];
+	filename: string;
+	id: string;
+	label: string;
+	storeUrl: string;
+}
+
 export type IOrganisedCategories = IOrganisedCategoriesGeneric<ICategoryWithSubfolders>;
 export type ICategoriesLookup = IOrganisedCategoriesGeneric<ICategoryWithFileCount>;
 
@@ -25,7 +33,7 @@ export interface IOrganisedData {
 	files: IOrganisedFiles;
 	categories: IOrganisedCategories;
 	categoriesLookup: ICategoriesLookup;
-	filesList: IFile[];
+	filesList: IEnrichedFile[];
 }
 
 // This function is used to check for a category at the subfolders levels
@@ -145,7 +153,10 @@ export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganis
 			});
 		});
 
-		const filesList = [...files];
+		const filesList = files.map(file => ({
+			...file,
+			categoriesId: file.categoriesId.map(categoryId => categoriesLookup?.[categoryId]),
+		}));
 
 		const organisedFolders = organiseFolders(Object.values(categoriesLookup));
 		const organisedFiles = organiseFiles(files);
