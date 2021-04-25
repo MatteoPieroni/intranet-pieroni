@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
-import { IOrganisedData } from '../../utils/file-system';
+import { ICategoriesLookup, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
 import { getCurrentFiles } from './utils/get-current-files';
@@ -49,6 +49,10 @@ interface ICurrentFolderContext {
 	toggleSelectedFolder: (folder: ICurrentFolder) => void;
 }
 
+interface ICataloguesContext {
+	categoriesLookup: ICategoriesLookup;
+}
+
 const baseHomeFolder = {
 	id: '',
 	label: 'Home',
@@ -58,21 +62,15 @@ const baseHomeFolder = {
 };
 
 const CurrentFolderContext = createContext<Partial<ICurrentFolderContext>>({});
+const CataloguesContext = createContext<ICataloguesContext>({} as ICataloguesContext);
 export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext(CurrentFolderContext);
+export const useCatalogueUtilities = (): ICataloguesContext => useContext(CataloguesContext);
 
-export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
+export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
 
-	const allFiles = useMemo(() => {
-		if (!files) {
-			return;
-		}
-
-		const allArrays = Object.values(files);
-		return allArrays.flat();
-	}, [files]);
 	const shownFiles = useMemo(() =>
-		currentFolders.length > 0 ? getCurrentFiles(currentFolders, files) : allFiles, [currentFolders, files]);
+		currentFolders.length > 0 ? getCurrentFiles(currentFolders, files) : filesList, [currentFolders, files]);
 	const displayedFolder = currentFolders.length > 0 ?
 		currentFolders.length > 1 ?
 			`${currentFolders.length} categorie` :
@@ -101,23 +99,25 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories }) => {
 
 	return (
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolder}}>
-			<StyledContainer>
-				<div className="current-folder">
-					{displayedFolder}
-				</div>
-				<div className="filesystem-container">
-					<div className="folders-menu">
-						<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
+			<CataloguesContext.Provider value={{categoriesLookup}}>
+				<StyledContainer>
+					<div className="current-folder">
+						{displayedFolder}
 					</div>
-					<div className="files-folder">
-						{shownFiles.length > 0 ? (
-								shownFiles.map((file) => <File key={file.id} file={file} />)
-						) : (
-							<p>Non ci sono file qui</p>
-						)}
+					<div className="filesystem-container">
+						<div className="folders-menu">
+							<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
+						</div>
+						<div className="files-folder">
+							{shownFiles.length > 0 ? (
+									shownFiles.map((file) => <File key={file.id} file={file} />)
+							) : (
+								<p>Non ci sono file qui</p>
+							)}
+						</div>
 					</div>
-				</div>
-			</StyledContainer>
+				</StyledContainer>
+			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
 	)
 }

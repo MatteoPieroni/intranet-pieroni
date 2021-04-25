@@ -19,10 +19,13 @@ export interface IOrganisedFiles {
 }
 
 export type IOrganisedCategories = IOrganisedCategoriesGeneric<ICategoryWithSubfolders>;
+export type ICategoriesLookup = IOrganisedCategoriesGeneric<ICategoryWithFileCount>;
 
 export interface IOrganisedData {
 	files: IOrganisedFiles;
 	categories: IOrganisedCategories;
+	categoriesLookup: ICategoriesLookup;
+	filesList: IFile[];
 }
 
 // This function is used to check for a category at the subfolders levels
@@ -96,7 +99,7 @@ export const organiseFiles: (files: IFile[]) => IOrganisedFiles = (files) => {
 
 	// for each file
 	files.forEach(file => {
-		if (!file.categoriesId) {
+		if (file.categoriesId.length === 0) {
 			fileList.uncategorised.push(file);
 			return;
 		}
@@ -130,7 +133,7 @@ export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganis
 		// for each file
 		files.forEach(({ categoriesId }) => {
 			// if it has no categories
-			if (!categoriesId) {
+			if (categoriesId.length === 0) {
 				// add it to the uncategorised file count in the lookup
 				categoriesLookup.uncategorised.fileCount = categoriesLookup.uncategorised.fileCount + 1;
 				return;
@@ -142,11 +145,15 @@ export const organiseData: (categories: ICategory[], files: IFile[]) => IOrganis
 			});
 		});
 
+		const filesList = [...files];
+
 		const organisedFolders = organiseFolders(Object.values(categoriesLookup));
 		const organisedFiles = organiseFiles(files);
 
 		return {
 			categories: organisedFolders,
+			categoriesLookup,
 			files: organisedFiles,
+			filesList,
 		}
 	};
