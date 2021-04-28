@@ -7,19 +7,19 @@ import { ICurrentFolder, useCurrentFolder } from './file-system';
 import { Item, Menu, useContextMenu } from 'react-contexify';
 import { CataloguesService } from '../../services/firebase/db';
 import { CategoriesForm } from '../forms/catalogues-form/categories-form';
-import { CaretDown, CaretUp } from '../icons/Icon';
+import { CaretDown, CaretRight } from '../icons/Icon';
 
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
 	onSelect: (folder: ICurrentFolder) => void;
-	onToggle: (folder: ICurrentFolder) => void;
+	onToggle: (folder: ICurrentFolder[]) => void;
 	isExpanded: boolean;
 }
 
 interface ISubFolderProps {
 	folder: ICategoryWithSubfolders;
 	onSelect: (folder: ICurrentFolder) => void;
-	onToggle: (folder: ICurrentFolder) => void;
+	onToggle: (folder: ICurrentFolder[]) => void;
 	isRoot?: boolean;
 }
 
@@ -40,11 +40,6 @@ const StyledFolder = styled.li<{ isActive?: boolean }>`
 	.folder-label {
 		/* color: ${(props): string => props.isActive ? 'teal' : 'black'}; */
 		font-size: 1rem;
-	}
-
-	svg {
-		display: inline-block;
-		margin: 0 .5rem 0;
 	}
 `;
 
@@ -68,7 +63,7 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 
 	svg {
 		display: inline-block;
-		margin: 0 .5rem 0;
+		margin-right: .5rem;
 	}
 `;
 
@@ -92,7 +87,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 	}
 
 	const handleToggle = (): void => {
-		onToggle(folder);
+		onToggle([folder, ...(folder.subfolders ? Object.values(folder.subfolders) : [])]);
 	}
 
 	const createSubCategory: () => void = () => setIsCreating(true);
@@ -131,13 +126,8 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 									onChange={handleToggle}
 								/>
 							)}
-							<Icon.Folder aria-hidden />
-							{folder.subfolders && <button onClick={toggleExpanded}>
-								{isExpanded ? <CaretUp /> : <CaretDown />}
-							</button>}
-							<button
-								onClick={handleSelect}
-								>
+							<button onClick={toggleExpanded}>
+								{folder.subfolders && (isExpanded ? <CaretDown /> : <CaretRight />)}
 								<span
 									id={`folder-name-${folder.id}`}
 									className="folder-label"

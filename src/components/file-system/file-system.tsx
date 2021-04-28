@@ -48,7 +48,7 @@ export type ICurrentFolder = {
 interface ICurrentFolderContext {
 	currentFolders: ICurrentFolder[];
 	setCurrentFolder: (folder: ICurrentFolder) => void;
-	toggleSelectedFolder: (folder: ICurrentFolder) => void;
+	toggleSelectedFolders: (folder: ICurrentFolder[]) => void;
 }
 
 interface ICataloguesContext {
@@ -111,19 +111,23 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
 
-	const toggleSelectedFolder = (folder: ICurrentFolder): void => {
-		const isPresent = currentFolders.some(currentFolders => currentFolders.id === folder.id);
-		
-		if (isPresent) {
-			setCurrentFolders(currentFolders.filter(currentFolders => currentFolders.id !== folder.id));
-			return;
-		}
+	const toggleSelectedFolders = (folders: ICurrentFolder[]): void => {
+		const newFolders = folders.reduce((acc, currentFolder) => {
+			const folderIndex = currentFolders.findIndex(currentFolders => currentFolders.id === currentFolder.id);
 
-		setCurrentFolders([...currentFolders, folder]);
+			if (folderIndex === -1) {
+				return [acc[0], [...acc[1], currentFolder]];
+			}
+
+			const filteredFolders = acc[0].splice(folderIndex, 1);
+			return [[...filteredFolders], acc[1]];
+		}, [currentFolders, []]);
+		
+		setCurrentFolders([...newFolders[0], ...newFolders[1]]);
 	};
 
 	return (
-		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolder}}>
+		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolders}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
 				<StyledContainer>
 					<div>
@@ -137,7 +141,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 					<div className="filesystem-container">
 						{!isSearching && (
 							<div className="folders-menu">
-								<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolder} isRoot />
+								<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
 							</div>
 						)}
 						<div className="files-folder">
