@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 
-import { Icon } from '../icons';
 import { ICategoryWithSubfolders, IOrganisedCategories } from '../../utils/file-system';
 import { ICurrentFolder, useCurrentFolder } from './file-system';
 import { Item, Menu, useContextMenu } from 'react-contexify';
@@ -12,14 +11,14 @@ import { CaretDown, CaretRight } from '../icons/Icon';
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
 	onSelect: (folder: ICurrentFolder) => void;
-	onToggle: (folder: ICurrentFolder[]) => void;
+	onToggle: (folder: ICategoryWithSubfolders) => void;
 	isExpanded: boolean;
 }
 
 interface ISubFolderProps {
 	folder: ICategoryWithSubfolders;
 	onSelect: (folder: ICurrentFolder) => void;
-	onToggle: (folder: ICurrentFolder[]) => void;
+	onToggle: (folder: ICategoryWithSubfolders) => void;
 	isRoot?: boolean;
 }
 
@@ -87,7 +86,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 	}
 
 	const handleToggle = (): void => {
-		onToggle([folder, ...(folder.subfolders ? Object.values(folder.subfolders) : [])]);
+		onToggle(folder);
 	}
 
 	const createSubCategory: () => void = () => setIsCreating(true);

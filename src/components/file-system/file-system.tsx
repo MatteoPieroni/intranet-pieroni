@@ -2,10 +2,11 @@ import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { IFile } from '../../services/firebase/db';
 import { useSearch } from '../../shared/hooks';
-import { ICategoriesLookup, IOrganisedData } from '../../utils/file-system';
+import { ICategoriesLookup, ICategoryWithSubfolders, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
 import { getCurrentFiles } from './utils/get-current-files';
+import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -48,7 +49,7 @@ export type ICurrentFolder = {
 interface ICurrentFolderContext {
 	currentFolders: ICurrentFolder[];
 	setCurrentFolder: (folder: ICurrentFolder) => void;
-	toggleSelectedFolders: (folder: ICurrentFolder[]) => void;
+	toggleSelectedFolders: (folder: ICurrentFolder, subfolders?: ICurrentFolder[]) => void;
 }
 
 interface ICataloguesContext {
@@ -111,19 +112,24 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
 
-	const toggleSelectedFolders = (folders: ICurrentFolder[]): void => {
-		const newFolders = folders.reduce((acc, currentFolder) => {
-			const folderIndex = currentFolders.findIndex(currentFolders => currentFolders.id === currentFolder.id);
+	const toggleSelectedFolders = (folder: ICategoryWithSubfolders): void => {
+		const isParentFolderActive = currentFolders.some(fold => fold.id === folder.id);
+		const hasSubFolder = folder.subfolders;
 
-			if (folderIndex === -1) {
-				return [acc[0], [...acc[1], currentFolder]];
+		// if there are no subfolder
+		if (!hasSubFolder) {
+			// and the folder isn't selected
+			if (!isParentFolderActive) {
+				// add it to selected
+				return setCurrentFolders([...currentFolders, folder]);
 			}
 
-			const filteredFolders = acc[0].splice(folderIndex, 1);
-			return [[...filteredFolders], acc[1]];
-		}, [currentFolders, []]);
+			// if the current folder is selected
+			// remove it
+			return setCurrentFolders(currentFolders.filter(fold => fold.id !== folder.id));
+		}
 		
-		setCurrentFolders([...newFolders[0], ...newFolders[1]]);
+		setCurrentFolders(toggleAllSubfolders(currentFolders, folder));
 	};
 
 	return (
