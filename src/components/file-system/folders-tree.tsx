@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { ICategoryWithSubfolders, IOrganisedCategories } from '../../utils/file-system';
@@ -81,9 +81,11 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 	const { currentFolders } = useCurrentFolder();
 	const isActive = useMemo(() => currentFolders.some(currentFolder => folder.id === currentFolder?.id), [currentFolders, folder]);
 
-	const handleSelect = (): void => {
-		onSelect(folder);
-	}
+	useEffect(() => {
+		if (isActive && !isExpanded) {
+			setIsExpanded(true);
+		}
+	}, [isActive])
 
 	const handleToggle = (): void => {
 		onToggle(folder);
