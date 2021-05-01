@@ -36,6 +36,11 @@ const StyledTree = styled.ul<{ isExpanded?: boolean }>`
 const StyledFolder = styled.li<{ isActive?: boolean }>`
 	margin-bottom: .75rem;
 
+	.folder-container {
+		display: inline-block;
+		padding-left: .5rem;
+	}
+
 	.folder-label {
 		/* color: ${(props): string => props.isActive ? 'teal' : 'black'}; */
 		font-size: 1rem;
@@ -65,6 +70,17 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 		margin-right: .5rem;
 	}
 `;
+
+const FolderContainer: React.FC<{ hasSubfolders: boolean; onClick: () => void }> = ({ hasSubfolders, onClick, children }) =>
+	hasSubfolders ? (
+		<button onClick={onClick} className="folder-container">
+			{children}
+		</button>
+	) : (
+		<p className="folder-container">
+			{children}
+		</p>
+	);
 
 export const SubFolder: React.FC<ISubFolderProps> = ({
 	folder,
@@ -127,7 +143,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 									onChange={handleToggle}
 								/>
 							)}
-							<button onClick={toggleExpanded}>
+							<FolderContainer hasSubfolders={!!folder.subfolders} onClick={toggleExpanded}>
 								{folder.subfolders && (isExpanded ? <CaretDown /> : <CaretRight />)}
 								<span
 									id={`folder-name-${folder.id}`}
@@ -135,7 +151,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 								>
 									{folder.label} {isRoot ? '' : `(${folder.fileCount})`}
 								</span>
-							</button>
+							</FolderContainer>
 							</div>
 				)}
 				{folder.subfolders ? (
