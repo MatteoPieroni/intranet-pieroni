@@ -3,18 +3,9 @@ import { fireApp } from './app';
 
 const fireStorage = fireApp.storage();
 
-const listFiles: (folderString: string) => Promise<Types.IStorageFile[]> = (folderString) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const filesRef = fireStorage.ref().child(folderString);
+export const getFileDownloadUrl: (fileUrl: string) => Promise<string> = async (url) => {
+  const ref = fireStorage.refFromURL(url);
+  const fireUrl = await ref.getDownloadURL();
 
-      const allFilesRef = await filesRef.listAll();
-      const allFiles = allFilesRef.items.map(file => file && { path: file.fullPath });
-      resolve(allFiles);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-export const listImages = async (): Promise<Types.IStorageFile[]> => await listFiles('/images');
+  return fireUrl;
+}
