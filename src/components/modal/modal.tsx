@@ -1,8 +1,7 @@
 import React from 'react';
 import ExternalModal from 'react-modal';
-import styled from '@emotion/styled';
 
-interface IModalProps {
+export interface IModalProps {
   isOpen: boolean;
   closeModal: () => void;
   className?: string;
@@ -10,9 +9,6 @@ interface IModalProps {
 }
 
 ExternalModal.setAppElement('#app');
-
-const StyledDiv = styled.div`
-`;
 
 export const Modal: React.FC<IModalProps> = ({ isOpen, className, contentLabel = null, closeModal, children }) => {
 
@@ -23,9 +19,7 @@ export const Modal: React.FC<IModalProps> = ({ isOpen, className, contentLabel =
       className={className ? `modal ${className}` : 'modal'}
       contentLabel={contentLabel}
     >
-      <StyledDiv>
-        {children}
-      </StyledDiv>
+      {children}
     </ExternalModal>
   )
 }
