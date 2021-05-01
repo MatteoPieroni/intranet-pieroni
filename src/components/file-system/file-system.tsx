@@ -1,12 +1,17 @@
-import styled from '@emotion/styled';
 import React, { createContext, useContext, useMemo, useState } from 'react';
+import styled from '@emotion/styled';
+
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
 import { IFile } from '../../services/firebase/db';
 import { useSearch } from '../../shared/hooks';
-import { ICategoriesLookup, ICategoryWithSubfolders, IOrganisedData } from '../../utils/file-system';
+import { ICategoriesLookup, ICategoryWithSubfolders, IEnrichedFile, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
 import { getCurrentFiles } from './utils/get-current-files';
 import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
+import { PdfViewer } from '../pdf-viewer';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -71,6 +76,9 @@ export const useCatalogueUtilities = (): ICataloguesContext => useContext(Catalo
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
+	const [shownFile, setShownFile] = useState<IFile | IEnrichedFile>();
+	const resetShownFile = (): void => setShownFile(null);
+
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
 			keys: ['label', 'categoriesId.label']
@@ -152,13 +160,18 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 						)}
 						<div className="files-folder">
 							{shownFiles.length > 0 ? (
-									shownFiles.map((file) => <File key={file.id} file={file} />)
+									shownFiles.map((file) => <File
+										key={file.id}
+										file={file}
+										onFileDoubleClick={setShownFile}
+									/>)
 							) : (
 								<p>Non ci sono file qui</p>
 							)}
 						</div>
 					</div>
 				</StyledContainer>
+				{shownFile && <PdfViewer url={shownFile.storeUrl} closeModal={resetShownFile} />};
 			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
 	)

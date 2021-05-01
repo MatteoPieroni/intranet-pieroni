@@ -10,6 +10,7 @@ import { IEnrichedFile } from '../../utils/file-system';
 
 interface IFileProps {
 	file: IFile | IEnrichedFile;
+	onFileDoubleClick: (file: IFile | IEnrichedFile) => void;
 }
 
 const StyledFile = styled.div`
@@ -26,7 +27,7 @@ const StyledFile = styled.div`
 	}
 `;
 
-export const File: React.FC<IFileProps> = ({ file }) => {
+export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	const { show } = useContextMenu({ id: file.id });
 	const [isEditing, setIsEditing] = useState(false);
 
@@ -35,10 +36,13 @@ export const File: React.FC<IFileProps> = ({ file }) => {
 
 	return (
 	<StyledFile>
-		<a href={`http://192.168.1.14/test/${file.filename}`} target="_blank" rel="noreferrer" onContextMenu={show}>
+		<button
+			onContextMenu={show}
+			onDoubleClick={(): void => onFileDoubleClick(file)}
+		>
 			<Icon.PDFFile aria-hidden />
 			{file.label}
-		</a>
+		</button>
 		<Menu id={file.id}>
 			<Item onClick={startEditing} disabled={isEditing}>Modifica catalogo</Item>
 		</Menu>
