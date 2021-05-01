@@ -5,5 +5,6 @@ export const getConfig: () => Promise<Types.IConfig> = () => getDbRecord<Types.I
 	return {
 		smsApi: data.sms_api,
 		mailUrl: data.mail_url,
+		apiUrl: data.api_url,
 	}
 });

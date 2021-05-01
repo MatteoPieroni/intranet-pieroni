@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 
-import { ConfigContext } from '../context/config';
-import { IConfig } from '../../services/firebase/db';
+import { ConfigContext, IExtendedConfig } from '../context/config';
 
-export const useConfig: () => IConfig = () => useContext(ConfigContext);
+export const useConfig: () => IExtendedConfig = () => useContext(ConfigContext);

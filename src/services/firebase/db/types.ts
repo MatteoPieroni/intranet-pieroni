@@ -48,10 +48,12 @@ export interface IStorageFile {
 export interface IDbConfig {
   sms_api: string;
   mail_url: string;
+  api_url: string;
 }
 export type IConfig = {
   smsApi: string;
   mailUrl: string;
+  apiUrl: string;
 }
 
 export enum EColor {
