@@ -37,6 +37,15 @@ export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave })
   const [isSaving, setIsSaving] = useState(false);
 	const isMounted = useRef<boolean>();
   const { categoriesLookup } = useCatalogueUtilities();
+  const initialState = useMemo(() => {
+    return {
+      ...file,
+      categoriesId:
+        isFullCategory(file.categoriesId) ?
+          file.categoriesId.map(({ id }) => id) :
+          file.categoriesId
+    }
+  }, []);
 
 	useEffect(() => {
 		isMounted.current = true;
@@ -97,7 +106,7 @@ export const CataloguesForm: React.FC<ICataloguesFormProps> = ({ file, onSave })
 
   return (
     <StyledLinksForm>
-      <Formik initialValues={file} onSubmit={submitCatalogue} validate={validateCatalogue}>
+      <Formik initialValues={initialState} onSubmit={submitCatalogue} validate={validateCatalogue}>
         <Form>
           <Field name="id" hidden />
           <Field name="label" label="Nome" />
