@@ -2,17 +2,19 @@ import { IFile } from "../../../services/firebase/db";
 import { IOrganisedFiles } from "../../../utils/file-system";
 import { ICurrentFolder } from "../file-system";
 
-export const getCurrentFiles: (folderSelection: ICurrentFolder[], file: IOrganisedFiles) => IFile[] = (folderSelection, file) => {
+export const getCurrentFiles: (folderSelection: ICurrentFolder[], fileLookup: IOrganisedFiles) => IFile[] = (folderSelection, fileLookup) => {
 	const allFiles = folderSelection.reduce((acc, folder) => {
-		if (!file[folder.id]) {
+		if (!fileLookup[folder.id]) {
 			return acc;
 		}
 
 		return [
 			...acc,
-			file[folder.id]
+			...fileLookup[folder.id]
 		]
 	}, []);
 
-	return allFiles.flat();
+	const dedupedFiles = [...new Set(allFiles)] as IFile[];
+
+	return dedupedFiles;
 }
