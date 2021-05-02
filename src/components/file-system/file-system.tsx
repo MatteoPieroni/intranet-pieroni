@@ -5,7 +5,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 import { IFile } from '../../services/firebase/db';
-import { useSearch } from '../../shared/hooks';
+import { useConfig, useSearch } from '../../shared/hooks';
 import { ICategoriesLookup, ICategoryWithSubfolders, IEnrichedFile, IOrganisedData } from '../../utils/file-system';
 import { File } from './file';
 import { SubFolder } from './folders-tree';
@@ -75,8 +75,14 @@ export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext
 export const useCatalogueUtilities = (): ICataloguesContext => useContext(CataloguesContext);
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
+	const { isInternal, apiUrl } = useConfig();
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
 	const [shownFile, setShownFile] = useState<IFile | IEnrichedFile>();
+	const shownUrl = shownFile ?
+		isInternal ?
+			`${apiUrl}/file/${shownFile.filename}` :
+			shownFile.storeUrl :
+		'';
 	const resetShownFile = (): void => setShownFile(null);
 
 	const { isSearching, onSearch, results } = useSearch(filesList, {
@@ -171,7 +177,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 						</div>
 					</div>
 				</StyledContainer>
-				{shownFile && <PdfViewer url={shownFile.storeUrl} closeModal={resetShownFile} />};
+				{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />};
 			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
 	)

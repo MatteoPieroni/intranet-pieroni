@@ -27,7 +27,7 @@ const modalCss = css`
 `;
 
 export const PdfViewer: React.FC<IPdfViewerProps & Partial<IModalProps>> = ({ url, closeModal }) => {
-	const downloadUrl = useStorageFile(url);
+	const props = useStorageFile(url);
 
 	// Create new plugin instance
 	const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -37,15 +37,15 @@ export const PdfViewer: React.FC<IPdfViewerProps & Partial<IModalProps>> = ({ ur
 			<Global styles={modalCss} />
 			<Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.worker.min.js">
 				<Modal isOpen={!!url} closeModal={closeModal} className="pdf-viewer-modal">
-					{!downloadUrl ? (
+					{!props ? (
 						<Loader />
 					) : (
 							<Viewer
-								fileUrl={downloadUrl}
 								localization={(itIT as unknown) as LocalizationMap}
 								plugins={[
 										defaultLayoutPluginInstance,
 								]}
+								{...props}
 							/>
 					)}
 				</Modal>
