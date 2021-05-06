@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faArrowRight, faPen, faTrash, faInfoCircle, faFilePdf, faFolder, faCaretRight, faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faPen, faTrash, faInfoCircle, faFilePdf, faFolder, faCaretRight, faCaretDown, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
   icon: IconProp;
@@ -44,4 +44,8 @@ export const CaretRight: React.FC<IGenericProps> = (props) => (
 
 export const CaretDown: React.FC<IGenericProps> = (props) => (
   <Icon icon={faCaretDown} {...props} />
+)
+
+export const CheckboxCheckedIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faCheck} {...props} />
 )
