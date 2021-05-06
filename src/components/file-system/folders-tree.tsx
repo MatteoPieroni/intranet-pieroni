@@ -7,6 +7,7 @@ import { Item, Menu, useContextMenu } from 'react-contexify';
 import { CataloguesService } from '../../services/firebase/db';
 import { CategoriesForm } from '../forms/catalogues-form/categories-form';
 import { CaretDown, CaretRight } from '../icons/Icon';
+import { Checkbox } from '../inputs/checkbox';
 
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
@@ -136,9 +137,8 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 					) : (
 						<div onContextMenu={show} className="single-folder">
 							{!isRoot && (
-								<input
-									type="checkbox"
-									aria-labelledby={`folder-name-${folder.id}`}
+								<Checkbox
+									ariaLabelledBy={`folder-name-${folder.id}`}
 									checked={isActive}
 									onChange={handleToggle}
 								/>
