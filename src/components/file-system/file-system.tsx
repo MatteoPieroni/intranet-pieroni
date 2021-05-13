@@ -177,7 +177,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 						</div>
 					</div>
 				</StyledContainer>
-				{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />};
+				{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
 			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
 	)

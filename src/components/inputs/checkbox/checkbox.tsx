@@ -19,7 +19,8 @@ const StyledInput = styled.label<IStyledCheckboxProps>`
     width: 1rem;
     background: white;
     text-align: center;
-    
+    vertical-align: middle;
+
     &:after {
         content: "";
         display: block;
@@ -28,9 +29,10 @@ const StyledInput = styled.label<IStyledCheckboxProps>`
 
     svg.check{
         margin: 0 auto;
-        vertical-align: text-bottom;
+        width: 67%;
+        height: auto;
         color: white;
-        width: 80%;
+        vertical-align: initial;
     }
     
     ${(props): string => props.checked && `

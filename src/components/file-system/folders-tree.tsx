@@ -52,7 +52,7 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 	margin-bottom: .75rem;
 
 	.single-folder {
-		padding: 0.35rem;
+		padding: 0.35rem 0.5rem;
 		background-color: #2a2e36;
 		color: #ffffff;
 		border-radius: 5px;
