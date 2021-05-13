@@ -35,23 +35,69 @@ const StyledTree = styled.ul<{ isExpanded?: boolean }>`
 `;
 
 const StyledFolder = styled.li<{ isActive?: boolean }>`
+	position: relative;
 	margin-bottom: .75rem;
+
+	&:before {
+		content: "";
+		width: 2px;
+		height: 100%;
+		background-color: #434e65;
+		position: absolute;
+		bottom: 0;
+		left: calc(1rem - 11px);
+	}
 
 	.folder-container {
 		display: inline-block;
 		padding-left: .5rem;
+
+		&:before {
+			content: "";
+			position: absolute;
+			background-color: #434e65;
+			width: 10px;
+			height: 2px;
+			top: 50%;
+			left: 0;
+			transform: translate(-100%, -50%);
+		}
+	}
+
+	&:last-child .folder-container:after {
+		content: "";
+		position: absolute;
+		background-color: #202228;
+		width: 2px;
+		height: calc(50% - 1px);
+		left: -11px;
+		bottom: 0;
 	}
 
 	.folder-label {
 		/* color: ${(props): string => props.isActive ? 'teal' : 'black'}; */
 		font-size: 1rem;
 	}
+
+	
 `;
 
 const StyledRootFolder = styled.div<{ isActive?: boolean }>`
+	position: relative;
 	margin-bottom: .75rem;
 
+	&:before {
+		content: "";
+		width: 2px;
+		height: 100%;
+		background-color: #434e65;
+		position: absolute;
+		bottom: 0;
+		left: calc(1rem - 11px);
+	}
+
 	.single-folder {
+		position: relative;
 		padding: 0.35rem 0.5rem;
 		background-color: #2a2e36;
 		color: #ffffff;
@@ -69,6 +115,16 @@ const StyledRootFolder = styled.div<{ isActive?: boolean }>`
 	svg {
 		display: inline-block;
 		margin-right: .5rem;
+	}
+
+	> ul > li:last-of-type:after {
+		content: "";
+		position: absolute;
+		background-color: #202228;
+		width: 2px;
+		height: calc(100% - 32px);
+		left: -11px;
+		bottom: 0;
 	}
 `;
 
