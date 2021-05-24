@@ -57,3 +57,13 @@ export const loginWithMicrosoft: () => void | {} = async () => {
 };
 
 export const logout: () => Promise<void> = async () => await fireAuth.signOut();
+
+export const getToken: () => Promise<string> = async () => {
+  try {
+    const token = await fireAuth.currentUser.getIdToken(true)
+
+    return token;
+  } catch (e) {
+    console.error(e);
+  }
+}

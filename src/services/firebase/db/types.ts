@@ -48,10 +48,12 @@ export interface IStorageFile {
 export interface IDbConfig {
   sms_api: string;
   mail_url: string;
+  api_url: string;
 }
 export type IConfig = {
   smsApi: string;
   mailUrl: string;
+  apiUrl: string;
 }
 
 export enum EColor {
@@ -65,3 +67,32 @@ export enum EColor {
   red = 'red',
   test = 'test'
 }
+
+export interface IDbFile {
+  categories_id: string[];
+  filename: string;
+  id: string;
+  label: string;
+  store_url: string;
+}
+
+export interface IFile {
+  categoriesId: string[] | undefined;
+  filename: string;
+  id: string;
+  label: string;
+  storeUrl: string;
+}
+
+export interface IFileChanges {
+  label: string;
+  categoriesId: string[];
+}
+
+export interface ICategory {
+  id: string;
+  label: string;
+  parent?: string;
+  depth: number;
+}
+
