@@ -1,4 +1,7 @@
 export { useLinks } from './useLinks';
 export { useQuote } from './useQuote';
 export { useUser } from './useUser';
-export { useMail } from './useMail';
+export { useConfig } from './useConfig';
+export { useSearch } from './useSearch';
+export { useEscKey } from './useEscKey';
+export { useStorageFile } from './useStorageFile';

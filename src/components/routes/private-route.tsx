@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   Route,
+  Redirect,
 } from 'react-router-dom';
+import { ConfigProvider } from '../../shared/context/config';
 
 import { useUser } from '../../shared/hooks/useUser';
 import { Header } from '../header/header';
@@ -10,6 +12,11 @@ import { Template } from '../template/template';
 interface IPrivateRouteProps {
   children: JSX.Element | JSX.Element[];
   path: string;
+  exact?: boolean;
+}
+
+interface IRouteRenderProps {
+  location?: string;
 }
 
 export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ children, ...rest }) => {
@@ -20,17 +27,24 @@ export const PrivateRoute: (props: IPrivateRouteProps) => JSX.Element = ({ child
     <Route
       {...rest}
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      render={() =>
+      render={(routerProps: IRouteRenderProps) =>
         id ? (
           <>
-            <Header />
-            <Template withHeader>
-              {children}
-            </Template>
+            <ConfigProvider>
+              <Header />
+              <Template withHeader>
+                  {children}
+              </Template>
+            </ConfigProvider>
           </>
         ) : (
-            null
-          )
+          <Redirect
+            to={{
+              pathname: 'login',
+              state: { referrer: routerProps.location }
+            }}
+          />
+        )
       }
     />
   );

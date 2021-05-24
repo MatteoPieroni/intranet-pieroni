@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Formik, Form, FormikHelpers } from 'formik';
 
-import { ISms } from '../../../services/sms/types';
-import { IDbSms } from '../../../services/firebase/types';
-import { sendSms } from '../../../services/sms';
-import { addSms } from '../../../services/firebase/db';
+import { sendSms, ISms } from '../../../services/sms';
+import { addSms, IDbSms } from '../../../services/firebase/db';
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { validateMobile } from '../../../utils/validation/validateMobile';
-import { formatMobile } from '../../../utils/formatMobile';
 import { validateCapsLock } from '../../../utils/validation/validateCapsLock';
+import { formatMobile } from '../../../utils/formatMobile';
 import { FORM_SUCCESS_MESSAGE, FORM_FAIL_MESSAGE } from '../../../common/consts';
-import { useUser } from '../../../shared/hooks';
+import { useUser, useConfig } from '../../../shared/hooks';
 
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
@@ -61,6 +59,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
   const [success, setSuccess] = useState('');
   const [fail, setFail] = useState('');
   const [user] = useUser();
+  const config = useConfig();
 
   const { name, surname, id } = user;
 
@@ -74,7 +73,7 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
 
       const finalNumber = formatMobile(number);
 
-      await sendSms({ number: finalNumber, message });
+      await sendSms(config.smsApi, { number: finalNumber, message });
 
       const historyData: IDbSms = {
         sender: `${name} ${surname}`,
@@ -82,14 +81,13 @@ export const SmsForm: React.FC<ISmsFormProps> = () => {
         time: Date.now(),
         ...values,
       }
-      console.log(historyData);
 
       await addSms(historyData);
 
       setSuccess(FORM_SUCCESS_MESSAGE);
       resetForm({});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setFail(FORM_FAIL_MESSAGE);
     }
 

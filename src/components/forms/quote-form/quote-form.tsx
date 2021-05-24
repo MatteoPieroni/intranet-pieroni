@@ -6,7 +6,7 @@ import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { validateUrl } from '../../../utils/validation/validateUrl';
 import { updateQuote } from '../../../services/firebase/db';
 import { getImages } from '../../../services/firebase/db';
-import { IQuote } from '../../../services/firebase/types';
+import { IQuote } from '../../../services/firebase/db';
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
 import { ImagesModal } from '../../images-modal';
@@ -61,7 +61,7 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
         const storedImages = await getImages();
         setImages(storedImages);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 
@@ -77,7 +77,7 @@ export const QuoteForm: React.FC<IQuoteFormProps> = ({ initialState = newQuote, 
       await updateQuote(values);
       typeof onSave === 'function' && onSave();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     setIsSaving(false);

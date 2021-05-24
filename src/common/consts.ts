@@ -36,5 +36,3 @@ export const FORM_FAIL_LOGIN = '❌ Non siamo riusciti ad accedere. Ricontrolla 
 export const FORM_FAIL_LOGIN_POPUP_CLOSED = '❌ La finestra di login è stata chiusa, riprova usando il tuo account Pieroni';
 export const FORM_FAIL_LOGIN_NO_USER = '❌ Non siamo riusciti a trovare questa email. Ricontrolla per favore';
 export const FORM_SUCCESS_RESET = '✔️ Riceverai la mail di reset in qualche secondo';
-export const FORM_FAIL_RESET_NO_USER = '❌ Non siamo riusciti a trovare questa email. Ricontrolla per favore';
-export const FORM_FAIL_RESET = '❌ Non siamo riusciti a resettare la password. Ricontrolla per favore';

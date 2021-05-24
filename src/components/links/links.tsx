@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
-import { ILink } from '../../services/firebase/types';
+import { ILink } from '../../services/firebase/db';
 import { SavedLink } from '../saved-link/saved-link';
 import { StyledH2 } from '../styled';
 

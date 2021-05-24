@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import { useMail, useUser } from '../../shared/hooks';
+import { useUser, useConfig } from '../../shared/hooks';
 import { Logo } from '../logo';
 
 const StyledHeader = styled.header`
@@ -45,19 +45,17 @@ const StyledHeader = styled.header`
 export const Header: () => JSX.Element = () => {
 
   const [, , logout] = useUser();
-  const [mail, loadingMail] = useMail();
+  const config = useConfig();
 
   return (
     <StyledHeader>
       <nav>
-        <NavLink to="/home">
+        <NavLink to="/" exact>
           Home
         </NavLink>
-        {!loadingMail && (
-          <a href={mail} target="_blank" rel="noopener noreferrer">
-            Mail
-          </a>
-        )}
+        <a href={config.mailUrl} target="_blank" rel="noopener noreferrer">
+          Mail
+        </a>
         <NavLink to="/sms">
           Sms
         </NavLink>
