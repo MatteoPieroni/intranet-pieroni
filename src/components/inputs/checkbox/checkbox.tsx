@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { CheckboxCheckedIcon } from '../../icons/Icon';
+import { SerializedStyles } from '@emotion/utils';
 
 
 interface ICheckboxProps {
@@ -8,13 +9,44 @@ interface ICheckboxProps {
     label?: string;
     ariaLabelledBy?: string;
     onChange: () => void;
+    css?: SerializedStyles;
 }
 
 interface IStyledCheckboxProps {
     checked: boolean;
 }
 
-const StyledInput = styled.label<IStyledCheckboxProps>`
+const StyledLabel = styled.label<IStyledCheckboxProps>`
+    display: inline-block;
+
+    &:before {
+        content: "";
+        display: inline-block;
+        border: 1px solid black;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    svg.check{
+        margin: 0 auto;
+        width: 1rem;
+        height: auto;
+        color: white;
+        vertical-align: bottom;
+    }
+    
+    ${(props): string => props.checked && `
+        &:before {
+            content: none;
+        }
+
+        svg.check {
+            background: #F13C20;
+        }
+    `}
+`;
+
+const StyledFakedLabel = styled.label<IStyledCheckboxProps>`
     display: inline-block;
     width: 1rem;
     background: white;
@@ -46,14 +78,31 @@ const StyledInput = styled.label<IStyledCheckboxProps>`
 
 `;
 
-export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange }) => {
+export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, css }) => {
     if (!ariaLabelledBy && !label) {
         throw new Error('Sure you know what you are doing? Missing label and ariaLabelledBy');
     }
 
+    if (label) {
+        return (
+            <StyledLabel checked={checked}>
+                {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
+                {label}
+                <input 
+                    className="visually-hidden"
+                    type="checkbox"
+                    aria-labelledby={ariaLabelledBy}
+                    checked={checked}
+                    onChange={onChange}
+                />
+            </StyledLabel>
+        );
+    }
+
     return (
-        <StyledInput checked={checked}>
+        <StyledFakedLabel checked={checked} css={css}>
             {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
+            {!ariaLabelledBy && label}
             <input 
                 className="visually-hidden"
                 type="checkbox"
@@ -61,6 +110,6 @@ export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelle
                 checked={checked}
                 onChange={onChange}
             />
-        </StyledInput>
+        </StyledFakedLabel>
     )
 }
