@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
-import { Item, Menu, useContextMenu } from 'react-contexify';
+import { ContextMenuParams, Item, Menu, TriggerEvent, useContextMenu } from 'react-contexify';
 
 import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
@@ -36,11 +36,19 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	const { startEditing, selectFile, files } = useSelected();
 
 	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
+	
+	const handleContext = (event: TriggerEvent, params?: Pick<ContextMenuParams, "id" | "position" | "props">): void => {
+		if (!isSelected) {
+			selectFile(file);
+		}
+
+		show(event, params);
+	}
 
 	return (
 	<StyledFile isSelected={isSelected}>
 		<button
-			onContextMenu={show}
+			onContextMenu={handleContext}
 			onClick={(): void => selectFile(file)}
 			onDoubleClick={(): void => onFileDoubleClick(file)}
 		>

@@ -14,6 +14,7 @@ import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
 import { PdfViewer } from '../pdf-viewer';
 import { Modal } from '../modal';
 import { CataloguesForm } from '../forms/catalogues-form';
+import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-form';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -209,10 +210,21 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 						</div>
 					</StyledContainer>
 					{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
-					<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
-						<h2>Modifica catalogo</h2>
-						<CataloguesForm file={selectedFiles[0]} onSave={finishEditing} />
-					</Modal>
+					{selectedFiles.length !== 0 && (
+						<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
+							{selectedFiles.length > 1 ? (
+								<>
+									<h2>Modifica {selectedFiles.length} cataloghi</h2>
+									<MultiCataloguesForm files={selectedFiles} onSave={finishEditing} />
+								</>
+							) : (
+								<>
+									<h2>Modifica catalogo</h2>
+									<CataloguesForm file={selectedFiles[0]} onSave={finishEditing} />
+								</>
+							)}
+						</Modal>
+					)}
 				</SelectedContext.Provider>
 			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
