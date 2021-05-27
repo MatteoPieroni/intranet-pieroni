@@ -15,6 +15,10 @@ import { PdfViewer } from '../pdf-viewer';
 import { Modal } from '../modal';
 import { CataloguesForm } from '../forms/catalogues-form';
 import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-form';
+import { Checkbox } from '../inputs/checkbox';
+import css from '@emotion/css';
+import { Button } from '../button';
+import { SearchIcon } from '../icons/Icon';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -47,6 +51,10 @@ const StyledContainer = styled.div`
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		padding: 1rem;
 	}
+`;
+
+const checkboxStyles = css`
+	border: 1px solid black;
 `;
 
 export type ICurrentFolder = {
@@ -102,6 +110,8 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const startEditing = (): void => setIsEditing(true);
 	const finishEditing = (): void => setIsEditing(false);
 
+	const [allSelected, setAllSelected] = useState(false);
+
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
 			keys: ['label', 'categoriesId.label']
@@ -143,7 +153,38 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
 
+	const toggleSelectedFile = (file: IFile | IEnrichedFile): void => {
+		const fileIndex = selectedFiles.findIndex(selectedFile => selectedFile.id === file.id);
+
+		if (fileIndex > -1) {
+			const selectedWithout = [...selectedFiles];
+			selectedWithout.splice(fileIndex, 1);
+
+			setSelectedFiles([...selectedWithout]);
+			return;
+		}
+
+		setSelectedFiles([...selectedFiles, file]);
+	}
+
+	const toggleSelectAll = (): void => {
+		if (allSelected) {
+			setSelectedFiles([]);
+		} else {
+			setSelectedFiles(shownFiles);
+		}
+
+		setAllSelected(!allSelected);
+	}
+
+	const deselectAll = (): void => {
+		setSelectedFiles([]);
+		setAllSelected(false);
+	}
+
+
 	const toggleSelectedFolders = (folder: ICategoryWithSubfolders): void => {
+		deselectAll();
 		const isParentFolderActive = currentFolders.some(fold => fold.id === folder.id);
 		const hasSubFolder = folder.subfolders;
 
@@ -163,18 +204,9 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		setCurrentFolders(toggleAllSubfolders(currentFolders, folder));
 	};
 
-	const toggleSelectedFile = (file: IFile | IEnrichedFile): void => {
-		const fileIndex = selectedFiles.findIndex(selectedFile => selectedFile.id === file.id);
-
-		if (fileIndex > -1) {
-			const selectedWithout = [...selectedFiles];
-			selectedWithout.splice(fileIndex, 1);
-
-			setSelectedFiles([...selectedWithout]);
-			return;
-		}
-
-		setSelectedFiles([...selectedFiles, file]);
+	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+		deselectAll();
+		onSearch(event);
 	}
 
 	return (
@@ -187,7 +219,12 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 								{displayedFolder()}
 							</div>
 							<div className="search-field">
-								<input type="search" onChange={onSearch} />
+								<input type="search" onChange={handleSearch} />
+								<SearchIcon />
+							</div>
+							<div className="select-bar">
+									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
+									<Button onClick={startEditing} disabled={selectedFiles.length === 0}>Modifica file</Button>
 							</div>
 						</div>
 						<div className="filesystem-container">
