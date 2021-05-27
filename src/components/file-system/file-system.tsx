@@ -12,6 +12,8 @@ import { SubFolder } from './folders-tree';
 import { getCurrentFiles } from './utils/get-current-files';
 import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
 import { PdfViewer } from '../pdf-viewer';
+import { Modal } from '../modal';
+import { CataloguesForm } from '../forms/catalogues-form';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -61,6 +63,12 @@ interface ICataloguesContext {
 	categoriesLookup: ICategoriesLookup;
 }
 
+interface ISelectedContext {
+	selectFile: (file: IFile | IEnrichedFile) => void;
+	files: (IFile | IEnrichedFile)[];
+	startEditing: () => void;
+}
+
 const baseHomeFolder = {
 	id: '',
 	label: 'Home',
@@ -71,12 +79,15 @@ const baseHomeFolder = {
 
 const CurrentFolderContext = createContext<Partial<ICurrentFolderContext>>({});
 const CataloguesContext = createContext<ICataloguesContext>({} as ICataloguesContext);
+const SelectedContext = createContext<ISelectedContext>(null);
 export const useCurrentFolder = (): Partial<ICurrentFolderContext> => useContext(CurrentFolderContext);
 export const useCatalogueUtilities = (): ICataloguesContext => useContext(CataloguesContext);
+export const useSelected = (): ISelectedContext => useContext(SelectedContext);
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
 	const { isInternal, apiUrl } = useConfig();
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
+	const [selectedFiles, setSelectedFiles] = useState<(IFile | IEnrichedFile)[]>([]);
 	const [shownFile, setShownFile] = useState<IFile | IEnrichedFile>();
 	const shownUrl = shownFile ?
 		isInternal ?
@@ -84,6 +95,11 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 			shownFile.storeUrl :
 		'';
 	const resetShownFile = (): void => setShownFile(null);
+
+	const [isEditing, setIsEditing] = useState(false);
+
+	const startEditing = (): void => setIsEditing(true);
+	const finishEditing = (): void => setIsEditing(false);
 
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
@@ -146,38 +162,58 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		setCurrentFolders(toggleAllSubfolders(currentFolders, folder));
 	};
 
+	const toggleSelectedFile = (file: IFile | IEnrichedFile): void => {
+		const fileIndex = selectedFiles.findIndex(selectedFile => selectedFile.id === file.id);
+
+		if (fileIndex > -1) {
+			const selectedWithout = [...selectedFiles];
+			selectedWithout.splice(fileIndex, 1);
+
+			setSelectedFiles([...selectedWithout]);
+			return;
+		}
+
+		setSelectedFiles([...selectedFiles, file]);
+	}
+
 	return (
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolders}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
-				<StyledContainer>
-					<div>
-						<div className="current-folder">
-							{displayedFolder()}
-						</div>
-						<div className="search-field">
-							<input type="search" onChange={onSearch} />
-						</div>
-					</div>
-					<div className="filesystem-container">
-						{!isSearching && (
-							<div className="folders-menu">
-								<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
+				<SelectedContext.Provider value={{ files: selectedFiles, selectFile: toggleSelectedFile, startEditing }}>
+					<StyledContainer>
+						<div>
+							<div className="current-folder">
+								{displayedFolder()}
 							</div>
-						)}
-						<div className="files-folder">
-							{shownFiles.length > 0 ? (
-									shownFiles.map((file) => <File
-										key={file.id}
-										file={file}
-										onFileDoubleClick={setShownFile}
-									/>)
-							) : (
-								<p>Non ci sono file qui</p>
-							)}
+							<div className="search-field">
+								<input type="search" onChange={onSearch} />
+							</div>
 						</div>
-					</div>
-				</StyledContainer>
-				{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
+						<div className="filesystem-container">
+							{!isSearching && (
+								<div className="folders-menu">
+									<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
+								</div>
+							)}
+							<div className="files-folder">
+								{shownFiles.length > 0 ? (
+										shownFiles.map((file) => <File
+											key={file.id}
+											file={file}
+											onFileDoubleClick={setShownFile}
+										/>)
+								) : (
+									<p>Non ci sono file qui</p>
+								)}
+							</div>
+						</div>
+					</StyledContainer>
+					{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
+					<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
+						<h2>Modifica catalogo</h2>
+						<CataloguesForm file={selectedFiles[0]} onSave={finishEditing} />
+					</Modal>
+				</SelectedContext.Provider>
 			</CataloguesContext.Provider>
 		</CurrentFolderContext.Provider>
 	)

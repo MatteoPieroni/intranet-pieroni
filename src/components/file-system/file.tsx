@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Item, Menu, useContextMenu } from 'react-contexify';
 
 import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
-import { Modal } from '../modal';
-import { CataloguesForm } from '../forms/catalogues-form';
 import { IEnrichedFile } from '../../utils/file-system';
+import { useSelected } from './file-system';
 
 interface IFileProps {
 	file: IFile | IEnrichedFile;
 	onFileDoubleClick: (file: IFile | IEnrichedFile) => void;
 }
 
-const StyledFile = styled.div`
+const StyledFile = styled.div<{ isSelected: boolean }>`
 	text-align: center;
+
+	${(props): SerializedStyles => props.isSelected && css`
+		background: red;
+	`}
 
 	a {
 		display: block;
@@ -29,27 +33,23 @@ const StyledFile = styled.div`
 
 export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	const { show } = useContextMenu({ id: file.id });
-	const [isEditing, setIsEditing] = useState(false);
+	const { startEditing, selectFile, files } = useSelected();
 
-	const startEditing = (): void => setIsEditing(true);
-	const finishEditing = (): void => setIsEditing(false);
+	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
 
 	return (
-	<StyledFile>
+	<StyledFile isSelected={isSelected}>
 		<button
 			onContextMenu={show}
+			onClick={(): void => selectFile(file)}
 			onDoubleClick={(): void => onFileDoubleClick(file)}
 		>
 			<Icon.PDFFile aria-hidden />
 			{file.label}
 		</button>
 		<Menu id={file.id}>
-			<Item onClick={startEditing} disabled={isEditing}>Modifica catalogo</Item>
+			<Item onClick={startEditing}>Modifica catalogo</Item>
 		</Menu>
-		<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
-			<h2>Modifica catalogo</h2>
-			<CataloguesForm file={file} onSave={finishEditing} />
-		</Modal>
 	</StyledFile>
 )
 };
