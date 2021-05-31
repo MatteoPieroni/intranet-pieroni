@@ -12,6 +12,8 @@ import {
   faCaretDown,
   faCheck,
   faSearch,
+  faTh,
+  faList,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -63,4 +65,12 @@ export const CheckboxCheckedIcon: React.FC<IGenericProps> = (props) => (
 
 export const SearchIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faSearch} {...props} />
+)
+
+export const GridIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faTh} {...props} />
+)
+
+export const ListIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faList} {...props} />
 )

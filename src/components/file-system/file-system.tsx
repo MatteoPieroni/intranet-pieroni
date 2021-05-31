@@ -17,7 +17,7 @@ import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-f
 import { Checkbox } from '../inputs/checkbox';
 import css from '@emotion/css';
 import { Button } from '../button';
-import { SearchIcon } from '../icons/Icon';
+import { GridIcon, ListIcon, SearchIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 
 const StyledContainer = styled.div`
@@ -255,8 +255,8 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 							<div className="select-bar">
 									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
 									<Button onClick={startEditing} disabled={selectedFiles.length === 0}>Modifica file</Button>
-									<Button onClick={toggleView}>
-										{`Vista a ${view === 'grid' ? 'Tabella' : 'Griglia'}`}
+									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon}>
+										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
 							</div>
 						</div>
