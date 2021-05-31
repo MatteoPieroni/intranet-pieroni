@@ -66,6 +66,7 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 			{file.label}
 		</button>
 		<Menu id={file.id}>
+			<Item onClick={handleDoubleClick}>{isInternal ? 'Visualizza' : 'Scarica'}</Item>
 			<Item onClick={startEditing}>Modifica catalogo</Item>
 		</Menu>
 	</StyledFile>
