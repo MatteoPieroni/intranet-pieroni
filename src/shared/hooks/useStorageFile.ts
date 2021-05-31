@@ -28,9 +28,13 @@ export const useStorageFile: (url: string) => IInternalFile | IFirebaseFile | nu
 				return;
 			}
 
-			const parsedUrl = await getFileDownloadUrl(url);
+			try {
+				const parsedUrl = await getFileDownloadUrl(url);
 
-			setDownloadUrl(parsedUrl);
+				setDownloadUrl(parsedUrl);
+			} catch (e) {
+				console.error(e);
+			}
 		})();
 	}, [url]);
 

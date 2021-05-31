@@ -1,55 +1,74 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
-import { Item, Menu, useContextMenu } from 'react-contexify';
+import { ContextMenuParams, Item, Menu, TriggerEvent, useContextMenu } from 'react-contexify';
 
 import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
-import { Modal } from '../modal';
-import { CataloguesForm } from '../forms/catalogues-form';
 import { IEnrichedFile } from '../../utils/file-system';
+import { useSelected } from './file-system';
+import { useConfig } from '../../shared/hooks';
+import { getFileDownloadUrl } from '../../services/firebase/storage';
+import { download } from './utils/browser-download';
 
 interface IFileProps {
 	file: IFile | IEnrichedFile;
-	onFileDoubleClick: (file: IFile | IEnrichedFile) => void;
+	viewFile: (file: IFile | IEnrichedFile) => void;
 }
 
-const StyledFile = styled.div`
-	text-align: center;
-
-	a {
-		display: block;
-	}
-
-	svg {
-		display: block;
-		margin: 0 auto;
-		font-size: 3rem;
-	}
+const StyledFile = styled.div<{ isSelected: boolean }>`
+	${(props): SerializedStyles => props.isSelected && css`
+		background: red;
+		
+		&.container:nth-of-type(even) {
+			background-color: rgba(255,0,0,.25);
+		}
+	`}
 `;
 
-export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
+export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
+	const { isInternal } = useConfig();
 	const { show } = useContextMenu({ id: file.id });
-	const [isEditing, setIsEditing] = useState(false);
+	const { startEditing, selectFile, files } = useSelected();
 
-	const startEditing = (): void => setIsEditing(true);
-	const finishEditing = (): void => setIsEditing(false);
+	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
+
+	const handleFileClick = (event: TriggerEvent, file: IFile | IEnrichedFile): void => {
+		selectFile(file);
+	}
+
+	const handleDoubleClick = async (): Promise<void> => {
+		if (isInternal) {
+			viewFile(file);
+			return;
+		}
+
+		const url = await getFileDownloadUrl(file.storeUrl);
+		download(url, file.filename);
+	}
+	
+	const handleContext = (event: TriggerEvent, params?: Pick<ContextMenuParams, "id" | "position" | "props">): void => {
+		if (!isSelected) {
+			selectFile(file);
+		}
+
+		show(event, params);
+	}
 
 	return (
-	<StyledFile>
+	<StyledFile isSelected={isSelected} className="container">
 		<button
-			onContextMenu={show}
-			onDoubleClick={(): void => onFileDoubleClick(file)}
+			onContextMenu={handleContext}
+			onClick={(e): void => handleFileClick(e, file)}
+			onDoubleClick={handleDoubleClick}
 		>
 			<Icon.PDFFile aria-hidden />
 			{file.label}
 		</button>
 		<Menu id={file.id}>
-			<Item onClick={startEditing} disabled={isEditing}>Modifica catalogo</Item>
+			<Item onClick={handleDoubleClick}>{isInternal ? 'Visualizza' : 'Scarica'}</Item>
+			<Item onClick={startEditing}>Modifica catalogo</Item>
 		</Menu>
-		<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
-			<h2>Modifica catalogo</h2>
-			<CataloguesForm file={file} onSave={finishEditing} />
-		</Modal>
 	</StyledFile>
 )
 };
