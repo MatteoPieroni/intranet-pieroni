@@ -60,7 +60,6 @@ const StyledContainer = styled.div`
 
 	.filesystem-container {
 		display: grid;
-		grid-gap: 10px;
 		grid-template-columns: minmax(auto, 250px) 1fr;
 	}
 
@@ -267,7 +266,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
 								</div>
 							)}
-							<FileList files={shownFiles} onFileDoubleClick={setShownFile} view={view} />
+							<FileList files={shownFiles} viewFile={setShownFile} view={view} />
 						</div>
 					</StyledContainer>
 					{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}

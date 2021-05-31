@@ -28,7 +28,6 @@ const modalCss = css`
 export const PdfViewer: React.FC<IPdfViewerProps & Partial<IModalProps>> = ({ url, closeModal }) => {
 	const props = useStorageFile(url);
 
-
 	return (
 		<>
 			<Global styles={modalCss} />

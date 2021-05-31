@@ -7,10 +7,13 @@ import { IFile } from '../../services/firebase/db';
 import { Icon } from '../icons';
 import { IEnrichedFile } from '../../utils/file-system';
 import { useSelected } from './file-system';
+import { useConfig } from '../../shared/hooks';
+import { getFileDownloadUrl } from '../../services/firebase/storage';
+import { download } from './utils/browser-download';
 
 interface IFileProps {
 	file: IFile | IEnrichedFile;
-	onFileDoubleClick: (file: IFile | IEnrichedFile) => void;
+	viewFile: (file: IFile | IEnrichedFile) => void;
 }
 
 const StyledFile = styled.div<{ isSelected: boolean }>`
@@ -23,7 +26,8 @@ const StyledFile = styled.div<{ isSelected: boolean }>`
 	`}
 `;
 
-export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
+export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
+	const { isInternal } = useConfig();
 	const { show } = useContextMenu({ id: file.id });
 	const { startEditing, selectFile, files } = useSelected();
 
@@ -31,6 +35,16 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 
 	const handleFileClick = (event: TriggerEvent, file: IFile | IEnrichedFile): void => {
 		selectFile(file);
+	}
+
+	const handleDoubleClick = async (): Promise<void> => {
+		if (isInternal) {
+			viewFile(file);
+			return;
+		}
+
+		const url = await getFileDownloadUrl(file.storeUrl);
+		download(url, file.filename);
 	}
 	
 	const handleContext = (event: TriggerEvent, params?: Pick<ContextMenuParams, "id" | "position" | "props">): void => {
@@ -46,7 +60,7 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 		<button
 			onContextMenu={handleContext}
 			onClick={(e): void => handleFileClick(e, file)}
-			onDoubleClick={(): void => onFileDoubleClick(file)}
+			onDoubleClick={handleDoubleClick}
 		>
 			<Icon.PDFFile aria-hidden />
 			{file.label}

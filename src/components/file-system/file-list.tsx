@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 
 interface IFileListProps {
 	files: (IFile | IEnrichedFile)[];
-	onFileDoubleClick: (file: IFile | IEnrichedFile) => void;
+	viewFile: (file: IFile | IEnrichedFile) => void;
 	view: IView;
 }
 
@@ -60,7 +60,7 @@ const containerMap = {
 	grid: StyledDivContainer,
 }
 
-export const FileList: React.FC<IFileListProps> = ({ view, files, onFileDoubleClick }) => {
+export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile }) => {
 	if (files.length === 0) {
 		return <p>Non ci sono file qui</p>;
 	}
@@ -74,7 +74,7 @@ export const FileList: React.FC<IFileListProps> = ({ view, files, onFileDoubleCl
 					<File
 						key={file.id}
 						file={file}
-						onFileDoubleClick={onFileDoubleClick}
+						viewFile={viewFile}
 					/>
 				)
 			}
