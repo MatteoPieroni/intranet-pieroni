@@ -14,21 +14,13 @@ interface IFileProps {
 }
 
 const StyledFile = styled.div<{ isSelected: boolean }>`
-	text-align: center;
-
 	${(props): SerializedStyles => props.isSelected && css`
 		background: red;
+		
+		&.container:nth-of-type(even) {
+			background-color: rgba(255,0,0,.25);
+		}
 	`}
-
-	a {
-		display: block;
-	}
-
-	svg {
-		display: block;
-		margin: 0 auto;
-		font-size: 3rem;
-	}
 `;
 
 export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
@@ -50,7 +42,7 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	}
 
 	return (
-	<StyledFile isSelected={isSelected}>
+	<StyledFile isSelected={isSelected} className="container">
 		<button
 			onContextMenu={handleContext}
 			onClick={(e): void => handleFileClick(e, file)}

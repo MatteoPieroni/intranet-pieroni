@@ -7,7 +7,6 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { IFile } from '../../services/firebase/db';
 import { useConfig, useSearch } from '../../shared/hooks';
 import { ICategoriesLookup, ICategoryWithSubfolders, IEnrichedFile, IOrganisedData } from '../../utils/file-system';
-import { File } from './file';
 import { SubFolder } from './folders-tree';
 import { getCurrentFiles } from './utils/get-current-files';
 import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
@@ -19,22 +18,50 @@ import { Checkbox } from '../inputs/checkbox';
 import css from '@emotion/css';
 import { Button } from '../button';
 import { SearchIcon } from '../icons/Icon';
+import { FileList, IView } from './file-list';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
-	max-width: 80%;
+	max-width: 1600px;
 	background: #fff;
 
+	.header {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
 	.current-folder {
-		width: 100%;
-		border: 2px solid black;
+		flex: 2;
 		padding: .5rem;
+		background-color: #24305e;
+		color: #fff;
+		line-height: 2rem;
+	}
+
+	.search-field {
+		flex: 1;
+		display: flex;
+		padding: .5rem;
+
+		input {
+			flex: 1;
+		}
+
+		svg {
+			padding: .5rem;
+			width: 1rem;
+			height: 1rem;
+		}
+	}
+
+	.select-bar {
+		width: 100%;
 	}
 
 	.filesystem-container {
 		display: grid;
 		grid-gap: 10px;
-  		grid-template-columns: minmax(auto, 250px) 1fr;
+		grid-template-columns: minmax(auto, 250px) 1fr;
 	}
 
 	.folders-menu {
@@ -44,12 +71,6 @@ const StyledContainer = styled.div`
 		> ul {
 			padding: 0;
 		}
-	}
-
-	.files-folder {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		padding: 1rem;
 	}
 `;
 
@@ -112,6 +133,10 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 
 	const [allSelected, setAllSelected] = useState(false);
 
+	const [view, setView] = useState<IView>(() => {
+		return (localStorage.getItem('file-view') as IView) || 'table';
+	});
+
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
 			keys: ['label', 'categoriesId.label']
@@ -150,6 +175,12 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 			subfolders: categories,
 		}
 	}, [categories]);
+
+	const toggleView = (): void => {
+		localStorage.setItem('file-view', view === 'grid' ? 'table' : 'grid');
+
+		setView(view === 'grid' ? 'table' : 'grid');
+	}
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
 
@@ -214,17 +245,20 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 			<CataloguesContext.Provider value={{categoriesLookup}}>
 				<SelectedContext.Provider value={{ files: selectedFiles, selectFile: toggleSelectedFile, startEditing }}>
 					<StyledContainer>
-						<div>
+						<div className="header">
 							<div className="current-folder">
 								{displayedFolder()}
 							</div>
 							<div className="search-field">
-								<input type="search" onChange={handleSearch} />
-								<SearchIcon />
+								<input type="search" onChange={handleSearch} aria-labelledby="filesystem-search-icon" />
+								<SearchIcon id="filesystem-search-icon" alt="Cerca" />
 							</div>
 							<div className="select-bar">
 									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
 									<Button onClick={startEditing} disabled={selectedFiles.length === 0}>Modifica file</Button>
+									<Button onClick={toggleView}>
+										{`Vista a ${view === 'grid' ? 'Tabella' : 'Griglia'}`}
+									</Button>
 							</div>
 						</div>
 						<div className="filesystem-container">
@@ -233,17 +267,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
 								</div>
 							)}
-							<div className="files-folder">
-								{shownFiles.length > 0 ? (
-										shownFiles.map((file) => <File
-											key={file.id}
-											file={file}
-											onFileDoubleClick={setShownFile}
-										/>)
-								) : (
-									<p>Non ci sono file qui</p>
-								)}
-							</div>
+							<FileList files={shownFiles} onFileDoubleClick={setShownFile} view={view} />
 						</div>
 					</StyledContainer>
 					{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
