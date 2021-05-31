@@ -14,6 +14,7 @@ interface IButtonProps {
   className?: string;
   testId?: string;
   onClick?: (event: React.MouseEvent) => void;
+  disabled?: boolean;
 }
 
 interface IButtonStyleProps {
@@ -25,7 +26,6 @@ const StyledButton = styled.button<IButtonStyleProps>`
   border-radius: 2.5px;
   padding: .5px;
   background: transparent;
-  cursor: pointer;
 
   .button {
     display: block;
@@ -47,6 +47,10 @@ const StyledButton = styled.button<IButtonStyleProps>`
     outline: 2px solid #D79922;
   }
 
+  &:disabled .button {
+    background: grey;
+  }
+
   .text {
     font-weight: bold;
   }
@@ -57,9 +61,9 @@ const StyledButton = styled.button<IButtonStyleProps>`
   }
 `;
 
-export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button', testId = '' }) => {
+export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button', testId = '', disabled }) => {
   return (
-    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className} data-testid={testId}>
+    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className} data-testid={testId} disabled={disabled}>
       <span className="button">
         {Icon && <Icon className="button-icon" />}
         <span className="text">{children}</span>
