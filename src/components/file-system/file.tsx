@@ -36,6 +36,10 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	const { startEditing, selectFile, files } = useSelected();
 
 	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
+
+	const handleFileClick = (event: TriggerEvent, file: IFile | IEnrichedFile): void => {
+		selectFile(file);
+	}
 	
 	const handleContext = (event: TriggerEvent, params?: Pick<ContextMenuParams, "id" | "position" | "props">): void => {
 		if (!isSelected) {
@@ -49,7 +53,7 @@ export const File: React.FC<IFileProps> = ({ file, onFileDoubleClick }) => {
 	<StyledFile isSelected={isSelected}>
 		<button
 			onContextMenu={handleContext}
-			onClick={(): void => selectFile(file)}
+			onClick={(e): void => handleFileClick(e, file)}
 			onDoubleClick={(): void => onFileDoubleClick(file)}
 		>
 			<Icon.PDFFile aria-hidden />
