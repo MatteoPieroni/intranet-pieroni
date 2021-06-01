@@ -200,7 +200,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 										checked={isActive}
 										onChange={handleToggle}
 									/>
-									<HiddenContent id={`folder-name-${folder.id}`}>Seleziona {folder.label} {isRoot ? '' : `(${folder.fileCount})`}</HiddenContent>
+									<HiddenContent id={`folder-name-${folder.id}`}>Seleziona {folder.label} {!isRoot && folder.fileCount > 0 ? `(${folder.fileCount})` : ''}</HiddenContent>
 								</>
 							)}
 							<FolderContainer hasSubfolders={!!folder.subfolders} onClick={toggleExpanded}>
@@ -208,7 +208,7 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 								<span
 									className="folder-label"
 								>
-									<HiddenContent>Espandi </HiddenContent>{folder.label} {isRoot ? '' : `(${folder.fileCount})`}
+									<HiddenContent>Espandi </HiddenContent>{folder.label} {!isRoot && folder.fileCount > 0 ? `(${folder.fileCount})` : ''}
 								</span>
 							</FolderContainer>
 							</div>

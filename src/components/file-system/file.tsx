@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useMemo } from 'react';
+import React, { KeyboardEventHandler, MouseEventHandler, useMemo } from 'react';
 import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ContextMenuParams, Item, Menu, TriggerEvent, useContextMenu } from 'react-contexify';
@@ -49,12 +49,12 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 			return;
 		}
 
-		if (event.key === 'Space') {
+		if (event.key === ' ') {
 			selectFile(file);
 		}
 	}
 
-	const handleFileClick = (event: TriggerEvent): void => {
+	const handleFileClick: MouseEventHandler = (event): void => {
 		selectFile(file);
 	}
 	
@@ -70,7 +70,7 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 	<StyledFile isSelected={isSelected} className="container">
 		<button
 			onContextMenu={handleContext}
-			onClick={handleFileClick}
+			onMouseUp={handleFileClick}
 			onDoubleClick={handleDoubleClick}
 			onKeyUp={handleKeyboard}
 		>
