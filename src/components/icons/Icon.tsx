@@ -14,6 +14,7 @@ import {
   faSearch,
   faTh,
   faList,
+  faSync,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -73,4 +74,8 @@ export const GridIcon: React.FC<IGenericProps> = (props) => (
 
 export const ListIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faList} {...props} />
+)
+
+export const SyncIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faSync} {...props} />
 )
