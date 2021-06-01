@@ -17,8 +17,9 @@ import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-f
 import { Checkbox } from '../inputs/checkbox';
 import css from '@emotion/css';
 import { Button } from '../button';
-import { GridIcon, ListIcon, SearchIcon } from '../icons/Icon';
+import { GridIcon, ListIcon, SearchIcon, SyncIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
+import { CataloguesApiService } from '../../services/catalogues-api';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -130,6 +131,8 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const startEditing = (): void => setIsEditing(true);
 	const finishEditing = (): void => setIsEditing(false);
 
+	const [isSyncing, setIsSyncing] = useState(false);
+
 	const [allSelected, setAllSelected] = useState(false);
 
 	const [view, setView] = useState<IView>(() => {
@@ -179,6 +182,14 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		localStorage.setItem('file-view', view === 'grid' ? 'table' : 'grid');
 
 		setView(view === 'grid' ? 'table' : 'grid');
+	}
+
+	const syncServer = async (): Promise<void> => {
+		setIsSyncing(true);
+
+		await CataloguesApiService.sync(() => {
+			setIsSyncing(false);
+		});
 	}
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
@@ -258,6 +269,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon}>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
+									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing}>Sincronizza</Button>}
 							</div>
 						</div>
 						<div className="filesystem-container">
