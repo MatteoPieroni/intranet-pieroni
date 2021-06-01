@@ -57,11 +57,12 @@ const StyledContainer = styled.div`
 
 	.select-bar {
 		width: 100%;
+		padding: .5rem;
 	}
 
 	.filesystem-container {
 		display: grid;
-		grid-template-columns: minmax(auto, 250px) 1fr;
+		grid-template-columns: minmax(auto, 330px) 1fr;
 	}
 
 	.folders-menu {

@@ -78,7 +78,7 @@ export const syncCatalogues: (url: string, token: string) => Promise<string> = (
 export const syncCataloguesStatus: (url: string, token: string) => Promise<ISyncStatuses> = (apiUrl, token) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const response = await fetch(apiUrl);
+			const response = await fetch(apiUrl, { headers: { 'x-access-token': token } });
 			const res = await response.text() as ISyncStatuses;
 
 			resolve(res);

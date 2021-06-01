@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { KeyboardEventHandler, useMemo } from 'react';
 import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ContextMenuParams, Item, Menu, TriggerEvent, useContextMenu } from 'react-contexify';
@@ -33,10 +33,6 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 
 	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
 
-	const handleFileClick = (event: TriggerEvent, file: IFile | IEnrichedFile): void => {
-		selectFile(file);
-	}
-
 	const handleDoubleClick = async (): Promise<void> => {
 		if (isInternal) {
 			viewFile(file);
@@ -45,6 +41,21 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 
 		const url = await getFileDownloadUrl(file.storeUrl);
 		download(url, file.filename);
+	}
+
+	const handleKeyboard: KeyboardEventHandler = (event) => {
+		if (event.key === 'Enter') {
+			handleDoubleClick();
+			return;
+		}
+
+		if (event.key === 'Space') {
+			selectFile(file);
+		}
+	}
+
+	const handleFileClick = (event: TriggerEvent): void => {
+		selectFile(file);
 	}
 	
 	const handleContext = (event: TriggerEvent, params?: Pick<ContextMenuParams, "id" | "position" | "props">): void => {
@@ -59,8 +70,9 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 	<StyledFile isSelected={isSelected} className="container">
 		<button
 			onContextMenu={handleContext}
-			onClick={(e): void => handleFileClick(e, file)}
+			onClick={handleFileClick}
 			onDoubleClick={handleDoubleClick}
+			onKeyUp={handleKeyboard}
 		>
 			<Icon.PDFFile aria-hidden />
 			{file.label}
