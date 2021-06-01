@@ -66,16 +66,22 @@ const StyledFakedLabel = styled.label<IStyledCheckboxProps>`
         color: white;
         vertical-align: initial;
     }
+
+    &:focus-within:after {
+        outline: dashed 3px #F13C20;
+    }
     
     ${(props): string => props.checked && `
         background: #F13C20;
+
+        &:focus-within {
+            outline: dashed 3px #fff;
+        }
 
         &:after {
             content: none;
         }
     `}
-
-
 `;
 
 export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, css }) => {

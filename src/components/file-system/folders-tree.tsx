@@ -8,6 +8,7 @@ import { CataloguesService } from '../../services/firebase/db';
 import { CategoriesForm } from '../forms/catalogues-form/categories-form';
 import { CaretDown, CaretRight } from '../icons/Icon';
 import { Checkbox } from '../inputs/checkbox';
+import { HiddenContent } from '../hidden-content/hidden-content';
 
 interface IFoldersTreeProps {
 	folders: IOrganisedCategories;
@@ -193,19 +194,21 @@ export const SubFolder: React.FC<ISubFolderProps> = ({
 					) : (
 						<div onContextMenu={show} className="single-folder">
 							{!isRoot && (
-								<Checkbox
-									ariaLabelledBy={`folder-name-${folder.id}`}
-									checked={isActive}
-									onChange={handleToggle}
-								/>
+								<>
+									<Checkbox
+										ariaLabelledBy={`folder-name-${folder.id}`}
+										checked={isActive}
+										onChange={handleToggle}
+									/>
+									<HiddenContent id={`folder-name-${folder.id}`}>Seleziona {folder.label} {isRoot ? '' : `(${folder.fileCount})`}</HiddenContent>
+								</>
 							)}
 							<FolderContainer hasSubfolders={!!folder.subfolders} onClick={toggleExpanded}>
 								{folder.subfolders && (isExpanded ? <CaretDown /> : <CaretRight />)}
 								<span
-									id={`folder-name-${folder.id}`}
 									className="folder-label"
 								>
-									{folder.label} {isRoot ? '' : `(${folder.fileCount})`}
+									<HiddenContent>Espandi </HiddenContent>{folder.label} {isRoot ? '' : `(${folder.fileCount})`}
 								</span>
 							</FolderContainer>
 							</div>
