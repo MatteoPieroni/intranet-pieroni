@@ -12,12 +12,12 @@ import { getCurrentFiles } from './utils/get-current-files';
 import { toggleAllSubfolders } from './utils/toggle-all-subfolders';
 import { PdfViewer } from '../pdf-viewer';
 import { Modal } from '../modal';
-import { CataloguesForm } from '../forms/catalogues-form';
+import { CataloguesForm, UploadCataloguesForm } from '../forms/catalogues-form';
 import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-form';
 import { Checkbox } from '../inputs/checkbox';
 import css from '@emotion/css';
 import { Button } from '../button';
-import { GridIcon, ListIcon, SearchIcon, SyncIcon } from '../icons/Icon';
+import { GridIcon, ListIcon, SearchIcon, SyncIcon, UploadIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 import { CataloguesApiService } from '../../services/catalogues-api';
 
@@ -128,9 +128,11 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const resetShownFile = (): void => setShownFile(null);
 
 	const [isEditing, setIsEditing] = useState(false);
-
+	
 	const startEditing = (): void => setIsEditing(true);
 	const finishEditing = (): void => setIsEditing(false);
+
+	const [isUploading, setIsUploading] = useState(false);
 
 	const [isSyncing, setIsSyncing] = useState(false);
 
@@ -271,6 +273,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
 									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing}>Sincronizza</Button>}
+									{isInternal && <Button icon={UploadIcon} onClick={(): void => setIsUploading(true)}>Carica file</Button>}
 							</div>
 						</div>
 						<div className="filesystem-container">
@@ -296,6 +299,17 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<CataloguesForm file={selectedFiles[0]} onSave={finishEditing} />
 								</>
 							)}
+						</Modal>
+					)}
+					{isInternal && (
+						<Modal isOpen={isUploading} closeModal={(): void => setIsUploading(false)} className="modal-small">
+							<>
+								<h2>Carica file</h2>
+								<UploadCataloguesForm
+									selectedCategory={currentFolders.length === 1 ? currentFolders[0].id : ''}
+									onSave={(): void => setIsUploading(false)}
+								/>
+							</>
 						</Modal>
 					)}
 				</SelectedContext.Provider>
