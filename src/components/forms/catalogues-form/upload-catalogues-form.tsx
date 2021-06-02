@@ -1,0 +1,128 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Formik, FormikHelpers, Form } from 'formik';
+import styled from '@emotion/styled';
+
+import { Field } from '../../form-fields';
+import { Button } from '../../button';
+import { useCatalogueUtilities } from '../../file-system';
+import { Select, SelectOption } from '../../form-fields/select';
+import { UploadField } from '../../form-fields/file-upload';
+
+interface IUploadCataloguesFormProps {
+	selectedCategory?: string;
+	onSave: () => void;
+}
+
+type INewFile = {
+	files: FileList;
+	categoriesId?: string[];
+	label?: string;
+}
+
+type ICatalogueError = {
+	[key in keyof INewFile]?: string;
+};
+
+const StyledLinksForm = styled.div`
+  form {
+    padding: .5rem;
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
+export const UploadCataloguesForm: React.FC<IUploadCataloguesFormProps> = ({ selectedCategory, onSave }) => {
+  const [isSaving, setIsSaving] = useState(false);
+	const isMounted = useRef<boolean>();
+  const { categoriesLookup } = useCatalogueUtilities();
+  const initialState = useMemo(() => {
+    return {
+			files: [],
+			label: '',
+      categoriesId: [selectedCategory]
+    }
+  }, []);
+
+	useEffect(() => {
+		isMounted.current = true;
+
+		return (): void => {
+			isMounted.current = false;
+		}
+	}, [])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const submitCatalogue: (values: INewFile, formikHelpers: FormikHelpers<any>) => void = async (values, { resetForm }) => {
+    setIsSaving(true);
+
+		console.log(values);
+
+    try {
+      // await CataloguesService.editCatalogue({ label: values.label, categoriesId: values.categoriesId }, fileToPass);
+    } catch (e) {
+      console.error(e);
+    }
+
+		if (typeof onSave === 'function') {
+			onSave();
+		}
+
+		if (isMounted.current === true) {
+			setIsSaving(false);
+			resetForm({});
+		}
+  }
+
+  const validateCatalogue: (values: INewFile) => ICatalogueError = (values) => {
+    const { label, files } = values;
+
+		console.log(values.files.length)
+		
+		if (files.length === 0) {
+			return {
+				files: 'Seleziona almeno un file',
+			}
+		}
+
+		if (label && files.length > 1) {
+			return {
+				label: 'Se carichi molteplici file non puoi specificare il nome',
+			}
+		}
+
+		if (!label && files.length === 1) {
+			return {
+				label: 'Scrivi il nome del catalogo',
+			}
+		}
+
+		return {};
+  }
+
+  const categoriesOptions: SelectOption[] = useMemo(() => 
+    Object.values(categoriesLookup).map(({ id, label }) => ({
+      label,
+      value: id,
+    })), [categoriesLookup]);
+
+  return (
+    <StyledLinksForm>
+      <Formik initialValues={initialState} onSubmit={submitCatalogue} validate={validateCatalogue}>
+        <Form>
+					<UploadField name="files" multiple={true} accept=".pdf,.xls,.xlsx" />
+          <Field name="label" label="Nome" />
+          <Select name="categoriesId" options={categoriesOptions} isMulti />
+          <div className="buttons-container">
+            {isSaving ?
+              <p>Sto salvando...</p> :
+              <Button type="submit">Carica questi cataloghi</Button>
+            }
+          </div>
+        </Form>
+      </Formik>
+    </StyledLinksForm>
+  )
+}
