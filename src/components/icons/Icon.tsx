@@ -15,6 +15,7 @@ import {
   faTh,
   faList,
   faSync,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -78,4 +79,8 @@ export const ListIcon: React.FC<IGenericProps> = (props) => (
 
 export const SyncIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faSync} {...props} />
+)
+
+export const UploadIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faUpload} {...props} />
 )
