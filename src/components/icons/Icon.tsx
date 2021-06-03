@@ -16,6 +16,7 @@ import {
   faList,
   faSync,
   faUpload,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -83,4 +84,8 @@ export const SyncIcon: React.FC<IGenericProps> = (props) => (
 
 export const UploadIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faUpload} {...props} />
+)
+
+export const WarningIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faExclamationTriangle} {...props} />
 )
