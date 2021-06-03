@@ -1,13 +1,13 @@
 import { getToken } from "../firebase/auth";
-import { IFile } from "../firebase/db";
-import { apiExists, deleteCatalogue, syncCatalogues, syncCataloguesStatus, uploadCatalogue } from "./catalogues-couriers";
+import { INewFile } from "../firebase/db";
+import { apiExists, deleteCatalogue, syncCatalogues, syncCataloguesStatus, uploadCatalogues } from "./catalogues-couriers";
 
 type ICall<T, P = void> = (url: string, token: string, ...args: T[]) => Promise<P>;
 
 type ICouriers = {
 	getToken: () => Promise<string>;
 	checkExistance: ICall<undefined, boolean>;
-	upload: ICall<IFile>;
+	upload: ICall<FormData, string>;
 	delete: ICall<string>;
 	sync: ICall<never, string>;
 	syncStatus: ICall<never, ISyncStatuses>;
@@ -21,7 +21,7 @@ class CataloguesApiServiceClass {
 	private syncCallId: string;
 	private getToken: () => Promise<string>;
 	private checkExistance: ICall<undefined, boolean>;
-	private upload: ICall<IFile>;
+	private upload: ICall<FormData, string>;
 	private delete: ICall<string>;
 	private syncCourier: ICall<never, string>;
 	private getSyncStatusCourier: ICall<never, ISyncStatuses>;
@@ -31,6 +31,7 @@ class CataloguesApiServiceClass {
 		this.checkExistance = couriers.checkExistance;
 		this.syncCourier = couriers.sync;
 		this.getSyncStatusCourier = couriers.syncStatus;
+		this.upload = couriers.upload;
 	}
 
 	set apiUrl(url: string) {
@@ -74,12 +75,27 @@ class CataloguesApiServiceClass {
 
 		callback(status);
 	}
+
+	public async uploadCatalogues(values: INewFile): Promise<void> {
+		if (values.files.length === 0) {
+			throw new Error('Nessun file selezionato');
+		}
+
+		const formData = new FormData();
+
+		values.files.forEach(file => formData.append('pdf_catalogues', file));
+		values.categoriesId.forEach(category => formData.append('categories', category));
+		formData.append('label', values.label);
+
+		await this.refreshToken();
+		await this.upload(`${this.url}/files/create`, this.token, formData)
+	}
 }
 
 export const CataloguesApiService = new CataloguesApiServiceClass({
 	getToken: getToken,
 	checkExistance: apiExists,
-	upload: uploadCatalogue,
+	upload: uploadCatalogues,
 	delete: deleteCatalogue,
 	sync: syncCatalogues,
 	syncStatus: syncCataloguesStatus

@@ -16,18 +16,17 @@ export const apiExists: (url: string, token: string) => Promise<boolean> = async
 	}
 });
 
-export const uploadCatalogue: (url: string, token: string, values: IFile) => Promise<void> = (apiUrl, token, values) => {
+export const uploadCatalogues: (url: string, token: string, values: FormData) => Promise<string> = (apiUrl, token, values) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await fetch(apiUrl, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
 					'x-access-token': token,
 				},
-				body: JSON.stringify(values),
+				body: values,
 			});
-			const res = await response.json();
+			const res = await response.text();
 
 			resolve(res);
 		} catch (e) {
