@@ -46,9 +46,9 @@ export const deleteCatalogue: (url: string, token: string, values: string) => Pr
 				},
 				body: JSON.stringify({ id: values }),
 			});
-			const res = await response.json();
+			await response.text();
 
-			resolve(res);
+			resolve();
 		} catch (e) {
 			reject(e);
 		}

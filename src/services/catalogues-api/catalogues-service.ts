@@ -32,6 +32,7 @@ class CataloguesApiServiceClass {
 		this.syncCourier = couriers.sync;
 		this.getSyncStatusCourier = couriers.syncStatus;
 		this.upload = couriers.upload;
+		this.delete = couriers.delete;
 	}
 
 	set apiUrl(url: string) {
@@ -89,6 +90,12 @@ class CataloguesApiServiceClass {
 
 		await this.refreshToken();
 		await this.upload(`${this.url}/files/create`, this.token, formData)
+	}
+
+	public async deleteCatalogue(id: string): Promise<void> {
+		await this.refreshToken();
+
+		await this.delete(`${this.url}/files/delete`, this.token, id);
 	}
 }
 
