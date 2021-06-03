@@ -7,16 +7,12 @@ import { Button } from '../../button';
 import { useCatalogueUtilities } from '../../file-system';
 import { Select, SelectOption } from '../../form-fields/select';
 import { UploadField } from '../../form-fields/file-upload';
+import { INewFile } from '../../../services/firebase/db';
+import { CataloguesApiService } from '../../../services/catalogues-api';
 
 interface IUploadCataloguesFormProps {
 	selectedCategory?: string;
 	onSave: () => void;
-}
-
-type INewFile = {
-	files: FileList;
-	categoriesId?: string[];
-	label?: string;
 }
 
 type ICatalogueError = {
@@ -58,29 +54,25 @@ export const UploadCataloguesForm: React.FC<IUploadCataloguesFormProps> = ({ sel
   const submitCatalogue: (values: INewFile, formikHelpers: FormikHelpers<any>) => void = async (values, { resetForm }) => {
     setIsSaving(true);
 
-		console.log(values);
-
     try {
-      // await CataloguesService.editCatalogue({ label: values.label, categoriesId: values.categoriesId }, fileToPass);
+      await CataloguesApiService.uploadCatalogues(values);
+
+      if (typeof onSave === 'function') {
+        onSave();
+      }
+  
+      if (isMounted.current === true) {
+        setIsSaving(false);
+        resetForm({});
+      }
     } catch (e) {
       console.error(e);
     }
-
-		if (typeof onSave === 'function') {
-			onSave();
-		}
-
-		if (isMounted.current === true) {
-			setIsSaving(false);
-			resetForm({});
-		}
   }
 
   const validateCatalogue: (values: INewFile) => ICatalogueError = (values) => {
     const { label, files } = values;
 
-		console.log(values.files.length)
-		
 		if (files.length === 0) {
 			return {
 				files: 'Seleziona almeno un file',

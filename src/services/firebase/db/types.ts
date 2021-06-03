@@ -89,6 +89,18 @@ export interface IFileChanges {
   categoriesId: string[];
 }
 
+export type INewFile = {
+  files: File[];
+  categoriesId?: string[];
+  label?: string;
+}
+
+export type IApiFile = {
+  label?: string;
+  categories?: string[];
+  pdf_catalogues: [];
+}
+
 export interface ICategory {
   id: string;
   label: string;
