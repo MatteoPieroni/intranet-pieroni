@@ -116,15 +116,10 @@ export const useCatalogueUtilities = (): ICataloguesContext => useContext(Catalo
 export const useSelected = (): ISelectedContext => useContext(SelectedContext);
 
 export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, categoriesLookup, filesList }) => {
-	const { isInternal, apiUrl } = useConfig();
+	const { isInternal } = useConfig();
 	const [currentFolders, setCurrentFolders] = useState<ICurrentFolder[]>([]);
 	const [selectedFiles, setSelectedFiles] = useState<(IFile | IEnrichedFile)[]>([]);
 	const [shownFile, setShownFile] = useState<IFile | IEnrichedFile>();
-	const shownUrl = shownFile ?
-		isInternal ?
-			`${apiUrl}/file/${shownFile.filename}` :
-			shownFile.storeUrl :
-		'';
 	const resetShownFile = (): void => setShownFile(null);
 
 	const [isEditing, setIsEditing] = useState(false);
@@ -285,7 +280,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 							<FileList files={shownFiles} viewFile={setShownFile} view={view} />
 						</div>
 					</StyledContainer>
-					{shownFile && <PdfViewer url={shownUrl} closeModal={resetShownFile} />}
+					{shownFile && <PdfViewer file={shownFile} closeModal={resetShownFile} />}
 					{selectedFiles.length !== 0 && (
 						<Modal isOpen={isEditing} closeModal={finishEditing} className="modal-small">
 							{selectedFiles.length > 1 ? (
