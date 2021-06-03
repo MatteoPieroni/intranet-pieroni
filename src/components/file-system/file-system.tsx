@@ -20,6 +20,7 @@ import { Button } from '../button';
 import { GridIcon, ListIcon, SearchIcon, SyncIcon, UploadIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 import { CataloguesApiService } from '../../services/catalogues-api';
+import { ConfirmDelete } from '../confirm-delete';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -128,10 +129,9 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const finishEditing = (): void => setIsEditing(false);
 
 	const [isUploading, setIsUploading] = useState(false);
-
 	const [isSyncing, setIsSyncing] = useState(false);
-
 	const [allSelected, setAllSelected] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const [view, setView] = useState<IView>(() => {
 		return (localStorage.getItem('file-view') as IView) || 'table';
@@ -248,6 +248,19 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		onSearch(event);
 	}
 
+	const deleteFiles = async (): Promise<void> => {
+		const promises = selectedFiles.map(file => CataloguesApiService.deleteCatalogue(file.id));
+
+		try {
+			await Promise.all(promises);
+
+			setSelectedFiles([]);
+			setIsDeleting(false);
+		} catch (e) {
+			console.error(e);
+		}
+	};
+
 	return (
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolders}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
@@ -264,6 +277,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 							<div className="select-bar">
 									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
 									<Button onClick={startEditing} disabled={selectedFiles.length === 0}>Modifica file</Button>
+									<Button onClick={(): void => setIsDeleting(true)} disabled={selectedFiles.length === 0}>Elimina file</Button>
 									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon}>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
@@ -294,6 +308,19 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<CataloguesForm file={selectedFiles[0]} onSave={finishEditing} />
 								</>
 							)}
+						</Modal>
+					)}
+					{isDeleting && (
+						<Modal isOpen={isDeleting} closeModal={(): void => setIsDeleting(false)} className="modal-small">
+							<>
+								<h2>Confermi di voler eliminare questi {selectedFiles.length} file?</h2>
+								<ConfirmDelete
+									onConfirm={deleteFiles}
+									onCancel={(): void => setIsDeleting(false)}
+									warningMessage="Questa operazione non puó essere annullata"
+									list={selectedFiles.map(file => file.label || file.filename)}
+								/>
+							</>
 						</Modal>
 					)}
 					{isInternal && (
