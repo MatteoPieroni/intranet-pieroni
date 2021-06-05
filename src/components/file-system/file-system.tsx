@@ -83,10 +83,6 @@ const StyledContainer = styled.div`
 	}
 `;
 
-const checkboxStyles = css`
-	border: 1px solid black;
-`;
-
 export type ICurrentFolder = {
 	id: string;
 	label: string;
@@ -284,7 +280,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 								<SearchIcon id="filesystem-search-icon" alt="Cerca" />
 							</div>
 							<div className="select-bar">
-									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
+									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} />
 									{isSelecting && <Button onClick={startEditing} disabled={selectedFiles.length === 0} icon={Pencil} isExpanding>Modifica file</Button>}
 									{isSelecting && <Button onClick={(): void => setIsDeleting(true)} disabled={selectedFiles.length === 0} icon={Trash} ghost isExpanding>Elimina file</Button>}
 									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing} ghost isExpanding>Sincronizza</Button>}

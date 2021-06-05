@@ -4,6 +4,8 @@ import { File } from './file';
 import { IFile } from '../../services/firebase/db';
 import { IEnrichedFile } from '../../utils/file-system';
 import styled from '@emotion/styled';
+import { CheckboxCheckedIcon } from '../icons/Icon';
+import { HiddenContent } from '../hidden-content/hidden-content';
 
 interface IFileListProps {
 	files: (IFile | IEnrichedFile)[];
@@ -32,25 +34,16 @@ const StyledDivContainer = styled.div`
 	}
 `;
 
-const StyledTableContainer = styled.table`
-	tr {
-		position: relative;
-		padding: .5rem;
-
-		&:nth-of-type(even) {
-			background-color: rgba(0,0,0,.25);
-		}
-	}
-
-	button {
+const StyledTableContainer = styled.div`
+	table {
 		width: 100%;
-		text-align: left;
-		font-size: 1rem;
 	}
 
-	svg {
-		margin-right: .5rem;
-		font-size: 1rem;
+	th {
+		padding: .5rem;
+		border-bottom: 1px solid #d3deed;
+		text-align: left;
+		font-weight: bold;
 	}
 `;
 
@@ -71,31 +64,37 @@ export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile, clas
 	if (view === 'table') {
 		return (
 			<Container className={className}>
-				<thead>
-					<tr>
-						<th>
-							Nome
-						</th>
-						<th>
-							Data
-						</th>
-						<th>
-							Dimensione
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{files.map(
-						(file) => 
-							<File
-								key={file.id}
-								file={file}
-								viewFile={viewFile}
-								view={view}
-							/>
-						)
-					}
-				</tbody>
+				<table>
+					<thead>
+						<tr>
+							<th>
+								<CheckboxCheckedIcon aria-hidden />
+								<HiddenContent>Selezionato</HiddenContent>
+							</th>
+							<th>
+								Nome
+							</th>
+							<th>
+								Data
+							</th>
+							<th>
+								Dimensione
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{files.map(
+							(file) => 
+								<File
+									key={file.id}
+									file={file}
+									viewFile={viewFile}
+									view={view}
+								/>
+							)
+						}
+					</tbody>
+				</table>
 			</Container>
 		);
 	}
