@@ -68,11 +68,18 @@ const StyledContainer = styled.div`
 
 	.folders-menu {
 		padding: 1rem;
+		max-height: calc(100vh - 16rem);
 		background-color: #202228;
+    overflow: auto;
 
 		> ul {
 			padding: 0;
 		}
+	}
+
+	.files-view {
+		max-height: calc(100vh - 16rem);
+    overflow: auto;
 	}
 `;
 
@@ -293,7 +300,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<SubFolder folder={homeFolder} onSelect={setCurrentFolder} onToggle={toggleSelectedFolders} isRoot />
 								</div>
 							)}
-							<FileList files={shownFiles} viewFile={setShownFile} view={view} />
+							<FileList files={shownFiles} viewFile={setShownFile} view={view} className="files-view" />
 						</div>
 					</StyledContainer>
 					{shownFile && <PdfViewer file={shownFile} closeModal={resetShownFile} />}

@@ -75,6 +75,7 @@ const StyledButton = styled.button<IButtonStyleProps>`
       overflow: hidden;
       white-space: nowrap;
       transition: all .3s ease-in-out;
+      vertical-align: middle;
     }
 
     &:hover, &:focus {
@@ -84,7 +85,6 @@ const StyledButton = styled.button<IButtonStyleProps>`
 
       .text {
         max-width: 150px;
-        white-space: auto;
       }
     }
   `}

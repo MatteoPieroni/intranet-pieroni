@@ -9,6 +9,7 @@ interface IFileListProps {
 	files: (IFile | IEnrichedFile)[];
 	viewFile: (file: IFile | IEnrichedFile) => void;
 	view: IView;
+	className?: string;
 }
 
 const StyledDivContainer = styled.div`
@@ -60,7 +61,7 @@ const containerMap = {
 	grid: StyledDivContainer,
 }
 
-export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile }) => {
+export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile, className}) => {
 	if (files.length === 0) {
 		return <p>Non ci sono file qui</p>;
 	}
@@ -68,7 +69,7 @@ export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile }) =>
 	const Container = containerMap[view];
 
 	return (
-		<Container>
+		<Container className={className}>
 			{files.map(
 				(file) => 
 					<File
