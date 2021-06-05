@@ -17,7 +17,7 @@ import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-f
 import { Checkbox } from '../inputs/checkbox';
 import css from '@emotion/css';
 import { Button } from '../button';
-import { GridIcon, ListIcon, SearchIcon, SyncIcon, UploadIcon } from '../icons/Icon';
+import { GridIcon, ListIcon, Pencil, SearchIcon, SyncIcon, Trash, UploadIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 import { CataloguesApiService } from '../../services/catalogues-api';
 import { ConfirmDelete } from '../confirm-delete';
@@ -132,6 +132,8 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const [isSyncing, setIsSyncing] = useState(false);
 	const [allSelected, setAllSelected] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+
+	const isSelecting = selectedFiles.length > 0;
 
 	const [view, setView] = useState<IView>(() => {
 		return (localStorage.getItem('file-view') as IView) || 'table';
@@ -276,13 +278,13 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 							</div>
 							<div className="select-bar">
 									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} css={checkboxStyles} />
-									<Button onClick={startEditing} disabled={selectedFiles.length === 0}>Modifica file</Button>
-									<Button onClick={(): void => setIsDeleting(true)} disabled={selectedFiles.length === 0}>Elimina file</Button>
-									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon}>
+									{isSelecting && <Button onClick={startEditing} disabled={selectedFiles.length === 0} icon={Pencil} isExpanding>Modifica file</Button>}
+									{isSelecting && <Button onClick={(): void => setIsDeleting(true)} disabled={selectedFiles.length === 0} icon={Trash} ghost isExpanding>Elimina file</Button>}
+									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing} ghost isExpanding>Sincronizza</Button>}
+									{isInternal && <Button icon={UploadIcon} onClick={(): void => setIsUploading(true)} isExpanding>Carica file</Button>}
+									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon} isExpanding>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
-									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing}>Sincronizza</Button>}
-									{isInternal && <Button icon={UploadIcon} onClick={(): void => setIsUploading(true)}>Carica file</Button>}
 							</div>
 						</div>
 						<div className="filesystem-container">
