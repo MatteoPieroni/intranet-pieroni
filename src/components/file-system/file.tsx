@@ -10,10 +10,13 @@ import { useSelected } from './file-system';
 import { useConfig } from '../../shared/hooks';
 import { getFileDownloadUrl } from '../../services/firebase/storage';
 import { download } from './utils/browser-download';
+import { IView } from './file-list';
+import { formatBytes } from './utils/bytes-size';
 
 interface IFileProps {
 	file: IFile | IEnrichedFile;
 	viewFile: (file: IFile | IEnrichedFile) => void;
+	view: IView;
 }
 
 const StyledFile = styled.div<{ isSelected: boolean }>`
@@ -26,12 +29,15 @@ const StyledFile = styled.div<{ isSelected: boolean }>`
 	`}
 `;
 
-export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
+export const File: React.FC<IFileProps> = ({ file, viewFile, view }) => {
 	const { isInternal } = useConfig();
 	const { show } = useContextMenu({ id: file.id });
 	const { startEditing, selectFile, files } = useSelected();
 
 	const isSelected = useMemo(() => files.some(selectedFile => selectedFile.id === file.id), [files, file]);
+
+	const date = useMemo(() => `${file.createdAt.getDate()}-${file.createdAt.getMonth()}-${file.createdAt.getFullYear()}`, [file.createdAt]);
+	const dimension = useMemo(() => formatBytes(file.dimension), [file.dimension]);
 
 	const handleDoubleClick = async (): Promise<void> => {
 		if (isInternal) {
@@ -66,21 +72,49 @@ export const File: React.FC<IFileProps> = ({ file, viewFile }) => {
 		show(event, params);
 	}
 
+	if (view === 'table') {
+		return (
+			<tr>
+				<td>
+					<button
+						onContextMenu={handleContext}
+						onMouseUp={handleFileClick}
+						onDoubleClick={handleDoubleClick}
+						onKeyUp={handleKeyboard}
+					>
+						{file.label}
+					</button>
+				</td>
+				<td>
+					{date}
+				</td>
+				<td>
+					{dimension}
+				</td>
+
+				<Menu id={file.id}>
+					<Item onClick={handleDoubleClick}>{isInternal ? 'Visualizza' : 'Scarica'}</Item>
+					<Item onClick={startEditing}>Modifica catalogo</Item>
+				</Menu>
+			</tr>
+		)
+	}
+
 	return (
-	<StyledFile isSelected={isSelected} className="container">
-		<button
-			onContextMenu={handleContext}
-			onMouseUp={handleFileClick}
-			onDoubleClick={handleDoubleClick}
-			onKeyUp={handleKeyboard}
-		>
-			<Icon.PDFFile aria-hidden />
-			{file.label}
-		</button>
-		<Menu id={file.id}>
-			<Item onClick={handleDoubleClick}>{isInternal ? 'Visualizza' : 'Scarica'}</Item>
-			<Item onClick={startEditing}>Modifica catalogo</Item>
-		</Menu>
-	</StyledFile>
-)
+		<StyledFile isSelected={isSelected} className="container">
+			<button
+				onContextMenu={handleContext}
+				onMouseUp={handleFileClick}
+				onDoubleClick={handleDoubleClick}
+				onKeyUp={handleKeyboard}
+			>
+				<Icon.PDFFile aria-hidden />
+				{file.label}
+			</button>
+			<Menu id={file.id}>
+				<Item onClick={handleDoubleClick}>{isInternal ? 'Visualizza' : 'Scarica'}</Item>
+				<Item onClick={startEditing}>Modifica catalogo</Item>
+			</Menu>
+		</StyledFile>
+	)
 };

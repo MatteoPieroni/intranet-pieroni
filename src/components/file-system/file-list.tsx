@@ -32,8 +32,8 @@ const StyledDivContainer = styled.div`
 	}
 `;
 
-const StyledTableContainer = styled.div`
-	> div {
+const StyledTableContainer = styled.table`
+	tr {
 		position: relative;
 		padding: .5rem;
 
@@ -68,6 +68,38 @@ export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile, clas
 	
 	const Container = containerMap[view];
 
+	if (view === 'table') {
+		return (
+			<Container className={className}>
+				<thead>
+					<tr>
+						<th>
+							Nome
+						</th>
+						<th>
+							Data
+						</th>
+						<th>
+							Dimensione
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{files.map(
+						(file) => 
+							<File
+								key={file.id}
+								file={file}
+								viewFile={viewFile}
+								view={view}
+							/>
+						)
+					}
+				</tbody>
+			</Container>
+		);
+	}
+
 	return (
 		<Container className={className}>
 			{files.map(
@@ -76,6 +108,7 @@ export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile, clas
 						key={file.id}
 						file={file}
 						viewFile={viewFile}
+						view={view}
 					/>
 				)
 			}

@@ -74,6 +74,9 @@ export interface IDbFile {
   id: string;
   label: string;
   store_url: string;
+  created_at: number;
+  created_by: string;
+  dimension: number;
 }
 
 export interface IFile {
@@ -82,6 +85,9 @@ export interface IFile {
   id: string;
   label: string;
   storeUrl: string;
+  createdAt: Date;
+  createdBy: string;
+  dimension: number;
 }
 
 export interface IFileChanges {
