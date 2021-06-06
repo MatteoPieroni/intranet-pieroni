@@ -74,11 +74,17 @@ export class CataloguesServiceClass {
 				({
 					categories_id: categoriesId,
 					store_url: storeUrl,
+					created_at: createdAt,
+					created_by: createdBy,
+					dimension,
 					...rest
 				}) => ({
 					...rest,
 					categoriesId: categoriesId || [],
-					storeUrl
+					storeUrl,
+					createdAt: new Date(createdAt),
+					createdBy: createdBy,
+					dimension: dimension
 				})
 			)
 		);
@@ -113,13 +119,15 @@ export class CataloguesServiceClass {
 
 	public async editCatalogue(values: IFileChanges, data: IFile): Promise<void> {
 		const { label, categoriesId } = values;
-		const { storeUrl, ...rest } = data;
+		const { storeUrl, createdAt, createdBy, ...rest } = data;
 
 		await this.editCatalogueCourier({
 			...rest,
 			label,
 			categories_id: categoriesId || [],
 			store_url: storeUrl,
+			created_at: createdAt.getTime(),
+			created_by: createdBy,
 		});
 	}
 }

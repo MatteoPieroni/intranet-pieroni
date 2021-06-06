@@ -24,6 +24,9 @@ export interface IEnrichedFile {
 	id: string;
 	label: string;
 	storeUrl: string;
+	createdAt: Date;
+	createdBy: string;
+	dimension: number;
 }
 
 export type IOrganisedCategories = IOrganisedCategoriesGeneric<ICategoryWithSubfolders>;

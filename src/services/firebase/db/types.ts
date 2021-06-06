@@ -74,6 +74,9 @@ export interface IDbFile {
   id: string;
   label: string;
   store_url: string;
+  created_at: number;
+  created_by: string;
+  dimension: number;
 }
 
 export interface IFile {
@@ -82,11 +85,26 @@ export interface IFile {
   id: string;
   label: string;
   storeUrl: string;
+  createdAt: Date;
+  createdBy: string;
+  dimension: number;
 }
 
 export interface IFileChanges {
   label: string;
   categoriesId: string[];
+}
+
+export type INewFile = {
+  files: File[];
+  categoriesId?: string[];
+  label?: string;
+}
+
+export type IApiFile = {
+  label?: string;
+  categories?: string[];
+  pdf_catalogues: [];
 }
 
 export interface ICategory {

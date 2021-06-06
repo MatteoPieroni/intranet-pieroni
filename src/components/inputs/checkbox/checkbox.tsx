@@ -9,11 +9,13 @@ interface ICheckboxProps {
     label?: string;
     ariaLabelledBy?: string;
     onChange: () => void;
-    css?: SerializedStyles;
+    getStyles?: (checked: boolean) => SerializedStyles;
+    className?: string;
 }
 
 interface IStyledCheckboxProps {
     checked: boolean;
+    getStyles?: (checked: boolean) => SerializedStyles;
 }
 
 const StyledLabel = styled.label<IStyledCheckboxProps>`
@@ -44,6 +46,8 @@ const StyledLabel = styled.label<IStyledCheckboxProps>`
             background: #F13C20;
         }
     `}
+
+    ${(props): SerializedStyles => props?.getStyles?.(props.checked)}
 `;
 
 const StyledFakedLabel = styled.label<IStyledCheckboxProps>`
@@ -66,26 +70,34 @@ const StyledFakedLabel = styled.label<IStyledCheckboxProps>`
         color: white;
         vertical-align: initial;
     }
+
+    &:focus-within:after {
+        outline: dashed 3px #F13C20;
+    }
     
     ${(props): string => props.checked && `
         background: #F13C20;
+
+        &:focus-within {
+            outline: dashed 3px #fff;
+        }
 
         &:after {
             content: none;
         }
     `}
 
-
+    ${(props): SerializedStyles => props?.getStyles?.(props.checked)}
 `;
 
-export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, css }) => {
+export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, getStyles, className }) => {
     if (!ariaLabelledBy && !label) {
         throw new Error('Sure you know what you are doing? Missing label and ariaLabelledBy');
     }
 
     if (label) {
         return (
-            <StyledLabel checked={checked}>
+            <StyledLabel checked={checked} className={className}>
                 {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
                 {label}
                 <input 
@@ -100,7 +112,7 @@ export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelle
     }
 
     return (
-        <StyledFakedLabel checked={checked} css={css}>
+        <StyledFakedLabel checked={checked} getStyles={getStyles} className={className}>
             {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
             {!ariaLabelledBy && label}
             <input 

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { SerializedStyles, css } from '@emotion/core';
 
 enum EButtonType {
   submit = 'submit',
@@ -15,10 +16,12 @@ interface IButtonProps {
   testId?: string;
   onClick?: (event: React.MouseEvent) => void;
   disabled?: boolean;
+  isExpanding?: boolean;
 }
 
 interface IButtonStyleProps {
   ghost?: boolean;
+  isExpanding?: boolean;
 }
 
 const StyledButton = styled.button<IButtonStyleProps>`
@@ -59,11 +62,41 @@ const StyledButton = styled.button<IButtonStyleProps>`
     margin-right: .5rem;
     fill: #FFF;
   }
+
+  ${(props): SerializedStyles => props.isExpanding && css`
+  .button-icon {
+      margin-right: 0;
+    }
+
+    .text {
+      display: inline-block;
+      width: auto;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: all .3s ease-in-out;
+      vertical-align: middle;
+    }
+
+    &:hover, &:focus {
+      .button-icon {
+        margin-right: .5rem;
+      }
+
+      .text {
+        max-width: 150px;
+      }
+    }
+  `}
 `;
 
-export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button', testId = '', disabled }) => {
+export const Button: React.FC<IButtonProps> = ({ className, icon: Icon, children, ghost, onClick, type = 'button', testId = '', disabled, isExpanding }) => {
+  if (isExpanding && !Icon) {
+    throw new Error('To have an expanding button you need an icon');
+  }
+
   return (
-    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className} data-testid={testId} disabled={disabled}>
+    <StyledButton ghost={ghost} onClick={onClick} type={type} className={className} data-testid={testId} disabled={disabled} isExpanding={isExpanding}>
       <span className="button">
         {Icon && <Icon className="button-icon" />}
         <span className="text">{children}</span>
