@@ -36,8 +36,8 @@ const StyledContainer = styled.div`
 
 	.current-folder {
 		flex: 2;
-		padding: .5rem;
 		background-color: #24305e;
+		padding: .5rem;
 		color: #fff;
 		line-height: 2rem;
 	}
@@ -59,17 +59,28 @@ const StyledContainer = styled.div`
 	}
 
 	.select-bar {
-		width: 100%;
+		display: flex;
 		padding: .5rem;
+		width: 100%;
+		box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+
+		.left {
+			flex: 1;
+		}
+	}
+
+	.select-all {
+		margin-right: 1rem;
 	}
 
 	.filesystem-container {
-		display: grid;
-		grid-template-columns: minmax(auto, 330px) 1fr;
+		display: flex;
 	}
 
 	.folders-menu {
 		padding: 1rem;
+		min-width: 200px;
+		max-width: 30%;
 		max-height: calc(100vh - 16rem);
 		background-color: #202228;
     overflow: auto;
@@ -80,6 +91,7 @@ const StyledContainer = styled.div`
 	}
 
 	.files-view {
+		flex: 1;
 		max-height: calc(100vh - 16rem);
     overflow: auto;
 	}
@@ -287,20 +299,24 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 								<SearchIcon id="filesystem-search-icon" alt="Cerca" />
 							</div>
 							<div className="select-bar">
-									<Checkbox checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} />
+								<div className="left">
+									<Checkbox className="select-all" checked={allSelected} onChange={toggleSelectAll} label={allSelected ? 'Deseleziona tutti' : 'Seleziona tutti'} />
 									{isSelecting && <Button onClick={startEditing} disabled={selectedFiles.length === 0} icon={Pencil} isExpanding>Modifica file</Button>}
 									{isSelecting && <Button onClick={(): void => setIsDeleting(true)} disabled={selectedFiles.length === 0} icon={Trash} ghost isExpanding>Elimina file</Button>}
+								</div>
+								<div className="right">
 									{isInternal && <Button icon={SyncIcon} onClick={syncServer} disabled={isSyncing} ghost isExpanding>Sincronizza</Button>}
 									{isInternal && <Button icon={UploadIcon} onClick={(): void => setIsUploading(true)} isExpanding>Carica file</Button>}
-									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon} isExpanding>
+									{/* <Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon} isExpanding>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
-									</Button>
+									</Button> */}
 									<Button
 										onClick={(): void => setIsQueueOpen(!isQueueOpen)}
 										icon={MenuIcon}
 									>
 										{`Coda (${Object.keys(queue.current?.queue || {}).length})`}
 									</Button>
+								</div>
 							</div>
 						</div>
 						<div className="filesystem-container">

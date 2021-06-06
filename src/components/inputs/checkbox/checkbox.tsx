@@ -10,6 +10,7 @@ interface ICheckboxProps {
     ariaLabelledBy?: string;
     onChange: () => void;
     getStyles?: (checked: boolean) => SerializedStyles;
+    className?: string;
 }
 
 interface IStyledCheckboxProps {
@@ -89,14 +90,14 @@ const StyledFakedLabel = styled.label<IStyledCheckboxProps>`
     ${(props): SerializedStyles => props?.getStyles?.(props.checked)}
 `;
 
-export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, getStyles }) => {
+export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelledBy, onChange, getStyles, className }) => {
     if (!ariaLabelledBy && !label) {
         throw new Error('Sure you know what you are doing? Missing label and ariaLabelledBy');
     }
 
     if (label) {
         return (
-            <StyledLabel checked={checked}>
+            <StyledLabel checked={checked} className={className}>
                 {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
                 {label}
                 <input 
@@ -111,7 +112,7 @@ export const Checkbox: React.FC<ICheckboxProps> = ({ checked, label, ariaLabelle
     }
 
     return (
-        <StyledFakedLabel checked={checked} getStyles={getStyles}>
+        <StyledFakedLabel checked={checked} getStyles={getStyles} className={className}>
             {checked && <CheckboxCheckedIcon className="check" aria-hidden />}
             {!ariaLabelledBy && label}
             <input 

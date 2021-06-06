@@ -41,7 +41,7 @@ const StyledTableContainer = styled.div`
 
 	th {
 		padding: .5rem;
-		border-bottom: 1px solid #d3deed;
+		border-bottom: 1px solid #98a4b5;
 		text-align: left;
 		font-weight: bold;
 	}
