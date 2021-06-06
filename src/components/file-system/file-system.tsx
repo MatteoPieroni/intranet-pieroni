@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -15,12 +15,13 @@ import { Modal } from '../modal';
 import { CataloguesForm, UploadCataloguesForm } from '../forms/catalogues-form';
 import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-form';
 import { Checkbox } from '../inputs/checkbox';
-import css from '@emotion/css';
 import { Button } from '../button';
 import { GridIcon, ListIcon, Pencil, SearchIcon, SyncIcon, Trash, UploadIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 import { CataloguesApiService } from '../../services/catalogues-api';
 import { ConfirmDelete } from '../confirm-delete';
+import { Queue } from '../../utils/queue';
+import { QueueVisualiser } from './queue-visualiser';
 
 const StyledContainer = styled.div`
 	margin: 2rem auto;
@@ -125,6 +126,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const [selectedFiles, setSelectedFiles] = useState<(IFile | IEnrichedFile)[]>([]);
 	const [shownFile, setShownFile] = useState<IFile | IEnrichedFile>();
 	const resetShownFile = (): void => setShownFile(null);
+	const queue = useRef(new Queue<'sync' | 'upload'>())
 
 	const [isEditing, setIsEditing] = useState(false);
 	
@@ -190,9 +192,11 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const syncServer = async (): Promise<void> => {
 		setIsSyncing(true);
 
-		await CataloguesApiService.sync(() => {
-			setIsSyncing(false);
-		});
+		const callId = await CataloguesApiService.sync();
+		queue.current.push({ id: callId, label: 'sync', type: 'sync' });
+
+		CataloguesApiService.pollSyncStatus(callId, (status) => queue.current?.update?.(callId, status));
+		setIsSyncing(false);
 	}
 
 	const setCurrentFolder = (folder: ICurrentFolder): void => folder.id ? setCurrentFolders([folder]) : setCurrentFolders([]);
@@ -270,6 +274,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolders}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
 				<SelectedContext.Provider value={{ files: selectedFiles, selectFile: toggleSelectedFile, startEditing }}>
+					{queue.current && <QueueVisualiser queue={queue.current} />}
 					<StyledContainer>
 						<div className="header">
 							<div className="current-folder">
