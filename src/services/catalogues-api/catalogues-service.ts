@@ -7,7 +7,7 @@ type ICall<T, P = void> = (url: string, token: string, ...args: T[]) => Promise<
 type ICouriers = {
 	getToken: () => Promise<string>;
 	checkExistance: ICall<undefined, boolean>;
-	upload: ICall<FormData, string>;
+	upload: ICall<FormData, string[]>;
 	delete: ICall<string>;
 	sync: ICall<never, string>;
 	syncStatus: ICall<never, ISyncStatuses>;
@@ -18,10 +18,9 @@ export type ISyncStatuses = 'in-progress' | 'errored' | 'succeeded';
 class CataloguesApiServiceClass {
 	private url: string;
 	private token: string;
-	private syncCallId: string;
 	private getToken: () => Promise<string>;
 	private checkExistance: ICall<undefined, boolean>;
-	private upload: ICall<FormData, string>;
+	private upload: ICall<FormData, string[]>;
 	private delete: ICall<string>;
 	private syncCourier: ICall<never, string>;
 	private getSyncStatusCourier: ICall<never, ISyncStatuses>;
@@ -59,20 +58,28 @@ class CataloguesApiServiceClass {
 		return token;
 	}
 
-	public async pollSyncStatus(id: string, callback: (status: 'succeeded' | 'errored') => void): Promise<void> {
+	public async pollSyncStatus(id: string, callback: (status: 'succeeded' | 'errored') => void, retries = 0): Promise<void> {
 		await this.refreshToken();
 
 		let status: 'succeeded' | 'errored' | 'in-progress';
 		try {
 			status = await this.getSyncStatusCourier(`${this.url}/files/queue/${id}`, this.token);
 		} catch (e) {
-			status = 'errored';
+			if (e.message === '404') {
+				status = 'in-progress';
+
+				if (retries >= 10) {
+					status = 'errored';
+				}
+			} else {
+				status = 'errored';
+			}
 		}
 
 		if (status === 'in-progress') {
 			setTimeout(() => {
-				this.pollSyncStatus(id, callback);
-			}, 500);
+				this.pollSyncStatus(id, callback, retries + 1);
+			}, 2000);
 
 			return;
 		}
@@ -80,7 +87,7 @@ class CataloguesApiServiceClass {
 		callback(status);
 	}
 
-	public async uploadCatalogues(values: INewFile): Promise<void> {
+	public async uploadCatalogues(values: INewFile): Promise<string[]> {
 		if (values.files.length === 0) {
 			throw new Error('Nessun file selezionato');
 		}
@@ -92,7 +99,9 @@ class CataloguesApiServiceClass {
 		formData.append('label', values.label);
 
 		await this.refreshToken();
-		await this.upload(`${this.url}/files/create`, this.token, formData)
+		const token = await this.upload(`${this.url}/files/create`, this.token, formData);
+
+		return token;
 	}
 
 	public async deleteCatalogue(id: string): Promise<void> {
