@@ -16,7 +16,7 @@ import { CataloguesForm, UploadCataloguesForm } from '../forms/catalogues-form';
 import { MultiCataloguesForm } from '../forms/catalogues-form/multi-catalogues-form';
 import { Checkbox } from '../inputs/checkbox';
 import { Button } from '../button';
-import { GridIcon, ListIcon, Pencil, SearchIcon, SyncIcon, Trash, UploadIcon } from '../icons/Icon';
+import { GridIcon, ListIcon, MenuIcon, Pencil, SearchIcon, SyncIcon, Trash, UploadIcon } from '../icons/Icon';
 import { FileList, IView } from './file-list';
 import { CataloguesApiService } from '../../services/catalogues-api';
 import { ConfirmDelete } from '../confirm-delete';
@@ -27,6 +27,7 @@ const StyledContainer = styled.div`
 	margin: 2rem auto;
 	max-width: 1600px;
 	background: #fff;
+	overflow: hidden;
 
 	.header {
 		display: flex;
@@ -143,6 +144,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 	const [view, setView] = useState<IView>(() => {
 		return (localStorage.getItem('file-view') as IView) || 'table';
 	});
+	const [isQueueOpen, setIsQueueOpen] = useState(false);
 
 	const { isSearching, onSearch, results } = useSearch(filesList, {
 			includeScore: false,
@@ -274,7 +276,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		<CurrentFolderContext.Provider value={{currentFolders, setCurrentFolder, toggleSelectedFolders}}>
 			<CataloguesContext.Provider value={{categoriesLookup}}>
 				<SelectedContext.Provider value={{ files: selectedFiles, selectFile: toggleSelectedFile, startEditing }}>
-					{queue.current && <QueueVisualiser queue={queue.current} />}
+					{queue.current && <QueueVisualiser queue={queue.current} isOpen={isQueueOpen} close={(): void => setIsQueueOpen(false)} />}
 					<StyledContainer>
 						<div className="header">
 							<div className="current-folder">
@@ -293,6 +295,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon} isExpanding>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
+									<Button onClick={(): void => setIsQueueOpen(!isQueueOpen)} icon={MenuIcon} isExpanding>Coda</Button>
 							</div>
 						</div>
 						<div className="filesystem-container">
