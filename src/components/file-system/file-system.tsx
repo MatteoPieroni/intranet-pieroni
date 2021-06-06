@@ -83,6 +83,7 @@ const StyledContainer = styled.div`
 		max-width: 30%;
 		max-height: calc(100vh - 16rem);
 		background-color: #202228;
+		box-shadow: rgb(0 0 0 / 12%) 1px 1px 3px, rgb(0 0 0 / 24%) 1px 1px 2px;
     overflow: auto;
 
 		> ul {

@@ -65,6 +65,9 @@ export const Header: () => JSX.Element = () => {
         <NavLink to="/cartello">
           Crea cartello
         </NavLink>
+        <NavLink to="/cataloghi">
+          Cataloghi
+        </NavLink>
         <button className="log-out" onClick={logout}>Esci</button>
       </nav>
       <div className="logo-container">
