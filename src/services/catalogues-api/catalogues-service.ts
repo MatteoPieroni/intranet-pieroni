@@ -51,24 +51,27 @@ class CataloguesApiServiceClass {
 		return apiExists;
 	}
 
-	public async sync(callback: (status: 'succeeded' | 'errored') => void): Promise<void> {
+	public async sync(): Promise<string> {
 		await this.refreshToken();
 
 		const token = await this.syncCourier(`${this.url}/files/sync`, this.token);
 
-		this.syncCallId = token;
-
-		this.pollSyncStatus(callback);
+		return token;
 	}
 
-	public async pollSyncStatus(callback: (status: 'succeeded' | 'errored') => void): Promise<void> {
+	public async pollSyncStatus(id: string, callback: (status: 'succeeded' | 'errored') => void): Promise<void> {
 		await this.refreshToken();
 
-		const status = await this.getSyncStatusCourier(`${this.url}/files/queue/${this.syncCallId}`, this.token);
+		let status: 'succeeded' | 'errored' | 'in-progress';
+		try {
+			status = await this.getSyncStatusCourier(`${this.url}/files/queue/${id}`, this.token);
+		} catch (e) {
+			status = 'errored';
+		}
 
 		if (status === 'in-progress') {
 			setTimeout(() => {
-				this.pollSyncStatus(callback);
+				this.pollSyncStatus(id, callback);
 			}, 500);
 
 			return;
