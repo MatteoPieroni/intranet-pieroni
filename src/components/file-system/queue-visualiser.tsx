@@ -1,10 +1,10 @@
 import { css, SerializedStyles } from '@emotion/core';
 import styled from '@emotion/styled';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISyncStatuses } from '../../services/catalogues-api/catalogues-service';
 import { useEscKey } from '../../shared/hooks';
 import { IJob, Queue } from '../../utils/queue';
-import { ErrorIcon, LoadingIcon, SuccessIcon, SyncIcon, UploadIcon } from '../icons/Icon';
+import { CloseIcon, ErrorIcon, LoadingIcon, SuccessIcon, SyncIcon, UploadIcon } from '../icons/Icon';
 
 interface IQueueVisualiserProps {
 	queue: Queue<'sync' | 'upload'>;
@@ -39,6 +39,13 @@ const StyledPanel = styled.div<{ isOpen: boolean }>`
 		margin-bottom: 2rem;
 		font-size: 1.5rem;
 		font-weight: bold;
+	}
+
+	.close-button {
+		position: absolute;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    top: 1.5rem;
 	}
 	
 	${(props): SerializedStyles => props.isOpen && css`
@@ -119,6 +126,7 @@ export const QueueVisualiser: React.FC<IQueueVisualiserProps> = ({ queue, isOpen
 
 	return (
 		<StyledPanel isOpen={isOpen}>
+			<button className="close-button" onClick={close}><CloseIcon aria-label="Chiudi coda" /></button>
 			<h2>Lavori in coda</h2>
 			<ul>
 				{Object.values(queue.queue).map(job => (

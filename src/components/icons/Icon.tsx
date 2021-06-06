@@ -21,6 +21,7 @@ import {
   faSpinner,
   faCheckCircle,
   faTimesCircle,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -108,4 +109,8 @@ export const SuccessIcon: React.FC<IGenericProps> = (props) => (
 
 export const ErrorIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faTimesCircle} {...props} />
+)
+
+export const CloseIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faTimes} {...props} />
 )
