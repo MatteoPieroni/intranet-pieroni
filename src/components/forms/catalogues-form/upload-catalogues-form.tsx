@@ -9,10 +9,12 @@ import { Select, SelectOption } from '../../form-fields/select';
 import { UploadField } from '../../form-fields/file-upload';
 import { INewFile } from '../../../services/firebase/db';
 import { CataloguesApiService } from '../../../services/catalogues-api';
+import { Queue } from '../../../utils/queue';
 
 interface IUploadCataloguesFormProps {
 	selectedCategory?: string;
 	onSave: () => void;
+  queue: Queue<'sync' | 'upload'>;
 }
 
 type ICatalogueError = {
@@ -30,7 +32,7 @@ const StyledLinksForm = styled.div`
   }
 `;
 
-export const UploadCataloguesForm: React.FC<IUploadCataloguesFormProps> = ({ selectedCategory, onSave }) => {
+export const UploadCataloguesForm: React.FC<IUploadCataloguesFormProps> = ({ selectedCategory, onSave, queue }) => {
   const [isSaving, setIsSaving] = useState(false);
 	const isMounted = useRef<boolean>();
   const { categoriesLookup } = useCatalogueUtilities();
@@ -55,7 +57,13 @@ export const UploadCataloguesForm: React.FC<IUploadCataloguesFormProps> = ({ sel
     setIsSaving(true);
 
     try {
-      await CataloguesApiService.uploadCatalogues(values);
+      const callIds = await CataloguesApiService.uploadCatalogues(values);
+
+      callIds.forEach((callId, fileIndex) => {
+        queue.push({ id: callId, label: values?.label || values.files[fileIndex].name, type: 'upload' });
+        
+        CataloguesApiService.pollSyncStatus(callId, (status) => queue.update?.(callId, status));
+      });
 
       if (typeof onSave === 'function') {
         onSave();

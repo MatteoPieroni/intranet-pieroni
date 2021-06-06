@@ -195,7 +195,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 		setIsSyncing(true);
 
 		const callId = await CataloguesApiService.sync();
-		queue.current.push({ id: callId, label: 'sync', type: 'sync' });
+		queue.current.push({ id: callId, label: 'Sincronizzazione', type: 'sync' });
 
 		CataloguesApiService.pollSyncStatus(callId, (status) => queue.current?.update?.(callId, status));
 		setIsSyncing(false);
@@ -295,7 +295,12 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 									<Button onClick={toggleView} ghost icon={view === 'grid' ? ListIcon : GridIcon} isExpanding>
 										{view === 'grid' ? 'Tabella' : 'Griglia'}
 									</Button>
-									<Button onClick={(): void => setIsQueueOpen(!isQueueOpen)} icon={MenuIcon} isExpanding>Coda</Button>
+									<Button
+										onClick={(): void => setIsQueueOpen(!isQueueOpen)}
+										icon={MenuIcon}
+									>
+										{`Coda (${Object.keys(queue.current?.queue || {}).length})`}
+									</Button>
 							</div>
 						</div>
 						<div className="filesystem-container">
@@ -343,6 +348,7 @@ export const FileSystem: React.FC<IOrganisedData> = ({ files, categories, catego
 								<UploadCataloguesForm
 									selectedCategory={currentFolders.length === 1 ? currentFolders[0].id : ''}
 									onSave={(): void => setIsUploading(false)}
+									queue={queue.current}
 								/>
 							</>
 						</Modal>
