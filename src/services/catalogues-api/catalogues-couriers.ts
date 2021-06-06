@@ -1,14 +1,17 @@
-import { IFile } from "../firebase/db";
 import { ISyncStatuses } from "./catalogues-service";
 
 export const apiExists: (url: string, token: string) => Promise<boolean> = async (apiUrl, token) => new Promise(async (resolve, reject) => {
 	try {
-		await fetch(apiUrl, {
+		const response = await fetch(apiUrl, {
 			method: 'GET',
 			headers: {
 				'x-access-token': token,
 			},
 		});
+
+		if (!response.ok) {
+			throw new Error(`${response.status}`);
+		}
 
 		resolve(true);
 	} catch (e) {
@@ -16,7 +19,7 @@ export const apiExists: (url: string, token: string) => Promise<boolean> = async
 	}
 });
 
-export const uploadCatalogues: (url: string, token: string, values: FormData) => Promise<string> = (apiUrl, token, values) => {
+export const uploadCatalogues: (url: string, token: string, values: FormData) => Promise<string[]> = (apiUrl, token, values) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await fetch(apiUrl, {
@@ -26,7 +29,12 @@ export const uploadCatalogues: (url: string, token: string, values: FormData) =>
 				},
 				body: values,
 			});
-			const res = await response.text();
+
+			if (!response.ok) {
+				throw new Error(`${response.status}`);
+			}
+
+			const res = await response.json();
 
 			resolve(res);
 		} catch (e) {
@@ -46,6 +54,11 @@ export const deleteCatalogue: (url: string, token: string, values: string) => Pr
 				},
 				body: JSON.stringify({ id: values }),
 			});
+
+			if (!response.ok) {
+				throw new Error(`${response.status}`);
+			}
+
 			await response.text();
 
 			resolve();
@@ -65,6 +78,10 @@ export const syncCatalogues: (url: string, token: string) => Promise<string> = (
 					'x-access-token': token,
 				},
 			});
+			if (!response.ok) {
+				throw new Error(`${response.status}`);
+			}
+
 			const res = await response.text();
 
 			resolve(res);
@@ -78,6 +95,10 @@ export const syncCataloguesStatus: (url: string, token: string) => Promise<ISync
 	return new Promise(async (resolve, reject) => {
 		try {
 			const response = await fetch(apiUrl, { headers: { 'x-access-token': token } });
+			if (!response.ok) {
+				throw new Error(`${response.status}`);
+			}
+
 			const res = await response.text() as ISyncStatuses;
 
 			resolve(res);
