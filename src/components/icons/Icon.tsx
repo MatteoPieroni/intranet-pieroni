@@ -14,6 +14,14 @@ import {
   faSearch,
   faTh,
   faList,
+  faSync,
+  faUpload,
+  faExclamationTriangle,
+  faBars,
+  faSpinner,
+  faCheckCircle,
+  faTimesCircle,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface IIconProps {
@@ -73,4 +81,36 @@ export const GridIcon: React.FC<IGenericProps> = (props) => (
 
 export const ListIcon: React.FC<IGenericProps> = (props) => (
   <Icon icon={faList} {...props} />
+)
+
+export const SyncIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faSync} {...props} />
+)
+
+export const UploadIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faUpload} {...props} />
+)
+
+export const WarningIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faExclamationTriangle} {...props} />
+)
+
+export const MenuIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faBars} {...props} />
+)
+
+export const LoadingIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faSpinner} {...props} />
+)
+
+export const SuccessIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faCheckCircle} {...props} />
+)
+
+export const ErrorIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faTimesCircle} {...props} />
+)
+
+export const CloseIcon: React.FC<IGenericProps> = (props) => (
+  <Icon icon={faTimes} {...props} />
 )

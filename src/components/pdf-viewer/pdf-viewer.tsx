@@ -1,16 +1,18 @@
 import React from "react";
 import { Global, css } from "@emotion/core";
 
-import { useStorageFile } from "../../shared/hooks";
+import { useConfig, useStorageFile } from "../../shared/hooks";
 import { Loader } from "../loader";
 import { Modal } from "../modal";
 
 import { IModalProps } from "../modal/modal";
 import { ErrorBoundary } from "../error-boundary/error-boundary";
 import { ViewerWithFixedError } from "./viewer-with-fixed-error";
+import { IFile } from "../../services/firebase/db";
+import { IEnrichedFile } from "../../utils/file-system";
 
 interface IPdfViewerProps {
-	url: string;
+	file: IFile | IEnrichedFile;
 }
 
 const modalCss = css`
@@ -25,13 +27,15 @@ const modalCss = css`
 	}
 `;
 
-export const PdfViewer: React.FC<IPdfViewerProps & Partial<IModalProps>> = ({ url, closeModal }) => {
-	const props = useStorageFile(url);
+export const PdfViewer: React.FC<IPdfViewerProps & Partial<IModalProps>> = ({ file, closeModal }) => {
+	const { isInternal, apiUrl } = useConfig();
+	const shownUrl = isInternal ? `${apiUrl}/file/${file.filename}` : file.storeUrl;
+	const props = useStorageFile(shownUrl);
 
 	return (
 		<>
 			<Global styles={modalCss} />
-			<Modal isOpen={!!url} closeModal={closeModal} className="pdf-viewer-modal">
+			<Modal isOpen={!!shownUrl} closeModal={closeModal} className="pdf-viewer-modal">
 				{!props ? (
 					<Loader />
 				) : (

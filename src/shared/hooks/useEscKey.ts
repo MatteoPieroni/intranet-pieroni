@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export const useEscKey = (fn: () => void, condition?: boolean): void => {
+export const useEscKey = (fn: () => void, condition = true): void => {
 	useEffect(() => {
 		const listener = (e: KeyboardEvent): void => {
 			if (e.key === 'Escape' && condition) {

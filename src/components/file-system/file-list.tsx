@@ -4,11 +4,14 @@ import { File } from './file';
 import { IFile } from '../../services/firebase/db';
 import { IEnrichedFile } from '../../utils/file-system';
 import styled from '@emotion/styled';
+import { CheckboxCheckedIcon } from '../icons/Icon';
+import { HiddenContent } from '../hidden-content/hidden-content';
 
 interface IFileListProps {
 	files: (IFile | IEnrichedFile)[];
 	viewFile: (file: IFile | IEnrichedFile) => void;
 	view: IView;
+	className?: string;
 }
 
 const StyledDivContainer = styled.div`
@@ -32,24 +35,15 @@ const StyledDivContainer = styled.div`
 `;
 
 const StyledTableContainer = styled.div`
-	> div {
-		position: relative;
-		padding: .5rem;
-
-		&:nth-of-type(even) {
-			background-color: rgba(0,0,0,.25);
-		}
-	}
-
-	button {
+	table {
 		width: 100%;
-		text-align: left;
-		font-size: 1rem;
 	}
 
-	svg {
-		margin-right: .5rem;
-		font-size: 1rem;
+	th {
+		padding: .5rem;
+		border-bottom: 1px solid #98a4b5;
+		text-align: left;
+		font-weight: bold;
 	}
 `;
 
@@ -60,21 +54,60 @@ const containerMap = {
 	grid: StyledDivContainer,
 }
 
-export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile }) => {
+export const FileList: React.FC<IFileListProps> = ({ view, files, viewFile, className}) => {
 	if (files.length === 0) {
 		return <p>Non ci sono file qui</p>;
 	}
 	
 	const Container = containerMap[view];
 
+	if (view === 'table') {
+		return (
+			<Container className={className}>
+				<table>
+					<thead>
+						<tr>
+							<th>
+								<CheckboxCheckedIcon aria-hidden />
+								<HiddenContent>Selezionato</HiddenContent>
+							</th>
+							<th>
+								Nome
+							</th>
+							<th>
+								Data
+							</th>
+							<th>
+								Dimensione
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{files.map(
+							(file) => 
+								<File
+									key={file.id}
+									file={file}
+									viewFile={viewFile}
+									view={view}
+								/>
+							)
+						}
+					</tbody>
+				</table>
+			</Container>
+		);
+	}
+
 	return (
-		<Container>
+		<Container className={className}>
 			{files.map(
 				(file) => 
 					<File
 						key={file.id}
 						file={file}
 						viewFile={viewFile}
+						view={view}
 					/>
 				)
 			}

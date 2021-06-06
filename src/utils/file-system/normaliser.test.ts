@@ -7,6 +7,9 @@ const cataloguesData = [
 		id: 'cat-id-1',
 		label: 'test catalogue',
 		storeUrl: 'https://test.it',
+		createdBy: 'test',
+		createdAt: new Date(),
+		dimension: 16
 	},
 	{
 		categoriesId: ['category-id-3'],
@@ -14,6 +17,9 @@ const cataloguesData = [
 		id: 'cat-id-3',
 		label: 'test catalogue 2',
 		storeUrl: 'https://test.it',
+		createdBy: 'test',
+		createdAt: new Date(),
+		dimension: 16
 	},
 	{
 		categoriesId: ['category-id-3', 'category-id-1', 'category-id-4'],
@@ -21,6 +27,9 @@ const cataloguesData = [
 		id: 'cat-id-3',
 		label: 'test catalogue 2',
 		storeUrl: 'https://test.it',
+		createdBy: 'test',
+		createdAt: new Date(),
+		dimension: 16
 	},
 ];
 
@@ -32,6 +41,9 @@ const organisedCatalogues = {
 			id: 'cat-id-1',
 			label: 'test catalogue',
 			storeUrl: 'https://test.it',
+			createdBy: 'test',
+			createdAt: new Date(),
+			dimension: 16
 		},
 		{
 			categoriesId: ['category-id-3', 'category-id-1', 'category-id-4'],
@@ -39,6 +51,9 @@ const organisedCatalogues = {
 			id: 'cat-id-3',
 			label: 'test catalogue 2',
 			storeUrl: 'https://test.it',
+			createdBy: 'test',
+			createdAt: new Date(),
+			dimension: 16
 		},
 	],
 	'category-id-3': [
@@ -48,6 +63,9 @@ const organisedCatalogues = {
 			id: 'cat-id-3',
 			label: 'test catalogue 2',
 			storeUrl: 'https://test.it',
+			createdBy: 'test',
+			createdAt: new Date(),
+			dimension: 16
 		},
 		{
 			categoriesId: ['category-id-3', 'category-id-1', 'category-id-4'],
@@ -55,6 +73,9 @@ const organisedCatalogues = {
 			id: 'cat-id-3',
 			label: 'test catalogue 2',
 			storeUrl: 'https://test.it',
+			createdBy: 'test',
+			createdAt: new Date(),
+			dimension: 16
 		},
 	],
 	'category-id-4': [
@@ -64,6 +85,9 @@ const organisedCatalogues = {
 			id: 'cat-id-3',
 			label: 'test catalogue 2',
 			storeUrl: 'https://test.it',
+			createdBy: 'test',
+			createdAt: new Date(),
+			dimension: 16
 		},
 	],
 };
