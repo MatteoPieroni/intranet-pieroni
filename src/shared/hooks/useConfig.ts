@@ -1,5 +1,5 @@
 import { useContext } from 'react';
 
-import { ConfigContext, IExtendedConfig } from '../context/config';
+import { ConfigContext } from '../context/config';
 
-export const useConfig: () => IExtendedConfig = () => useContext(ConfigContext);
+export const useConfig = () => useContext(ConfigContext);

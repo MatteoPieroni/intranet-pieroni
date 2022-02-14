@@ -4,10 +4,10 @@ import { CataloguesApiService } from '../../services/catalogues-api';
 import { getConfig, IConfig } from '../../services/firebase/db';
 
 export interface IExtendedConfig extends IConfig {
-  isInternal: boolean;
-} 
+  isInternal?: boolean;
+}
 
-export const ConfigContext: Context<IExtendedConfig> = React.createContext(null);
+export const ConfigContext: Context<IExtendedConfig & { checkInternal: () => Promise<void> }> = React.createContext(null);
 
 interface IConfigProviderProps {
   children: JSX.Element | JSX.Element[];
@@ -20,33 +20,45 @@ export const ConfigProvider: (props: IConfigProviderProps) => JSX.Element = ({ c
 
   useEffect(() => {
     const fetchConfig = async (): Promise<void> => {
-        try {
-          const fetchedConfig = await getConfig() as IConfig;
-          CataloguesApiService.apiUrl = fetchedConfig.apiUrl;
+      try {
+        const fetchedConfig = await getConfig() as IConfig;
 
-          const isInternal = await CataloguesApiService.exists();
+        setConfig({
+          ...fetchedConfig,
+        });
+        setHasLoaded(true);
+      } catch (error) {
+        console.error(error);
+        setHasLoaded(true);
+      }
+    };
 
-					setConfig({
-            ...fetchedConfig,
-            isInternal,
-          });
-					setHasLoaded(true);
-        } catch (error) {
-					console.error(error);
-					setHasLoaded(true);
-        }
-		};
-		
-		fetchConfig();
-	}, []);
-	
+    fetchConfig();
+  }, []);
+
+  const checkInternal = async (): Promise<void> => {
+    if (!config) {
+      return;
+    }
+
+    CataloguesApiService.apiUrl = config.apiUrl;
+
+    const isInternal = await CataloguesApiService.exists();
+
+
+    setConfig(oldConfig => ({
+      ...oldConfig,
+      isInternal,
+    }));
+  }
+
   return (
-    <ConfigContext.Provider value={config}>
-			{hasLoaded ? (
-				children
-			) : (
-				<Loader />
-			)}
+    <ConfigContext.Provider value={{ ...config, checkInternal }}>
+      {hasLoaded ? (
+        children
+      ) : (
+        <Loader />
+      )}
     </ConfigContext.Provider>
   );
 };
