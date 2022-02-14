@@ -1,12 +1,18 @@
 import { ISyncStatuses } from "./catalogues-service";
 
 export const apiExists: (url: string, token: string) => Promise<boolean> = async (apiUrl, token) => new Promise(async (resolve, reject) => {
+	// this request will hang if we are outside the network, so we need to time it out
+	const controller = new AbortController();
+
+	setTimeout(() => controller.abort(), 5 * 1000);
+
 	try {
 		const response = await fetch(apiUrl, {
 			method: 'GET',
 			headers: {
 				'x-access-token': token,
 			},
+			signal: controller.signal
 		});
 
 		if (!response.ok) {
