@@ -89,9 +89,9 @@ export const Quote: React.FC<IQuoteProps> = ({ quote, refresh }) => {
         {isAdmin && isEditing ? (
           <QuoteForm initialState={quote} className="form" onSave={onSave} />
         ) : (
-            <p>{text}</p>
-          )}
-        <img src={url} />
+          <p>{text}</p>
+        )}
+        <img src={url} role="presentation" />
       </div>
     </StyledQuote>
   );
