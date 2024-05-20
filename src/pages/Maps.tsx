@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { TransportCost, Driver, config } from '../services/gmaps';
 import { TTransportCost, TCurrent } from '../services/gmaps/driver/types';
 import { Route } from '../components';
+import { useConfig } from '../shared/hooks';
 
 const StyledPage = styled.main`
   display: flex;
@@ -55,11 +56,19 @@ const StyledPage = styled.main`
 
 export const Maps: React.FC = () => {
   const [routeData, setRouteData] = useState({} as TCurrent);
+  const { transportCostMinimum, transportCostPerMinute, transportHourBase } = useConfig();
 
   useEffect(() => {
     let mapsDriver: TTransportCost = null;
     const initMap = setTimeout(() => {
-      mapsDriver = new TransportCost(Driver, config);
+      mapsDriver = new TransportCost(Driver, {
+        ...config,
+        costs: {
+          costPerMinute: transportCostPerMinute,
+          hourBase: transportHourBase,
+          minimumCost: transportCostMinimum
+        }
+      });
       mapsDriver.initialise();
       mapsDriver.subscribe(setRouteData);
     }, 1000);

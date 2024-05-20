@@ -1,5 +1,5 @@
 import * as Types from './types';
-import { costFinder, mToKm, sToMin } from '../../../utils/formatMeasures';
+import { mToKm, sToMin } from '../../../utils/formatMeasures';
 
 const Driver = class {
   private config: Types.IConfig;
@@ -170,12 +170,20 @@ const Driver = class {
     return routes.reduce((quickest, route) => quickest ? (quickest.duration <= route.duration ? quickest : route) : route, null)
   }
 
-  private calculateCost: (routeKm: number) => string = (routeKm) => {
-    const minimumCost = '40.00';
+  private calculateCost: (routeMinutes: number) => string = (routeMinutes) => {
+    const { costPerMinute, hourBase, minimumCost } = this.config.costs;
+
+    // if car is 1 minute => truck is 1.5 minutes
+    const truckMinutes = routeMinutes * 1.5;
+
+    const costToRun = truckMinutes * costPerMinute;
+
     // Find Cost
-    const cost = costFinder(routeKm);
+    const cost = costToRun + hourBase;
     // total or minimum
-    return parseFloat(minimumCost) <= parseFloat(cost) ? cost : minimumCost;
+    const resultingCost = minimumCost <= cost ? cost : minimumCost;
+
+    return resultingCost.toFixed(2);
   }
 
   public placeSelection: () => Promise<void> = async () => {

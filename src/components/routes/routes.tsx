@@ -15,7 +15,6 @@ const Home = React.lazy(() => import('../../pages/Home'));
 const Sms = React.lazy(() => import('../../pages/Sms'));
 const Maps = React.lazy(() => import('../../pages/Maps'));
 const Pdf = React.lazy(() => import('../../pages/Pdf'));
-const Catalogues = React.lazy(() => import('../../pages/Catalogues'));
 
 export const Routes: () => JSX.Element = () => {
   const [, hasLoaded] = useUser();
@@ -24,29 +23,26 @@ export const Routes: () => JSX.Element = () => {
     <Router>
       {
         hasLoaded ? (
-            <Suspense fallback={<Loader />}>
-              <Switch>
-                <PrivateRoute exact path="/">
-                  <Home />
-                </PrivateRoute>
-                <PrivateRoute path="/sms">
-                  <Sms />
-                </PrivateRoute>
-                <PrivateRoute path="/maps">
-                  <Maps />
-                </PrivateRoute>
-                <PrivateRoute path="/cartello">
-                  <Pdf />
-                </PrivateRoute>
-                <PrivateRoute path="/cataloghi">
-                  <Catalogues />
-                </PrivateRoute>
-                <Route path="/login">
-                  <Login />
-                </Route>
-              </Switch>
-            </Suspense>
-          ) :
+          <Suspense fallback={<Loader />}>
+            <Switch>
+              <PrivateRoute exact path="/">
+                <Home />
+              </PrivateRoute>
+              <PrivateRoute path="/sms">
+                <Sms />
+              </PrivateRoute>
+              <PrivateRoute path="/maps">
+                <Maps />
+              </PrivateRoute>
+              <PrivateRoute path="/cartello">
+                <Pdf />
+              </PrivateRoute>
+              <Route path="/login">
+                <Login />
+              </Route>
+            </Switch>
+          </Suspense>
+        ) :
           <Loader />
       }
     </Router>
