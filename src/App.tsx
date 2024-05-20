@@ -56,6 +56,10 @@ const globalCss = css`
     height: 100%;
   }
 
+  .ReactModal__Overlay {
+    z-index: 10;
+  }
+
   .modal {
     position: absolute;
     top: 50%;
@@ -65,6 +69,7 @@ const globalCss = css`
     background: #fff;
     transform: translate(-50%, -50%);
     box-shadow:0 1px 5px rgba(0,0,0,0.3);
+    z-index: 999;
 
     @media (min-width: 1024px) {
       width: 60vw;

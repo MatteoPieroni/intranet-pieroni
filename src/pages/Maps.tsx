@@ -5,6 +5,8 @@ import { TransportCost, Driver, config } from '../services/gmaps';
 import { TTransportCost, TCurrent } from '../services/gmaps/driver/types';
 import { Route } from '../components';
 import { useConfig } from '../shared/hooks';
+import { Modal } from '../components/modal';
+import { MapsConfigModal } from '../components/maps-config-modal';
 
 const StyledPage = styled.main`
   display: flex;
@@ -91,6 +93,7 @@ export const Maps: React.FC = () => {
     <StyledPage>
       <div className="panel">
         <h1>Calcola il costo di trasporto</h1>
+        <MapsConfigModal />
         <div className="search">
           <label htmlFor="autocomplete">Inserisci l&#39;indirizzo</label>
           <input id="autocomplete" type="text" className="field" />

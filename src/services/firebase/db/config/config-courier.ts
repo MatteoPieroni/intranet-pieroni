@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import { getDbRecord } from '../db';
+import { getDbRecord, updateRecord } from '../db';
 
 export const getConfig: () => Promise<Types.IConfig> = () => getDbRecord<Types.IDbConfig, Types.IConfig>('/config', (data) => {
 	return {
@@ -11,3 +11,4 @@ export const getConfig: () => Promise<Types.IConfig> = () => getDbRecord<Types.I
 		transportHourBase: data.transport_hour_base
 	}
 });
+export const updateConfig: (ids: keyof Types.IConfig, data: Types.IConfig) => Promise<Types.IDbConfig> = async (id, data) => await updateRecord<Types.IDbConfig>('/config', id, data);
