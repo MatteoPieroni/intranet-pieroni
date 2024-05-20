@@ -92,6 +92,11 @@ export interface IConfig {
     origin: string;
     faster: string;
   };
+  costs: {
+    costPerMinute: number;
+    hourBase: number;
+    minimumCost: number;
+  };
 }
 
 interface IDistanceMatrixOptions {
