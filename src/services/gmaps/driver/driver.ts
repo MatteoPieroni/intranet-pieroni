@@ -179,10 +179,11 @@ const Driver = class {
     const costToRun = truckMinutes * costPerMinute;
 
     // Find Cost
-    const cost = (costToRun + hourBase).toFixed(2);
-
+    const cost = costToRun + hourBase;
     // total or minimum
-    return minimumCost <= parseFloat(cost) ? cost : minimumCost.toFixed(2);
+    const resultingCost = minimumCost <= cost ? cost : minimumCost;
+
+    return resultingCost.toFixed(2);
   }
 
   public placeSelection: () => Promise<void> = async () => {
