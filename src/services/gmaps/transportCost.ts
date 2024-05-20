@@ -8,10 +8,6 @@ export const config = {
       text: 'Diecimo'
     },
     {
-      name: 'Pieroni srl, Fornaci di Barga, Lucca',
-      text: 'Fornaci'
-    },
-    {
       name: 'Pieroni srl, via della Canovetta, Lucca',
       text: 'Lucca'
     }
@@ -41,7 +37,7 @@ export const config = {
     origin: 'assets/origIcon.png',
     destination: 'assets/destIcon.png',
     faster: 'assets/fastestIconWhite.png'
-  }
+  },
 };
 
 const gmaps = window.google && window.google.maps;

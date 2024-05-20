@@ -49,11 +49,17 @@ export interface IDbConfig {
   sms_api: string;
   mail_url: string;
   api_url: string;
+  transport_cost_per_minute: number;
+  transport_cost_minimum: number;
+  transport_hour_base: number;
 }
 export type IConfig = {
   smsApi: string;
   mailUrl: string;
   apiUrl: string;
+  transportCostPerMinute: number;
+  transportCostMinimum: number;
+  transportHourBase: number;
 }
 
 export enum EColor {
