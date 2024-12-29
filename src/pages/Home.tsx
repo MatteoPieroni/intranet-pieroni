@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
-import { Quote, Links, WelcomeMessage, Loader } from '../components';
+import { Quote, Links, WelcomeMessage, Loader, TvForm } from '../components';
 import { useLinks, useQuote } from '../shared/hooks';
+import { useTvText } from '../shared/hooks/useTvText';
 
 const StyledPage = styled.main`
   display: flex;
@@ -13,9 +14,8 @@ const StyledPage = styled.main`
   h1 {
     color: #333;
   }
-  
-  .info-container {
 
+  .info-container {
     @media (min-width: 1024px) {
       max-width: 40%;
     }
@@ -31,40 +31,45 @@ const StyledPage = styled.main`
   }
 `;
 
-
 export const Home: () => JSX.Element = () => {
   const [loading, setLoading] = useState(true);
   const links = useLinks();
   const [quote, refreshQuote, loadingQuote] = useQuote();
+  const [tvText, refreshTvText, loadingTvText] = useTvText();
 
   useEffect(() => {
-    if (loadingQuote) {
+    if (loadingQuote || loadingTvText) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [loadingQuote])
+  }, [loadingQuote, loadingTvText]);
 
-  return (
-    !loading ? (
-      <StyledPage>
-        <div className="info-container">
-          <div className="welcome-container">
-            <WelcomeMessage />
-          </div>
-          {quote && (
-            <div className="quote-container">
-              <Quote quote={quote} refresh={refreshQuote} />
-            </div>
-          )}
+  return !loading ? (
+    <StyledPage>
+      <div className="info-container">
+        <div className="welcome-container">
+          <WelcomeMessage />
         </div>
-        {links && (
-          <div className="links-container">
-            <Links links={links} />
+        {quote && (
+          <div className="quote-container">
+            <Quote quote={quote} refresh={refreshQuote} />
           </div>
         )}
-      </StyledPage>
-    ) : <Loader />
+      </div>
+      {links && (
+        <div className="links-container">
+          <Links links={links} />
+        </div>
+      )}
+      {tvText && (
+        <div className="tv-container">
+          <TvForm initialState={tvText} onSave={refreshTvText} />
+        </div>
+      )}
+    </StyledPage>
+  ) : (
+    <Loader />
   );
 };
 
