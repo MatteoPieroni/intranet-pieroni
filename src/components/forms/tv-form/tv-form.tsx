@@ -21,9 +21,12 @@ interface ITvError {
   text?: string;
 }
 
-const StyledLinksForm = styled.div`
+const StyledTvForm = styled.div`
   form {
+    border-left: 5px solid;
+    border-left-color: #f44336;
     padding: 0.5rem;
+    background-color: #f9f9f9;
   }
 
   .buttons-container {
@@ -67,14 +70,14 @@ export const TvForm: React.FC<ILinksFormProps> = ({ initialState, onSave }) => {
   }
 
   return (
-    <StyledLinksForm>
+    <StyledTvForm>
       <Formik<ITv>
         initialValues={initialState}
         onSubmit={submitLink}
         validate={validateLink}
       >
         <Form>
-          <Field name="text" label="Testo" />
+          <Field name="text" label="Testo tv" />
           <div className="buttons-container">
             {isSaving ? (
               <p>Sto salvando...</p>
@@ -84,6 +87,6 @@ export const TvForm: React.FC<ILinksFormProps> = ({ initialState, onSave }) => {
           </div>
         </Form>
       </Formik>
-    </StyledLinksForm>
+    </StyledTvForm>
   );
 };
