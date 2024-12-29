@@ -29,6 +29,10 @@ export interface IQuote {
   url: string;
 }
 
+export interface ITv {
+  text: string;
+}
+
 export interface IImage {
   url: string;
 }
@@ -60,7 +64,7 @@ export type IConfig = {
   transportCostPerMinute: number;
   transportCostMinimum: number;
   transportHourBase: number;
-}
+};
 
 export enum EColor {
   grey = 'grey',
@@ -71,7 +75,7 @@ export enum EColor {
   lightBlue = 'lightBlue',
   indigo = 'indigo',
   red = 'red',
-  test = 'test'
+  test = 'test',
 }
 
 export interface IDbFile {
@@ -105,13 +109,13 @@ export type INewFile = {
   files: File[];
   categoriesId?: string[];
   label?: string;
-}
+};
 
 export type IApiFile = {
   label?: string;
   categories?: string[];
   pdf_catalogues: [];
-}
+};
 
 export interface ICategory {
   id: string;
@@ -119,4 +123,3 @@ export interface ICategory {
   parent?: string;
   depth: number;
 }
-
