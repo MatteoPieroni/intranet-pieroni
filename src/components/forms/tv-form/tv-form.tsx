@@ -6,6 +6,7 @@ import { updateTvText } from '../../../services/firebase/db';
 import { validateMandatoryInput } from '../../../utils/validateMandatoryInput';
 import { Field } from '../../form-fields';
 import { Button } from '../../button';
+import { useUser } from '../../../shared/hooks';
 
 interface ILinksFormProps {
   initialState?: ITv;
@@ -33,6 +34,8 @@ const StyledLinksForm = styled.div`
 
 export const TvForm: React.FC<ILinksFormProps> = ({ initialState, onSave }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [user] = useUser();
+  const { isAdmin } = user;
 
   const submitLink: (values: ITv) => void = async (values) => {
     setIsSaving(true);
@@ -58,6 +61,10 @@ export const TvForm: React.FC<ILinksFormProps> = ({ initialState, onSave }) => {
       ...(textError && { text: textError }),
     };
   };
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <StyledLinksForm>
