@@ -1,0 +1,16 @@
+.container {
+  margin: 2rem auto;
+  padding: 1rem;
+  max-width: 500px;
+  background-color: var(--background-0);
+}
+
+.list {
+  padding-inline-start: 1.2rem;
+  margin-block-end: 1.5rem;
+}
+
+.list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.3rem;
+}

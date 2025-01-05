@@ -1,0 +1,36 @@
+.route {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 1rem 2rem;
+  background: white;
+  color: #333;
+
+  &[data-quickest] {
+    background-color: green;
+    color: white;
+  }
+}
+
+.route h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.2em;
+  color: #333;
+  text-decoration: underline;
+}
+
+.route[data-quickest] h2 {
+  color: white;
+}
+
+.destination {
+  padding-inline: 1rem;
+  margin-block-end: 0.5rem;
+  font-size: 1.2em;
+}
+
+.cost {
+  margin-bottom: 0.5rem;
+}
+
+.otherDetails li {
+  margin-bottom: 0.25rem;
+}

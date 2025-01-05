@@ -1,0 +1,8 @@
+.textarea {
+  height: 8rem;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+}

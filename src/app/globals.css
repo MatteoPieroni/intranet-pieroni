@@ -1,0 +1,256 @@
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* 3. Add accessible line-height */
+  line-height: 1.5;
+  /* 4. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+  font-weight: 500;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root,
+#__next {
+  isolation: isolate;
+}
+
+:root {
+  --background-0: #111313;
+  --background-1: #1d2020;
+  --background-contrast: #fdfdfd;
+  --background-primary: #f23c20;
+  --border-0: #1d2020;
+  --text: #fdfdfd;
+  --text-contrast: #111313;
+}
+
+html,
+body {
+  height: 100%;
+  color: var(--text);
+}
+
+main {
+  min-height: 100%;
+  background: var(--background-1);
+  overflow: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 900;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.4em;
+}
+
+h3 {
+  font-size: 1.25em;
+}
+
+h4 {
+  font-size: 1.15em;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+
+  &:visited {
+    color: var(--text);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button,
+a.button {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  background-color: var(--background-contrast);
+  color: var(--text-contrast);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+label:has(input),
+label:has(textarea) {
+  display: block;
+  margin-bottom: 0.5rem;
+
+  input,
+  textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-0);
+    border-radius: 5px;
+  }
+}
+
+textarea {
+  height: 8rem;
+}
+
+/* Skeleton */
+.skeleton {
+  background: var(--background-0);
+  background: linear-gradient(
+    110deg,
+    var(--background-0) 8%,
+    var(--background-1) 18%,
+    var(--background-0) 33%
+  );
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.react-aria-DateRangePicker {
+  color: var(--text-color);
+
+  .react-aria-Group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 220px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    position: relative;
+    padding: 4px 4px 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--field-background);
+    white-space: nowrap;
+
+    &[data-pressed] {
+      box-shadow: none;
+      background: var(--highlight-background);
+    }
+
+    &[data-focus-within] {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: -1px;
+    }
+  }
+
+  [slot='start'] + span {
+    padding: 0 4px;
+  }
+
+  [slot='end'] {
+    margin-right: 2rem;
+    flex: 1;
+  }
+
+  .react-aria-Button {
+    background: var(--highlight-background);
+    color: var(--highlight-foreground);
+    border: 2px solid var(--field-background);
+    forced-color-adjust: none;
+    border-radius: 4px;
+    border: none;
+    margin-left: auto;
+    width: 1.429rem;
+    height: 1.429rem;
+    padding: 0;
+    font-size: 0.857rem;
+    box-sizing: content-box;
+    flex-shrink: 0;
+    position: sticky;
+    right: 0;
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--focus-ring-color);
+      outline-offset: 2px;
+    }
+  }
+
+  .react-aria-DateInput {
+    width: 50%;
+    min-width: unset;
+    padding: unset;
+    border: unset;
+    outline: unset;
+  }
+}
+
+.react-aria-Popover[data-trigger='DateRangePicker'] {
+  max-width: unset;
+}

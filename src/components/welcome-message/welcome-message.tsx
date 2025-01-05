@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
+import { GREETINGS } from '../../consts';
+import styles from './welcome-message.module.css';
+// import { Emoji } from '../icons';
 
-import { useUser } from '../../shared/hooks/useUser';
-import { GREETINGS, MONTHS } from '../../common/consts';
-import { Emoji } from '../icons';
-
-interface IGreeting {
-  greeting: string;
-  day: number;
-  month: string;
-  hour: number;
-  minute: number;
-}
-
-const mapTimeToGreeting: (hour: number) => string = hour => {
+const mapTimeToGreeting = (hour: number) => {
   switch (hour) {
     case 7:
     case 8:
@@ -48,82 +37,20 @@ const mapTimeToGreeting: (hour: number) => string = hour => {
   }
 };
 
-const getDateObj: () => IGreeting = () => {
-  const now = new Date();
-
-  return {
-    greeting: mapTimeToGreeting(now.getHours()),
-    month: MONTHS[now.getMonth()],
-    day: now.getDate(),
-    hour: now.getHours(),
-    minute: now.getMinutes(),
-  };
+type WelcomeMessageProps = {
+  name: string;
 };
 
-const StyledDiv = styled.div`
-  position: relative;
-  border-radius: 5px;
-  padding: 2rem;
-  background: #FFF;
-  color: #24305E;
-
-  .waving {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 2rem;
-    height: 2rem;
-    
-    svg {
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  .date {
-    margin-bottom: .5rem;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: .5rem;
-    font-size: 1.2rem;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-  }
-
-  .name {
-    font-weight: 900;
-  }
-
-  .uppercase {
-    text-transform: capitalize;
-  }
-`;
-
-export const WelcomeMessage: React.FC = () => {
-  const [greetingObject, setGreetingObject] = useState(null);
-  const [{ name }] = useUser();
-
-  const setDateObj: () => void = () => {
-    setGreetingObject(getDateObj());
-  };
-
-  useEffect(() => {
-    const updateClock = setTimeout(setDateObj, 60000);
-    setDateObj();
-
-    return (): void => {
-      clearTimeout(updateClock);
-    };
-  }, []);
-
-  const { greeting, month, day, hour, minute } = greetingObject || {};
+export const WelcomeMessage = ({ name }: WelcomeMessageProps) => {
+  const time = new Date();
+  const greeting = mapTimeToGreeting(time.getHours());
 
   return (
-    <StyledDiv>
-      <span className="waving"><Emoji.Wave /></span>
-      <div className="date"><p>{day} <span className="uppercase">{month}</span> - {hour}:{minute}</p></div>
-      <h1>{greeting},<br /><span className="name">{name}</span>!</h1>
-    </StyledDiv>
+    <div className={styles.container}>
+      <span>👋</span>
+      <h1>
+        {greeting}, <span className={styles.name}>{name}</span>!
+      </h1>
+    </div>
   );
 };

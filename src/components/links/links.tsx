@@ -1,69 +1,36 @@
-import React, { useState } from 'react';
-import styled from '@emotion/styled';
-
-import { ILink } from '../../services/firebase/db';
-import { SavedLink } from '../saved-link/saved-link';
-import { StyledH2 } from '../styled';
-
-import { Icon } from '../icons';
-import { NewLink } from '../new-link';
-import { Button } from '../button';
-import { useUser } from '../../shared/hooks';
+import { ILink } from '@/services/firebase/db-types';
+import styles from './links.module.css';
 
 interface ILinkProps {
   links: ILink[];
 }
 
-const StyledLinks = styled.div`
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .form-button .button {
-    border-bottom-color: #FFF;
-    color: #FFF;
-  }
-
-  ul {
-    padding: 1rem 0;
-    columns: 2;
-  }
-
-  li {
-    margin-bottom: .5rem;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-`;
-
 export const Links: React.FC<ILinkProps> = ({ links }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [user] = useUser();
-  const { isAdmin } = user;
-
   return (
-    <StyledLinks>
-      <div className="header">
-        <StyledH2 data-testid="links-title">Link utili</StyledH2>
-        {isAdmin && (
-          <Button icon={Icon.Pencil} ghost className="form-button" onClick={(): void => setIsEditing(!isEditing)}>
-            Modifica
-          </Button>
-        )}
+    <div>
+      <div className={styles.header}>
+        <h2 data-testid="links-title">Link utili</h2>
       </div>
-      <ul>
-        {links && links.map(link => (
-          <SavedLink key={link.id} link={link} editable={isAdmin && isEditing} />
-        ))}
-        {isAdmin && isEditing && <NewLink />}
+      <ul className={styles.list}>
+        {links &&
+          links.map(({ link, description, color }) => (
+            <li
+              style={{ borderInlineStartColor: color }}
+              data-testid={color === 'test' ? 'test-link' : ''}
+              key={link}
+            >
+              <a
+                href={link}
+                className={styles.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {description}
+                {/* <Icon.ArrowRight className="arrow" /> */}
+              </a>
+            </li>
+          ))}
       </ul>
-    </StyledLinks>
-  )
+    </div>
+  );
 };
