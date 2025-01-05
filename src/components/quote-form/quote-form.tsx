@@ -32,6 +32,7 @@ export const QuoteForm = ({ text, images, currentImage }: QuoteFormProps) => {
         <div className={styles.imagesContainer}>
           {images.map((image, index) => (
             <label key={image.url} className={styles.imageInput}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={image.url} alt={`Immagine ${index}`} />
               <input
                 type="radio"

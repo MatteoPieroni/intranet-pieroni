@@ -16,6 +16,7 @@ export const Quote: React.FC<IQuoteProps> = ({ quote }) => {
         <h2 data-testid="quote-title">Citazione del mese</h2>
       </div>
       <div className={`${styles.quote} skeleton`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={url} alt="" />
         <p>{text}</p>
       </div>

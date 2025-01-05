@@ -33,7 +33,6 @@ export function Header({ mailUrl, isAdmin }: HeaderProps) {
         location.reload();
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
