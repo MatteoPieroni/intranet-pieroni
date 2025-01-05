@@ -1,0 +1,16 @@
+.container {
+  display: grid;
+  height: 100%;
+  grid-template-columns: minmax(auto, 20%) 1fr;
+  grid-template-areas: 'sidebar main';
+}
+
+.sidebar {
+  display: contents;
+  grid-area: sidebar;
+}
+
+.content {
+  display: contents;
+  grid-area: main;
+}

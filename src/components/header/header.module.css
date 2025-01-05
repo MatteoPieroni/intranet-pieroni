@@ -1,0 +1,56 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  background: var(--background-0);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border-0);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-inline: 1rem;
+  margin-block-start: 1.5rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--border-0);
+}
+
+.nav a,
+.nav button {
+  border-radius: 5px;
+  background: none;
+  text-align: left;
+  padding: 0.5rem;
+  font-weight: 600;
+  vertical-align: middle;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &[data-active='true'] {
+    background-color: var(--background-primary);
+    color: white;
+  }
+}
+
+.nav button {
+  color: var(--text);
+  cursor: pointer;
+}
+
+.logoContainer {
+  border-block-end: 1px solid var(--border-0);
+  padding: 0.5rem 1rem;
+  max-height: 65px;
+}
+
+.logoContainer svg {
+  height: 100%;
+  max-height: 80%;
+  max-width: 100%;
+}

@@ -1,6 +1,9 @@
-import * as Types from "./types";
+import * as Types from './types';
 
-export const sendSms: (apiUrl: string, values: Types.ISms) => Promise<Types.ISms> = (apiUrl, values) => {
+export const sendSms: (
+  apiUrl: string,
+  values: Types.ISms
+) => Promise<Types.ISms> = (apiUrl, values) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(apiUrl, {
@@ -10,9 +13,15 @@ export const sendSms: (apiUrl: string, values: Types.ISms) => Promise<Types.ISms
         },
         body: JSON.stringify(values),
       });
-      resolve(response.json());
+
+      if (!response.ok) {
+        throw new Error(`Sms Api responded with ${response.status}`);
+      }
+
+      const finalResponse = await response.json();
+      resolve(finalResponse);
     } catch (e) {
       reject(e);
     }
-  })
-}
+  });
+};

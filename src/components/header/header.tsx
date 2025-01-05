@@ -1,75 +1,62 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import styled from '@emotion/styled';
+'use client';
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { redirect, usePathname } from 'next/navigation';
 
-import { useUser, useConfig } from '../../shared/hooks';
-import { Logo } from '../logo';
+import { signOut, onAuthStateChanged } from '@/services/firebase/client';
+import { Logo } from '../logo/logo';
+import styles from './header.module.css';
 
-const StyledHeader = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: .5rem 1rem;
-  background: #24305E;
+type HeaderProps = {
+  mailUrl: string;
+  isAdmin: boolean;
+};
 
-  .logo-container {
-    height: 2rem;
-  }
+export function Header({ mailUrl, isAdmin }: HeaderProps) {
+  const currentPath = usePathname();
 
-  a, .log-out {
-    padding: 0 1rem 0 0;
-    font-size: 1rem;
-    line-height: 1rem;
-    color: #fff;
-    font-weight: 600;
-    vertical-align: middle;
-    text-decoration: none;
-    text-transform: uppercase;
+  const getLinkProps = (href: string) => {
+    return {
+      'data-active': currentPath === href,
+      href,
+    };
+  };
 
-    &:hover {
-      text-decoration: underline;
-    }
+  const handleSignOut = async () => {
+    await signOut();
+    redirect('/signin');
+  };
 
-    &.active {
-      color: #f23c20;
-    }
-  }
-
-  .log-out {
-    padding-left: 2rem;
-    background: none;
-    cursor: pointer;
-  }
-`;
-
-export const Header: () => JSX.Element = () => {
-
-  const [, , logout] = useUser();
-  const config = useConfig();
+  useEffect(() => {
+    onAuthStateChanged((authUser) => {
+      if (!authUser) {
+        location.reload();
+      }
+    });
+  }, []);
 
   return (
-    <StyledHeader>
-      <nav>
-        <NavLink to="/" exact>
-          Home
-        </NavLink>
-        <a href={config.mailUrl} target="_blank" rel="noopener noreferrer">
-          Mail
-        </a>
-        <NavLink to="/sms">
-          Sms
-        </NavLink>
-        <NavLink to="/maps">
-          Costo trasporti
-        </NavLink>
-        <NavLink to="/cartello">
-          Crea cartello
-        </NavLink>
-        <button className="log-out" onClick={logout}>Esci</button>
-      </nav>
-      <div className="logo-container">
-        <Logo />
+    <header className={styles.header}>
+      <div className={styles.logoContainer}>
+        <Link href="/">
+          <Logo />
+        </Link>
       </div>
-    </StyledHeader>
+      <nav className={styles.nav}>
+        <Link {...getLinkProps('/')}>Home</Link>
+        <Link href={mailUrl} target="_blank" rel="noopener noreferrer">
+          Mail
+        </Link>
+        <Link {...getLinkProps('/sms')}>Sms</Link>
+        <a {...getLinkProps('/maps')}>Costo trasporti</a>
+        <Link {...getLinkProps('/cartello')}>Crea cartello</Link>
+        <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
+        {isAdmin && <a {...getLinkProps('/admin')}>Admin</a>}
+
+        <button className={styles.logOut} onClick={handleSignOut}>
+          Esci
+        </button>
+      </nav>
+    </header>
   );
-};
+}
