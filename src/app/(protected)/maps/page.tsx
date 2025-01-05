@@ -36,7 +36,9 @@ export default async function Maps() {
       </div>
 
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQAsPDMeU5gkpK_b6anN-uUJQtoeWhop8&libraries=places&loading=async"></script>
+      <script
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS}&libraries=places&loading=async`}
+      ></script>
     </main>
   );
 }
