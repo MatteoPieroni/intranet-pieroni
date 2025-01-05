@@ -10,5 +10,5 @@ export const formatMobile: (input: string) => string = (input) => {
     return `${input.substring(2)}`;
   }
 
-  return input
-}
+  return input;
+};

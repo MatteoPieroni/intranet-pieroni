@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list {
+  padding: 1rem 0;
+  columns: 2;
+
+  li {
+    margin-bottom: 0.5rem;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+    border: 1px solid #ddd;
+    border-left: 5px solid;
+    border-left-color: #000;
+    background: #fff;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #333;
+  text-transform: uppercase;
+  overflow: hidden;
+}

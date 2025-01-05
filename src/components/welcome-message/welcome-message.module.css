@@ -1,0 +1,14 @@
+.container {
+  h1 {
+    display: inline;
+    font-size: 1.2em;
+  }
+}
+
+.name {
+  font-weight: 900;
+}
+
+.uppercase {
+  text-transform: capitalize;
+}
