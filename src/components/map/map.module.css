@@ -4,21 +4,21 @@
   background: white;
   color: #333;
 
-  h2 {
-    margin-bottom: 0.75rem;
-    font-size: 1.2em;
-    color: #333;
-    text-decoration: underline;
-  }
-
   &[data-quickest] {
     background-color: green;
     color: white;
-
-    h2 {
-      color: white;
-    }
   }
+}
+
+.route h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.2em;
+  color: #333;
+  text-decoration: underline;
+}
+
+.route[data-quickest] h2 {
+  color: white;
 }
 
 .destination {
@@ -31,8 +31,6 @@
   margin-bottom: 0.5rem;
 }
 
-.otherDetails {
-  li {
-    margin-bottom: 0.25rem;
-  }
+.otherDetails li {
+  margin-bottom: 0.25rem;
 }

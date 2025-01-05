@@ -14,10 +14,6 @@
   border: 1px solid var(--border-0);
   background-color: var(--background-0);
   padding: 0.5rem;
-
-  h1 {
-    font-size: 1.5em;
-  }
 }
 
 .container {
@@ -37,12 +33,12 @@
 
 .search {
   padding: 1rem;
+}
 
-  label {
-    display: block;
-    margin-bottom: 0.35em;
-    font-size: 1.2em;
-  }
+.search label {
+  display: block;
+  margin-bottom: 0.35em;
+  font-size: 1.2em;
 }
 
 .field {

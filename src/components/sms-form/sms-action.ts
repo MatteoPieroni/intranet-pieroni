@@ -12,7 +12,7 @@ import {
   getConfigOnServer,
   pushSmsOnServer,
 } from '@/services/firebase/server';
-import { IDbSms } from '@/services/firebase/db';
+import { IDbSms } from '@/services/firebase/db-types';
 import { sendSms } from '@/services/sms';
 import { formatMobile } from '@/utils/formatMobile';
 import { validateCapsLock } from '@/utils/validateCapsLock';

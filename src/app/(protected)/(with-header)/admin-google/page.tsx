@@ -41,7 +41,9 @@ export default async function Admin() {
       <div className={styles.container}>
         {authUrl ? (
           <div className={styles.section}>
-            <h2>Autorizza Google My Business</h2>
+            <h2 className={styles.sectionTitle}>
+              Autorizza Google My Business
+            </h2>
             <a href={authUrl} className="button">
               Autorizza
             </a>

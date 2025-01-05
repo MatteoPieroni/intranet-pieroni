@@ -3,10 +3,10 @@
   align-items: flex-end;
   gap: 0.5rem;
   width: 100%;
+}
 
-  label {
-    flex-grow: 1;
-  }
+.container label {
+  flex-grow: 1;
 }
 
 .buttonsContainer {

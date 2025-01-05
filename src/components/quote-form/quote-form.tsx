@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 
 import { quoteAction, StateValidation } from './quote-action';
-import { IImage } from '@/services/firebase/db';
+import { IImage } from '@/services/firebase/db-types';
 import styles from './quote-form.module.css';
 
 const initialState: StateValidation = {};

@@ -7,27 +7,15 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
+}
 
-  img {
-    object-fit: cover;
-    min-height: 100%;
-  }
+.imagesContainer img {
+  object-fit: cover;
+  min-height: 100%;
 }
 
 .imageInput {
   position: relative;
-
-  input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
 
   &:has(input:checked) {
     outline: 3px solid var(--background-primary);
@@ -41,4 +29,16 @@
       font-size: 2em;
     }
   }
+}
+
+.imageInput input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

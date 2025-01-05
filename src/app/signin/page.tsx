@@ -16,7 +16,7 @@ export default async function SignInPage() {
   return (
     <main>
       <div className={styles.page}>
-        <h1>Entra nella intranet Pieroni</h1>
+        <h1 className={styles.title}>Entra nella intranet Pieroni</h1>
         <SignInForm />
       </div>
     </main>

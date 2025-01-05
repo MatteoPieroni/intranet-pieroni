@@ -7,21 +7,21 @@
 .list {
   padding: 1rem 0;
   columns: 2;
+}
 
-  li {
-    margin-bottom: 0.5rem;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    display: block;
-    border: 1px solid #ddd;
-    border-left: 5px solid;
-    border-left-color: #000;
-    background: #fff;
+.list li {
+  margin-bottom: 0.5rem;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  display: block;
+  border: 1px solid #ddd;
+  border-left: 5px solid;
+  border-left-color: #000;
+  background: #fff;
 
-    &:last-child {
-      margin-bottom: 0;
-    }
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 

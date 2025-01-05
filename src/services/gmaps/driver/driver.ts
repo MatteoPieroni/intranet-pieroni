@@ -7,9 +7,9 @@ const Driver = class {
   private DistanceMatrixService: Types.TDistanceMatrixService;
   private BoundsService: Types.TBounds;
   private AutocompleteService: Types.TAutocompleteService;
-  private Autocomplete: Types.TAutocomplete;
+  private Autocomplete: Types.TAutocomplete | undefined;
   private MapService: Types.TMapService;
-  private Map: Types.TMap;
+  private Map: Types.TMap | undefined;
   private UnitSystem: Types.TUnitSystem;
   private MarkerService: Types.TMarker;
   private Animation: Types.TAnimation;
@@ -44,7 +44,7 @@ const Driver = class {
       document.getElementById(div),
       settings
     );
-    this.Autocomplete.addListener('place_changed', this.placeSelection);
+    this.Autocomplete?.addListener('place_changed', this.placeSelection);
   };
 
   public initMap: () => void = () => {
@@ -105,7 +105,7 @@ const Driver = class {
     try {
       const results = await this.geocodePromise(address);
 
-      this.Map.fitBounds(
+      this.Map?.fitBounds(
         this.BoundsService.extend(results[0].geometry.location)
       );
       this.Current = {
@@ -184,17 +184,22 @@ const Driver = class {
   private calculateQuickestRoute: () => Types.IRoute = () => {
     const { routes } = this.Current;
 
+    if (!routes) {
+      throw new Error();
+    }
+
     // we set the aggregator to equal the route on the first run
     // then we compare the duration for each route with the existing one
     // and swap if the new one if faster
-    return routes.reduce(
+    return routes.reduce<Types.IRoute>(
       (quickest, route) =>
         quickest
           ? quickest.duration <= route.duration
             ? quickest
             : route
           : route,
-      null
+      // TODO: fix reduce types
+      null as unknown as Types.IRoute
     );
   };
 
@@ -215,7 +220,7 @@ const Driver = class {
   };
 
   public placeSelection: () => Promise<void> = async () => {
-    const place = this.Autocomplete.getPlace();
+    const place = this.Autocomplete?.getPlace();
     const {
       geometry: { location },
       formatted_address: destinationName,

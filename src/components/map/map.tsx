@@ -25,7 +25,7 @@ export const Map = ({
       return;
     }
 
-    if (!('google' in window)) {
+    if (!('google' in window) || !(window.google instanceof Object)) {
       return;
     }
 

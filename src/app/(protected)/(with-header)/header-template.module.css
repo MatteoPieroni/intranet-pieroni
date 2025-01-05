@@ -14,8 +14,4 @@
   border: 1px solid var(--border-0);
   background-color: var(--background-0);
   padding: 0.5rem;
-
-  h1 {
-    font-size: 1.5em;
-  }
 }

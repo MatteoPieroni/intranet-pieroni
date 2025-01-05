@@ -1,8 +1,6 @@
-.container {
-  h1 {
-    display: inline;
-    font-size: 1.2em;
-  }
+.container h1 {
+  display: inline;
+  font-size: 1.2em;
 }
 
 .name {

@@ -47,7 +47,7 @@ class GoogleApisClient {
     this.authClient = new google.auth.OAuth2(
       process.env.GOOGLE_OAUTH_CLIENT_ID,
       process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-      'https://localhost:3000/oauth2callback'
+      `${process.env.BASE_URL}/oauth2callback`
     );
 
     google.options({ auth: this.authClient });

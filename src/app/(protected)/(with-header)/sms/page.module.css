@@ -3,9 +3,4 @@
   padding: 1rem;
   max-width: 500px;
   background-color: var(--background-0);
-
-  h1 {
-    margin-top: 0;
-    color: #000;
-  }
 }
