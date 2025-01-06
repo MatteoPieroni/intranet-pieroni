@@ -33,7 +33,7 @@
   }
 
   &[data-active='true'] {
-    background-color: var(--background-primary);
+    background-color: var(--background-highlight);
     color: white;
   }
 }

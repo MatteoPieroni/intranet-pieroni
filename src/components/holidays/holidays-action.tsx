@@ -5,7 +5,11 @@ import { eachDayOfInterval } from 'date-fns/fp';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { ERROR_EMPTY_FIELD, FORM_FAIL_TV, FORM_SUCCESS_TV } from '@/consts';
+import {
+  ERROR_EMPTY_FIELD,
+  FORM_FAIL_HOLIDAYS,
+  FORM_SUCCESS_HOLIDAYS,
+} from '@/consts';
 import { DbSpecialHourPeriod, googleClient } from '@/services/google-apis';
 import { getGoogleAuth } from '@/services/firebase/server';
 import { PassedHeaders } from '@/services/firebase/server/serverApp';
@@ -86,13 +90,13 @@ export const holidaysAction = async (
     revalidatePath('/admin-google');
 
     return {
-      success: FORM_SUCCESS_TV,
+      success: FORM_SUCCESS_HOLIDAYS,
     };
   } catch (e) {
     console.error(e);
     return {
       errors: {
-        general: FORM_FAIL_TV,
+        general: FORM_FAIL_HOLIDAYS,
       },
     };
   }

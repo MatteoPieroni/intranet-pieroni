@@ -41,7 +41,7 @@ export const AddHoliday = ({ name, previousDates }: AddHolidayProps) => {
       <input type="hidden" value={name} name="name" />
       <div className={styles.datepickerContainer}>
         <I18nProvider locale="it">
-          <DateRangePicker startName="startDate" endName="endDate">
+          <DateRangePicker startName="startDate" endName="endDate" isRequired>
             <Label>Date</Label>
             <Group>
               <DateInput slot="start">

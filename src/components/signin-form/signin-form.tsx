@@ -1,12 +1,13 @@
 'use client';
 
-import { FORM_FAIL_LOGIN } from '@/consts';
+import { FORM_FAIL_LOGIN, FORM_SUCCESS_LOGIN } from '@/consts';
 import {
   clientConfig,
   onAuthStateChanged,
   signInWithGoogle,
 } from '@/services/firebase/client';
 import { useEffect, useState } from 'react';
+import { FormStatus } from '../form-status/form-status';
 
 export function useUserSession(onUserSignin: () => void) {
   // Register the service worker that sends auth state back to server
@@ -38,6 +39,7 @@ export function useUserSession(onUserSignin: () => void) {
 
 export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState('');
   const [fail, setFail] = useState('');
   useUserSession(() => {
     location.reload();
@@ -49,6 +51,7 @@ export const SignInForm = () => {
 
     try {
       await signInWithGoogle();
+      setSuccess(FORM_SUCCESS_LOGIN);
     } catch (e) {
       if (e instanceof Error) {
         setFail(e.message);
@@ -56,9 +59,9 @@ export const SignInForm = () => {
       }
 
       setFail(FORM_FAIL_LOGIN);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -117,7 +120,8 @@ export const SignInForm = () => {
         </svg>
       </button>
 
-      {fail}
+      {!isLoading && <FormStatus text={fail} type="error" />}
+      {!isLoading && <FormStatus text={success} type="success" />}
     </form>
   );
 };

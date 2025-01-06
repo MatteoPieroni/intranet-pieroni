@@ -72,11 +72,16 @@ h6 {
 :root {
   --background-0: #111313;
   --background-1: #1d2020;
-  --background-contrast: #fdfdfd;
-  --background-primary: #f23c20;
   --border-0: #1d2020;
   --text: #fdfdfd;
+
+  --background-contrast: #fdfdfd;
+  --background-highlight: #f23c20;
   --text-contrast: #111313;
+  --background-success: #1e9542;
+  --text-success: #111313;
+  --background-error: #cc2000;
+  --text-error: #1e9542;
 }
 
 html,
@@ -146,7 +151,7 @@ a.button {
 label:has(input),
 label:has(textarea) {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-block-end: 0.5rem;
 
   input,
   textarea {
@@ -215,7 +220,7 @@ textarea {
   }
 
   [slot='end'] {
-    margin-right: 2rem;
+    margin-inline-end: 2rem;
     flex: 1;
   }
 
@@ -226,7 +231,7 @@ textarea {
     forced-color-adjust: none;
     border-radius: 4px;
     border: none;
-    margin-left: auto;
+    margin-inline-start: auto;
     width: 1.429rem;
     height: 1.429rem;
     padding: 0;

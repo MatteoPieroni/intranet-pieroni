@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 
 import {
   ERROR_EMPTY_FIELD,
-  ERROR_INVALID_MESSAGE,
+  ERROR_CAPS_LOCK,
   FORM_FAIL_TV,
   FORM_SUCCESS_TV,
 } from '@/consts';
@@ -37,7 +37,7 @@ export const quoteAction = async (_: StateValidation, values: FormData) => {
 
     if (!isValidMessage) {
       return {
-        error: ERROR_INVALID_MESSAGE,
+        error: ERROR_CAPS_LOCK,
       };
     }
 
