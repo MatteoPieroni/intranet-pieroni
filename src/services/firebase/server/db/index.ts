@@ -38,7 +38,6 @@ export const getConfigOnServer = unstable_cache(
 
       return {
         mailUrl: data.mail_url,
-        apiUrl: data.api_url,
         transportCostPerMinute: data.transport_cost_per_minute,
         transportCostMinimum: data.transport_cost_minimum,
         transportHourBase: data.transport_hour_base,
