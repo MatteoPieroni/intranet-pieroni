@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 
 import '@/react-aria/react-aria.css';
 import { getGoogleAuth } from '@/services/firebase/server';
@@ -23,6 +24,11 @@ const manageGoogleAuth = async (googleAuth: IGoogleAuth | undefined) => {
   }
 
   return true;
+};
+
+export const metadata: Metadata = {
+  title: 'Google My Business - Intranet Pieroni srl',
+  description: 'Intranet - gestisci le schede su Google',
 };
 
 export default async function Admin() {
