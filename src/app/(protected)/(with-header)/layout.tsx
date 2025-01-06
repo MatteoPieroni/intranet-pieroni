@@ -24,7 +24,11 @@ export default async function RootLayout({
     <div className={styles.container}>
       <div className={styles.sidebar}>
         {currentUser && (
-          <Header mailUrl={config.mailUrl} isAdmin={currentUser.isAdmin} />
+          <Header
+            mailUrl={config.mailUrl}
+            isAdmin={currentUser.isAdmin}
+            scopes={currentUser.scopes}
+          />
         )}
       </div>
       <div className={styles.content}>{children}</div>

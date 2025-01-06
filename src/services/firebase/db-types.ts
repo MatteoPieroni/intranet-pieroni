@@ -7,6 +7,9 @@ export interface IDbUser {
   cognome: string;
   email: string;
   isAdmin: boolean;
+  scopes?: {
+    gmb?: boolean;
+  };
 }
 
 export interface IUser {
@@ -15,6 +18,9 @@ export interface IUser {
   surname: string;
   email: string;
   isAdmin: boolean;
+  scopes?: {
+    gmb?: boolean;
+  };
 }
 
 export interface ILink {

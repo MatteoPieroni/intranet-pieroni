@@ -1,8 +1,9 @@
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 import '@/react-aria/react-aria.css';
-import { getGoogleAuth } from '@/services/firebase/server';
+import { getGoogleAuth, getUser } from '@/services/firebase/server';
 import { googleClient } from '@/services/google-apis';
 import { Business } from '@/components/business/business';
 import { IGoogleAuth } from '@/services/firebase/db-types';
@@ -31,8 +32,14 @@ export const metadata: Metadata = {
   description: 'Intranet - gestisci le schede su Google',
 };
 
-export default async function Admin() {
+export default async function AdminGoogle() {
   const currentHeaders = await headers();
+  const { currentUser } = await getUser(currentHeaders);
+
+  if (!currentUser?.isAdmin && !currentUser?.scopes?.gmb) {
+    redirect('/');
+  }
+
   const googleAuth = await getGoogleAuth(currentHeaders);
 
   const isTokenSet = await manageGoogleAuth(googleAuth);
