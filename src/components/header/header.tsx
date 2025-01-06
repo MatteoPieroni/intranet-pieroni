@@ -47,7 +47,6 @@ export function Header({ mailUrl, isAdmin }: HeaderProps) {
         <Link href={mailUrl} target="_blank" rel="noopener noreferrer">
           Mail
         </Link>
-        <Link {...getLinkProps('/sms')}>Sms</Link>
         <a {...getLinkProps('/maps')}>Costo trasporti</a>
         <Link {...getLinkProps('/cartello')}>Crea cartello</Link>
         <a {...getLinkProps('/admin-google')}>Gestisci Google</a>

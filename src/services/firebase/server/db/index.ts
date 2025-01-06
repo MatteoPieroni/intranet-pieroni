@@ -12,7 +12,6 @@ import {
 import type {
   IConfig,
   IDbConfig,
-  IDbSms,
   IDbTv,
   IGoogleAuth,
   IImage,
@@ -38,7 +37,6 @@ export const getConfigOnServer = unstable_cache(
       const data: IDbConfig = record.val();
 
       return {
-        smsApi: data.sms_api,
         mailUrl: data.mail_url,
         apiUrl: data.api_url,
         transportCostPerMinute: data.transport_cost_per_minute,
@@ -150,20 +148,6 @@ export const getTvText = async (headers: PassedHeaders) => {
     return data;
   } catch (e) {
     console.error(e);
-    throw e;
-  }
-};
-
-export const pushSmsOnServer = async (headers: PassedHeaders, data: IDbSms) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
-  try {
-    const newPostKey = push(child(dbRef, '/sms')).key;
-
-    await update(ref(db, `sms/${newPostKey}`), data);
-  } catch (e) {
     throw e;
   }
 };

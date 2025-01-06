@@ -41,14 +41,6 @@ export interface IImage {
   url: string;
 }
 
-export interface IDbSms {
-  message: string;
-  number: string;
-  sender: string;
-  senderUID: string;
-  time: number;
-}
-
 export interface IDbTv {
   text: string;
 }
@@ -58,7 +50,6 @@ export interface IStorageFile {
 }
 
 export interface IDbConfig {
-  sms_api: string;
   mail_url: string;
   api_url: string;
   transport_cost_per_minute: number;
@@ -66,7 +57,6 @@ export interface IDbConfig {
   transport_hour_base: number;
 }
 export type IConfig = {
-  smsApi: string;
   mailUrl: string;
   apiUrl: string;
   transportCostPerMinute: number;
