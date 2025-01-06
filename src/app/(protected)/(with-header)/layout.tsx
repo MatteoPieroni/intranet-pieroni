@@ -18,16 +18,14 @@ export default async function RootLayout({
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  if (!currentUser) {
-    throw new Error('No user found');
-  }
-
   const config = await getConfigOnServer(currentHeaders);
 
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
-        <Header mailUrl={config.mailUrl} isAdmin={currentUser.isAdmin} />
+        {currentUser && (
+          <Header mailUrl={config.mailUrl} isAdmin={currentUser.isAdmin} />
+        )}
       </div>
       <div className={styles.content}>{children}</div>
     </div>
