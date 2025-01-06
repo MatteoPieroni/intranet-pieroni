@@ -12,6 +12,9 @@ type HeaderProps = {
   isAdmin: boolean;
   scopes?: {
     gmb?: boolean;
+    config?: {
+      transport?: boolean;
+    };
   };
 };
 
@@ -55,7 +58,9 @@ export function Header({ mailUrl, isAdmin, scopes }: HeaderProps) {
         {(isAdmin || scopes?.gmb) && (
           <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
         )}
-        {isAdmin && <a {...getLinkProps('/admin')}>Admin</a>}
+        {(isAdmin || scopes?.config?.transport) && (
+          <a {...getLinkProps('/admin')}>Admin</a>
+        )}
 
         <button className={styles.logOut} onClick={handleSignOut}>
           Esci

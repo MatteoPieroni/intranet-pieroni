@@ -30,3 +30,7 @@ export const FORM_FAIL_LINK =
 export const FORM_SUCCESS_HOLIDAYS = '✔️ Date aggiornate';
 export const FORM_FAIL_HOLIDAYS =
   '❌ Non siamo riusciti ad aggiornare. Ricontrolla per favore';
+export const FORM_SUCCESS_CONFIG = '✔️ Configurazione aggiornata';
+export const FORM_FAIL_EMPTY = '❌ Almeno un campo è obbligatorio';
+export const FORM_FAIL_CONFIG =
+  '❌ Non siamo riusciti ad aggiornare la configurazione. Ricontrolla per favore';

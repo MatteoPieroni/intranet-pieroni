@@ -15,11 +15,12 @@ import {
 import { normaliseObjectKeysToArray } from '@/utils/normaliseObjectKeysToArray';
 import { type PassedHeaders } from '../serverApp';
 import { create, get, remove, update } from './operations';
+import { getUser } from '../auth';
 
 export const getConfigOnServer = unstable_cache(
   async (headers: PassedHeaders) => {
     try {
-      const data = await get<IDbConfig>(headers, '/config');
+      const data = await get<IDbConfig>(headers, 'config/current');
 
       return {
         mailUrl: data.mail_url,
@@ -38,7 +39,7 @@ export const getConfigOnServer = unstable_cache(
 
 export const getLinks = async (headers: PassedHeaders) => {
   try {
-    const records = await get<IDbLinks>(headers, '/links');
+    const records = await get<IDbLinks>(headers, 'links');
 
     const data: ILink[] = normaliseObjectKeysToArray(records);
 
@@ -51,7 +52,7 @@ export const getLinks = async (headers: PassedHeaders) => {
 
 export const getQuote = async (headers: PassedHeaders) => {
   try {
-    const record = await get<IQuote>(headers, '/quote/active');
+    const record = await get<IQuote>(headers, 'quote/active');
 
     return record;
   } catch (e) {
@@ -64,7 +65,7 @@ export const getQuoteWithImages = async (headers: PassedHeaders) => {
   try {
     const quote = await getQuote(headers);
 
-    const records = await get<IDbImage>(headers, '/images');
+    const records = await get<IDbImage>(headers, 'images');
 
     const images: IImage[] = normaliseObjectKeysToArray(records);
 
@@ -80,7 +81,7 @@ export const getQuoteWithImages = async (headers: PassedHeaders) => {
 
 export const getTvText = async (headers: PassedHeaders) => {
   try {
-    const record = await get<ITv>(headers, '/tv/active');
+    const record = await get<ITv>(headers, 'tv/active');
 
     return record;
   } catch (e) {
@@ -93,7 +94,7 @@ export const getGoogleAuth = async (headers: PassedHeaders) => {
   try {
     const record = await get<IGoogleAuth | undefined>(
       headers,
-      '/googleAuth/active'
+      'googleAuth/active'
     );
 
     return record;
@@ -127,6 +128,27 @@ export const pushTvOnServer = async (headers: PassedHeaders, data: IDbTv) => {
 export const pushLinkOnServer = async (headers: PassedHeaders, data: ILink) => {
   try {
     await update(headers, `links/${data.id}`, data);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const pushConfigOnServer = async (
+  headers: PassedHeaders,
+  data: Partial<IDbConfig>
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (
+      !user.currentUser?.isAdmin &&
+      !Object.values(user.currentUser?.scopes?.config || {}).some(Boolean)
+    ) {
+      throw new Error(`Missing permissions for ${user.currentUser?.email}`);
+    }
+
+    await update(headers, `config/current`, data);
   } catch (e) {
     console.error(e);
     throw e;
