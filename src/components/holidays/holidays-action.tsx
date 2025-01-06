@@ -2,13 +2,36 @@
 
 import { revalidatePath } from 'next/cache';
 import { eachDayOfInterval } from 'date-fns/fp';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { ERROR_EMPTY_FIELD, FORM_FAIL_TV, FORM_SUCCESS_TV } from '@/consts';
 import { DbSpecialHourPeriod, googleClient } from '@/services/google-apis';
+import { getGoogleAuth } from '@/services/firebase/server';
+import { PassedHeaders } from '@/services/firebase/server/serverApp';
 
 export type StateValidation = {
   success?: string;
   error?: string;
+};
+
+const getGoogleInstanceWithAuth = async (currentHeaders: PassedHeaders) => {
+  const tokenData = await getGoogleAuth(currentHeaders);
+
+  if (!tokenData?.refresh_token) {
+    throw new Error('NO_TOKEN');
+  }
+
+  try {
+    await googleClient.setTokens(tokenData.refresh_token);
+  } catch (e) {
+    if (e instanceof Error && e.message === 'REVOKED') {
+      redirect('/admin-google');
+    }
+    throw e;
+  }
+
+  return googleClient;
 };
 
 export const holidaysAction = async (
@@ -17,6 +40,11 @@ export const holidaysAction = async (
   values: FormData
 ) => {
   try {
+    const currentHeaders = await headers();
+    const googleClientWithAuth = await getGoogleInstanceWithAuth(
+      currentHeaders
+    );
+
     const formStartDate = values.get('startDate');
     const formEndDate = values.get('endDate');
     const formName = values.get('name');
@@ -50,7 +78,7 @@ export const holidaysAction = async (
       };
     });
 
-    await googleClient.patchLocation(String(formName), [
+    await googleClientWithAuth.patchLocation(String(formName), [
       ...previousDates,
       ...formattedDates,
     ]);
