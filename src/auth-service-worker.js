@@ -1,48 +1,86 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, getIdToken } from 'firebase/auth';
-import { getInstallations, getToken } from 'firebase/installations';
+import { initializeApp } from "firebase/app";
+import { getAuth, getIdToken, onAuthStateChanged } from "firebase/auth";
 
-// this is set during install
-let firebaseConfig;
+// extract firebase config from query string
+const serializedFirebaseConfig = new URLSearchParams(self.location.search).get(
+  "firebaseConfig"
+);
+if (!serializedFirebaseConfig) {
+  throw new Error(
+    "Firebase Config object not found in service worker query string."
+  );
+}
 
-self.addEventListener('install', () => {
-  // extract firebase config from query string
-  const serializedFirebaseConfig = new URL(
-    location
-  ).searchParams.get('firebaseConfig');
+const firebaseConfig = JSON.parse(serializedFirebaseConfig);
 
-  if (!serializedFirebaseConfig) {
-    throw new Error(
-      'Firebase Config object not found in service worker query string.'
-    );
-  }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  firebaseConfig = JSON.parse(serializedFirebaseConfig);
-  console.log('Service worker installed with Firebase config', firebaseConfig);
+self.addEventListener("install", () => {
+  console.log("Service worker installed with Firebase config", firebaseConfig);
+  self.skipWaiting();
 });
 
-self.addEventListener('fetch', (event) => {
-  const { origin } = new URL(event.request.url);
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener("fetch", (event) => {
+  const { origin, pathname } = new URL(event.request.url);
   if (origin !== self.location.origin) return;
+  // Use a magic url to ensure that auth state is in sync between
+  // the client and the sw, this helps with actions such as router.refresh();
+  if (pathname.startsWith("/__/auth/wait/")) {
+    const uid = pathname.split("/").at(-1);
+    event.respondWith(waitForMatchingUid(uid));
+    return;
+  }
+  if (pathname.startsWith("/_next/")) return;
+  // Don't add headers to GET/HEAD requests or those with an extension—this
+  // helps with css, images, fonts, json, etc.
+  if (
+    (event.request.method === "GET" || event.request.method === "HEAD") &&
+    pathname.includes(".")
+  ) {
+    return;
+  }
   event.respondWith(fetchWithFirebaseHeaders(event.request));
 });
 
 async function fetchWithFirebaseHeaders(request) {
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const installations = getInstallations(app);
-  const headers = new Headers(request.headers);
-  const [authIdToken, installationToken] = await Promise.all([
-    getAuthIdToken(auth),
-    getToken(installations),
-  ]);
-  headers.append('Firebase-Instance-ID-Token', installationToken);
-  if (authIdToken) headers.append('Authorization', `Bearer ${authIdToken}`);
-  const newRequest = new Request(request, { headers });
-  return await fetch(newRequest);
+  const authIdToken = await getAuthIdToken();
+  if (authIdToken) {
+    const headers = new Headers(request.headers);
+    headers.append("Authorization", `Bearer ${authIdToken}`);
+    request = new Request(request, { headers });
+  }
+  return await fetch(request).catch((reason) => {
+    console.error(reason);
+    return new Response("Fail.", {
+      status: 500,
+      headers: { "content-type": "text/html" },
+    });
+  });
 }
 
-async function getAuthIdToken(auth) {
+async function waitForMatchingUid(_uid) {
+  const uid = _uid === "undefined" ? undefined : _uid;
+  await auth.authStateReady();
+  await new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user?.uid === uid) {
+        unsubscribe();
+        resolve();
+      }
+    });
+  });
+  return new Response(undefined, {
+    status: 200,
+    headers: { "cache-control": "no-store" },
+  });
+}
+
+async function getAuthIdToken() {
   await auth.authStateReady();
   if (!auth.currentUser) return;
   return await getIdToken(auth.currentUser);
