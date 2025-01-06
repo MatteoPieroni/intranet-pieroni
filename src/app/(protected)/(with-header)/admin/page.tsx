@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import {
@@ -13,6 +14,11 @@ import { LinkForm } from '@/components/link-form/link-form';
 import { EColor } from '@/services/firebase/db-types';
 import { QuoteForm } from '@/components/quote-form/quote-form';
 import template from '../header-template.module.css';
+
+export const metadata: Metadata = {
+  title: 'Admin - Intranet Pieroni srl',
+  description: 'Intranet - gestisci le impostazioni',
+};
 
 export default async function Admin() {
   const currentHeaders = await headers();

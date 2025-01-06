@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { getConfigOnServer } from '@/services/firebase/server';
 import styles from './page.module.css';
@@ -8,6 +9,11 @@ import styles from './page.module.css';
 const LazyMap = dynamic(() =>
   import('@/components/map/map').then((mod) => mod.Map)
 );
+
+export const metadata: Metadata = {
+  title: 'Calcola percorso - Intranet Pieroni srl',
+  description: 'Intranet - calcola il costo di consegna',
+};
 
 export default async function Maps() {
   const currentHeaders = await headers();
