@@ -5,6 +5,9 @@ export interface IDbUser {
   isAdmin: boolean;
   scopes?: {
     gmb?: boolean;
+    config?: {
+      transport?: boolean;
+    };
   };
 }
 
@@ -16,6 +19,9 @@ export interface IUser {
   isAdmin: boolean;
   scopes?: {
     gmb?: boolean;
+    config?: {
+      transport?: boolean;
+    };
   };
 }
 

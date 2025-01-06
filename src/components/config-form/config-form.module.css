@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-block-end: 0.5rem;
+}
