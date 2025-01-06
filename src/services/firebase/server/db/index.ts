@@ -1,40 +1,25 @@
 import { unstable_cache } from 'next/cache';
-import {
-  child,
-  get,
-  getDatabase,
-  push,
-  ref,
-  remove,
-  update,
-} from 'firebase/database';
 
-import type {
-  IConfig,
-  IDbConfig,
-  IDbTv,
-  IGoogleAuth,
-  IImage,
-  ILink,
-  IQuote,
-  ITv,
+import {
+  IDbImage,
+  IDbLinks,
+  type IConfig,
+  type IDbConfig,
+  type IDbTv,
+  type IGoogleAuth,
+  type IImage,
+  type ILink,
+  type IQuote,
+  type ITv,
 } from '../../db-types';
 import { normaliseObjectKeysToArray } from '@/utils/normaliseObjectKeysToArray';
-import { getApp, type PassedHeaders } from '../serverApp';
+import { type PassedHeaders } from '../serverApp';
+import { create, get, remove, update } from './operations';
 
 export const getConfigOnServer = unstable_cache(
   async (headers: PassedHeaders) => {
-    const firebaseServerApp = await getApp(headers);
-    const dbRef = ref(getDatabase(firebaseServerApp));
-
     try {
-      const record = await get(child(dbRef, '/config'));
-
-      if (!record.exists()) {
-        throw new Error('No config found');
-      }
-
-      const data: IDbConfig = record.val();
+      const data = await get<IDbConfig>(headers, '/config');
 
       return {
         mailUrl: data.mail_url,
@@ -52,17 +37,10 @@ export const getConfigOnServer = unstable_cache(
 );
 
 export const getLinks = async (headers: PassedHeaders) => {
-  const firebaseServerApp = await getApp(headers);
-  const dbRef = ref(getDatabase(firebaseServerApp));
-
   try {
-    const records = await get(child(dbRef, '/links'));
+    const records = await get<IDbLinks>(headers, '/links');
 
-    if (!records.exists()) {
-      throw new Error('Could not connect to the database');
-    }
-
-    const data: ILink[] = normaliseObjectKeysToArray(records.val());
+    const data: ILink[] = normaliseObjectKeysToArray(records);
 
     return data;
   } catch (e) {
@@ -72,19 +50,10 @@ export const getLinks = async (headers: PassedHeaders) => {
 };
 
 export const getQuote = async (headers: PassedHeaders) => {
-  const firebaseServerApp = await getApp(headers);
-  const dbRef = ref(getDatabase(firebaseServerApp));
-
   try {
-    const record = await get(child(dbRef, '/quote/active'));
+    const record = await get<IQuote>(headers, '/quote/active');
 
-    if (!record.exists()) {
-      throw new Error('Could not connect to the database');
-    }
-
-    const data: IQuote = record.val();
-
-    return data;
+    return record;
   } catch (e) {
     console.error(e);
     throw e;
@@ -92,19 +61,12 @@ export const getQuote = async (headers: PassedHeaders) => {
 };
 
 export const getQuoteWithImages = async (headers: PassedHeaders) => {
-  const quote = await getQuote(headers);
-
-  const firebaseServerApp = await getApp(headers);
-  const dbRef = ref(getDatabase(firebaseServerApp));
-
   try {
-    const records = await get(child(dbRef, '/images'));
+    const quote = await getQuote(headers);
 
-    if (!records.exists()) {
-      throw new Error('Could not connect to the database');
-    }
+    const records = await get<IDbImage>(headers, '/images');
 
-    const images: IImage[] = normaliseObjectKeysToArray(records.val());
+    const images: IImage[] = normaliseObjectKeysToArray(records);
 
     return {
       quote,
@@ -116,35 +78,37 @@ export const getQuoteWithImages = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushQuoteOnServer = async (
-  headers: PassedHeaders,
-  data: IQuote
-) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
+export const getTvText = async (headers: PassedHeaders) => {
   try {
-    await update(child(dbRef, `quote/active`), data);
+    const record = await get<ITv>(headers, '/tv/active');
+
+    return record;
   } catch (e) {
+    console.error(e);
     throw e;
   }
 };
 
-export const getTvText = async (headers: PassedHeaders) => {
-  const firebaseServerApp = await getApp(headers);
-  const dbRef = ref(getDatabase(firebaseServerApp));
-
+export const getGoogleAuth = async (headers: PassedHeaders) => {
   try {
-    const record = await get(child(dbRef, '/tv/active'));
+    const record = await get<IGoogleAuth | undefined>(
+      headers,
+      '/googleAuth/active'
+    );
 
-    if (!record.exists()) {
-      throw new Error('Could not connect to the database');
-    }
+    return record;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 
-    const data: ITv = record.val();
-
-    return data;
+export const pushQuoteOnServer = async (
+  headers: PassedHeaders,
+  data: IQuote
+) => {
+  try {
+    await update(headers, 'quote/active', data);
   } catch (e) {
     console.error(e);
     throw e;
@@ -152,80 +116,19 @@ export const getTvText = async (headers: PassedHeaders) => {
 };
 
 export const pushTvOnServer = async (headers: PassedHeaders, data: IDbTv) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
   try {
-    await update(child(dbRef, `tv/active`), data);
+    await update(headers, 'tv/active', data);
   } catch (e) {
+    console.error(e);
     throw e;
   }
 };
 
 export const pushLinkOnServer = async (headers: PassedHeaders, data: ILink) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
   try {
-    await update(child(dbRef, `links/${data.id}`), data);
+    await update(headers, `links/${data.id}`, data);
   } catch (e) {
-    throw e;
-  }
-};
-
-export const createLinkOnServer = async (
-  headers: PassedHeaders,
-  data: Omit<ILink, 'id'>
-) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
-  try {
-    const newPostKey = push(child(dbRef, 'links')).key;
-
-    const postData = {
-      ...data,
-      id: newPostKey,
-    };
-
-    await update(ref(db, `links/${newPostKey}`), postData);
-  } catch (e) {
-    throw e;
-  }
-};
-
-export const deleteLinkOnServer = async (
-  headers: PassedHeaders,
-  data: Pick<ILink, 'id'>
-) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-
-  try {
-    await remove(ref(db, `links/${data.id}`));
-  } catch (e) {
-    throw e;
-  }
-};
-
-export const getGoogleAuth = async (headers: PassedHeaders) => {
-  const firebaseServerApp = await getApp(headers);
-  const dbRef = ref(getDatabase(firebaseServerApp));
-
-  try {
-    const record = await get(child(dbRef, '/googleAuth/active'));
-
-    if (!record.exists()) {
-      throw new Error('Could not connect to the database');
-    }
-
-    const data: IGoogleAuth | undefined = record.val();
-
-    return data;
-  } catch (e) {
+    console.error(e);
     throw e;
   }
 };
@@ -234,12 +137,32 @@ export const pushGoogleAuthOnServer = async (
   headers: PassedHeaders,
   data: IGoogleAuth
 ) => {
-  const firebaseServerApp = await getApp(headers);
-  const db = getDatabase(firebaseServerApp);
-  const dbRef = ref(db);
-
   try {
-    await update(child(dbRef, 'googleAuth/active'), data);
+    await update(headers, 'googleAuth/active', data);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createLinkOnServer = async (
+  headers: PassedHeaders,
+  data: Omit<ILink, 'id'>
+) => {
+  try {
+    await create(headers, 'links', data);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const deleteLinkOnServer = async (
+  headers: PassedHeaders,
+  data: Pick<ILink, 'id'>
+) => {
+  try {
+    await remove(headers, 'links', data.id);
   } catch (e) {
     throw e;
   }

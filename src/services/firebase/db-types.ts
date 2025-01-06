@@ -19,6 +19,15 @@ export interface IUser {
   };
 }
 
+export interface IDbLinks {
+  [id: string]: {
+    color: EColor;
+    description: string;
+    id: string;
+    link: string;
+  };
+}
+
 export interface ILink {
   color: EColor;
   description: string;
@@ -41,6 +50,12 @@ export interface IGoogleAuth {
 
 export interface IImage {
   url: string;
+}
+
+export interface IDbImage {
+  [id: string]: {
+    url: string;
+  };
 }
 
 export interface IDbTv {
