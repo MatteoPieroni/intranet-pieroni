@@ -5,6 +5,7 @@ import { useActionState } from 'react';
 import { quoteAction, StateValidation } from './quote-action';
 import { IImage } from '@/services/firebase/db-types';
 import styles from './quote-form.module.css';
+import { FormStatus } from '../form-status/form-status';
 
 const initialState: StateValidation = {};
 
@@ -24,8 +25,7 @@ export const QuoteForm = ({ text, images, currentImage }: QuoteFormProps) => {
     <form action={formAction} className={styles.form}>
       <label>
         Citazione (ricordati di disattivare il maiuscolo)
-        <textarea name="message" defaultValue={text} />
-        {state.error}
+        <textarea name="message" defaultValue={text} required />
       </label>
       <fieldset>
         <legend>Immagine</legend>
@@ -45,11 +45,10 @@ export const QuoteForm = ({ text, images, currentImage }: QuoteFormProps) => {
         </div>
       </fieldset>
       <div>
-        <button type="submit" disabled={pending}>
-          Aggiorna il messaggio
-        </button>
+        <button type="submit">Aggiorna il messaggio</button>
       </div>
-      <p aria-live="polite">{state.success}</p>
+      {!pending && <FormStatus text={state.success} type="success" />}
+      {!pending && <FormStatus text={state.error} type="error" />}
     </form>
   );
 };

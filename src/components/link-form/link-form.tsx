@@ -5,6 +5,7 @@ import { useActionState } from 'react';
 import type { ILink } from '@/services/firebase/db-types';
 import { linkAction, linkDeleteAction, StateValidation } from './link-action';
 import styles from './link-form.module.css';
+import { FormStatus } from '../form-status/form-status';
 
 type LinksFormProps = {
   link: ILink;
@@ -23,26 +24,21 @@ export const LinkForm = ({
       <div className={styles.container}>
         <label>
           Descrizione
-          <input name="description" defaultValue={description} />
-          {state.errors?.description}
+          <input name="description" defaultValue={description} required />
         </label>
         <label>
           Link
-          <input name="link" defaultValue={link} />
-          {state.errors?.link}
+          <input type="url" name="link" defaultValue={link} required />
         </label>
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
         <div className={styles.buttonsContainer}>
-          <button type="submit" disabled={pending}>
-            {!isNew ? 'Salva' : 'Aggiungi'}
-          </button>
+          <button type="submit">{!isNew ? 'Salva' : 'Aggiungi'}</button>
           <button formAction={() => linkDeleteAction(id)}>Rimuovi</button>
         </div>
       </div>
-      <p aria-live="polite" className={styles.status}>
-        {state.success} {state.errors?.general}
-      </p>
+      {!pending && <FormStatus text={state.success} type="success" />}
+      {!pending && <FormStatus text={state.error} type="error" />}
     </form>
   );
 };

@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 
 import { Quote } from '@/components/quote/quote';
 import { WelcomeMessage } from '@/components/welcome-message/welcome-message';
@@ -6,6 +7,11 @@ import { Links } from '@/components/links/links';
 import { getUser, getLinks, getQuote } from '@/services/firebase/server';
 import template from './header-template.module.css';
 import styles from './page.module.css';
+
+export const metadata: Metadata = {
+  title: 'Intranet - Pieroni srl',
+  description: 'Intranet - benvenut*',
+};
 
 export default async function Home() {
   const currentHeaders = await headers();

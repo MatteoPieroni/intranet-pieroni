@@ -10,9 +10,15 @@ import styles from './header.module.css';
 type HeaderProps = {
   mailUrl: string;
   isAdmin: boolean;
+  scopes?: {
+    gmb?: boolean;
+    config?: {
+      transport?: boolean;
+    };
+  };
 };
 
-export function Header({ mailUrl, isAdmin }: HeaderProps) {
+export function Header({ mailUrl, isAdmin, scopes }: HeaderProps) {
   const currentPath = usePathname();
 
   const getLinkProps = (href: string) => {
@@ -47,11 +53,14 @@ export function Header({ mailUrl, isAdmin }: HeaderProps) {
         <Link href={mailUrl} target="_blank" rel="noopener noreferrer">
           Mail
         </Link>
-        <Link {...getLinkProps('/sms')}>Sms</Link>
         <a {...getLinkProps('/maps')}>Costo trasporti</a>
         <Link {...getLinkProps('/cartello')}>Crea cartello</Link>
-        <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
-        {isAdmin && <a {...getLinkProps('/admin')}>Admin</a>}
+        {(isAdmin || scopes?.gmb) && (
+          <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
+        )}
+        {(isAdmin || scopes?.config?.transport) && (
+          <a {...getLinkProps('/admin')}>Admin</a>
+        )}
 
         <button className={styles.logOut} onClick={handleSignOut}>
           Esci

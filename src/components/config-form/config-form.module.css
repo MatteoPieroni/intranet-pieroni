@@ -1,12 +1,8 @@
 .container {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-}
-
-.container label {
-  flex-grow: 1;
 }
 
 .buttonsContainer {

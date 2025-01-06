@@ -1,3 +1,6 @@
+// references the repo at: https://github.com/firebase/friendlyeats-web/pull/307/files
+// after this guide: https://firebase.google.com/codelabs/firebase-nextjs#5
+
 import { initializeApp } from "firebase/app";
 import { getAuth, getIdToken, onAuthStateChanged } from "firebase/auth";
 

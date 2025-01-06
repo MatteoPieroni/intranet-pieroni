@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
+
 import { PdfForm } from '@/components/pdf-form/pdf-form';
 import styles from './page.module.css';
 import template from '../header-template.module.css';
+
+export const metadata: Metadata = {
+  title: 'Crea cartello - Intranet Pieroni srl',
+  description: 'Intranet - crean un cartello da stampare',
+};
 
 export default async function Home() {
   return (

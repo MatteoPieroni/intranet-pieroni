@@ -3,6 +3,8 @@
 import { useActionState } from 'react';
 
 import { tvAction, StateValidation } from './tv-action';
+import { FormStatus } from '../form-status/form-status';
+import styles from './tv-form.module.css';
 
 const initialState: StateValidation = {};
 
@@ -15,17 +17,16 @@ export const TvForm = ({ tvText }: TvFormProps) => {
 
   return (
     <form action={formAction}>
-      <p aria-live="polite">{state.success}</p>
       <label>
         Messaggio (ricordati di disattivare il maiuscolo)
-        <textarea name="message" defaultValue={tvText} />
-        {state.error}
+        <textarea name="message" defaultValue={tvText} required />
       </label>
-      <div>
-        <button type="submit" disabled={pending}>
-          Aggiorna il messaggio
-        </button>
+      <div className={styles.buttonContainer}>
+        <button type="submit">Aggiorna il messaggio</button>
       </div>
+
+      {!pending && <FormStatus text={state.success} type="success" />}
+      {!pending && <FormStatus text={state.error} type="error" />}
     </form>
   );
 };

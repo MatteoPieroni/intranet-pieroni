@@ -8,11 +8,11 @@ import { defineFilesystem, createSign } from '../../services/pdf';
 import {
   FORM_SUCCESS_PDF,
   FORM_FAIL_PDF,
-  ERROR_EMPTY_FIELD,
   ERROR_FIELD_TOO_LONG,
 } from '../../consts';
 
 import styles from './pdf-form.module.css';
+import { FormStatus } from '../form-status/form-status';
 
 export const PdfForm: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
@@ -39,14 +39,15 @@ export const PdfForm: React.FC = () => {
     const formText = values.get('text');
 
     const text = String(formText);
-    // const textWritten = text.toUpperCase();
     if (!text) {
-      setFail(ERROR_EMPTY_FIELD);
+      setFail(FORM_FAIL_PDF);
+      setIsSaving(false);
       return;
     }
 
     if (text.length > 140) {
       setFail(ERROR_FIELD_TOO_LONG);
+      setIsSaving(false);
       return;
     }
 
@@ -67,16 +68,15 @@ export const PdfForm: React.FC = () => {
 
       <label>
         Scrivi il tuo testo qui sotto
-        <textarea name="text" className={styles.textarea} />
-        {fail}
+        <textarea name="text" className={styles.textarea} required />
       </label>
+      {!isSaving && <FormStatus text={fail} type="error" />}
       <div className={styles.buttonsContainer}>
         <button type="submit" disabled={isSaving}>
           Scarica il cartello
         </button>
       </div>
+      {!isSaving && <FormStatus text={success} type="success" />}
     </form>
-    // {success && <Notification variant="success" message={success} />}
-    // {fail && <Notification variant="fail" message={fail} />}
   );
 };

@@ -3,7 +3,7 @@
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
-import { ERROR_EMPTY_FIELD, FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
+import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
 import {
   createLinkOnServer,
   deleteLinkOnServer,
@@ -12,11 +12,7 @@ import {
 import { EColor } from '@/services/firebase/db-types';
 
 export type StateValidation = {
-  errors?: {
-    link?: string;
-    description?: string;
-    general?: string;
-  };
+  error?: string;
   success?: string;
 };
 
@@ -31,10 +27,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
 
     if (!formDescription || !formLink) {
       return {
-        errors: {
-          description: !formDescription ? ERROR_EMPTY_FIELD : undefined,
-          link: !formLink ? ERROR_EMPTY_FIELD : undefined,
-        },
+        error: FORM_FAIL_LINK,
       };
     }
 

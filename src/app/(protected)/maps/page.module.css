@@ -37,12 +37,12 @@
 
 .search label {
   display: block;
-  margin-bottom: 0.35em;
+  margin-block-end: 0.35em;
   font-size: 1.2em;
 }
 
 .field {
-  margin-bottom: 0.5em;
+  margin-block-end: 0.5em;
   padding: 0.25em;
   width: 100%;
   font-size: 1em;
