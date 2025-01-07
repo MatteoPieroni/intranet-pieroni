@@ -39,7 +39,7 @@ export const AddHoliday = ({ name, previousDates }: AddHolidayProps) => {
   return (
     <form action={formAction}>
       <input type="hidden" value={name} name="name" />
-      <div className={styles.datepickerContainer}>
+      <div className={`${styles.datepickerContainer} react-aria`}>
         <I18nProvider locale="it">
           <DateRangePicker startName="startDate" endName="endDate" isRequired>
             <Label>Date</Label>

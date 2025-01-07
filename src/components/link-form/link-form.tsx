@@ -34,7 +34,9 @@ export const LinkForm = ({
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
         <div className={styles.buttonsContainer}>
           <button type="submit">{!isNew ? 'Salva' : 'Aggiungi'}</button>
-          <button formAction={() => linkDeleteAction(id)}>Rimuovi</button>
+          {!isNew && (
+            <button formAction={() => linkDeleteAction(id)}>Rimuovi</button>
+          )}
         </div>
       </div>
       {!pending && <FormStatus text={state.success} type="success" />}
