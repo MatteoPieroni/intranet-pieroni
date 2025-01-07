@@ -77,6 +77,8 @@ h6 {
   --background-1: #e1e1e1;
   --border-0: #d3d3d3;
   --border-highlight: #0d1b42;
+  --border-radius: 5px;
+  --border-radius-smaller: 5px;
   --text: #0d1b42;
 
   --background-highlight: #050a18;
@@ -105,19 +107,6 @@ h6 {
     --text: #f1f1f1;
 
     --background-highlight: #475685;
-    --text-highlight: #f1f1f1;
-    --background-contrast: #fdfdfd;
-    --text-contrast: #0a0a0a;
-    --background-success: #1e9542;
-    --text-success: #0a0a0a;
-    --background-error: #cc2000;
-    --text-error: #1e9542;
-
-    --field-background: #fdfdfd;
-    --field-border: 1px solid #475685;
-    --button-background: #f19c29;
-    --button-text: #0a0a0a;
-    --button-background-hover: #ee8900;
   }
 }
 
@@ -174,7 +163,7 @@ a {
 button,
 a.button {
   border: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: 0.5rem;
   background-color: var(--button-background);
   color: var(--button-text);
@@ -197,7 +186,7 @@ label:has(textarea) {
     width: 100%;
     padding: 0.5rem;
     border: var(--field-border);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     background: var(--field-background);
   }
 }
