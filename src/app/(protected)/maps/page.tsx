@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 
 import { getConfigOnServer } from '@/services/firebase/server';
 import styles from './page.module.css';
+import { HomeIcon } from '@/components/icons/home';
 
 const LazyMap = dynamic(() =>
   import('@/components/map/map').then((mod) => mod.Map)
@@ -22,7 +23,9 @@ export default async function Maps() {
   return (
     <main className={styles.page}>
       <div className={styles.header}>
-        <Link href="/">Home</Link>
+        <Link href="/" className="button" title="Torna alla home">
+          <HomeIcon role="presentation" />
+        </Link>
         <h1>Calcola il costo di trasporto</h1>
       </div>
       <div className={styles.container}>

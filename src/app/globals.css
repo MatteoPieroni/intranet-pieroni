@@ -219,6 +219,25 @@ a.button {
   }
 }
 
+button:has(svg),
+.button:has(svg) {
+  width: 42px;
+  height: 42px;
+  padding: 0.25rem;
+  border: 2px solid var(--button-background);
+  background: transparent;
+  border-radius: var(--border-radius);
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  &:hover {
+    background: var(--button-background);
+  }
+}
+
 label:has(input),
 label:has(textarea) {
   display: block;
@@ -237,6 +256,18 @@ label:has(textarea) {
 
 textarea {
   height: 8rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Skeleton */
