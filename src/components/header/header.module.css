@@ -30,11 +30,13 @@
 
   &:hover {
     text-decoration: underline;
+    background-color: var(--background-highlight);
+    color: var(--text-highlight);
   }
 
   &[data-active='true'] {
     background-color: var(--background-highlight);
-    color: white;
+    color: var(--text-highlight);
   }
 }
 
