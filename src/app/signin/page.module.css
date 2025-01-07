@@ -6,6 +6,7 @@
 }
 
 .page button {
+  margin-block-end: 1rem;
   border: none;
   padding: 0.2rem;
   background: transparent;
@@ -14,6 +15,7 @@
   &:hover,
   &:focus {
     outline: 3px solid black;
+    background: none;
   }
 }
 

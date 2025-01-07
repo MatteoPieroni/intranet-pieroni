@@ -15,4 +15,5 @@
 
 .error {
   background-color: var(--background-error);
+  color: var(--text-error);
 }
