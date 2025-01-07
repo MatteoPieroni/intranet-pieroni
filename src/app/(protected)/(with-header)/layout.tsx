@@ -28,6 +28,7 @@ export default async function RootLayout({
             mailUrl={config.mailUrl}
             isAdmin={currentUser.isAdmin}
             scopes={currentUser.scopes}
+            theme={currentUser.theme}
           />
         )}
       </div>

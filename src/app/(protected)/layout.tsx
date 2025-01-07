@@ -21,5 +21,9 @@ export default async function RootLayout({
     redirect('/signin');
   }
 
-  return children;
+  return (
+    <div className="theme-provider" data-theme={currentUser.theme}>
+      {children}
+    </div>
+  );
 }

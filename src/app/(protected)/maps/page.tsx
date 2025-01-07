@@ -1,6 +1,5 @@
 import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 
 import { getConfigOnServer } from '@/services/firebase/server';
@@ -23,9 +22,10 @@ export default async function Maps() {
   return (
     <main className={styles.page}>
       <div className={styles.header}>
-        <Link href="/" className="button" title="Torna alla home">
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/" className="button" title="Torna alla home">
           <HomeIcon role="presentation" />
-        </Link>
+        </a>
         <h1>Calcola il costo di trasporto</h1>
       </div>
       <div className={styles.container}>

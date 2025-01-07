@@ -1,11 +1,11 @@
 'use client';
 import { useEffect } from 'react';
-import Link from 'next/link';
 import { redirect, usePathname } from 'next/navigation';
 
 import { signOut, onAuthStateChanged } from '@/services/firebase/client';
 import { Logo } from '../logo/logo';
 import styles from './header.module.css';
+import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 type HeaderProps = {
   mailUrl: string;
@@ -16,10 +16,13 @@ type HeaderProps = {
       transport?: boolean;
     };
   };
+  theme?: 'light' | 'dark';
 };
 
-export function Header({ mailUrl, isAdmin, scopes }: HeaderProps) {
+export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
   const currentPath = usePathname();
+
+  console.log({ theme });
 
   const getLinkProps = (href: string) => {
     return {
@@ -43,29 +46,36 @@ export function Header({ mailUrl, isAdmin, scopes }: HeaderProps) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.logoContainer}>
-        <Link href="/">
-          <Logo />
-        </Link>
-      </div>
-      <nav className={styles.nav}>
-        <Link {...getLinkProps('/')}>Home</Link>
-        <Link href={mailUrl} target="_blank" rel="noopener noreferrer">
-          Mail
-        </Link>
-        <a {...getLinkProps('/maps')}>Costo trasporti</a>
-        <Link {...getLinkProps('/cartello')}>Crea cartello</Link>
-        {(isAdmin || scopes?.gmb) && (
-          <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
-        )}
-        {(isAdmin || scopes?.config?.transport) && (
-          <a {...getLinkProps('/admin')}>Admin</a>
-        )}
+      <div className={styles.menuContainer}>
+        <div className={styles.logoContainer}>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/">
+            <Logo />
+          </a>
+        </div>
+        <nav className={styles.nav}>
+          <a {...getLinkProps('/')}>Home</a>
+          <a href={mailUrl} target="_blank" rel="noopener noreferrer">
+            Mail
+          </a>
+          <a {...getLinkProps('/maps')}>Costo trasporti</a>
+          <a {...getLinkProps('/cartello')}>Crea cartello</a>
+          {(isAdmin || scopes?.gmb) && (
+            <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
+          )}
+          {(isAdmin || scopes?.config?.transport) && (
+            <a {...getLinkProps('/admin')}>Admin</a>
+          )}
 
-        <button className={styles.logOut} onClick={handleSignOut}>
-          Esci
-        </button>
-      </nav>
+          <button className={styles.logOut} onClick={handleSignOut}>
+            Esci
+          </button>
+        </nav>
+      </div>
+
+      <div className={styles.themeContainer}>
+        <ThemeToggle currentTheme={theme} key={theme} />
+      </div>
     </header>
   );
 }

@@ -15,6 +15,7 @@
   page-break-inside: avoid;
   break-inside: avoid;
   display: block;
+  border-radius: var(--border-radius);
   background: var(--background-highlight);
 }
 

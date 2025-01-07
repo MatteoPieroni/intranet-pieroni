@@ -72,7 +72,8 @@ h6 {
 /**
   theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
 */
-:root {
+:root,
+:root:has([data-theme='light']) {
   --background-0: #f1f1f1;
   --background-1: #e1e1e1;
   --border-0: #d3d3d3;
@@ -101,13 +102,14 @@ h6 {
   --button-background: #f19c29;
   --button-text: #0a0a0a;
   --button-background-hover: #ee8900;
+  --button-empty-text: #0a0a0a;
 }
 
 /**
   theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
 */
-@media (prefers-color-scheme: dark) {
-  :root {
+:root {
+  @media (prefers-color-scheme: dark) {
     --background-0: #050a18;
     --background-1: #09112a;
     --border-0: #09112a;
@@ -119,6 +121,22 @@ h6 {
     --field-border: 1px solid #475685;
     --field-background-highlight: #f19c29;
     --field-text-highlight: #0a0a0a;
+    --button-empty-text: #f1f1f1;
+  }
+
+  &:has([data-theme='dark']) {
+    --background-0: #050a18;
+    --background-1: #09112a;
+    --border-0: #09112a;
+    --border-highlight: #f19c29;
+    --text: #f1f1f1;
+    --focus-ring-color: #ef8e0c;
+
+    --background-highlight: #475685;
+    --field-border: 1px solid #475685;
+    --field-background-highlight: #f19c29;
+    --field-text-highlight: #0a0a0a;
+    --button-empty-text: #f1f1f1;
   }
 }
 
@@ -158,6 +176,10 @@ html,
 body {
   height: 100%;
   color: var(--text);
+}
+
+.theme-provider {
+  display: contents;
 }
 
 main {
@@ -227,6 +249,7 @@ button:has(svg),
   border: 2px solid var(--button-background);
   background: transparent;
   border-radius: var(--border-radius);
+  color: var(--button-empty-text);
 
   svg {
     width: 100%;
@@ -235,11 +258,13 @@ button:has(svg),
 
   &:hover {
     background: var(--button-background);
+    color: var(--button-text);
   }
 }
 
 label:has(input),
-label:has(textarea) {
+label:has(textarea),
+label:has(select) {
   display: block;
   margin-block-end: 0.5rem;
 
@@ -248,9 +273,23 @@ label:has(textarea) {
     display: block;
     width: 100%;
     padding: 0.5rem;
-    border: var(--field-border);
-    border-radius: var(--border-radius);
-    background: var(--field-background);
+  }
+}
+
+input,
+textarea,
+select {
+  border: var(--field-border);
+  border-radius: var(--border-radius);
+  background: var(--field-background);
+  color: var(--field-color);
+}
+
+option {
+  background: var(--button-background);
+
+  &:hover {
+    background: #050a18;
   }
 }
 
