@@ -17,6 +17,7 @@ import { type PassedHeaders } from '../serverApp';
 import { create, get, remove, update } from './operations';
 import { getUser } from '../auth';
 
+const SHORT_CACHE = 60 * 60; // one hour
 const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
 export const getConfigWithoutCache = async (headers: PassedHeaders) => {
@@ -36,7 +37,7 @@ export const getConfigWithoutCache = async (headers: PassedHeaders) => {
 };
 
 export const getConfig = unstable_cache(getConfigWithoutCache, ['config'], {
-  revalidate: LONG_CACHE,
+  revalidate: SHORT_CACHE,
   tags: ['config'],
 });
 
