@@ -1,7 +1,7 @@
 import * as Types from './driver/types';
 
 // Config Object
-export const config = {
+export const mapConfig = {
   origins: [
     {
       name: 'Pieroni srl, Diecimo, Lucca',

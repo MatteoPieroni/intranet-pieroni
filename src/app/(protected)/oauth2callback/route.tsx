@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
 import { googleClient } from '@/services/google-apis';
-import { pushGoogleAuthOnServer, getUser } from '@/services/firebase/server';
+import { pushGoogleAuth, getUser } from '@/services/firebase/server';
 
 export async function GET(request: NextRequest) {
   const currentHeaders = await headers();
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     throw new Error('Only access token');
   }
 
-  pushGoogleAuthOnServer(currentHeaders, {
+  pushGoogleAuth(currentHeaders, {
     refresh_token,
   });
 

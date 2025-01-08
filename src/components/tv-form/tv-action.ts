@@ -8,7 +8,7 @@ import {
   FORM_FAIL_TV,
   FORM_SUCCESS_TV,
 } from '@/consts';
-import { pushTvOnServer } from '@/services/firebase/server';
+import { pushTv } from '@/services/firebase/server';
 import { validateCapsLock } from '@/utils/validateCapsLock';
 import { revalidatePath } from 'next/cache';
 
@@ -39,7 +39,7 @@ export const tvAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushTvOnServer(currentHeaders, { text: message });
+    await pushTv(currentHeaders, { text: message });
 
     revalidatePath('/admin');
 

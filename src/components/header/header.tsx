@@ -22,8 +22,6 @@ type HeaderProps = {
 export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
   const currentPath = usePathname();
 
-  console.log({ theme });
-
   const getLinkProps = (href: string) => {
     return {
       'data-active': currentPath === href,

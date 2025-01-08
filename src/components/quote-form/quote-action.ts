@@ -1,6 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 import {
   ERROR_EMPTY_FIELD,
@@ -8,9 +9,8 @@ import {
   FORM_FAIL_TV,
   FORM_SUCCESS_TV,
 } from '@/consts';
-import { pushQuoteOnServer } from '@/services/firebase/server';
+import { pushQuote } from '@/services/firebase/server';
 import { validateCapsLock } from '@/utils/validateCapsLock';
-import { revalidatePath } from 'next/cache';
 
 export type StateValidation = {
   success?: string;
@@ -41,9 +41,10 @@ export const quoteAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushQuoteOnServer(currentHeaders, { text: message, url: image });
+    await pushQuote(currentHeaders, { text: message, url: image });
 
     revalidatePath('/admin');
+    revalidateTag('quote');
 
     return {
       success: FORM_SUCCESS_TV,

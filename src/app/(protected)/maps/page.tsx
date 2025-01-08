@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
 
-import { getConfigOnServer } from '@/services/firebase/server';
+import { getConfig } from '@/services/firebase/server';
 import styles from './page.module.css';
 import { HomeIcon } from '@/components/icons/home';
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function Maps() {
   const currentHeaders = await headers();
-  const config = await getConfigOnServer(currentHeaders);
+  const config = await getConfig(currentHeaders);
 
   return (
     <main className={styles.page}>

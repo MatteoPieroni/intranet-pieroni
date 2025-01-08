@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { config, Driver, TransportCost } from '@/services/gmaps';
+import { mapConfig, Driver, TransportCost } from '@/services/gmaps';
 import type { TCurrent, TTransportCost } from '@/services/gmaps/driver/types';
 import { Route } from './route';
 import styles from './map.module.css';
@@ -39,7 +39,7 @@ export const Map = ({
       throw new Error('Qualcosa non va con Google Maps');
     }
 
-    if (!document.getElementById(config.div)) {
+    if (!document.getElementById(mapConfig.div)) {
       return;
     }
 
@@ -48,7 +48,7 @@ export const Map = ({
       mapsDriver = new TransportCost(
         Driver,
         {
-          ...config,
+          ...mapConfig,
           costs: {
             costPerMinute: transportCostPerMinute,
             hourBase: transportHourBase,

@@ -17,27 +17,30 @@ import { type PassedHeaders } from '../serverApp';
 import { create, get, remove, update } from './operations';
 import { getUser } from '../auth';
 
-export const getConfigOnServer = unstable_cache(
-  async (headers: PassedHeaders) => {
-    try {
-      const data = await get<IDbConfig>(headers, 'config/current');
+const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
-      return {
-        mailUrl: data.mail_url,
-        transportCostPerMinute: data.transport_cost_per_minute,
-        transportCostMinimum: data.transport_cost_minimum,
-        transportHourBase: data.transport_hour_base,
-      } satisfies IConfig;
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  },
-  ['config'],
-  { revalidate: 3600, tags: ['config'] }
-);
+export const getConfigWithoutCache = async (headers: PassedHeaders) => {
+  try {
+    const data = await get<IDbConfig>(headers, 'config/current');
 
-export const getLinks = async (headers: PassedHeaders) => {
+    return {
+      mailUrl: data.mail_url,
+      transportCostPerMinute: data.transport_cost_per_minute,
+      transportCostMinimum: data.transport_cost_minimum,
+      transportHourBase: data.transport_hour_base,
+    } satisfies IConfig;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getConfig = unstable_cache(getConfigWithoutCache, ['config'], {
+  revalidate: LONG_CACHE,
+  tags: ['config'],
+});
+
+export const getLinksWithoutCache = async (headers: PassedHeaders) => {
   try {
     const records = await get<IDbLinks>(headers, 'links');
 
@@ -50,16 +53,25 @@ export const getLinks = async (headers: PassedHeaders) => {
   }
 };
 
-export const getQuote = async (headers: PassedHeaders) => {
-  try {
-    const record = await get<IQuote>(headers, 'quote/active');
+export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
+  revalidate: LONG_CACHE,
+  tags: ['links'],
+});
 
-    return record;
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
+export const getQuote = unstable_cache(
+  async (headers: PassedHeaders) => {
+    try {
+      const record = await get<IQuote>(headers, 'quote/active');
+
+      return record;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  },
+  ['quote'],
+  { revalidate: LONG_CACHE, tags: ['quote'] }
+);
 
 export const getQuoteWithImages = async (headers: PassedHeaders) => {
   try {
@@ -104,10 +116,7 @@ export const getGoogleAuth = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushQuoteOnServer = async (
-  headers: PassedHeaders,
-  data: IQuote
-) => {
+export const pushQuote = async (headers: PassedHeaders, data: IQuote) => {
   try {
     await update(headers, 'quote/active', data);
   } catch (e) {
@@ -116,7 +125,7 @@ export const pushQuoteOnServer = async (
   }
 };
 
-export const pushTvOnServer = async (headers: PassedHeaders, data: IDbTv) => {
+export const pushTv = async (headers: PassedHeaders, data: IDbTv) => {
   try {
     await update(headers, 'tv/active', data);
   } catch (e) {
@@ -125,7 +134,7 @@ export const pushTvOnServer = async (headers: PassedHeaders, data: IDbTv) => {
   }
 };
 
-export const pushLinkOnServer = async (headers: PassedHeaders, data: ILink) => {
+export const pushLink = async (headers: PassedHeaders, data: ILink) => {
   try {
     await update(headers, `links/${data.id}`, data);
   } catch (e) {
@@ -134,7 +143,7 @@ export const pushLinkOnServer = async (headers: PassedHeaders, data: ILink) => {
   }
 };
 
-export const pushConfigOnServer = async (
+export const pushConfig = async (
   headers: PassedHeaders,
   data: Partial<IDbConfig>
 ) => {
@@ -155,7 +164,7 @@ export const pushConfigOnServer = async (
   }
 };
 
-export const pushGoogleAuthOnServer = async (
+export const pushGoogleAuth = async (
   headers: PassedHeaders,
   data: IGoogleAuth
 ) => {
@@ -167,7 +176,7 @@ export const pushGoogleAuthOnServer = async (
   }
 };
 
-export const pushThemeOnServer = async (
+export const pushTheme = async (
   headers: PassedHeaders,
   data: 'light' | 'dark' | null
 ) => {
@@ -185,7 +194,7 @@ export const pushThemeOnServer = async (
   }
 };
 
-export const createLinkOnServer = async (
+export const createLink = async (
   headers: PassedHeaders,
   data: Omit<ILink, 'id'>
 ) => {
@@ -197,7 +206,7 @@ export const createLinkOnServer = async (
   }
 };
 
-export const deleteLinkOnServer = async (
+export const deleteLink = async (
   headers: PassedHeaders,
   data: Pick<ILink, 'id'>
 ) => {
