@@ -33,10 +33,26 @@
 
   &:hover {
     outline: 2px solid var(--border-highlight);
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
-.fieldset label:focus-within .square,
+.fieldset label:focus-within .square {
+  outline: var(--focus-ring);
+  outline-width: 3px;
+  outline-offset: var(--focus-ring-offset);
+}
+
 .fieldset label:has(input:checked) .square {
-  outline: 3px solid var(--border-highlight);
+  position: relative;
+  border: 1px solid var(--border-highlight);
+
+  &:after {
+    content: '✔️';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1em;
+  }
 }

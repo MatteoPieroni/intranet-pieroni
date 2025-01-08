@@ -31,8 +31,9 @@
     }
 
     &[data-focus-within] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: -1px;
+      outline: var(--focus-ring);
+      outline-color: var(--field-focus-ring-color);
+      outline-offset: var(--outline-offset);
     }
 
     &[data-invalid] {
@@ -67,8 +68,9 @@
     right: 0;
 
     &[data-focus-visible] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
+      outline: var(--focus-ring);
+      outline-color: var(--field-focus-ring-color);
+      outline-offset: -2;
     }
   }
 

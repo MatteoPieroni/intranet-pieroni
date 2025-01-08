@@ -77,10 +77,12 @@ h6 {
   --background-0: #f1f1f1;
   --background-1: #e1e1e1;
   --border-0: #d3d3d3;
-  --border-highlight: #0d1b42;
+  --border-highlight: #ee8900;
   --border-radius: 5px;
   --border-radius-smaller: 2px;
   --text: #0d1b42;
+  --focus-ring: 2px solid var(--focus-ring-color);
+  --focus-ring-offset: 1px;
   --focus-ring-color: #0d1b42;
 
   --background-highlight: #050a18;
@@ -94,6 +96,7 @@ h6 {
   --field-border: 1px solid #050a18;
   --field-color: #0a0a0a;
   --field-color-placeholder: #646464;
+  --field-focus-ring-color: #0d1b42;
   --field-background-highlight: #050a18;
   --field-invalid-border: #e73f20;
   --field-invalid-color: #e73f20;
@@ -115,10 +118,11 @@ h6 {
     --border-0: #09112a;
     --border-highlight: #f19c29;
     --text: #f1f1f1;
-    --focus-ring-color: #ef8e0c;
+    --focus-ring-color: #f1f1f1;
 
     --background-highlight: #475685;
     --field-border: 1px solid #475685;
+    --field-focus-ring-color: #475685;
     --field-background-highlight: #f19c29;
     --field-text-highlight: #0a0a0a;
     --button-empty-text: #f1f1f1;
@@ -130,10 +134,11 @@ h6 {
     --border-0: #09112a;
     --border-highlight: #f19c29;
     --text: #f1f1f1;
-    --focus-ring-color: #ef8e0c;
+    --focus-ring-color: #f1f1f1;
 
     --background-highlight: #475685;
     --field-border: 1px solid #475685;
+    --field-focus-ring-color: #475685;
     --field-background-highlight: #f19c29;
     --field-text-highlight: #0a0a0a;
     --button-empty-text: #f1f1f1;
@@ -224,6 +229,12 @@ a {
   &:hover {
     text-decoration: underline;
   }
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-width: 3px;
+    outline-offset: var(--focus-ring-offset);
+  }
 }
 
 button,
@@ -238,6 +249,12 @@ a.button {
   &:hover {
     text-decoration: none;
     background: var(--button-background-hover);
+  }
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-width: 3px;
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
@@ -283,6 +300,11 @@ select {
   border-radius: var(--border-radius);
   background: var(--field-background);
   color: var(--field-color);
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-color: var(--field-focus-ring-color);
+  }
 }
 
 option {
