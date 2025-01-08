@@ -4,10 +4,10 @@
 @import './DateField.css';
 @import './RangeCalendar.css';
 @import './Form.css';
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-DateRangePicker {
-  color: var(--text-color);
+  color: var(--text);
 
   .react-aria-Group {
     display: flex;
@@ -19,10 +19,11 @@
     overflow: auto;
     position: relative;
     padding: 4px 4px 4px 8px;
-    border: 1px solid var(--border-color);
+    border: var(--field-border);
     border-radius: 6px;
     background: var(--field-background);
     white-space: nowrap;
+    color: var(--field-color);
 
     &[data-pressed] {
       box-shadow: none;
@@ -30,26 +31,31 @@
     }
 
     &[data-focus-within] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: -1px;
+      outline: var(--focus-ring);
+      outline-color: var(--field-focus-ring-color);
+      outline-offset: var(--outline-offset);
+    }
+
+    &[data-invalid] {
+      border-color: var(--field-invalid-border);
     }
   }
 
-  [slot=start] + span {
+  [slot='start'] + span {
     padding: 0 4px;
   }
 
-  [slot=end] {
+  [slot='end'] {
     margin-right: 2rem;
     flex: 1;
   }
 
   .react-aria-Button {
-    background: var(--highlight-background);
-    color: var(--highlight-foreground);
-    border: 2px solid var(--field-background);
+    background: var(--button-background);
+    color: var(--button-text);
+    border: none;
     forced-color-adjust: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     border: none;
     margin-left: auto;
     width: 1.429rem;
@@ -62,8 +68,9 @@
     right: 0;
 
     &[data-focus-visible] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
+      outline: var(--focus-ring);
+      outline-color: var(--field-focus-ring-color);
+      outline-offset: -2;
     }
   }
 
@@ -74,15 +81,53 @@
     border: unset;
     outline: unset;
   }
+
+  .react-aria-DateSegment {
+    color: var(--field-color);
+
+    &[data-placeholder] {
+      color: var(--field-color-placeholder);
+    }
+
+    &[data-invalid] {
+      color: var(--field-invalid-color);
+
+      &:focus {
+        background: var(--field-invalid-focus-background);
+        color: var(--field-invalid-focus-text);
+      }
+    }
+
+    &:focus {
+      background: var(--field-background-highlight);
+      color: var(--field-text-highlight);
+    }
+  }
 }
 
-.react-aria-Popover[data-trigger=DateRangePicker] {
+.react-aria-Popover {
+  background: var(--background-0);
+  border: 1px solid var(--border-0);
+}
+
+.react-aria-RangeCalendar .react-aria-CalendarCell {
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+  }
+
+  &[data-selected] {
+    background: var(--field-background-highlight);
+    color: var(--field-text-highlight);
+  }
+}
+
+.react-aria-Popover[data-trigger='DateRangePicker'] {
   max-width: unset;
 }
 
 .react-aria-DateRangePicker {
   &[data-invalid] {
-    [slot=end]:after {
+    [slot='end']:after {
       content: '🚫' / '';
       content: '🚫';
       alt: ' ';
@@ -98,7 +143,7 @@
     color: var(--invalid-color);
   }
 
-  [slot=description] {
+  [slot='description'] {
     font-size: 12px;
   }
 }

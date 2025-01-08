@@ -1,0 +1,58 @@
+.fieldset {
+  display: flex;
+  border: none;
+  gap: 0.5rem;
+}
+
+.fieldset legend {
+  padding: 0;
+}
+
+.square {
+  display: block;
+  width: 30px;
+  aspect-ratio: 1/1;
+  border: var(--field-border);
+  border-width: 3px;
+  border-radius: var(--border-radius);
+  background: white;
+
+  &[data-theme-toggle='dark'] {
+    background: black;
+  }
+
+  &[data-theme-toggle='system'] {
+    background: rgb(255, 255, 255);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 50%,
+      rgba(0, 0, 0, 1) 50.5%
+    );
+  }
+
+  &:hover {
+    outline: 2px solid var(--border-highlight);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+.fieldset label:focus-within .square {
+  outline: var(--focus-ring);
+  outline-width: 3px;
+  outline-offset: var(--focus-ring-offset);
+}
+
+.fieldset label:has(input:checked) .square {
+  position: relative;
+  border: 1px solid var(--border-highlight);
+
+  &:after {
+    content: '✔️';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1em;
+  }
+}

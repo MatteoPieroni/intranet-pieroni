@@ -8,7 +8,7 @@ import {
   FORM_FAIL_EMPTY,
   FORM_SUCCESS_CONFIG,
 } from '@/consts';
-import { pushConfigOnServer } from '@/services/firebase/server';
+import { pushConfig } from '@/services/firebase/server';
 
 export type StateValidation = {
   error?: string;
@@ -46,7 +46,7 @@ export const configAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushConfigOnServer(currentHeaders, data);
+    await pushConfig(currentHeaders, data);
 
     revalidatePath('/admin');
     revalidateTag('config');

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
-import { getUser, getConfigOnServer } from '@/services/firebase/server';
+import { getUser, getConfig } from '@/services/firebase/server';
 import { Header } from '@/components/header/header';
 import styles from './layout.module.css';
 
@@ -18,7 +18,7 @@ export default async function RootLayout({
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  const config = await getConfigOnServer(currentHeaders);
+  const config = await getConfig(currentHeaders);
 
   return (
     <div className={styles.container}>
@@ -28,6 +28,7 @@ export default async function RootLayout({
             mailUrl={config.mailUrl}
             isAdmin={currentUser.isAdmin}
             scopes={currentUser.scopes}
+            theme={currentUser.theme}
           />
         )}
       </div>

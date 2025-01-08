@@ -1,6 +1,6 @@
 .status {
   width: 100%;
-  border-radius: 2px;
+  border-radius: var(--border-radius-smaller);
 
   &:not(:empty) {
     display: block;
@@ -15,4 +15,5 @@
 
 .error {
   background-color: var(--background-error);
+  color: var(--text-error);
 }

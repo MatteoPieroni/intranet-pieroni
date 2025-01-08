@@ -9,6 +9,7 @@ export interface IDbUser {
       transport?: boolean;
     };
   };
+  theme?: 'light' | 'dark';
 }
 
 export interface IUser {
@@ -23,6 +24,7 @@ export interface IUser {
       transport?: boolean;
     };
   };
+  theme?: 'light' | 'dark';
 }
 
 export interface IDbLinks {

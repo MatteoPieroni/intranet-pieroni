@@ -6,35 +6,22 @@ This repository contains the code for Pieroni srl intranet.
 
 ## Tech used
 
+- NextJS
 - React
 - Typescript
-
-### Routing
-
-- React Router
 
 ### Back End
 
 - Firebase
+- Google My Business APIs
 
 ### Styles
 
-- Emotion
-
-### Testing
-
-- Jest for unit tests
-- Cypress for E2E tests
-
-### Others
-
-- Formik
+- CSS Modules
 
 ### CI/CD
 
-- Webpack
 - Netlify
-- Azure DevOps Pipelines
 
 ## Contact me
 

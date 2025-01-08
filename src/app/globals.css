@@ -69,25 +69,122 @@ h6 {
   isolation: isolate;
 }
 
-:root {
-  --background-0: #111313;
-  --background-1: #1d2020;
-  --border-0: #1d2020;
-  --text: #fdfdfd;
+/**
+  theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
+*/
+:root,
+:root:has([data-theme='light']) {
+  --background-0: #f1f1f1;
+  --background-1: #e1e1e1;
+  --border-0: #d3d3d3;
+  --border-highlight: #ee8900;
+  --border-radius: 5px;
+  --border-radius-smaller: 2px;
+  --text: #0d1b42;
+  --focus-ring: 2px solid var(--focus-ring-color);
+  --focus-ring-offset: 1px;
+  --focus-ring-color: #0d1b42;
 
-  --background-contrast: #fdfdfd;
-  --background-highlight: #f23c20;
-  --text-contrast: #111313;
+  --background-highlight: #050a18;
+  --text-highlight: #f1f1f1;
   --background-success: #1e9542;
-  --text-success: #111313;
-  --background-error: #cc2000;
-  --text-error: #1e9542;
+  --text-success: #0a0a0a;
+  --background-error: #e73f20;
+  --text-error: #f1f1f1;
+
+  --field-background: #fdfdfd;
+  --field-border: 1px solid #050a18;
+  --field-color: #0a0a0a;
+  --field-color-placeholder: #646464;
+  --field-focus-ring-color: #0d1b42;
+  --field-background-highlight: #050a18;
+  --field-invalid-border: #e73f20;
+  --field-invalid-color: #e73f20;
+  --field-invalid-focus-background: #e73f20;
+  --field-invalid-focus-text: #f1f1f1;
+  --button-background: #f19c29;
+  --button-text: #0a0a0a;
+  --button-background-hover: #ee8900;
+  --button-empty-text: #0a0a0a;
+}
+
+/**
+  theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
+*/
+:root {
+  @media (prefers-color-scheme: dark) {
+    --background-0: #050a18;
+    --background-1: #09112a;
+    --border-0: #09112a;
+    --border-highlight: #f19c29;
+    --text: #f1f1f1;
+    --focus-ring-color: #f1f1f1;
+
+    --background-highlight: #475685;
+    --field-border: 1px solid #475685;
+    --field-focus-ring-color: #475685;
+    --field-background-highlight: #f19c29;
+    --field-text-highlight: #0a0a0a;
+    --button-empty-text: #f1f1f1;
+  }
+
+  &:has([data-theme='dark']) {
+    --background-0: #050a18;
+    --background-1: #09112a;
+    --border-0: #09112a;
+    --border-highlight: #f19c29;
+    --text: #f1f1f1;
+    --focus-ring-color: #f1f1f1;
+
+    --background-highlight: #475685;
+    --field-border: 1px solid #475685;
+    --field-focus-ring-color: #475685;
+    --field-background-highlight: #f19c29;
+    --field-text-highlight: #0a0a0a;
+    --button-empty-text: #f1f1f1;
+  }
+}
+
+/* Windows high contrast mode overrides */
+@media (forced-colors: active) {
+  :root {
+    --background-color: Canvas;
+    --focus-ring-color: Highlight;
+    --text-color: ButtonText;
+    --text-color-base: ButtonText;
+    --text-color-hover: ButtonText;
+    --text-color-disabled: GrayText;
+    --text-color-placeholder: ButtonText;
+    --link-color: LinkText;
+    --link-color-secondary: LinkText;
+    --link-color-pressed: LinkText;
+    --border-color: ButtonBorder;
+    --border-color-hover: ButtonBorder;
+    --border-color-pressed: ButtonBorder;
+    --border-color-disabled: GrayText;
+    --field-background: Field;
+    --field-text-color: FieldText;
+    --overlay-background: Canvas;
+    --button-background: ButtonFace;
+    --button-background-pressed: ButtonFace;
+    --highlight-background: Highlight;
+    --highlight-background-pressed: Highlight;
+    --highlight-background-invalid: LinkText;
+    --highlight-foreground: HighlightText;
+    --highlight-foreground-pressed: HighlightText;
+    --invalid-color: LinkText;
+    --invalid-color-pressed: LinkText;
+  }
 }
 
 html,
 body {
   height: 100%;
   color: var(--text);
+}
+
+.theme-provider {
+  display: contents;
 }
 
 main {
@@ -132,24 +229,59 @@ a {
   &:hover {
     text-decoration: underline;
   }
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-width: 3px;
+    outline-offset: var(--focus-ring-offset);
+  }
 }
 
 button,
 a.button {
   border: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   padding: 0.5rem;
-  background-color: var(--background-contrast);
-  color: var(--text-contrast);
+  background-color: var(--button-background);
+  color: var(--button-text);
   cursor: pointer;
 
   &:hover {
     text-decoration: none;
+    background: var(--button-background-hover);
+  }
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-width: 3px;
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+button:has(svg),
+.button:has(svg) {
+  width: 42px;
+  height: 42px;
+  padding: 0.25rem;
+  border: 2px solid var(--button-background);
+  background: transparent;
+  border-radius: var(--border-radius);
+  color: var(--button-empty-text);
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  &:hover {
+    background: var(--button-background);
+    color: var(--button-text);
   }
 }
 
 label:has(input),
-label:has(textarea) {
+label:has(textarea),
+label:has(select) {
   display: block;
   margin-block-end: 0.5rem;
 
@@ -158,13 +290,45 @@ label:has(textarea) {
     display: block;
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid var(--border-0);
-    border-radius: 5px;
+  }
+}
+
+input,
+textarea,
+select {
+  border: var(--field-border);
+  border-radius: var(--border-radius);
+  background: var(--field-background);
+  color: var(--field-color);
+
+  &:focus {
+    outline: var(--focus-ring);
+    outline-color: var(--field-focus-ring-color);
+  }
+}
+
+option {
+  background: var(--button-background);
+
+  &:hover {
+    background: #050a18;
   }
 }
 
 textarea {
   height: 8rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Skeleton */
@@ -184,78 +348,4 @@ textarea {
   to {
     background-position-x: -200%;
   }
-}
-
-.react-aria-DateRangePicker {
-  color: var(--text-color);
-
-  .react-aria-Group {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    min-width: 220px;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow: auto;
-    position: relative;
-    padding: 4px 4px 4px 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--field-background);
-    white-space: nowrap;
-
-    &[data-pressed] {
-      box-shadow: none;
-      background: var(--highlight-background);
-    }
-
-    &[data-focus-within] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: -1px;
-    }
-  }
-
-  [slot='start'] + span {
-    padding: 0 4px;
-  }
-
-  [slot='end'] {
-    margin-inline-end: 2rem;
-    flex: 1;
-  }
-
-  .react-aria-Button {
-    background: var(--highlight-background);
-    color: var(--highlight-foreground);
-    border: 2px solid var(--field-background);
-    forced-color-adjust: none;
-    border-radius: 4px;
-    border: none;
-    margin-inline-start: auto;
-    width: 1.429rem;
-    height: 1.429rem;
-    padding: 0;
-    font-size: 0.857rem;
-    box-sizing: content-box;
-    flex-shrink: 0;
-    position: sticky;
-    right: 0;
-
-    &[data-focus-visible] {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
-    }
-  }
-
-  .react-aria-DateInput {
-    width: 50%;
-    min-width: unset;
-    padding: unset;
-    border: unset;
-    outline: unset;
-  }
-}
-
-.react-aria-Popover[data-trigger='DateRangePicker'] {
-  max-width: unset;
 }

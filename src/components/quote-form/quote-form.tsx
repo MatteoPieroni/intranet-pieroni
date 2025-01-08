@@ -39,6 +39,7 @@ export const QuoteForm = ({ text, images, currentImage }: QuoteFormProps) => {
                 name="image"
                 value={image.url}
                 defaultChecked={image.url === currentImage}
+                className="visually-hidden"
               />
             </label>
           ))}

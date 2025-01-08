@@ -6,6 +6,8 @@ import type { ILink } from '@/services/firebase/db-types';
 import { linkAction, linkDeleteAction, StateValidation } from './link-action';
 import styles from './link-form.module.css';
 import { FormStatus } from '../form-status/form-status';
+import { DeleteIcon } from '../icons/delete';
+import { SaveIcon } from '../icons/save';
 
 type LinksFormProps = {
   link: ILink;
@@ -33,8 +35,17 @@ export const LinkForm = ({
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
         <div className={styles.buttonsContainer}>
-          <button type="submit">{!isNew ? 'Salva' : 'Aggiungi'}</button>
-          <button formAction={() => linkDeleteAction(id)}>Rimuovi</button>
+          <button type="submit" title={!isNew ? 'Salva' : 'Aggiungi'}>
+            {!isNew ? <SaveIcon role="presentation" /> : 'Aggiungi'}
+          </button>
+          {!isNew && (
+            <button
+              formAction={() => linkDeleteAction(id)}
+              title={`Rimuovi ${description}`}
+            >
+              <DeleteIcon role="presentation" />
+            </button>
+          )}
         </div>
       </div>
       {!pending && <FormStatus text={state.success} type="success" />}

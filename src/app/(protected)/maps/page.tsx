@@ -1,10 +1,10 @@
 import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 
-import { getConfigOnServer } from '@/services/firebase/server';
+import { getConfig } from '@/services/firebase/server';
 import styles from './page.module.css';
+import { HomeIcon } from '@/components/icons/home';
 
 const LazyMap = dynamic(() =>
   import('@/components/map/map').then((mod) => mod.Map)
@@ -17,12 +17,15 @@ export const metadata: Metadata = {
 
 export default async function Maps() {
   const currentHeaders = await headers();
-  const config = await getConfigOnServer(currentHeaders);
+  const config = await getConfig(currentHeaders);
 
   return (
     <main className={styles.page}>
       <div className={styles.header}>
-        <Link href="/">Home</Link>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/" className="button" title="Torna alla home">
+          <HomeIcon role="presentation" />
+        </a>
         <h1>Calcola il costo di trasporto</h1>
       </div>
       <div className={styles.container}>

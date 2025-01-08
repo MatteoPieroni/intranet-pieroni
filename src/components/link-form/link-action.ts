@@ -1,14 +1,10 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
-import {
-  createLinkOnServer,
-  deleteLinkOnServer,
-  pushLinkOnServer,
-} from '@/services/firebase/server';
+import { createLink, deleteLink, pushLink } from '@/services/firebase/server';
 import { EColor } from '@/services/firebase/db-types';
 
 export type StateValidation = {
@@ -45,13 +41,13 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await createLinkOnServer(currentHeaders, {
+      await createLink(currentHeaders, {
         description,
         link,
         color: EColor.amber,
       });
     } else {
-      await pushLinkOnServer(currentHeaders, {
+      await pushLink(currentHeaders, {
         description,
         link,
         id,
@@ -60,6 +56,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     }
 
     revalidatePath('/admin');
+    revalidateTag('links');
 
     return {
       success: FORM_SUCCESS_LINK,
@@ -82,11 +79,12 @@ export const linkDeleteAction = async (id: string) => {
       throw new Error('No id provided');
     }
 
-    await deleteLinkOnServer(currentHeaders, {
+    await deleteLink(currentHeaders, {
       id,
     });
 
     revalidatePath('/admin');
+    revalidateTag('links');
   } catch (e) {
     console.error(e);
     throw e;

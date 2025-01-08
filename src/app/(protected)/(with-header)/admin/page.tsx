@@ -5,10 +5,10 @@ import type { Metadata } from 'next';
 import styles from './page.module.css';
 import {
   getUser,
-  getLinks,
   getQuoteWithImages,
   getTvText,
-  getConfigOnServer,
+  getLinksWithoutCache,
+  getConfigWithoutCache,
 } from '@/services/firebase/server';
 import { TvForm } from '@/components/tv-form/tv-form';
 import { LinkForm } from '@/components/link-form/link-form';
@@ -30,10 +30,10 @@ export default async function Admin() {
   const canEditTransport = currentUser?.scopes?.config?.transport;
 
   const [links, quote, tvText, config] = await Promise.all([
-    getLinks(currentHeaders),
+    getLinksWithoutCache(currentHeaders),
     isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
     getTvText(currentHeaders),
-    getConfigOnServer(currentHeaders),
+    getConfigWithoutCache(currentHeaders),
   ]);
 
   if (!isAdmin && !canEditTransport) {

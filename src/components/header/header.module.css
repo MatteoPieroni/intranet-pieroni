@@ -1,10 +1,16 @@
 .header {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   background: var(--background-0);
   border-width: 1px;
   border-style: solid;
   border-color: var(--border-0);
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
 }
 
 .nav {
@@ -19,7 +25,7 @@
 
 .nav a,
 .nav button {
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   background: none;
   text-align: left;
   padding: 0.5rem;
@@ -30,11 +36,13 @@
 
   &:hover {
     text-decoration: underline;
+    background-color: var(--background-highlight);
+    color: var(--text-highlight);
   }
 
   &[data-active='true'] {
     background-color: var(--background-highlight);
-    color: white;
+    color: var(--text-highlight);
   }
 }
 
@@ -53,4 +61,8 @@
   height: 100%;
   max-height: 80%;
   max-width: 100%;
+}
+
+.themeContainer {
+  margin: 1rem;
 }
