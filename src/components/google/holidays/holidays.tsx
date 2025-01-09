@@ -1,6 +1,7 @@
 import type { Location } from '@/services/google-apis';
 import { AddHoliday } from './add-holiday';
 import { filterPeriods, mapPeriod } from './holidays.utils';
+import sharedStyles from '../shared.module.css';
 import styles from './holidays.module.css';
 
 type HolidayProps = {
@@ -13,13 +14,13 @@ const dateFormatter = new Intl.DateTimeFormat('it-IT', {
 
 export const Holidays = ({ locations }: HolidayProps) => {
   return (
-    <div className={styles.twoGrid}>
+    <div className={sharedStyles.twoGrid}>
       {locations.map((location) => (
-        <div key={location.name} className={styles.section}>
-          <h3 className={styles.title}>
+        <div key={location.name}>
+          <h3 className={sharedStyles.title}>
             {location.storefrontAddress.locality}
           </h3>
-          <div className={styles.content}>
+          <div className={sharedStyles.content}>
             <ul className={styles.list}>
               {location.specialHours.specialHourPeriods
                 .filter(filterPeriods)

@@ -1,0 +1,29 @@
+.performanceContainer {
+  display: flex;
+  flex-direction: column;
+  margin-inline: 1rem;
+  margin-block-start: 1rem;
+}
+
+.table {
+  border: 1px solid var(--border-0);
+  text-align: center;
+}
+
+.table th,
+.table tr,
+.table td {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-0);
+}
+
+.table td {
+  padding-inline: 2rem;
+  font-size: 3em;
+}
+
+.footer {
+  margin-block-start: 1rem;
+  border-block-start: 1px solid var(--border-0);
+  padding-block-start: 1rem;
+}

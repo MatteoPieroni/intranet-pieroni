@@ -81,6 +81,7 @@ h6 {
   --border-radius: 5px;
   --border-radius-smaller: 2px;
   --text: #0d1b42;
+  --text-low-contrast: #cfcfcf;
   --focus-ring: 2px solid var(--focus-ring-color);
   --focus-ring-offset: 1px;
   --focus-ring-color: #0d1b42;
@@ -106,6 +107,7 @@ h6 {
   --button-text: #0a0a0a;
   --button-background-hover: #ee8900;
   --button-empty-text: #0a0a0a;
+  --star-color: #d8bb00;
 }
 
 /**
@@ -118,6 +120,7 @@ h6 {
     --border-0: #09112a;
     --border-highlight: #f19c29;
     --text: #f1f1f1;
+    --text-low-contrast: #646464;
     --focus-ring-color: #f1f1f1;
 
     --background-highlight: #475685;
@@ -126,6 +129,7 @@ h6 {
     --field-background-highlight: #f19c29;
     --field-text-highlight: #0a0a0a;
     --button-empty-text: #f1f1f1;
+    --star-color: #efcf00;
   }
 
   &:has([data-theme='dark']) {
@@ -134,6 +138,7 @@ h6 {
     --border-0: #09112a;
     --border-highlight: #f19c29;
     --text: #f1f1f1;
+    --text-low-contrast: #646464;
     --focus-ring-color: #f1f1f1;
 
     --background-highlight: #475685;
@@ -142,6 +147,7 @@ h6 {
     --field-background-highlight: #f19c29;
     --field-text-highlight: #0a0a0a;
     --button-empty-text: #f1f1f1;
+    --star-color: #efcf00;
   }
 }
 
