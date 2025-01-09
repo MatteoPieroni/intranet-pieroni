@@ -128,7 +128,8 @@ class GoogleApisClient {
       await google.mybusinessaccountmanagement('v1').accounts.list()
     ).data.accounts;
     const group = accounts?.find(
-      (account) => account.accountNumber === '5593184580'
+      (account) =>
+        account.accountNumber === process.env.GMB_LOCATION_GROUP_NUMBER
     );
 
     if (!group?.name) {
