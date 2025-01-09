@@ -16,7 +16,7 @@ export const Holidays = ({ locations }: HolidayProps) => {
   return (
     <div className={sharedStyles.twoGrid}>
       {locations.map((location) => (
-        <div key={location.name} className={sharedStyles.section}>
+        <div key={location.name}>
           <h3 className={sharedStyles.title}>
             {location.storefrontAddress.locality}
           </h3>

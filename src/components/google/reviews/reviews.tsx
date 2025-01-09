@@ -55,7 +55,7 @@ export const GoogleReviews = async ({ locations }: GoogleReviewsProps) => {
   return (
     <div className={sharedStyles.twoGrid}>
       {locationsWithReviews.map((location) => (
-        <div key={location.name} className={sharedStyles.section}>
+        <div key={location.name}>
           <h3 className={sharedStyles.title}>
             {location.storefrontAddress.locality}
           </h3>
