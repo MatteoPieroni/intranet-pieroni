@@ -1,5 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import { google, mybusinessbusinessinformation_v1 } from 'googleapis';
+import { subMonths } from 'date-fns/subMonths';
 
 export type Location = mybusinessbusinessinformation_v1.Schema$Location & {
   name: string;
@@ -45,6 +46,23 @@ const checkLocationData = (
 
   return true;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PERFORMANCE_METRICS = [
+  'BUSINESS_IMPRESSIONS_DESKTOP_MAPS',
+  'BUSINESS_IMPRESSIONS_DESKTOP_SEARCH',
+  'BUSINESS_IMPRESSIONS_MOBILE_MAPS',
+  'BUSINESS_IMPRESSIONS_MOBILE_SEARCH',
+] as const;
+
+const getGoogleDate = (date: Date) => ({
+  year: date.getFullYear(),
+  month: date.getMonth() + 1,
+  day: date.getDate(),
+});
+
+const addArray = (a: number[]) =>
+  a.reduce((total, current) => total + current, 0);
 
 class GoogleApisClient {
   authClient: OAuth2Client;
@@ -190,6 +208,69 @@ class GoogleApisClient {
     } catch (e) {
       throw e;
     }
+  }
+
+  async getPagePerformance(names: string[]) {
+    const today = getGoogleDate(new Date());
+    const aMonthAgo = getGoogleDate(subMonths(new Date(), 1));
+
+    const getImpressions = async (
+      name: string,
+      metricsArray: (typeof PERFORMANCE_METRICS)[number][]
+    ) => {
+      const impressionsRequests = await Promise.all(
+        metricsArray.map((metric) =>
+          google
+            .businessprofileperformance('v1')
+            .locations.getDailyMetricsTimeSeries({
+              name,
+              dailyMetric: metric,
+              'dailyRange.endDate.day': today.day,
+              'dailyRange.endDate.month': today.month,
+              'dailyRange.endDate.year': today.year,
+              'dailyRange.startDate.day': aMonthAgo.day,
+              'dailyRange.startDate.month': aMonthAgo.month,
+              'dailyRange.startDate.year': aMonthAgo.year,
+            })
+        )
+      );
+
+      const allNumbers = impressionsRequests
+        .map(
+          (metric) =>
+            metric.data.timeSeries?.datedValues?.map((value) =>
+              Number(value.value || 0)
+            ) || []
+        )
+        .flat();
+
+      if (!allNumbers) {
+        return 0;
+      }
+
+      return addArray(allNumbers);
+    };
+
+    const dataPromises = names.map(async (name) => {
+      const searchImpressions = await getImpressions(name, [
+        'BUSINESS_IMPRESSIONS_MOBILE_SEARCH',
+        'BUSINESS_IMPRESSIONS_DESKTOP_SEARCH',
+      ]);
+      const mapsImpressions = await getImpressions(name, [
+        'BUSINESS_IMPRESSIONS_MOBILE_MAPS',
+        'BUSINESS_IMPRESSIONS_DESKTOP_MAPS',
+      ]);
+
+      return {
+        name,
+        search: searchImpressions,
+        maps: mapsImpressions,
+      };
+    });
+
+    const data = await Promise.all(dataPromises);
+
+    return data;
   }
 }
 
