@@ -9,6 +9,8 @@
   margin-block-end: 1rem;
   border: none;
   padding: 0.2rem;
+  width: auto;
+  height: auto;
   background: transparent;
   line-height: 0;
 

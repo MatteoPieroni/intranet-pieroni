@@ -1,11 +1,13 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { redirect, usePathname } from 'next/navigation';
 
 import { signOut, onAuthStateChanged } from '@/services/firebase/client';
 import { Logo } from '../logo/logo';
 import styles from './header.module.css';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
+import { MenuIcon } from '../icons/menu';
+import { CloseIcon } from '../icons/close';
 
 type HeaderProps = {
   mailUrl: string;
@@ -31,7 +33,7 @@ export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
 
   const handleSignOut = async () => {
     await signOut();
-    redirect('/signin');
+    return redirect('/signin');
   };
 
   useEffect(() => {
@@ -77,3 +79,29 @@ export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
     </header>
   );
 }
+
+export const HeaderModal = (props: HeaderProps) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const openDialog = () => {
+    dialogRef.current?.show();
+  };
+
+  const closeDialog = () => {
+    dialogRef.current?.close();
+  };
+
+  return (
+    <>
+      <button onClick={openDialog} className={styles.menuButton}>
+        <MenuIcon aria-label="open menu" />
+      </button>
+      <dialog ref={dialogRef} className={styles.menuDialog}>
+        <button onClick={closeDialog} className={styles.closeButton}>
+          <CloseIcon aria-label="close" />
+        </button>
+        <Header {...props} />
+      </dialog>
+    </>
+  );
+};

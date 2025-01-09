@@ -30,7 +30,7 @@ const getGoogleInstanceWithAuth = async (currentHeaders: PassedHeaders) => {
     await googleClient.setTokens(tokenData.refresh_token);
   } catch (e) {
     if (e instanceof Error && e.message === 'REVOKED') {
-      redirect('/admin-google');
+      return redirect('/admin-google');
     }
     throw e;
   }

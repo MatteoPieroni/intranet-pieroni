@@ -37,7 +37,7 @@ export default async function Admin() {
   ]);
 
   if (!isAdmin && !canEditTransport) {
-    redirect('/');
+    return redirect('/');
   }
 
   return (

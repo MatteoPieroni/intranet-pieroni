@@ -2,9 +2,10 @@ import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
 
-import { getConfig } from '@/services/firebase/server';
+import { getConfig, getUser } from '@/services/firebase/server';
 import styles from './page.module.css';
 import { HomeIcon } from '@/components/icons/home';
+import { HeaderModal } from '@/components/header/header';
 
 const LazyMap = dynamic(() =>
   import('@/components/map/map').then((mod) => mod.Map)
@@ -17,16 +18,31 @@ export const metadata: Metadata = {
 
 export default async function Maps() {
   const currentHeaders = await headers();
+  const { currentUser } = await getUser(currentHeaders);
   const config = await getConfig(currentHeaders);
 
   return (
     <main className={styles.page}>
       <div className={styles.header}>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/" className="button" title="Torna alla home">
+        <a
+          href="/"
+          className={`button ${styles.homeLink}`}
+          title="Torna alla home"
+        >
           <HomeIcon role="presentation" />
         </a>
         <h1>Calcola il costo di trasporto</h1>
+        <div className={styles.mobileMenuContainer}>
+          {currentUser && (
+            <HeaderModal
+              isAdmin={currentUser.isAdmin}
+              mailUrl={config.mailUrl}
+              theme={currentUser.theme}
+              scopes={currentUser.scopes}
+            />
+          )}
+        </div>
       </div>
       <div className={styles.container}>
         <div className={styles.panel}>

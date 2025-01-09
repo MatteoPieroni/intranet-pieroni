@@ -16,7 +16,7 @@ export default async function SignInPage() {
   const { currentUser } = await getUser(currentHeaders);
 
   if (currentUser) {
-    redirect('/');
+    return redirect('/');
   }
 
   return (

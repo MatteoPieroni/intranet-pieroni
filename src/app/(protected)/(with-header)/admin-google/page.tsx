@@ -37,7 +37,7 @@ export default async function AdminGoogle() {
   const { currentUser } = await getUser(currentHeaders);
 
   if (!currentUser?.isAdmin && !currentUser?.scopes?.gmb) {
-    redirect('/');
+    return redirect('/');
   }
 
   const googleAuth = await getGoogleAuth(currentHeaders);
