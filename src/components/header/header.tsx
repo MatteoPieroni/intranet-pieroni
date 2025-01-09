@@ -33,7 +33,7 @@ export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
 
   const handleSignOut = async () => {
     await signOut();
-    redirect('/signin');
+    return redirect('/signin');
   };
 
   useEffect(() => {
