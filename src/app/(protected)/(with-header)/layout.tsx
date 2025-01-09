@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
 import { getUser, getConfig } from '@/services/firebase/server';
-import { Header } from '@/components/header/header';
+import { Header, HeaderModal } from '@/components/header/header';
 import styles from './layout.module.css';
 
 export const metadata: Metadata = {
@@ -33,6 +33,16 @@ export default async function RootLayout({
         )}
       </div>
       <div className={styles.content}>{children}</div>
+      <div className={styles.mobileSidebar}>
+        {currentUser && (
+          <HeaderModal
+            mailUrl={config.mailUrl}
+            isAdmin={currentUser.isAdmin}
+            scopes={currentUser.scopes}
+            theme={currentUser.theme}
+          />
+        )}
+      </div>
     </div>
   );
 }
