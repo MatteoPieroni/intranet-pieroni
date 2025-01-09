@@ -12,6 +12,9 @@ export type Location = mybusinessbusinessinformation_v1.Schema$Location & {
   specialHours: {
     specialHourPeriods: mybusinessbusinessinformation_v1.Schema$SpecialHourPeriod;
   };
+  metadata: {
+    mapsUri: string;
+  };
 };
 
 export type DbSpecialHourPeriod =
@@ -24,15 +27,19 @@ const checkLocationData = (
     return false;
   }
 
-  if (!location.storefrontAddress || !location.storefrontAddress.locality) {
+  if (!location.storefrontAddress?.locality) {
     return false;
   }
 
-  if (!location.regularHours || !location.regularHours.periods) {
+  if (!location.regularHours?.periods) {
     return false;
   }
 
-  if (!location.specialHours || !location.specialHours.specialHourPeriods) {
+  if (!location.specialHours?.specialHourPeriods) {
+    return false;
+  }
+
+  if (!location.metadata?.mapsUri) {
     return false;
   }
 
@@ -42,6 +49,7 @@ const checkLocationData = (
 class GoogleApisClient {
   authClient: OAuth2Client;
   accessToken: string | undefined;
+  accountName: string | undefined;
 
   constructor() {
     this.authClient = new google.auth.OAuth2(
@@ -93,7 +101,11 @@ class GoogleApisClient {
     }
   }
 
-  async getLocations() {
+  async getAccount() {
+    if (this.accountName) {
+      return this.accountName;
+    }
+
     const accounts = (
       await google.mybusinessaccountmanagement('v1').accounts.list()
     ).data.accounts;
@@ -105,11 +117,19 @@ class GoogleApisClient {
       throw new Error('NO_GROUP_ACCOUNT');
     }
 
+    this.accountName = group.name;
+    return group.name;
+  }
+
+  async getLocations() {
+    const accountName = await this.getAccount();
+
     const ownedLocations = await google
       .mybusinessbusinessinformation('v1')
       .accounts.locations.list({
-        parent: group.name,
-        readMask: 'name,title,storefrontAddress,regularHours,specialHours',
+        parent: accountName,
+        readMask:
+          'name,title,storefrontAddress,regularHours,specialHours,metadata',
       });
 
     const locationData = ownedLocations.data.locations;
@@ -138,6 +158,38 @@ class GoogleApisClient {
         },
       },
     });
+  }
+
+  async getReviewRating(names: string[]) {
+    const accountName = await this.getAccount();
+
+    try {
+      const locationReviewsPromises = names.map((name) =>
+        fetch(
+          `https://mybusiness.googleapis.com/v4/${accountName}/${name}/reviews?pageSize=1`,
+          {
+            headers: [['Authorization', `Bearer ${this.accessToken}`]],
+          }
+        )
+      );
+
+      const locationReviewsResponse = await Promise.all(
+        locationReviewsPromises
+      );
+
+      const locationReviews = await Promise.all(
+        locationReviewsResponse.map(async (response) => await response.json())
+      );
+
+      return locationReviews.map((location, index) => ({
+        id: names[index],
+        averageRating: Number(Number(location.averageRating).toFixed(1)),
+        number: Number(location.totalReviewCount),
+        reviews: location.reviews,
+      }));
+    } catch (e) {
+      throw e;
+    }
   }
 }
 
