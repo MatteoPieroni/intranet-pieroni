@@ -74,6 +74,7 @@
 
 .menuButton {
   border-radius: 50%;
+  background: var(--background-0);
 }
 
 .closeButton {

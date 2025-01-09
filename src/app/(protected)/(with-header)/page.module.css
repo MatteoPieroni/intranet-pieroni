@@ -1,6 +1,10 @@
 .infoContainer {
   display: grid;
-  grid-template-columns: minmax(40%, 50%) auto;
   column-gap: 2rem;
   padding-inline: 1rem;
+  overflow: auto;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: minmax(40%, 50%) auto;
+  }
 }
