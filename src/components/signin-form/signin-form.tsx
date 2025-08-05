@@ -50,6 +50,7 @@ export const SignInForm = ({ userError }: { userError?: string }) => {
     try {
       await signInWithGoogle();
       setSuccess(FORM_SUCCESS_LOGIN);
+      window.location.reload();
     } catch (e) {
       if (e instanceof Error) {
         setFail(e.message);
