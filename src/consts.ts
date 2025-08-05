@@ -21,6 +21,8 @@ export const FORM_FAIL_LOGIN_POPUP_CLOSED =
   '❌ La finestra di login è stata chiusa, riprova usando il tuo account Pieroni';
 export const FORM_FAIL_LOGIN_NO_USER =
   '❌ Non siamo riusciti a trovare questa email. Ricontrolla per favore';
+export const FORM_FAIL_LOGIN_USER_TO_BE_ADDED =
+  '❌ Questo utente non è attivo. Contatta Matteo per aggiungerlo';
 export const FORM_SUCCESS_TV = '✔️ Messaggio aggiornato';
 export const FORM_FAIL_TV =
   '❌ Non siamo riusciti ad aggiornare. Ricontrolla per favore';

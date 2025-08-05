@@ -37,13 +37,11 @@ export function useUserSession(onUserSignin: () => void) {
   }, []);
 }
 
-export const SignInForm = () => {
+export const SignInForm = ({ userError }: { userError?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [fail, setFail] = useState('');
-  useUserSession(() => {
-    location.reload();
-  });
+  useUserSession(() => {});
 
   const onLogin: () => void = async () => {
     setIsLoading(true);
@@ -122,6 +120,7 @@ export const SignInForm = () => {
 
       {!isLoading && <FormStatus text={fail} type="error" />}
       {!isLoading && <FormStatus text={success} type="success" />}
+      {userError && <FormStatus text={userError} type="error" />}
     </form>
   );
 };
