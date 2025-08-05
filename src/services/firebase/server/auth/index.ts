@@ -4,6 +4,8 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { getApp, type PassedHeaders } from '../serverApp';
 import type { IDbUser, IUser } from '../../db-types';
 
+export const USER_ACTIVATION_ERROR = 'USER_404';
+
 export async function getUser(headers: PassedHeaders) {
   const firebaseServerApp = await getApp(headers);
   const auth = getAuth(firebaseServerApp);
@@ -18,9 +20,34 @@ export async function getUser(headers: PassedHeaders) {
   const dbRef = ref(getDatabase(firebaseServerApp));
 
   try {
+    const uid = auth.currentUser.uid;
+
+    if (!uid) {
+      throw new Error('Unknown user - no uid');
+    }
+
     const snapshot = await get(child(dbRef, `users/${auth.currentUser.uid}`));
+
     if (!snapshot.exists()) {
-      throw new Error('Unknown user');
+      const displayName = auth.currentUser.displayName || 'no-name';
+      const email = auth.currentUser.providerData[0].email || 'no-email';
+
+      const data = {
+        displayName,
+        email,
+        isAdmin: false,
+      };
+
+      if (!email.match('@pieroni.it')) {
+        throw new Error(`Email not supported: ${email} - ${uid}`);
+      }
+
+      // need to create new user, log to be checked
+      console.error(
+        `User needs creation. Uid: ${uid}, data: ${JSON.stringify(data)}`
+      );
+
+      return { firebaseServerApp, error: { code: 'USER_404', email, uid } };
     }
 
     const { nome, cognome, ...rest }: IDbUser = snapshot.val();
