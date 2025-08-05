@@ -4,6 +4,8 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { getApp, type PassedHeaders } from '../serverApp';
 import type { IDbUser, IUser } from '../../db-types';
 
+export const USER_ACTIVATION_ERROR = 'USER_404';
+
 export async function getUser(headers: PassedHeaders) {
   const firebaseServerApp = await getApp(headers);
   const auth = getAuth(firebaseServerApp);
@@ -41,9 +43,11 @@ export async function getUser(headers: PassedHeaders) {
       }
 
       // need to create new user, log to be checked
-      throw new Error(
+      console.error(
         `User needs creation. Uid: ${uid}, data: ${JSON.stringify(data)}`
       );
+
+      return { firebaseServerApp, error: { code: 'USER_404', email, uid } };
     }
 
     const { nome, cognome, ...rest }: IDbUser = snapshot.val();
