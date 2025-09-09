@@ -16,6 +16,7 @@ import { EColor } from '@/services/firebase/db-types';
 import { QuoteForm } from '@/components/quote-form/quote-form';
 import template from '../header-template.module.css';
 import { ConfigForm } from '@/components/config-form/config-form';
+import { get } from '@/services/firebase/server/firedb';
 
 export const metadata: Metadata = {
   title: 'Admin - Intranet Pieroni srl',
@@ -29,12 +30,15 @@ export default async function Admin() {
   const isAdmin = currentUser?.isAdmin;
   const canEditTransport = currentUser?.scopes?.config?.transport;
 
-  const [links, quote, tvText, config] = await Promise.all([
+  const [links, quote, tvText, config, riscossi] = await Promise.all([
     getLinksWithoutCache(currentHeaders),
     isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
     getTvText(currentHeaders),
     getConfigWithoutCache(currentHeaders),
+    get(currentHeaders, ''),
   ]);
+
+  console.log({ riscossi });
 
   if (!isAdmin && !canEditTransport) {
     return redirect('/');
