@@ -10,6 +10,7 @@ export interface IDbUser {
     };
   };
   theme?: 'light' | 'dark';
+  teams?: string[];
 }
 
 export interface IUser {
@@ -25,6 +26,16 @@ export interface IUser {
     };
   };
   theme?: 'light' | 'dark';
+  teams?: string[];
+}
+
+export interface IDbTeam {
+  name: string;
+}
+
+export interface ITeam {
+  name: string;
+  id: string;
 }
 
 export interface IDbLinks {
