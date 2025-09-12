@@ -319,6 +319,11 @@ option {
   &:hover {
     background: #050a18;
   }
+
+  &:checked {
+    background: #050a18;
+    color: white;
+  }
 }
 
 textarea {
