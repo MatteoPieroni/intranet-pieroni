@@ -7,6 +7,7 @@ import {
   getDocs,
   getFirestore,
   QueryDocumentSnapshot,
+  UpdateData,
   updateDoc,
   WithFieldValue,
 } from 'firebase/firestore';
@@ -48,15 +49,17 @@ export const getRecords = async <Type extends DocumentData>(
 export const update = async <Type extends DocumentData>(
   headers: PassedHeaders,
   address: string | string[],
-  data: Type,
+  data: UpdateData<Type>,
   dto?: (dbData: DocumentData) => Type
 ) => {
   const firebaseServerApp = await getApp(headers);
   const db = getFirestore(firebaseServerApp);
   const fullAddress = typeof address === 'string' ? [address] : address;
+  // doc typing is a bit dumb, so we gotta do this
+  const [first, ...rest] = fullAddress;
 
   try {
-    const docToUpdate = doc(db, ...fullAddress).withConverter(
+    const docToUpdate = doc(db, first, ...rest).withConverter(
       converter<Type>(dto)
     );
 
