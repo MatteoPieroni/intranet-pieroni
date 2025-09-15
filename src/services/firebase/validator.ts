@@ -15,7 +15,7 @@ export const UserSchema = z.object({
       ),
     })
   ),
-  theme: z.optional(z.enum(['light', 'dark'])),
+  theme: z.optional(z.nullable(z.enum(['light', 'dark']))),
   teams: z.optional(z.array(z.string())),
 });
 
