@@ -1,8 +1,8 @@
-import { ICleanLink } from '@/services/firebase/db-types';
+import { ILink } from '@/services/firebase/db-types';
 import styles from './links.module.css';
 
 interface ILinkProps {
-  links: ICleanLink[];
+  links: ILink[];
 }
 
 export const Links: React.FC<ILinkProps> = ({ links }) => {

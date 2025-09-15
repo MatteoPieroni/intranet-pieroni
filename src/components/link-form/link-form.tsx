@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 
-import type { ICleanLink, ITeam } from '@/services/firebase/db-types';
+import type { ILink, ITeam } from '@/services/firebase/db-types';
 import { linkAction, linkDeleteAction, StateValidation } from './link-action';
 import styles from './link-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -11,7 +11,7 @@ import { SaveIcon } from '../icons/save';
 import { MultiSelect } from '../multiselect/multiselect';
 
 type LinksFormProps = {
-  link: ICleanLink;
+  link: ILink;
   isNew?: boolean;
   availableTeams: ITeam[];
 };

@@ -38,13 +38,13 @@ export interface ITeam {
   id: string;
 }
 
-export interface ICleanDbLink {
+export interface IDbLink {
   description: string;
   id: string;
   link: string;
   teams: string[];
 }
-export interface ICleanLink {
+export interface ILink {
   description: string;
   id: string;
   link: string;
