@@ -66,6 +66,7 @@ export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
           {(isAdmin || scopes?.config?.transport) && (
             <a {...getLinkProps('/admin')}>Admin</a>
           )}
+          {isAdmin && <a {...getLinkProps('/admin/users')}>Utenti e team</a>}
 
           <button className={styles.logOut} onClick={handleSignOut}>
             Esci
