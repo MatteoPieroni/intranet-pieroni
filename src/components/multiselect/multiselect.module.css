@@ -1,0 +1,24 @@
+.fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  border: none;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  background: var(--button-background);
+  color: var(--button-text);
+  border-radius: var(--border-radius);
+  padding: 0.15rem;
+
+  input {
+    margin-right: 0.25rem;
+  }
+
+  span {
+    flex-shrink: 0;
+  }
+}
