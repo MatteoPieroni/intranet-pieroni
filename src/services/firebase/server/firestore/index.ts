@@ -1,8 +1,8 @@
 import * as z from 'zod';
-import { ITeam, IUser } from '../../db-types';
+import { IDbUser, ITeam, IUser } from '../../db-types';
 import { TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { getRecords } from './operations';
+import { getRecords, update } from './operations';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -19,6 +19,22 @@ export const getUsers = async (headers: PassedHeaders) => {
     });
 
     return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const pushUser = async (headers: PassedHeaders, data: IUser) => {
+  try {
+    const { name, surname, id, ...rest } = data;
+    const verifiedData = UserSchema.parse({
+      nome: name,
+      cognome: surname,
+      ...rest,
+    });
+
+    await update<IDbUser>(headers, ['users', id], verifiedData);
   } catch (e) {
     console.error(e);
     throw e;

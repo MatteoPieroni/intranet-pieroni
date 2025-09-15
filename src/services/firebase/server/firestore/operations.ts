@@ -1,9 +1,11 @@
 import {
   collection,
+  doc,
   DocumentData,
   getDocs,
   getFirestore,
   QueryDocumentSnapshot,
+  setDoc,
   WithFieldValue,
 } from 'firebase/firestore';
 
@@ -41,21 +43,26 @@ export const getRecords = async <Type extends DocumentData>(
   return data;
 };
 
-// export const update = async <DbType extends DocumentData>(
-//   headers: PassedHeaders,
-//   address: string | string[],
-//   data: DbType
-// ) => {
-//   const firebaseServerApp = await getApp(headers);
-//   const db = getFirestore(firebaseServerApp);
-//   const fullAddress = typeof address === 'string' ? [address] : address;
+export const update = async <Type extends DocumentData>(
+  headers: PassedHeaders,
+  address: string | string[],
+  data: Type,
+  dto?: (dbData: DocumentData) => Type
+) => {
+  const firebaseServerApp = await getApp(headers);
+  const db = getFirestore(firebaseServerApp);
+  const fullAddress = typeof address === 'string' ? [address] : address;
 
-//   try {
-//     await setDoc<DbType, DbType>(doc(db, ...fullAddress), data);
-//   } catch (e) {
-//     throw e;
-//   }
-// };
+  try {
+    const docToUpdate = doc(db, ...fullAddress).withConverter(
+      converter<Type>(dto)
+    );
+
+    await setDoc(docToUpdate, data);
+  } catch (e) {
+    throw e;
+  }
+};
 
 // export const create = async <DbType extends DocumentData>(
 //   headers: PassedHeaders,
