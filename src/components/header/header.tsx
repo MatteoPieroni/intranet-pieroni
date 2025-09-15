@@ -18,7 +18,7 @@ type HeaderProps = {
       transport?: boolean;
     };
   };
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | null;
 };
 
 export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
