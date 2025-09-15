@@ -292,7 +292,8 @@ label:has(select) {
   margin-block-end: 0.5rem;
 
   input,
-  textarea {
+  textarea,
+  select {
     display: block;
     width: 100%;
     padding: 0.5rem;
@@ -315,9 +316,12 @@ select {
 
 option {
   background: var(--button-background);
+  padding: 0.25rem;
 
-  &:hover {
-    background: #050a18;
+  &:hover,
+  &:checked {
+    background: var(--background-highlight);
+    color: var(--text-highlight);
   }
 }
 

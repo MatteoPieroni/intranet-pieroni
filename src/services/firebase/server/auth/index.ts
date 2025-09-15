@@ -1,8 +1,13 @@
 import { getAuth } from 'firebase/auth';
-import { child, get, getDatabase, ref } from 'firebase/database';
 
 import { getApp, type PassedHeaders } from '../serverApp';
 import type { IDbUser, IUser } from '../../db-types';
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  QueryDocumentSnapshot,
+} from 'firebase/firestore';
 
 export const USER_ACTIVATION_ERROR = 'USER_404';
 
@@ -17,7 +22,7 @@ export async function getUser(headers: PassedHeaders) {
     };
   }
 
-  const dbRef = ref(getDatabase(firebaseServerApp));
+  const db = getFirestore(firebaseServerApp);
 
   try {
     const uid = auth.currentUser.uid;
@@ -26,7 +31,25 @@ export async function getUser(headers: PassedHeaders) {
       throw new Error('Unknown user - no uid');
     }
 
-    const snapshot = await get(child(dbRef, `users/${auth.currentUser.uid}`));
+    const userRef = doc(db, 'users', uid).withConverter(
+      (() => ({
+        // this is just for types
+        toFirestore: (data: IUser) => data,
+        fromFirestore: (snap: QueryDocumentSnapshot<IDbUser, IDbUser>) => {
+          const data = snap.data();
+
+          const { nome, cognome, ...rest } = data;
+          const enrichedUser = {
+            name: nome,
+            surname: cognome,
+            ...rest,
+          };
+
+          return enrichedUser;
+        },
+      }))()
+    );
+    const snapshot = await getDoc(userRef);
 
     if (!snapshot.exists()) {
       const displayName = auth.currentUser.displayName || 'no-name';
@@ -50,12 +73,10 @@ export async function getUser(headers: PassedHeaders) {
       return { firebaseServerApp, error: { code: 'USER_404', email, uid } };
     }
 
-    const { nome, cognome, ...rest }: IDbUser = snapshot.val();
+    const user = snapshot.data();
     const enrichedUser: IUser = {
-      name: nome,
-      surname: cognome,
-      id: auth.currentUser.uid,
-      ...rest,
+      id: uid,
+      ...user,
     };
 
     return { firebaseServerApp, currentUser: enrichedUser };

@@ -177,24 +177,6 @@ export const pushGoogleAuth = async (
   }
 };
 
-export const pushTheme = async (
-  headers: PassedHeaders,
-  data: 'light' | 'dark' | null
-) => {
-  const user = await getUser(headers);
-
-  if (!user.currentUser?.id) {
-    throw new Error('Missing user id');
-  }
-
-  try {
-    await update(headers, `users/${user.currentUser.id}`, { theme: data });
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
 export const createLink = async (
   headers: PassedHeaders,
   data: Omit<ILink, 'id'>

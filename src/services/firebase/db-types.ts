@@ -9,7 +9,8 @@ export interface IDbUser {
       transport?: boolean;
     };
   };
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | null;
+  teams?: string[];
 }
 
 export interface IUser {
@@ -24,7 +25,17 @@ export interface IUser {
       transport?: boolean;
     };
   };
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | null;
+  teams?: string[];
+}
+
+export interface IDbTeam {
+  name: string;
+}
+
+export interface ITeam {
+  name: string;
+  id: string;
 }
 
 export interface IDbLinks {
