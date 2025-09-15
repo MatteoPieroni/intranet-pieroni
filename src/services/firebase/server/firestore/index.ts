@@ -1,6 +1,13 @@
 import * as z from 'zod';
-import { IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
-import { TeamSchema, UserSchema } from '../../validator';
+import {
+  ICleanDbLink,
+  ICleanLink,
+  IDbTeam,
+  IDbUser,
+  ITeam,
+  IUser,
+} from '../../db-types';
+import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
 import { getUser } from '../auth';
@@ -109,6 +116,32 @@ export const createTeam = async (headers: PassedHeaders, data: IDbTeam) => {
 export const deleteTeam = async (headers: PassedHeaders, id: string) => {
   try {
     await remove(headers, 'teams', id);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getLinks = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<ICleanLink>(headers, 'links', (dbTeam) => {
+      const record = LinkSchema.parse(dbTeam);
+
+      return record;
+    });
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const pushLink = async (headers: PassedHeaders, data: ICleanDbLink) => {
+  try {
+    const verifiedData = LinkSchema.parse(data);
+
+    await update<ICleanDbLink>(headers, ['links', data.id], verifiedData);
   } catch (e) {
     console.error(e);
     throw e;

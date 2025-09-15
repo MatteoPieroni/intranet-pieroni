@@ -54,6 +54,19 @@ export interface ILink {
   link: string;
 }
 
+export interface ICleanDbLink {
+  description: string;
+  id: string;
+  link: string;
+  teams?: string[];
+}
+export interface ICleanLink {
+  description: string;
+  id: string;
+  link: string;
+  teams?: string[];
+}
+
 export interface IQuote {
   text: string;
   url: string;

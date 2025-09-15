@@ -22,3 +22,10 @@ export const UserSchema = z.object({
 export const TeamSchema = z.object({
   name: z.string(),
 });
+
+export const LinkSchema = z.object({
+  description: z.string(),
+  link: z.url(),
+  id: z.string(),
+  teams: z.array(z.string()),
+});
