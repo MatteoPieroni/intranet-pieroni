@@ -51,7 +51,7 @@ export const UserForm = ({
           <input type="email" name="email" defaultValue={email} readOnly />
         </label>
         <div className={styles.selectContainer}>
-          <MultiSelect options={selectTeams} name="teams" />
+          <MultiSelect options={selectTeams} name="teams" legend="Teams" />
         </div>
         <input type="hidden" name="id" value={id} />
         <div className={styles.buttonsContainer}>

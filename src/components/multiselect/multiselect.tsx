@@ -9,11 +9,13 @@ type MultiSelectProps = {
     isDefaultChecked: boolean;
   }[];
   name: string;
+  legend: string;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
-export const MultiSelect = ({ options, name }: MultiSelectProps) => {
+export const MultiSelect = ({ options, name, legend }: MultiSelectProps) => {
   return (
     <fieldset className={styles.fieldset}>
+      <legend>{legend}</legend>
       {options.map((option) => (
         <label key={option.value} className={styles.label}>
           <input

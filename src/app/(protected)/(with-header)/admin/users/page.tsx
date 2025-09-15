@@ -7,6 +7,7 @@ import { getUser } from '@/services/firebase/server';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
 import { getTeams, getUsers } from '@/services/firebase/server/firestore';
+import { TeamForm } from '@/components/team-form/team-form';
 
 export const metadata: Metadata = {
   title: 'Admin utenti - Intranet Pieroni srl',
@@ -19,7 +20,7 @@ export default async function Admin() {
 
   const isAdmin = currentUser?.isAdmin;
 
-  const [users, availableTeams] = await Promise.all([
+  const [users, teams] = await Promise.all([
     getUsers(currentHeaders),
     getTeams(currentHeaders),
   ]);
@@ -33,19 +34,30 @@ export default async function Admin() {
       <div className={template.header}>
         <h1>Gestisci gli utenti</h1>
       </div>
+
       <div className={styles.container}>
-        <>
-          <div className={styles.section}>
-            <h2>Utenti</h2>
-            {users.map((user) => (
-              <UserForm
-                user={user}
-                key={user.id}
-                availableTeams={availableTeams}
-              />
+        <div className={styles.section}>
+          <h2>Team</h2>
+          <div className={styles.linksContainer}>
+            {teams.map((team) => (
+              <TeamForm key={team.id} team={team} />
             ))}
+            <TeamForm
+              team={{
+                name: '',
+                id: '',
+              }}
+              isNew
+            />
           </div>
-        </>
+        </div>
+
+        <div className={styles.section}>
+          <h2>Utenti</h2>
+          {users.map((user) => (
+            <UserForm user={user} key={user.id} availableTeams={teams} />
+          ))}
+        </div>
       </div>
     </main>
   );

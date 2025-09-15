@@ -1,5 +1,7 @@
 import {
+  addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   getDocs,
@@ -64,19 +66,43 @@ export const update = async <Type extends DocumentData>(
   }
 };
 
-// export const create = async <DbType extends DocumentData>(
-//   headers: PassedHeaders,
-//   address: string,
-//   data: DbType
-// ) => {
-//   const firebaseServerApp = await getApp(headers);
-//   const db = getFirestore(firebaseServerApp);
+export const create = async <Type extends DocumentData>(
+  headers: PassedHeaders,
+  address: string,
+  data: Type,
+  dto?: (dbData: DocumentData) => Type
+) => {
+  const firebaseServerApp = await getApp(headers);
+  const db = getFirestore(firebaseServerApp);
 
-//   try {
-//     const docRef = await addDoc<DbType, DbType>(collection(db, address), data);
+  try {
+    const collectionRef = collection(db, address).withConverter(
+      converter<Type>(dto)
+    );
 
-//     return docRef;
-//   } catch (e) {
-//     throw e;
-//   }
-// };
+    const docRef = await addDoc(collectionRef, data);
+
+    return docRef;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const remove = async (
+  headers: PassedHeaders,
+  address: string,
+  id: string
+) => {
+  const firebaseServerApp = await getApp(headers);
+  const db = getFirestore(firebaseServerApp);
+
+  try {
+    const docToDelete = doc(db, address, id);
+
+    const docRef = await deleteDoc(docToDelete);
+
+    return docRef;
+  } catch (e) {
+    throw e;
+  }
+};

@@ -36,3 +36,9 @@ export const FORM_SUCCESS_CONFIG = '✔️ Configurazione aggiornata';
 export const FORM_FAIL_EMPTY = '❌ Almeno un campo è obbligatorio';
 export const FORM_FAIL_CONFIG =
   '❌ Non siamo riusciti ad aggiornare la configurazione. Ricontrolla per favore';
+export const FORM_SUCCESS_TEAM = '✔️ Team aggiornato';
+export const FORM_FAIL_TEAM =
+  '❌ Non siamo riusciti ad aggiornare il team. Ricontrolla per favore';
+export const FORM_SUCCESS_USER = '✔️ Utente aggiornato';
+export const FORM_FAIL_USER =
+  "❌ Non siamo riusciti ad aggiornare l'utente. Ricontrolla per favore";

@@ -1,9 +1,9 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
-import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
+import { FORM_FAIL_USER, FORM_SUCCESS_USER } from '@/consts';
 import { pushUser } from '@/services/firebase/server';
 import { IUser } from '@/services/firebase/db-types';
 
@@ -24,14 +24,14 @@ export const userAction = async (
 
     if (!formTeams) {
       return {
-        error: FORM_FAIL_LINK,
+        error: FORM_FAIL_USER,
       };
     }
 
     if (!userData.id) {
       return {
         errors: {
-          general: FORM_FAIL_LINK,
+          general: FORM_FAIL_USER,
         },
       };
     }
@@ -43,17 +43,17 @@ export const userAction = async (
       teams,
     });
 
-    revalidatePath('/admin');
-    revalidateTag('links');
+    revalidatePath('/admin/users');
+    // do we need this? revalidateTag('links');
 
     return {
-      success: FORM_SUCCESS_LINK,
+      success: FORM_SUCCESS_USER,
     };
   } catch (e) {
     console.error(e);
     return {
       errors: {
-        general: FORM_FAIL_LINK,
+        general: FORM_FAIL_USER,
       },
     };
   }
