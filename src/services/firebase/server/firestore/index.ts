@@ -1,4 +1,6 @@
 import * as z from 'zod';
+import { unstable_cache } from 'next/cache';
+
 import {
   ICleanDbLink,
   ICleanLink,
@@ -11,6 +13,8 @@ import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
 import { getUser } from '../auth';
+
+const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -122,7 +126,7 @@ export const deleteTeam = async (headers: PassedHeaders, id: string) => {
   }
 };
 
-export const getLinks = async (headers: PassedHeaders) => {
+export const getLinksWithoutCache = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<ICleanLink>(headers, 'links', (dbTeam) => {
       const record = LinkSchema.parse(dbTeam);
@@ -137,11 +141,39 @@ export const getLinks = async (headers: PassedHeaders) => {
   }
 };
 
+export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
+  revalidate: LONG_CACHE,
+  tags: ['links'],
+});
+
 export const pushLink = async (headers: PassedHeaders, data: ICleanDbLink) => {
   try {
     const verifiedData = LinkSchema.parse(data);
 
     await update<ICleanDbLink>(headers, ['links', data.id], verifiedData);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createLink = async (
+  headers: PassedHeaders,
+  data: Omit<ICleanLink, 'id'>
+) => {
+  try {
+    const verifiedData = LinkSchema.parse(data);
+
+    await create<ICleanDbLink>(headers, 'links', verifiedData);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const deleteLink = async (headers: PassedHeaders, id: string) => {
+  try {
+    await remove(headers, 'links', id);
   } catch (e) {
     console.error(e);
     throw e;

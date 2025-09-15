@@ -2,19 +2,17 @@ import { unstable_cache } from 'next/cache';
 
 import {
   IDbImage,
-  IDbLinks,
   type IConfig,
   type IDbConfig,
   type IDbTv,
   type IGoogleAuth,
   type IImage,
-  type ILink,
   type IQuote,
   type ITv,
 } from '../../db-types';
 import { normaliseObjectKeysToArray } from '@/utils/normaliseObjectKeysToArray';
 import { type PassedHeaders } from '../serverApp';
-import { create, get, remove, update } from './operations';
+import { get, update } from './operations';
 import { getUser } from '../auth';
 
 const SHORT_CACHE = 60 * 60; // one hour
@@ -39,24 +37,6 @@ export const getConfigWithoutCache = async (headers: PassedHeaders) => {
 export const getConfig = unstable_cache(getConfigWithoutCache, ['config'], {
   revalidate: SHORT_CACHE,
   tags: ['config'],
-});
-
-export const getLinksWithoutCache = async (headers: PassedHeaders) => {
-  try {
-    const records = await get<IDbLinks>(headers, 'links');
-
-    const data: ILink[] = normaliseObjectKeysToArray(records);
-
-    return data;
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
-export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
-  revalidate: LONG_CACHE,
-  tags: ['links'],
 });
 
 export const getQuote = unstable_cache(
@@ -135,15 +115,6 @@ export const pushTv = async (headers: PassedHeaders, data: IDbTv) => {
   }
 };
 
-export const pushLink = async (headers: PassedHeaders, data: ILink) => {
-  try {
-    await update(headers, `links/${data.id}`, data);
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
 export const pushConfig = async (
   headers: PassedHeaders,
   data: Partial<IDbConfig>
@@ -173,29 +144,6 @@ export const pushGoogleAuth = async (
     await update(headers, 'googleAuth/active', data);
   } catch (e) {
     console.error(e);
-    throw e;
-  }
-};
-
-export const createLink = async (
-  headers: PassedHeaders,
-  data: Omit<ILink, 'id'>
-) => {
-  try {
-    await create(headers, 'links', data);
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
-export const deleteLink = async (
-  headers: PassedHeaders,
-  data: Pick<ILink, 'id'>
-) => {
-  try {
-    await remove(headers, 'links', data.id);
-  } catch (e) {
     throw e;
   }
 };

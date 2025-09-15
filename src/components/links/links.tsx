@@ -1,8 +1,8 @@
-import { ILink } from '@/services/firebase/db-types';
+import { ICleanLink } from '@/services/firebase/db-types';
 import styles from './links.module.css';
 
 interface ILinkProps {
-  links: ILink[];
+  links: ICleanLink[];
 }
 
 export const Links: React.FC<ILinkProps> = ({ links }) => {
@@ -13,12 +13,8 @@ export const Links: React.FC<ILinkProps> = ({ links }) => {
       </div>
       <ul className={styles.list}>
         {links &&
-          links.map(({ link, description, color }) => (
-            <li
-              style={{ borderInlineStartColor: color }}
-              data-testid={color === 'test' ? 'test-link' : ''}
-              key={link}
-            >
+          links.map(({ link, description }) => (
+            <li key={link}>
               <a
                 href={link}
                 className={styles.link}

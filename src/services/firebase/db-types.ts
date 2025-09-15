@@ -38,33 +38,17 @@ export interface ITeam {
   id: string;
 }
 
-export interface IDbLinks {
-  [id: string]: {
-    color: EColor;
-    description: string;
-    id: string;
-    link: string;
-  };
-}
-
-export interface ILink {
-  color: EColor;
-  description: string;
-  id: string;
-  link: string;
-}
-
 export interface ICleanDbLink {
   description: string;
   id: string;
   link: string;
-  teams?: string[];
+  teams: string[];
 }
 export interface ICleanLink {
   description: string;
   id: string;
   link: string;
-  teams?: string[];
+  teams: string[];
 }
 
 export interface IQuote {
@@ -111,15 +95,3 @@ export type IConfig = {
   transportCostMinimum: number;
   transportHourBase: number;
 };
-
-export enum EColor {
-  grey = 'grey',
-  deepOrange = 'deepOrange',
-  amber = 'amber',
-  green = 'green',
-  teal = 'teal',
-  lightBlue = 'lightBlue',
-  indigo = 'indigo',
-  red = 'red',
-  test = 'test',
-}
