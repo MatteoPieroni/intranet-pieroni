@@ -9,7 +9,7 @@ export interface IDbUser {
       transport?: boolean;
     };
   };
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | null;
   teams?: string[];
 }
 
@@ -25,7 +25,7 @@ export interface IUser {
       transport?: boolean;
     };
   };
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | null;
   teams?: string[];
 }
 

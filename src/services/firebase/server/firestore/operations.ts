@@ -7,7 +7,7 @@ import {
   getDocs,
   getFirestore,
   QueryDocumentSnapshot,
-  setDoc,
+  updateDoc,
   WithFieldValue,
 } from 'firebase/firestore';
 
@@ -60,7 +60,7 @@ export const update = async <Type extends DocumentData>(
       converter<Type>(dto)
     );
 
-    await setDoc(docToUpdate, data);
+    await updateDoc(docToUpdate, data);
   } catch (e) {
     throw e;
   }

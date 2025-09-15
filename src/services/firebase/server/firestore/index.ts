@@ -3,6 +3,7 @@ import { IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
 import { TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
+import { getUser } from '../auth';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -35,6 +36,30 @@ export const pushUser = async (headers: PassedHeaders, data: IUser) => {
     });
 
     await update<IDbUser>(headers, ['users', id], verifiedData);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const pushTheme = async (
+  headers: PassedHeaders,
+  data: 'light' | 'dark' | null
+) => {
+  const user = await getUser(headers);
+
+  console.log({ user });
+
+  if (!user.currentUser?.id) {
+    throw new Error('Missing user id');
+  }
+
+  try {
+    await update<Pick<IUser, 'theme'>>(
+      headers,
+      `users/${user.currentUser.id}`,
+      { theme: data }
+    );
   } catch (e) {
     console.error(e);
     throw e;

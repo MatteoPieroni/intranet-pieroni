@@ -6,7 +6,7 @@ import styles from '../page.module.css';
 import { getUser } from '@/services/firebase/server';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
-import { getTeams, getUsers } from '@/services/firebase/server/firestore';
+import { getTeams, getUsers } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 
 export const metadata: Metadata = {

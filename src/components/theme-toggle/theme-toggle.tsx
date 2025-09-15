@@ -4,7 +4,7 @@ import { themeToggleAction } from './theme-toggle-action';
 import styles from './theme-toggle.module.css';
 
 type ThemeToggleProps = {
-  currentTheme?: 'light' | 'dark';
+  currentTheme?: 'light' | 'dark' | null;
 };
 
 const options = [
