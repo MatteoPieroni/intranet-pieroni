@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import * as z from 'zod';
 
 import type { ILink, ITeam } from '@/services/firebase/db-types';
 import { linkAction, linkDeleteAction, StateValidation } from './link-action';
@@ -9,6 +10,9 @@ import { FormStatus } from '../form-status/form-status';
 import { DeleteIcon } from '../icons/delete';
 import { SaveIcon } from '../icons/save';
 import { MultiSelect } from '../multiselect/multiselect';
+
+export const IconSchema = z.file();
+IconSchema.max(1_000_000, 'Too big');
 
 type LinksFormProps = {
   link: ILink;
@@ -76,7 +80,23 @@ export const LinkForm = ({
             </div>
           )}
           {/* add validation */}
-          <input type="file" name="icon" />
+          <input
+            type="file"
+            name="icon"
+            accept=".jpg,.png"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                try {
+                  IconSchema.max(1_000_000).parse(file);
+                } catch (error) {
+                  console.error(error);
+                  e.target.value = '';
+                  alert('Il file e troppo grande');
+                }
+              }
+            }}
+          />
         </label>
 
         <input type="hidden" name="id" value={id} />
