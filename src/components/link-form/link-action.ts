@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 
 import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
 import { createLink, deleteLink, pushLink } from '@/services/firebase/server';
+import { uploadLinkIcon } from '@/services/firebase/server/storage';
 
 export type StateValidation = {
   error?: string;
@@ -19,6 +20,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const formLink = values.get('link');
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
+    const formIcon = values.get('icon');
     const formTeams = values.getAll('teams');
 
     if (!formDescription || !formLink || !formTeams) {
@@ -41,11 +43,20 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
     const teams = formTeams.map((team) => String(team));
 
+    const icon = formIcon instanceof File ? formIcon : undefined;
+    let iconUpload: string | undefined = undefined;
+
+    if (icon) {
+      const uploadFileUrl = await uploadLinkIcon(currentHeaders, icon);
+      iconUpload = uploadFileUrl;
+    }
+
     if (isNew && !id) {
       await createLink(currentHeaders, {
         description,
         link,
         teams,
+        icon: iconUpload,
       });
     } else {
       await pushLink(currentHeaders, {
@@ -53,6 +64,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
         link,
         id,
         teams,
+        icon: iconUpload,
       });
     }
 

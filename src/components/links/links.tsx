@@ -22,7 +22,6 @@ export const Links: React.FC<ILinkProps> = ({ links }) => {
                 rel="noopener noreferrer"
               >
                 {description}
-                {/* <Icon.ArrowRight className="arrow" /> */}
               </a>
             </li>
           ))}

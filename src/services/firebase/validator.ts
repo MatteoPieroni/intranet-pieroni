@@ -28,4 +28,5 @@ export const LinkSchema = z.object({
   link: z.url(),
   id: z.string(),
   teams: z.array(z.string()),
+  icon: z.optional(z.string()),
 });
