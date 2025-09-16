@@ -3,11 +3,11 @@
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   border: none;
+  padding: 0;
 }
 
 .label {
   display: flex;
-  flex: 1 1;
   align-items: center;
   width: fit-content;
   background: var(--button-background);
