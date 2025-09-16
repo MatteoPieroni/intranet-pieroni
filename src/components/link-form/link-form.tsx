@@ -18,7 +18,7 @@ type LinksFormProps = {
 const initialState: StateValidation = {};
 
 export const LinkForm = ({
-  link: { description, link, id, teams },
+  link: { description, link, id, teams, icon },
   isNew = false,
   availableTeams,
 }: LinksFormProps) => {
@@ -41,9 +41,19 @@ export const LinkForm = ({
           Link
           <input type="url" name="link" defaultValue={link} required />
         </label>
-        <div className={styles.selectContainer}>
+        <div>
           <MultiSelect options={selectTeams} name="teams" legend="Teams" />
         </div>
+        <label>
+          Icona
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={icon} alt="" width={42} height={42} />
+          </div>
+          {/* add validation */}
+          <input type="file" name="icon" />
+        </label>
+
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
         <div className={styles.buttonsContainer}>
