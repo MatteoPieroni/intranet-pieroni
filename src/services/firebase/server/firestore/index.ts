@@ -1,9 +1,13 @@
 import * as z from 'zod';
-import { IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
-import { TeamSchema, UserSchema } from '../../validator';
+import { unstable_cache } from 'next/cache';
+
+import { IDbLink, ILink, IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
+import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
 import { getUser } from '../auth';
+
+const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -109,6 +113,67 @@ export const createTeam = async (headers: PassedHeaders, data: IDbTeam) => {
 export const deleteTeam = async (headers: PassedHeaders, id: string) => {
   try {
     await remove(headers, 'teams', id);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getLinksWithoutCache = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<ILink>(headers, 'links', (dbTeam) => {
+      const record = LinkSchema.parse(dbTeam);
+
+      return record;
+    });
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
+  revalidate: LONG_CACHE,
+  tags: ['links'],
+});
+
+export const pushLink = async (headers: PassedHeaders, data: IDbLink) => {
+  try {
+    const verifiedData = LinkSchema.parse(data);
+
+    await update<IDbLink>(headers, ['links', data.id], verifiedData);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createLink = async (
+  headers: PassedHeaders,
+  data: Omit<ILink, 'id'>
+) => {
+  try {
+    const verifiedData = LinkSchema.omit({ id: true }).parse(data);
+
+    const createdDoc = await create<Omit<ILink, 'id'>>(
+      headers,
+      'links',
+      verifiedData
+    );
+    await update<IDbLink>(headers, ['links', createdDoc.id], {
+      id: createdDoc.id,
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const deleteLink = async (headers: PassedHeaders, id: string) => {
+  try {
+    await remove(headers, 'links', id);
   } catch (e) {
     console.error(e);
     throw e;

@@ -9,10 +9,10 @@ import {
   getTvText,
   getLinksWithoutCache,
   getConfigWithoutCache,
+  getTeams,
 } from '@/services/firebase/server';
 import { TvForm } from '@/components/tv-form/tv-form';
 import { LinkForm } from '@/components/link-form/link-form';
-import { EColor } from '@/services/firebase/db-types';
 import { QuoteForm } from '@/components/quote-form/quote-form';
 import template from '../header-template.module.css';
 import { ConfigForm } from '@/components/config-form/config-form';
@@ -29,11 +29,12 @@ export default async function Admin() {
   const isAdmin = currentUser?.isAdmin;
   const canEditTransport = currentUser?.scopes?.config?.transport;
 
-  const [links, quote, tvText, config] = await Promise.all([
+  const [links, quote, tvText, config, teams] = await Promise.all([
     getLinksWithoutCache(currentHeaders),
     isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
     getTvText(currentHeaders),
     getConfigWithoutCache(currentHeaders),
+    getTeams(currentHeaders),
   ]);
 
   if (!isAdmin && !canEditTransport) {
@@ -52,16 +53,17 @@ export default async function Admin() {
               <h2>Link</h2>
               <div className={styles.linksContainer}>
                 {links.map((link) => (
-                  <LinkForm key={link.id} link={link} />
+                  <LinkForm key={link.id} link={link} availableTeams={teams} />
                 ))}
                 <LinkForm
                   link={{
                     description: '',
                     link: '',
                     id: '',
-                    color: EColor.amber,
+                    teams: [],
                   }}
                   isNew
+                  availableTeams={teams}
                 />
               </div>
             </div>

@@ -5,7 +5,6 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 
 import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
 import { createLink, deleteLink, pushLink } from '@/services/firebase/server';
-import { EColor } from '@/services/firebase/db-types';
 
 export type StateValidation = {
   error?: string;
@@ -20,8 +19,9 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const formLink = values.get('link');
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
+    const formTeams = values.getAll('teams');
 
-    if (!formDescription || !formLink) {
+    if (!formDescription || !formLink || !formTeams) {
       return {
         error: FORM_FAIL_LINK,
       };
@@ -39,19 +39,20 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const link = String(formLink);
     const id = String(formId);
     const isNew = String(formIsNew) === 'NEW';
+    const teams = formTeams.map((team) => String(team));
 
     if (isNew && !id) {
       await createLink(currentHeaders, {
         description,
         link,
-        color: EColor.amber,
+        teams,
       });
     } else {
       await pushLink(currentHeaders, {
         description,
         link,
         id,
-        color: EColor.amber,
+        teams,
       });
     }
 
@@ -79,9 +80,7 @@ export const linkDeleteAction = async (id: string) => {
       throw new Error('No id provided');
     }
 
-    await deleteLink(currentHeaders, {
-      id,
-    });
+    await deleteLink(currentHeaders, id);
 
     revalidatePath('/admin');
     revalidateTag('links');
