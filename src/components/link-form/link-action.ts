@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
 import { createLink, deleteLink, pushLink } from '@/services/firebase/server';
@@ -69,7 +69,6 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     }
 
     revalidatePath('/admin');
-    revalidateTag('links');
 
     return {
       success: FORM_SUCCESS_LINK,
@@ -95,7 +94,6 @@ export const linkDeleteAction = async (id: string) => {
     await deleteLink(currentHeaders, id);
 
     revalidatePath('/admin');
-    revalidateTag('links');
   } catch (e) {
     console.error(e);
     throw e;

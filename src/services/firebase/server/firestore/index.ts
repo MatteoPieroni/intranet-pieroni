@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { unstable_cache } from 'next/cache';
 
 import { IDbLink, ILink, IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
 import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
@@ -12,8 +11,6 @@ import {
   getRecordsWhereArrayToArray,
 } from './operations';
 import { getUser } from '../auth';
-
-const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -139,11 +136,6 @@ export const getLinksWithoutCache = async (headers: PassedHeaders) => {
     throw e;
   }
 };
-
-export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
-  revalidate: LONG_CACHE,
-  tags: ['links'],
-});
 
 export const getLinksForTeam = async (
   headers: PassedHeaders,
