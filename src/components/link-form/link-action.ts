@@ -46,7 +46,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const icon = formIcon instanceof File ? formIcon : undefined;
     let iconUpload: string | undefined = undefined;
 
-    if (icon) {
+    if (icon && icon.size > 0) {
       const uploadFileUrl = await uploadLinkIcon(currentHeaders, icon);
       iconUpload = uploadFileUrl;
     }
@@ -56,7 +56,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
         description,
         link,
         teams,
-        icon: iconUpload,
+        ...(iconUpload ? { icon: iconUpload } : {}),
       });
     } else {
       await pushLink(currentHeaders, {
@@ -64,7 +64,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
         link,
         id,
         teams,
-        icon: iconUpload,
+        ...(iconUpload ? { icon: iconUpload } : {}),
       });
     }
 
