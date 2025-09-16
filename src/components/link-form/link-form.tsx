@@ -15,6 +15,25 @@ type LinksFormProps = {
   isNew?: boolean;
   availableTeams: ITeam[];
 };
+
+const getFakeIcon = (name: string) => {
+  const words = name.split(' ');
+  const firstLetters = words.reduce((finalString, word) => {
+    if (finalString.length === 2) {
+      return finalString;
+    }
+
+    // skip small words
+    if (word.length === 1) {
+      return finalString;
+    }
+
+    return `${finalString}${word[0]}`;
+  }, '');
+
+  return firstLetters;
+};
+
 const initialState: StateValidation = {};
 
 export const LinkForm = ({
@@ -41,15 +60,21 @@ export const LinkForm = ({
           Link
           <input type="url" name="link" defaultValue={link} required />
         </label>
-        <div>
+        <div className={styles.selectContainer}>
           <MultiSelect options={selectTeams} name="teams" legend="Teams" />
         </div>
-        <label>
+        <label className={styles.iconLabel}>
           Icona
-          <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={icon} alt="" width={42} height={42} />
-          </div>
+          {!isNew && (
+            <div className={styles.iconContainer}>
+              {icon ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={icon} alt="" width={42} height={42} />
+              ) : (
+                <span>{getFakeIcon(description)}</span>
+              )}
+            </div>
+          )}
           {/* add validation */}
           <input type="file" name="icon" />
         </label>

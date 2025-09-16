@@ -7,6 +7,7 @@
 
 .label {
   display: flex;
+  flex: 1 1;
   align-items: center;
   width: fit-content;
   background: var(--button-background);
