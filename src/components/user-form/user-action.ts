@@ -44,7 +44,6 @@ export const userAction = async (
     });
 
     revalidatePath('/admin/users');
-    // do we need this? revalidateTag('links');
 
     return {
       success: FORM_SUCCESS_USER,

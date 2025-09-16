@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Quote } from '@/components/quote/quote';
 import { WelcomeMessage } from '@/components/welcome-message/welcome-message';
 import { Links } from '@/components/links/links';
-import { getUser, getLinks, getQuote } from '@/services/firebase/server';
+import { getUser, getQuote, getLinksForTeam } from '@/services/firebase/server';
 import template from './header-template.module.css';
 import styles from './page.module.css';
 
@@ -22,7 +22,7 @@ export default async function Home() {
   }
 
   const [links, quote] = await Promise.all([
-    getLinks(currentHeaders),
+    getLinksForTeam(currentHeaders, currentUser.teams || ['']),
     getQuote(currentHeaders),
   ]);
 

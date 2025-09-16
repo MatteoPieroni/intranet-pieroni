@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_LINK, FORM_SUCCESS_LINK } from '@/consts';
 import { createLink, deleteLink, pushLink } from '@/services/firebase/server';
@@ -46,7 +46,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     const icon = formIcon instanceof File ? formIcon : undefined;
     let iconUpload: string | undefined = undefined;
 
-    if (icon) {
+    if (icon && icon.size > 0) {
       const uploadFileUrl = await uploadLinkIcon(currentHeaders, icon);
       iconUpload = uploadFileUrl;
     }
@@ -56,7 +56,7 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
         description,
         link,
         teams,
-        icon: iconUpload,
+        ...(iconUpload ? { icon: iconUpload } : {}),
       });
     } else {
       await pushLink(currentHeaders, {
@@ -64,12 +64,11 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
         link,
         id,
         teams,
-        icon: iconUpload,
+        ...(iconUpload ? { icon: iconUpload } : {}),
       });
     }
 
     revalidatePath('/admin');
-    revalidateTag('links');
 
     return {
       success: FORM_SUCCESS_LINK,
@@ -95,7 +94,6 @@ export const linkDeleteAction = async (id: string) => {
     await deleteLink(currentHeaders, id);
 
     revalidatePath('/admin');
-    revalidateTag('links');
   } catch (e) {
     console.error(e);
     throw e;
