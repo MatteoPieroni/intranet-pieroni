@@ -4,7 +4,13 @@ import { unstable_cache } from 'next/cache';
 import { IDbLink, ILink, IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
 import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { create, getRecords, update, remove } from './operations';
+import {
+  create,
+  getRecords,
+  update,
+  remove,
+  getRecordsWhereArrayToArray,
+} from './operations';
 import { getUser } from '../auth';
 
 const LONG_CACHE = 60 * 60 * 24 * 7; // one week
@@ -138,6 +144,32 @@ export const getLinks = unstable_cache(getLinksWithoutCache, ['links'], {
   revalidate: LONG_CACHE,
   tags: ['links'],
 });
+
+export const getLinksForTeam = async (
+  headers: PassedHeaders,
+  teams: string[]
+) => {
+  try {
+    const records = await getRecordsWhereArrayToArray<ILink>(
+      headers,
+      'links',
+      {
+        field: 'teams',
+        array: teams,
+      },
+      (dbTeam) => {
+        const record = LinkSchema.parse(dbTeam);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 
 export const pushLink = async (headers: PassedHeaders, data: IDbLink) => {
   try {

@@ -6,9 +6,11 @@ import {
   DocumentData,
   getDocs,
   getFirestore,
+  query,
   QueryDocumentSnapshot,
   UpdateData,
   updateDoc,
+  where,
   WithFieldValue,
 } from 'firebase/firestore';
 
@@ -36,6 +38,35 @@ export const getRecords = async <Type extends DocumentData>(
   const querySnapshot = await getDocs(
     collection(db, address).withConverter(converter<Type>(dto))
   );
+
+  const data: Type[] = [];
+
+  querySnapshot.forEach((doc) => {
+    data.push(doc.data());
+  });
+
+  return data;
+};
+
+export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
+  currentHeaders: PassedHeaders,
+  address: string,
+  queryData: { field: string; array: string[] },
+  dto?: (dbData: DocumentData) => Type
+) => {
+  const firebaseServerApp = await getApp(currentHeaders);
+  const db = getFirestore(firebaseServerApp);
+
+  const collectionRef = collection(db, address).withConverter(
+    converter<Type>(dto)
+  );
+
+  const q = query(
+    collectionRef,
+    where(queryData.field, 'array-contains-any', queryData.array)
+  );
+
+  const querySnapshot = await getDocs(q);
 
   const data: Type[] = [];
 
