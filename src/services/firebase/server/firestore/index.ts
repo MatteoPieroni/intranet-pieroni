@@ -155,9 +155,16 @@ export const createLink = async (
   data: Omit<ILink, 'id'>
 ) => {
   try {
-    const verifiedData = LinkSchema.parse(data);
+    const verifiedData = LinkSchema.omit({ id: true }).parse(data);
 
-    await create<IDbLink>(headers, 'links', verifiedData);
+    const createdDoc = await create<Omit<ILink, 'id'>>(
+      headers,
+      'links',
+      verifiedData
+    );
+    await update<IDbLink>(headers, ['links', createdDoc.id], {
+      id: createdDoc.id,
+    });
   } catch (e) {
     console.error(e);
     throw e;
