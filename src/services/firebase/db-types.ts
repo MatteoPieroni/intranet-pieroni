@@ -43,12 +43,14 @@ export interface IDbLink {
   id: string;
   link: string;
   teams: string[];
+  icon?: string;
 }
 export interface ILink {
   description: string;
   id: string;
   link: string;
   teams: string[];
+  icon?: string;
 }
 
 export interface IQuote {
@@ -95,3 +97,5 @@ export type IConfig = {
   transportCostMinimum: number;
   transportHourBase: number;
 };
+
+export type IFileCategories = 'link-icons' | 'quote';
