@@ -1,0 +1,59 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  margin-block-end: 1.5rem;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    margin-block-end: 0;
+    padding: 0.5rem;
+  }
+}
+
+.container > label,
+.container .selectContainer {
+  flex-grow: 1;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 0.5rem;
+  margin-block-end: 0.5rem;
+
+  @media (min-width: 1024px) {
+    /* width: auto; */
+  }
+}
+
+.iconLabel {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'label label'
+    'icon input';
+  column-gap: 0.5rem;
+}
+
+.iconLabel input {
+  grid-area: input;
+}
+
+.iconContainer {
+  grid-area: icon;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: var(--border-highlight) 2px solid;
+  border-radius: 50%;
+  overflow: hidden;
+
+  font-size: 1.5rem;
+  font-weight: bold;
+}

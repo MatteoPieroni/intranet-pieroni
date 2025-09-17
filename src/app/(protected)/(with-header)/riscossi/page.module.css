@@ -1,16 +1,10 @@
 .container {
-  margin: 2rem auto;
-  padding: 1rem;
-  max-width: 500px;
-  background-color: var(--background-0);
+  padding-inline: 1rem;
+  overflow: auto;
 }
 
-.list {
-  padding-inline-start: 1.2rem;
+.section {
   margin-block-end: 1.5rem;
-}
-
-.list li {
-  margin-block-end: 0.5rem;
-  line-height: 1.3rem;
+  padding: 1rem;
+  background-color: var(--background-0);
 }
