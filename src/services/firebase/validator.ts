@@ -38,6 +38,7 @@ export const RiscossoSchema = z.object({
   client: z.string(),
   company: z.enum(['pieroni', 'pieroni-mostra', 'pellet']),
   paymentMethod: z.enum(['assegno', 'contanti', 'bancomat']),
+  // TODO: superRefine these to be dependent on payment method
   paymentChequeValue: z.optional(z.number()),
   paymentChequeNumber: z.optional(z.string()),
   docs: z.array(
@@ -50,7 +51,17 @@ export const RiscossoSchema = z.object({
   meta: z.object({
     createdAt: z.date(),
     author: z.string(),
-    verifiedAt: z.date(),
-    verifyAuthor: z.string(),
   }),
+  verification: z.discriminatedUnion('isVerified', [
+    z.object({
+      isVerified: z.literal(true),
+      verifiedAt: z.date(),
+      verifyAuthor: z.string(),
+    }),
+    z.object({
+      isVerified: z.literal(false),
+      verifiedAt: z.optional(z.date()),
+      verifiedAuthor: z.optional(z.string()),
+    }),
+  ]),
 });

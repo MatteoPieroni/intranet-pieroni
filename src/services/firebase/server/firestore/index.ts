@@ -1,7 +1,20 @@
 import * as z from 'zod';
 
-import { IDbLink, ILink, IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
-import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
+import {
+  IDbLink,
+  ILink,
+  IDbTeam,
+  IDbUser,
+  ITeam,
+  IUser,
+  IRiscosso,
+} from '../../db-types';
+import {
+  LinkSchema,
+  RiscossoSchema,
+  TeamSchema,
+  UserSchema,
+} from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import {
   create,
@@ -203,3 +216,45 @@ export const deleteLink = async (headers: PassedHeaders, id: string) => {
     throw e;
   }
 };
+
+export const getRiscossi = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<IRiscosso>(
+      headers,
+      'riscossi',
+      (riscosso) => {
+        const record = RiscossoSchema.parse(riscosso);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+// export const getRiscossiForUser = async (
+//   headers: PassedHeaders,
+//   userId: string
+// ) => {
+//   try {
+//     const records = await getRecordsWhereField<IRiscosso>(
+//       headers,
+//       'riscossi',
+//       userId,
+//       (riscosso) => {
+//         const record = RiscossoSchema.parse(riscosso);
+
+//         return record;
+//       }
+//     );
+
+//     return records;
+//   } catch (e) {
+//     console.error(e);
+//     throw e;
+//   }
+// };

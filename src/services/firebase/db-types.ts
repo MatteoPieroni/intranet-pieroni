@@ -119,9 +119,18 @@ export type IDbRiscosso = {
   meta: {
     createdAt: Date;
     author: string;
-    verifiedAt: Date;
-    verifyAuthor: string;
   };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Date;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Date;
+        verifyAuthor?: string;
+      };
 };
 
 export type IRiscosso = IDbRiscosso;
