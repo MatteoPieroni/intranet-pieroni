@@ -3,11 +3,7 @@
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
-import {
-  FORM_FAIL_LINK,
-  FORM_FAIL_RISCOSSO,
-  FORM_SUCCESS_LINK,
-} from '@/consts';
+import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
 import { createRiscosso } from '@/services/firebase/server';
 
 export type StateValidation = {
@@ -17,6 +13,7 @@ export type StateValidation = {
 
 const companies = ['pieroni', 'pieroni-mostra', 'pellet'] as const;
 const paymentMethods = ['assegno', 'contanti', 'bancomat'] as const;
+const documentType = ['DDT', 'fattura', 'impegno'] as const;
 
 const checkCompanyType = (
   company: string
@@ -26,6 +23,38 @@ const checkPaymentMethodType = (
   paymentMethod: string
 ): paymentMethod is (typeof paymentMethods)[number] =>
   paymentMethods.includes(<(typeof paymentMethods)[number]>paymentMethod);
+const checkDocumentType = (
+  type: string
+): type is (typeof documentType)[number] =>
+  documentType.includes(<(typeof documentType)[number]>type);
+
+const handleDocs = async (
+  types: FormDataEntryValue[],
+  numbers: FormDataEntryValue[],
+  totals: FormDataEntryValue[]
+) => {
+  if (types.length !== numbers.length || types.length !== totals.length) {
+    throw new Error('Something wrong with docs');
+  }
+
+  const documents = types
+    .map((type, index) => {
+      const typeString = String(type);
+      if (!checkDocumentType(typeString)) {
+        throw new Error();
+      }
+
+      return {
+        type: typeString,
+        number: String(numbers[index]),
+        total: Number(totals[index]),
+      };
+    })
+    // remove empty
+    .filter((doc) => !!doc.type);
+
+  return documents;
+};
 
 export const riscossoAction = async (_: StateValidation, values: FormData) => {
   const currentHeaders = await headers();
@@ -39,17 +68,19 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const formPaymentChequeValue = values.get('payment-cheque-value');
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
+    const formDocsNumbers = values.getAll('doc-number');
+    const formDocsTypes = values.getAll('doc-type');
+    const formDocsTotals = values.getAll('doc-total');
 
-    console.log({
-      formClient,
-      formCompany,
-      formTotal,
-      formPaymentMethod,
-      formPaymentChequeNumber,
-      formPaymentChequeValue,
-      formId,
-      formIsNew,
-    });
+    if (
+      formDocsNumbers.length === 0 ||
+      formDocsTypes.length === 0 ||
+      formDocsTotals.length === 0
+    ) {
+      return {
+        error: FORM_FAIL_RISCOSSO,
+      };
+    }
 
     if (!formClient || !formCompany || !formTotal || !formPaymentMethod) {
       return {
@@ -74,20 +105,15 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const id = String(formId);
     const isNew = String(formIsNew) === 'NEW';
 
-    console.log({
-      isNew,
-      id,
-      client,
-      company,
-      total,
-      paymentMethod,
-      paymentChequeNumber,
-      paymentChequeValue,
-    });
-
     if (!checkCompanyType(company) || !checkPaymentMethodType(paymentMethod)) {
       throw new Error('data invalid');
     }
+
+    const docs = await handleDocs(
+      formDocsTypes,
+      formDocsNumbers,
+      formDocsTotals
+    );
 
     if (isNew && !id) {
       await createRiscosso(currentHeaders, {
@@ -97,7 +123,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentMethod,
         paymentChequeNumber,
         paymentChequeValue,
-        docs: [],
+        docs,
       });
     } else {
       // await pushLink(currentHeaders, {
@@ -109,16 +135,16 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
       // });
     }
 
-    revalidatePath('/admin');
+    revalidatePath('/riscossi');
 
     return {
-      success: FORM_SUCCESS_LINK,
+      success: FORM_SUCCESS_RISCOSSO,
     };
   } catch (e) {
     console.error(e);
     return {
       errors: {
-        general: FORM_FAIL_LINK,
+        general: FORM_FAIL_RISCOSSO,
       },
     };
   }

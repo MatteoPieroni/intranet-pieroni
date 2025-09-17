@@ -1,13 +1,14 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import * as z from 'zod';
 
-import type { IRiscosso } from '@/services/firebase/db-types';
+import { IDbRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
 import { riscossoAction, StateValidation } from './riscosso-action';
 import styles from './riscosso-form.module.css';
 import { FormStatus } from '../form-status/form-status';
 import { SaveIcon } from '../icons/save';
+import { DeleteIcon } from '../icons/delete';
 
 export const IconSchema = z.file();
 IconSchema.max(1_000_000, 'Too big');
@@ -68,6 +69,18 @@ const paymentMethods = [
   },
 ];
 
+const documentTypes = [
+  { id: 'fattura', label: 'Fattura' },
+  { id: 'DDT', label: 'DDT' },
+  { id: 'impegno', label: 'Impegno' },
+];
+
+const emptyDoc = {
+  number: '',
+  type: '',
+  total: '',
+};
+
 export const RiscossiForm = ({
   riscosso,
   isNew = false,
@@ -82,6 +95,10 @@ export const RiscossiForm = ({
     paymentChequeNumber,
     paymentChequeValue,
   } = riscosso || newRiscossoForForm;
+
+  const [docsWithAdded, setDocsWithAdded] = useState<
+    (IDbRiscossoDoc | typeof emptyDoc)[]
+  >([...docs]);
 
   const [state, formAction, pending] = useActionState(
     riscossoAction,
@@ -119,6 +136,70 @@ export const RiscossiForm = ({
             ))}
           </select>
         </label>
+
+        <fieldset>
+          <legend>Documenti</legend>
+          {docsWithAdded.map((doc, index) => (
+            <div key={index}>
+              <label>
+                Numero
+                <input name="doc-number" defaultValue={doc.number} required />
+              </label>
+              <label>
+                Tipo di documento
+                <select
+                  name="doc-type"
+                  required
+                  {...(!doc.type ? { defaultValue: '' } : {})}
+                >
+                  {!doc.type && (
+                    <option hidden value="">
+                      Seleziona tipo documento
+                    </option>
+                  )}
+                  {documentTypes.map((docType) => (
+                    <option
+                      value={docType.id}
+                      defaultChecked={doc.type === docType.id}
+                      key={docType.id}
+                    >
+                      {docType.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Totale documento
+                <input
+                  name="doc-total"
+                  type="number"
+                  defaultValue={doc.total}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const docsCopy = [...docsWithAdded];
+                  // TODO: bug with removing second field
+                  docsCopy.splice(index, 1);
+
+                  setDocsWithAdded(docsCopy);
+                }}
+                title="Rimuovi documento"
+              >
+                <DeleteIcon />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              setDocsWithAdded([...docsWithAdded, emptyDoc]);
+            }}
+          >
+            Aggiungi documento
+          </button>
+        </fieldset>
 
         <label>
           Metodo di pagamento
