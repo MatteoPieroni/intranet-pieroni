@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface IDbUser {
   nome: string;
   cognome: string;
@@ -108,7 +110,7 @@ export type IDbRiscossoDoc = {
 
 export type IDbRiscosso = {
   id: string;
-  date: Date;
+  date: Timestamp;
   total: number;
   client: string;
   company: 'pieroni' | 'pieroni-mostra' | 'pellet';
@@ -116,6 +118,25 @@ export type IDbRiscosso = {
   paymentChequeValue?: number;
   paymentChequeNumber?: string;
   docs: IDbRiscossoDoc[];
+  meta: {
+    createdAt: Timestamp;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Timestamp;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Timestamp;
+        verifyAuthor?: string;
+      };
+};
+
+export type IRiscosso = Omit<IDbRiscosso, 'date' | 'meta' | 'verification'> & {
+  date: Date;
   meta: {
     createdAt: Date;
     author: string;
@@ -132,5 +153,3 @@ export type IDbRiscosso = {
         verifyAuthor?: string;
       };
 };
-
-export type IRiscosso = IDbRiscosso;

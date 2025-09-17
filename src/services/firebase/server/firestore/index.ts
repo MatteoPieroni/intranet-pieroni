@@ -8,6 +8,7 @@ import {
   ITeam,
   IUser,
   IRiscosso,
+  IDbRiscosso,
 } from '../../db-types';
 import {
   LinkSchema,
@@ -24,6 +25,7 @@ import {
   getRecordsWhereArrayToArray,
 } from './operations';
 import { getUser } from '../auth';
+import { Timestamp } from 'firebase/firestore';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -67,8 +69,6 @@ export const pushTheme = async (
   data: 'light' | 'dark' | null
 ) => {
   const user = await getUser(headers);
-
-  console.log({ user });
 
   if (!user.currentUser?.id) {
     throw new Error('Missing user id');
@@ -223,13 +223,79 @@ export const getRiscossi = async (headers: PassedHeaders) => {
       headers,
       'riscossi',
       (riscosso) => {
-        const record = RiscossoSchema.parse(riscosso);
+        const {
+          date,
+          meta: { createdAt, ...meta },
+          verification: { verifiedAt, ...verification },
+          ...rest
+        } = riscosso;
+
+        const convertToDate = {
+          ...rest,
+          date: new Date(date.seconds * 1000),
+          meta: {
+            ...meta,
+            createdAt: new Date(createdAt.seconds * 1000),
+          },
+          verification: {
+            ...verification,
+            ...(verifiedAt
+              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
+              : {}),
+          },
+        };
+
+        const record = RiscossoSchema.parse(convertToDate);
 
         return record;
       }
     );
 
     return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createRiscosso = async (
+  headers: PassedHeaders,
+  data: Omit<IRiscosso, 'id' | 'meta' | 'verification' | 'date'>
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const verifiedData = RiscossoSchema.omit({
+      id: true,
+      meta: true,
+      verification: true,
+      date: true,
+    }).parse(data);
+
+    const now = Timestamp.now();
+
+    const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
+      headers,
+      'riscossi',
+      {
+        ...verifiedData,
+        date: now,
+        meta: {
+          author: user.currentUser.id,
+          createdAt: now,
+        },
+        verification: {
+          isVerified: false,
+        },
+      }
+    );
+    await update<IDbRiscosso>(headers, ['riscossi', createdDoc.id], {
+      id: createdDoc.id,
+    });
   } catch (e) {
     console.error(e);
     throw e;
