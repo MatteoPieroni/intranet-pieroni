@@ -30,3 +30,27 @@ export const LinkSchema = z.object({
   teams: z.array(z.string()),
   icon: z.optional(z.string()),
 });
+
+export const RiscossoSchema = z.object({
+  id: z.string(),
+  date: z.date(),
+  total: z.number(),
+  client: z.string(),
+  company: z.enum(['pieroni', 'pieroni-mostra', 'pellet']),
+  paymentMethod: z.enum(['assegno', 'contanti', 'bancomat']),
+  paymentChequeValue: z.optional(z.number()),
+  paymentChequeNumber: z.optional(z.string()),
+  docs: z.array(
+    z.object({
+      number: z.string(),
+      type: z.enum(['fattura', 'DDT', 'impegno']),
+      total: z.number(),
+    })
+  ),
+  meta: z.object({
+    createdAt: z.date(),
+    author: z.string(),
+    verifiedAt: z.date(),
+    verifyAuthor: z.string(),
+  }),
+});

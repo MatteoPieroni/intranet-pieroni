@@ -99,3 +99,29 @@ export type IConfig = {
 };
 
 export type IFileCategories = 'link-icons' | 'quote';
+
+export type IDbRiscossoDoc = {
+  number: string;
+  type: 'fattura' | 'DDT' | 'impegno';
+  total: number;
+};
+
+export type IDbRiscosso = {
+  id: string;
+  date: Date;
+  total: number;
+  client: string;
+  company: 'pieroni' | 'pieroni-mostra' | 'pellet';
+  paymentMethod: 'assegno' | 'contanti' | 'bancomat';
+  paymentChequeValue?: number;
+  paymentChequeNumber?: string;
+  docs: IDbRiscossoDoc[];
+  meta: {
+    createdAt: Date;
+    author: string;
+    verifiedAt: Date;
+    verifyAuthor: string;
+  };
+};
+
+export type IRiscosso = IDbRiscosso;
