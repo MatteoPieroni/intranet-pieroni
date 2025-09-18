@@ -320,7 +320,7 @@ export const createRiscosso = async (
 
     const now = Timestamp.now();
 
-    const createdDoc = await create<Omit<IDbRiscosso, 'id' | 'verification'>>(
+    const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
       headers,
       'riscossi',
       {
@@ -329,6 +329,9 @@ export const createRiscosso = async (
         meta: {
           author: user.currentUser.id,
           createdAt: now,
+        },
+        verification: {
+          isVerified: false,
         },
       }
     );
