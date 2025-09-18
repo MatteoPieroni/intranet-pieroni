@@ -329,6 +329,22 @@ textarea {
   height: 8rem;
 }
 
+table {
+  border: 1px solid var(--border-0);
+  text-align: left;
+}
+
+table .number {
+  text-align: right;
+}
+
+table th,
+table tr,
+table td {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-0);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

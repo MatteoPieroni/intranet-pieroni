@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface IDbUser {
   nome: string;
   cognome: string;
@@ -99,3 +101,55 @@ export type IConfig = {
 };
 
 export type IFileCategories = 'link-icons' | 'quote';
+
+export type IDbRiscossoDoc = {
+  number: string;
+  type: 'fattura' | 'DDT' | 'impegno';
+  total: number;
+};
+
+export type IDbRiscosso = {
+  id: string;
+  date: Timestamp;
+  total: number;
+  client: string;
+  company: 'pieroni' | 'pieroni-mostra' | 'pellet';
+  paymentMethod: 'assegno' | 'contanti' | 'bancomat';
+  paymentChequeValue?: number;
+  paymentChequeNumber?: string;
+  docs: IDbRiscossoDoc[];
+  meta: {
+    createdAt: Timestamp;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Timestamp;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Timestamp;
+        verifyAuthor?: string;
+      };
+};
+
+export type IRiscosso = Omit<IDbRiscosso, 'date' | 'meta' | 'verification'> & {
+  date: Date;
+  meta: {
+    createdAt: Date;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Date;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Date;
+        verifyAuthor?: string;
+      };
+};

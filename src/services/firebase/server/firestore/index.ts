@@ -1,7 +1,21 @@
 import * as z from 'zod';
 
-import { IDbLink, ILink, IDbTeam, IDbUser, ITeam, IUser } from '../../db-types';
-import { LinkSchema, TeamSchema, UserSchema } from '../../validator';
+import {
+  IDbLink,
+  ILink,
+  IDbTeam,
+  IDbUser,
+  ITeam,
+  IUser,
+  IRiscosso,
+  IDbRiscosso,
+} from '../../db-types';
+import {
+  LinkSchema,
+  RiscossoSchema,
+  TeamSchema,
+  UserSchema,
+} from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import {
   create,
@@ -9,8 +23,10 @@ import {
   update,
   remove,
   getRecordsWhereArrayToArray,
+  get,
 } from './operations';
 import { getUser } from '../auth';
+import { Timestamp } from 'firebase/firestore';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -54,8 +70,6 @@ export const pushTheme = async (
   data: 'light' | 'dark' | null
 ) => {
   const user = await getUser(headers);
-
-  console.log({ user });
 
   if (!user.currentUser?.id) {
     throw new Error('Missing user id');
@@ -203,3 +217,152 @@ export const deleteLink = async (headers: PassedHeaders, id: string) => {
     throw e;
   }
 };
+
+export const getRiscossi = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<IRiscosso>(
+      headers,
+      'riscossi',
+      (riscosso) => {
+        const {
+          date,
+          meta: { createdAt, ...meta },
+          verification: { verifiedAt, ...verification },
+          ...rest
+        } = riscosso;
+
+        const convertToDate = {
+          ...rest,
+          date: new Date(date.seconds * 1000),
+          meta: {
+            ...meta,
+            createdAt: new Date(createdAt.seconds * 1000),
+          },
+          verification: {
+            ...verification,
+            ...(verifiedAt
+              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
+              : {}),
+          },
+        };
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscosso = async (headers: PassedHeaders, id: string) => {
+  try {
+    const records = await get<IRiscosso>(
+      headers,
+      ['riscossi', id],
+      (riscosso) => {
+        const {
+          date,
+          meta: { createdAt, ...meta },
+          verification: { verifiedAt, ...verification },
+          ...rest
+        } = riscosso;
+
+        const convertToDate = {
+          ...rest,
+          date: new Date(date.seconds * 1000),
+          meta: {
+            ...meta,
+            createdAt: new Date(createdAt.seconds * 1000),
+          },
+          verification: {
+            ...verification,
+            ...(verifiedAt
+              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
+              : {}),
+          },
+        };
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createRiscosso = async (
+  headers: PassedHeaders,
+  data: Omit<IRiscosso, 'id' | 'meta' | 'verification' | 'date'>
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const verifiedData = RiscossoSchema.omit({
+      id: true,
+      meta: true,
+      verification: true,
+      date: true,
+    }).parse(data);
+
+    const now = Timestamp.now();
+
+    const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
+      headers,
+      'riscossi',
+      {
+        ...verifiedData,
+        date: now,
+        meta: {
+          author: user.currentUser.id,
+          createdAt: now,
+        },
+        verification: {
+          isVerified: false,
+        },
+      }
+    );
+    await update<IDbRiscosso>(headers, ['riscossi', createdDoc.id], {
+      id: createdDoc.id,
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+// export const getRiscossiForUser = async (
+//   headers: PassedHeaders,
+//   userId: string
+// ) => {
+//   try {
+//     const records = await getRecordsWhereField<IRiscosso>(
+//       headers,
+//       'riscossi',
+//       userId,
+//       (riscosso) => {
+//         const record = RiscossoSchema.parse(riscosso);
+
+//         return record;
+//       }
+//     );
+
+//     return records;
+//   } catch (e) {
+//     console.error(e);
+//     throw e;
+//   }
+// };

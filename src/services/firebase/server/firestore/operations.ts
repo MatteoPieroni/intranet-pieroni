@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   DocumentData,
+  getDoc,
   getDocs,
   getFirestore,
   query,
@@ -48,6 +49,32 @@ export const getRecords = async <Type extends DocumentData>(
   return data;
 };
 
+export const getRecordWhereField = async <Type extends DocumentData>(
+  currentHeaders: PassedHeaders,
+  address: string,
+  queryData: { field: string; value: unknown },
+  dto?: (dbData: DocumentData) => Type
+) => {
+  const firebaseServerApp = await getApp(currentHeaders);
+  const db = getFirestore(firebaseServerApp);
+
+  const collectionRef = collection(db, address).withConverter(
+    converter<Type>(dto)
+  );
+
+  const q = query(collectionRef, where(queryData.field, '==', queryData.value));
+
+  const querySnapshot = await getDocs(q);
+
+  const data: Type[] = [];
+
+  querySnapshot.forEach((doc) => {
+    data.push(doc.data());
+  });
+
+  return data;
+};
+
 export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
   currentHeaders: PassedHeaders,
   address: string,
@@ -75,6 +102,31 @@ export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
   });
 
   return data;
+};
+
+export const get = async <Type extends DocumentData>(
+  headers: PassedHeaders,
+  address: string | string[],
+  dto?: (dbData: DocumentData) => Type
+) => {
+  const firebaseServerApp = await getApp(headers);
+  const db = getFirestore(firebaseServerApp);
+  const fullAddress = typeof address === 'string' ? [address] : address;
+  // doc typing is a bit dumb, so we gotta do this
+  const [first, ...rest] = fullAddress;
+
+  try {
+    const docRef = doc(db, first, ...rest).withConverter(converter<Type>(dto));
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      throw new Error('404');
+    }
+
+    return docSnap.data();
+  } catch (e) {
+    throw e;
+  }
 };
 
 export const update = async <Type extends DocumentData>(
