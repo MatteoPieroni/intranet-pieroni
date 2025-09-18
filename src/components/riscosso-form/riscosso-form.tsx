@@ -78,8 +78,18 @@ const documentTypes = [
 const emptyDoc = {
   number: '',
   type: '',
-  total: '',
+  total: 0,
 };
+
+type LocalDoc = (IDbRiscossoDoc | typeof emptyDoc) & {
+  id?: string;
+};
+
+const addDocWithId = (docsArray: LocalDoc[]) =>
+  docsArray.map((doc) => ({
+    ...doc,
+    id: doc.id || crypto.randomUUID(),
+  }));
 
 export const RiscossiForm = ({
   riscosso,
@@ -96,9 +106,9 @@ export const RiscossiForm = ({
     paymentChequeValue,
   } = riscosso || newRiscossoForForm;
 
-  const [docsWithAdded, setDocsWithAdded] = useState<
-    (IDbRiscossoDoc | typeof emptyDoc)[]
-  >([...docs]);
+  const [docsWithAdded, setDocsWithAdded] = useState<LocalDoc[]>(
+    addDocWithId(docs)
+  );
 
   const [state, formAction, pending] = useActionState(
     riscossoAction,
@@ -139,62 +149,66 @@ export const RiscossiForm = ({
 
         <fieldset>
           <legend>Documenti</legend>
-          {docsWithAdded.map((doc, index) => (
-            <div key={index}>
-              <label>
-                Numero
-                <input name="doc-number" defaultValue={doc.number} required />
-              </label>
-              <label>
-                Tipo di documento
-                <select
-                  name="doc-type"
-                  required
-                  {...(!doc.type ? { defaultValue: '' } : {})}
-                >
-                  {!doc.type && (
-                    <option hidden value="">
-                      Seleziona tipo documento
-                    </option>
-                  )}
-                  {documentTypes.map((docType) => (
-                    <option
-                      value={docType.id}
-                      defaultChecked={doc.type === docType.id}
-                      key={docType.id}
-                    >
-                      {docType.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Totale documento
-                <input
-                  name="doc-total"
-                  type="number"
-                  defaultValue={doc.total}
-                />
-              </label>
-              <button
-                type="button"
-                onClick={() => {
-                  const docsCopy = [...docsWithAdded];
-                  // TODO: bug with removing second field
-                  docsCopy.splice(index, 1);
+          {docsWithAdded.map((doc) => {
+            return (
+              <div key={doc.id}>
+                <label>
+                  Numero
+                  <input name="doc-number" defaultValue={doc.number} required />
+                </label>
+                <label>
+                  Tipo di documento
+                  <select
+                    name="doc-type"
+                    required
+                    {...(!doc.type ? { defaultValue: '' } : {})}
+                  >
+                    {!doc.type && (
+                      <option hidden value="">
+                        Seleziona tipo documento
+                      </option>
+                    )}
+                    {documentTypes.map((docType) => (
+                      <option
+                        value={docType.id}
+                        defaultChecked={doc.type === docType.id}
+                        key={docType.id}
+                      >
+                        {docType.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Totale documento
+                  <input
+                    name="doc-total"
+                    type="number"
+                    defaultValue={doc.total}
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const hasConfirmed = confirm('Confermi la cancellazione?');
 
-                  setDocsWithAdded(docsCopy);
-                }}
-                title="Rimuovi documento"
-              >
-                <DeleteIcon />
-              </button>
-            </div>
-          ))}
+                    if (!hasConfirmed) return;
+
+                    setDocsWithAdded(
+                      docsWithAdded.filter((stateDoc) => stateDoc.id !== doc.id)
+                    );
+                  }}
+                  title="Rimuovi documento"
+                >
+                  <DeleteIcon />
+                </button>
+              </div>
+            );
+          })}
           <button
             type="button"
             onClick={() => {
-              setDocsWithAdded([...docsWithAdded, emptyDoc]);
+              setDocsWithAdded(addDocWithId([...docsWithAdded, emptyDoc]));
             }}
           >
             Aggiungi documento
