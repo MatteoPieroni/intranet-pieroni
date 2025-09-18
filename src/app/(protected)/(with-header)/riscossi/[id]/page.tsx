@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 import styles from './page.module.css';
-import template from '../header-template.module.css';
-import { getRiscossi, getUser } from '@/services/firebase/server';
+import template from '../../header-template.module.css';
+import { getRiscosso, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 
@@ -11,7 +11,13 @@ export const metadata: Metadata = {
   description: 'Intranet - vedi i riscossi',
 };
 
-export default async function Riscossi() {
+export default async function Riscossi({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
@@ -19,27 +25,20 @@ export default async function Riscossi() {
     throw new Error('User not found');
   }
 
-  const riscossi = await getRiscossi(currentHeaders);
+  const riscosso = await getRiscosso(currentHeaders, id);
 
   return (
     <main className={template.page}>
       <div className={template.header}>
-        <h1>Riscossi</h1>
+        <h1>Riscosso {id}</h1>
       </div>
 
       <div className={styles.container}>
         <div className={styles.section}>
-          <ul>
-            {riscossi.map((riscosso) => (
-              <li key={riscosso.id}>
-                {riscosso.client} - {riscosso.date.toDateString()} -
-                <a href={`riscossi/${riscosso.id}`}>Vedi</a>
-              </li>
-            ))}
-          </ul>
+          {riscosso.id} - {riscosso.client} - {riscosso.client}
         </div>
-        <div className={styles.container}>
-          <RiscossiForm isNew riscosso={undefined} />
+        <div className={styles.section}>
+          <RiscossiForm riscosso={riscosso} />
         </div>
       </div>
     </main>

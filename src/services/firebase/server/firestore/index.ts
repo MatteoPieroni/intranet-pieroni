@@ -23,6 +23,7 @@ import {
   update,
   remove,
   getRecordsWhereArrayToArray,
+  get,
 } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
@@ -258,6 +259,47 @@ export const getRiscossi = async (headers: PassedHeaders) => {
   }
 };
 
+export const getRiscosso = async (headers: PassedHeaders, id: string) => {
+  try {
+    const records = await get<IRiscosso>(
+      headers,
+      ['riscossi', id],
+      (riscosso) => {
+        const {
+          date,
+          meta: { createdAt, ...meta },
+          verification: { verifiedAt, ...verification },
+          ...rest
+        } = riscosso;
+
+        const convertToDate = {
+          ...rest,
+          date: new Date(date.seconds * 1000),
+          meta: {
+            ...meta,
+            createdAt: new Date(createdAt.seconds * 1000),
+          },
+          verification: {
+            ...verification,
+            ...(verifiedAt
+              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
+              : {}),
+          },
+        };
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const createRiscosso = async (
   headers: PassedHeaders,
   data: Omit<IRiscosso, 'id' | 'meta' | 'verification' | 'date'>
@@ -278,7 +320,7 @@ export const createRiscosso = async (
 
     const now = Timestamp.now();
 
-    const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
+    const createdDoc = await create<Omit<IDbRiscosso, 'id' | 'verification'>>(
       headers,
       'riscossi',
       {
@@ -287,9 +329,6 @@ export const createRiscosso = async (
         meta: {
           author: user.currentUser.id,
           createdAt: now,
-        },
-        verification: {
-          isVerified: false,
         },
       }
     );
