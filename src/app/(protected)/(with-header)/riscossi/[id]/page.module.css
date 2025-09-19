@@ -3,8 +3,31 @@
   overflow: auto;
 }
 
+.noPrint {
+  @media print {
+    display: none !important;
+  }
+}
+
 .section {
   margin-block-end: 1.5rem;
   padding: 1rem;
   background-color: var(--background-0);
+}
+
+.document {
+  display: grid;
+  gap: 1rem;
+}
+
+.documentRow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.docsContainer table {
+  width: 100%;
 }
