@@ -24,6 +24,7 @@ import {
   remove,
   getRecordsWhereArrayToArray,
   get,
+  getRecordsWhereField,
 } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
@@ -344,25 +345,47 @@ export const createRiscosso = async (
   }
 };
 
-// export const getRiscossiForUser = async (
-//   headers: PassedHeaders,
-//   userId: string
-// ) => {
-//   try {
-//     const records = await getRecordsWhereField<IRiscosso>(
-//       headers,
-//       'riscossi',
-//       userId,
-//       (riscosso) => {
-//         const record = RiscossoSchema.parse(riscosso);
+export const getRiscossiForUser = async (
+  headers: PassedHeaders,
+  userId: string
+) => {
+  try {
+    const records = await getRecordsWhereField<IRiscosso>(
+      headers,
+      'riscossi',
+      { field: 'meta.author', value: userId },
+      (riscosso) => {
+        const {
+          date,
+          meta: { createdAt, ...meta },
+          verification: { verifiedAt, ...verification },
+          ...rest
+        } = riscosso;
 
-//         return record;
-//       }
-//     );
+        const convertToDate = {
+          ...rest,
+          date: new Date(date.seconds * 1000),
+          meta: {
+            ...meta,
+            createdAt: new Date(createdAt.seconds * 1000),
+          },
+          verification: {
+            ...verification,
+            ...(verifiedAt
+              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
+              : {}),
+          },
+        };
 
-//     return records;
-//   } catch (e) {
-//     console.error(e);
-//     throw e;
-//   }
-// };
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};

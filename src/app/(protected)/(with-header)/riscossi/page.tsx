@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../header-template.module.css';
-import { getRiscossi, getUser } from '@/services/firebase/server';
+import { getRiscossiForUser, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 
@@ -25,7 +25,7 @@ export default async function Riscossi() {
     throw new Error('User not found');
   }
 
-  const riscossi = await getRiscossi(currentHeaders);
+  const riscossi = await getRiscossiForUser(currentHeaders, currentUser.id);
 
   return (
     <main className={template.page}>
