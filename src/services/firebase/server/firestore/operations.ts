@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  orderBy,
   query,
   QueryDocumentSnapshot,
   UpdateData,
@@ -31,29 +32,11 @@ const converter = <T>(dto?: (snap: DocumentData) => T) => ({
 export const getRecords = async <Type extends DocumentData>(
   currentHeaders: PassedHeaders,
   address: string,
-  dto?: (dbData: DocumentData) => Type
-) => {
-  const firebaseServerApp = await getApp(currentHeaders);
-  const db = getFirestore(firebaseServerApp);
-
-  const querySnapshot = await getDocs(
-    collection(db, address).withConverter(converter<Type>(dto))
-  );
-
-  const data: Type[] = [];
-
-  querySnapshot.forEach((doc) => {
-    data.push(doc.data());
-  });
-
-  return data;
-};
-
-export const getRecordsWhereField = async <Type extends DocumentData>(
-  currentHeaders: PassedHeaders,
-  address: string,
-  queryData: { field: string; value: unknown },
-  dto?: (dbData: DocumentData) => Type
+  dto?: (dbData: DocumentData) => Type,
+  options?: {
+    orderData?: { field: string; direction: 'asc' | 'desc' };
+    queryData?: { field: string; value: unknown };
+  }
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);
   const db = getFirestore(firebaseServerApp);
@@ -62,7 +45,16 @@ export const getRecordsWhereField = async <Type extends DocumentData>(
     converter<Type>(dto)
   );
 
-  const q = query(collectionRef, where(queryData.field, '==', queryData.value));
+  const args = [
+    options?.queryData
+      ? where(options.queryData.field, '==', options.queryData.value)
+      : undefined,
+    options?.orderData
+      ? orderBy(options.orderData.field, options.orderData.direction)
+      : undefined,
+  ].filter((current) => current !== undefined);
+
+  const q = query(collectionRef, ...args);
 
   const querySnapshot = await getDocs(q);
 

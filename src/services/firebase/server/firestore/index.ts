@@ -24,7 +24,6 @@ import {
   remove,
   getRecordsWhereArrayToArray,
   get,
-  getRecordsWhereField,
 } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
@@ -231,27 +230,9 @@ export const getRiscossi = async (headers: PassedHeaders) => {
         const record = RiscossoSchema.parse(convertToDate);
 
         return record;
-      }
-    );
-
-    return records;
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
-export const getRiscosso = async (headers: PassedHeaders, id: string) => {
-  try {
-    const records = await get<IRiscosso>(
-      headers,
-      ['riscossi', id],
-      (riscosso) => {
-        const convertToDate = convertTimestampToDate(riscosso);
-
-        const record = RiscossoSchema.parse(convertToDate);
-
-        return record;
+      },
+      {
+        orderData: { field: 'date', direction: 'desc' },
       }
     );
 
@@ -267,10 +248,34 @@ export const getRiscossiForUser = async (
   userId: string
 ) => {
   try {
-    const records = await getRecordsWhereField<IRiscosso>(
+    const records = await getRecords<IRiscosso>(
       headers,
       'riscossi',
-      { field: 'meta.author', value: userId },
+      (riscosso) => {
+        const convertToDate = convertTimestampToDate(riscosso);
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      },
+      {
+        queryData: { field: 'meta.author', value: userId },
+        orderData: { field: 'date', direction: 'desc' },
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscosso = async (headers: PassedHeaders, id: string) => {
+  try {
+    const records = await get<IRiscosso>(
+      headers,
+      ['riscossi', id],
       (riscosso) => {
         const convertToDate = convertTimestampToDate(riscosso);
 
