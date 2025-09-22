@@ -1,0 +1,48 @@
+'use server';
+
+import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
+
+import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
+import { checkRiscosso } from '@/services/firebase/server';
+
+export type StateValidation = {
+  error?: string;
+  success?: string;
+};
+
+export const riscossoCheckAction = async (
+  _: StateValidation,
+  values: FormData
+) => {
+  const currentHeaders = await headers();
+
+  try {
+    const formId = values.get('id');
+    const formIsChecked = values.get('checked');
+
+    if (!formId) {
+      return {
+        error: FORM_FAIL_RISCOSSO,
+      };
+    }
+
+    const id = String(formId);
+    const isChecked = String(formIsChecked) === 'on';
+
+    await checkRiscosso(currentHeaders, { id, isChecked });
+
+    revalidatePath('/riscossi');
+
+    return {
+      success: FORM_SUCCESS_RISCOSSO,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      errors: {
+        general: FORM_FAIL_RISCOSSO,
+      },
+    };
+  }
+};
