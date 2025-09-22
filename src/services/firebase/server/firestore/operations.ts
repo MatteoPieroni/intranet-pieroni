@@ -49,7 +49,7 @@ export const getRecords = async <Type extends DocumentData>(
   return data;
 };
 
-export const getRecordWhereField = async <Type extends DocumentData>(
+export const getRecordsWhereField = async <Type extends DocumentData>(
   currentHeaders: PassedHeaders,
   address: string,
   queryData: { field: string; value: unknown },

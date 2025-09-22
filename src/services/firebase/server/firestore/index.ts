@@ -24,9 +24,11 @@ import {
   remove,
   getRecordsWhereArrayToArray,
   get,
+  getRecordsWhereField,
 } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
+import { convertTimestampToDate } from '../../utils/dto-riscossi';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -224,27 +226,7 @@ export const getRiscossi = async (headers: PassedHeaders) => {
       headers,
       'riscossi',
       (riscosso) => {
-        const {
-          date,
-          meta: { createdAt, ...meta },
-          verification: { verifiedAt, ...verification },
-          ...rest
-        } = riscosso;
-
-        const convertToDate = {
-          ...rest,
-          date: new Date(date.seconds * 1000),
-          meta: {
-            ...meta,
-            createdAt: new Date(createdAt.seconds * 1000),
-          },
-          verification: {
-            ...verification,
-            ...(verifiedAt
-              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
-              : {}),
-          },
-        };
+        const convertToDate = convertTimestampToDate(riscosso);
 
         const record = RiscossoSchema.parse(convertToDate);
 
@@ -265,27 +247,32 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
       headers,
       ['riscossi', id],
       (riscosso) => {
-        const {
-          date,
-          meta: { createdAt, ...meta },
-          verification: { verifiedAt, ...verification },
-          ...rest
-        } = riscosso;
+        const convertToDate = convertTimestampToDate(riscosso);
 
-        const convertToDate = {
-          ...rest,
-          date: new Date(date.seconds * 1000),
-          meta: {
-            ...meta,
-            createdAt: new Date(createdAt.seconds * 1000),
-          },
-          verification: {
-            ...verification,
-            ...(verifiedAt
-              ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
-              : {}),
-          },
-        };
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscossiForUser = async (
+  headers: PassedHeaders,
+  userId: string
+) => {
+  try {
+    const records = await getRecordsWhereField<IRiscosso>(
+      headers,
+      'riscossi',
+      { field: 'meta.author', value: userId },
+      (riscosso) => {
+        const convertToDate = convertTimestampToDate(riscosso);
 
         const record = RiscossoSchema.parse(convertToDate);
 
@@ -316,9 +303,15 @@ export const createRiscosso = async (
       meta: true,
       verification: true,
       date: true,
+      docs: true,
     }).parse(data);
 
     const now = Timestamp.now();
+
+    const docs = data.docs.map((doc) => ({
+      ...doc,
+      date: Timestamp.fromDate(doc.date),
+    }));
 
     const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
       headers,
@@ -326,6 +319,7 @@ export const createRiscosso = async (
       {
         ...verifiedData,
         date: now,
+        docs,
         meta: {
           author: user.currentUser.id,
           createdAt: now,
@@ -343,26 +337,3 @@ export const createRiscosso = async (
     throw e;
   }
 };
-
-// export const getRiscossiForUser = async (
-//   headers: PassedHeaders,
-//   userId: string
-// ) => {
-//   try {
-//     const records = await getRecordsWhereField<IRiscosso>(
-//       headers,
-//       'riscossi',
-//       userId,
-//       (riscosso) => {
-//         const record = RiscossoSchema.parse(riscosso);
-
-//         return record;
-//       }
-//     );
-
-//     return records;
-//   } catch (e) {
-//     console.error(e);
-//     throw e;
-//   }
-// };

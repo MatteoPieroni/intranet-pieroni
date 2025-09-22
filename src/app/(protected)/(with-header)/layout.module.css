@@ -6,6 +6,11 @@
     grid-template-areas: 'sidebar main';
     grid-template-columns: minmax(auto, 20%) 1fr;
   }
+
+  @media print {
+    grid-template-areas: 'main';
+    grid-template-columns: 1fr;
+  }
 }
 
 .sidebar {
@@ -14,6 +19,10 @@
   @media (min-width: 1024px) {
     grid-area: sidebar;
     display: contents;
+  }
+
+  @media print {
+    display: none;
   }
 }
 
@@ -24,6 +33,10 @@
   right: 2rem;
 
   @media (min-width: 1024px) {
+    display: none;
+  }
+
+  @media print {
     display: none;
   }
 }

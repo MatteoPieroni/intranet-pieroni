@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import * as z from 'zod';
 
-import { IDbRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
+import { IRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
 import { riscossoAction, StateValidation } from './riscosso-action';
 import styles from './riscosso-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -78,9 +78,10 @@ const emptyDoc = {
   number: '',
   type: '',
   total: 0,
+  date: new Date(),
 };
 
-type LocalDoc = (IDbRiscossoDoc | typeof emptyDoc) & {
+type LocalDoc = (IRiscossoDoc | typeof emptyDoc) & {
   id?: string;
 };
 
@@ -161,6 +162,15 @@ export const RiscossiForm = ({
                     <input
                       name="doc-number"
                       defaultValue={doc.number}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Data
+                    <input
+                      name="doc-date"
+                      type="date"
+                      defaultValue={doc.date.toISOString().split('T')[0]}
                       required
                     />
                   </label>
