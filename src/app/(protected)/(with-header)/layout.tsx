@@ -26,8 +26,7 @@ export default async function RootLayout({
         {currentUser && (
           <Header
             mailUrl={config.mailUrl}
-            isAdmin={currentUser.isAdmin}
-            scopes={currentUser.scopes}
+            permissions={currentUser.permissions}
             theme={currentUser.theme}
           />
         )}
@@ -37,8 +36,7 @@ export default async function RootLayout({
         {currentUser && (
           <HeaderModal
             mailUrl={config.mailUrl}
-            isAdmin={currentUser.isAdmin}
-            scopes={currentUser.scopes}
+            permissions={currentUser.permissions}
             theme={currentUser.theme}
           />
         )}
