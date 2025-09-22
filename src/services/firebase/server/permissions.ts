@@ -6,6 +6,20 @@ export const permissions = [
   'admin',
 ] as const;
 
-export const checkCanEditRiscossi = (userPermissions?: string[]) => {
-  return userPermissions?.some((permission) => permission === 'write/riscossi');
-};
+const checkForPermission =
+  (permissionToCheck: string) => (userPermissions?: string[]) => {
+    return !!userPermissions?.some(
+      (permission) => permission === permissionToCheck
+    );
+  };
+
+export const checkIsAdmin = checkForPermission('admin');
+
+const withIsAdmin =
+  (additionalCheck: ReturnType<typeof checkForPermission>) =>
+  (permissions?: string[]) =>
+    checkIsAdmin() || additionalCheck(permissions);
+
+export const checkCanEditRiscossi = withIsAdmin(
+  checkForPermission('write/riscossi')
+);
