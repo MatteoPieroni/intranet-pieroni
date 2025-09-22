@@ -337,3 +337,42 @@ export const createRiscosso = async (
     throw e;
   }
 };
+
+export const checkRiscosso = async (
+  headers: PassedHeaders,
+  data: {
+    id: string;
+    isChecked: boolean;
+  }
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const now = Timestamp.now();
+
+    const verification = data.isChecked
+      ? {
+          isVerified: data.isChecked,
+          verifiedAt: now,
+          verifyAuthor: user.currentUser.id,
+        }
+      : ({
+          isVerified: false,
+        } as const);
+
+    await update<Pick<IDbRiscosso, 'verification'>>(
+      headers,
+      ['riscossi', data.id],
+      {
+        verification,
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
