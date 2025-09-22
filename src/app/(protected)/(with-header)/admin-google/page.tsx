@@ -9,6 +9,7 @@ import { Business } from '@/components/google/business/business';
 import { IGoogleAuth } from '@/services/firebase/db-types';
 import styles from './page.module.css';
 import template from '../header-template.module.css';
+import { checkCanEditGMB } from '@/services/firebase/server/permissions';
 
 const manageGoogleAuth = async (googleAuth: IGoogleAuth | undefined) => {
   if (!googleAuth?.refresh_token) {
@@ -36,7 +37,7 @@ export default async function AdminGoogle() {
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  if (!currentUser?.isAdmin && !currentUser?.scopes?.gmb) {
+  if (!checkCanEditGMB(currentUser?.permissions)) {
     return redirect('/');
   }
 
