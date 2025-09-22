@@ -6,6 +6,7 @@ import { getRiscosso, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
+import { formatDate } from '@/utils/formatDate';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',
@@ -58,6 +59,7 @@ export default async function Riscossi({
     paymentChequeNumber,
     paymentChequeValue,
   } = riscosso;
+  const isAlreadyChecked = riscosso.verification.isVerified;
 
   return (
     <main className={template.page}>
@@ -70,9 +72,11 @@ export default async function Riscossi({
           <h2 className={styles.noPrint}>Documento</h2>
           <div className={`${styles.actionBar} ${styles.noPrint}`}>
             <PrintButton />
-            <a href="#edit" className="button">
-              Modifica
-            </a>
+            {!isAlreadyChecked && (
+              <a href="#edit" className="button">
+                Modifica
+              </a>
+            )}
           </div>
           <div className={styles.documentContainer}>
             <div className={styles.document}>
@@ -102,7 +106,7 @@ export default async function Riscossi({
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{date.toDateString()}</td>
+                      <td>{formatDate(date)}</td>
                       <td>{client}</td>
                       <th scope="row">{id}</th>
                     </tr>
@@ -130,7 +134,7 @@ export default async function Riscossi({
                     {docs.map((doc) => (
                       <tr key={doc.number}>
                         <th scope="row">{doc.number}</th>
-                        <td>{doc.date.toDateString()}</td>
+                        <td>{formatDate(doc.date)}</td>
                         <td>{documentTypes[doc.type]}</td>
                         <td className="number">{doc.total} €</td>
                       </tr>
@@ -151,6 +155,7 @@ export default async function Riscossi({
                 {paymentMethods[paymentMethod]}
                 {paymentMethod === 'assegno' && (
                   <>
+                    <br />
                     N° assegno: {paymentChequeNumber} - Importo{' '}
                     {paymentChequeValue}
                   </>
@@ -159,10 +164,12 @@ export default async function Riscossi({
             </div>
           </div>
         </div>
-        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
-          <h2>Modifica</h2>
-          <RiscossiForm riscosso={riscosso} />
-        </div>
+        {!isAlreadyChecked && (
+          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+            <h2>Modifica</h2>
+            <RiscossiForm riscosso={riscosso} />
+          </div>
+        )}
       </div>
     </main>
   );

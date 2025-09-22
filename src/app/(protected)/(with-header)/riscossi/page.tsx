@@ -5,6 +5,7 @@ import template from '../header-template.module.css';
 import { getRiscossiForUser, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
+import { formatDate } from '@/utils/formatDate';
 
 export const metadata: Metadata = {
   title: 'Riscossi - Intranet Pieroni srl',
@@ -52,7 +53,7 @@ export default async function Riscossi() {
               {riscossi.map((riscosso) => (
                 <tr key={riscosso.id}>
                   <th scope="row">{riscosso.id}</th>
-                  <td>{riscosso.date.toDateString()}</td>
+                  <td>{formatDate(riscosso.date)}</td>
                   <td>{riscosso.client}</td>
                   <td className="number">{riscosso.total} €</td>
                   <td>{companies[riscosso.company]}</td>
