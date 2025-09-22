@@ -106,6 +106,14 @@ export type IDbRiscossoDoc = {
   number: string;
   type: 'fattura' | 'DDT' | 'impegno';
   total: number;
+  date: Timestamp;
+};
+
+export type IRiscossoDoc = {
+  number: string;
+  type: 'fattura' | 'DDT' | 'impegno';
+  total: number;
+  date: Date;
 };
 
 export type IDbRiscosso = {
@@ -135,8 +143,12 @@ export type IDbRiscosso = {
       };
 };
 
-export type IRiscosso = Omit<IDbRiscosso, 'date' | 'meta' | 'verification'> & {
+export type IRiscosso = Omit<
+  IDbRiscosso,
+  'date' | 'meta' | 'verification' | 'docs'
+> & {
   date: Date;
+  docs: IRiscossoDoc[];
   meta: {
     createdAt: Date;
     author: string;

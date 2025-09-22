@@ -46,6 +46,7 @@ export const RiscossoSchema = z.object({
       number: z.string(),
       type: z.enum(['fattura', 'DDT', 'impegno']),
       total: z.number(),
+      date: z.date(),
     })
   ),
   meta: z.object({

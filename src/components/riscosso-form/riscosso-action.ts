@@ -27,25 +27,33 @@ const checkDocumentType = (
   type: string
 ): type is (typeof documentType)[number] =>
   documentType.includes(<(typeof documentType)[number]>type);
+const checkDocumentDate = (date: FormDataEntryValue): date is string =>
+  typeof date === 'string' && !isNaN(Date.parse(date));
 
 const handleDocs = async (
   types: FormDataEntryValue[],
+  dates: FormDataEntryValue[],
   numbers: FormDataEntryValue[],
   totals: FormDataEntryValue[]
 ) => {
-  if (types.length !== numbers.length || types.length !== totals.length) {
+  if (
+    types.length !== numbers.length ||
+    types.length !== totals.length ||
+    types.length !== dates.length
+  ) {
     throw new Error('Something wrong with docs');
   }
 
   const documents = types
     .map((type, index) => {
       const typeString = String(type);
-      if (!checkDocumentType(typeString)) {
+      if (!checkDocumentType(typeString) || !checkDocumentDate(dates[index])) {
         throw new Error();
       }
 
       return {
         type: typeString,
+        date: new Date(dates[index]),
         number: String(numbers[index]),
         total: Number(totals[index]),
       };
@@ -69,13 +77,15 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
     const formDocsNumbers = values.getAll('doc-number');
+    const formDocsDates = values.getAll('doc-date');
     const formDocsTypes = values.getAll('doc-type');
     const formDocsTotals = values.getAll('doc-total');
 
     if (
       formDocsNumbers.length === 0 ||
       formDocsTypes.length === 0 ||
-      formDocsTotals.length === 0
+      formDocsTotals.length === 0 ||
+      formDocsDates.length === 0
     ) {
       return {
         error: FORM_FAIL_RISCOSSO,
@@ -111,6 +121,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
 
     const docs = await handleDocs(
       formDocsTypes,
+      formDocsDates,
       formDocsNumbers,
       formDocsTotals
     );

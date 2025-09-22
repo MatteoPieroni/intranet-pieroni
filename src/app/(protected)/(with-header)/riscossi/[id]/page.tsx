@@ -130,7 +130,7 @@ export default async function Riscossi({
                     {docs.map((doc) => (
                       <tr key={doc.number}>
                         <th scope="row">{doc.number}</th>
-                        <td>{/*doc.date.toDateString()*/}</td>
+                        <td>{doc.date.toDateString()}</td>
                         <td>{documentTypes[doc.type]}</td>
                         <td className="number">{doc.total} €</td>
                       </tr>
