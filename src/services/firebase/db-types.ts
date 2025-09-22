@@ -1,16 +1,18 @@
 import { Timestamp } from 'firebase/firestore';
 
+type UserScopes =
+  | 'read/riscossi'
+  | 'write/riscossi'
+  | 'write/gmb'
+  | 'write/config'
+  | 'admin';
+
 export interface IDbUser {
   nome: string;
   cognome: string;
   email: string;
   isAdmin: boolean;
-  scopes?: {
-    gmb?: boolean;
-    config?: {
-      transport?: boolean;
-    };
-  };
+  permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
 }
@@ -21,12 +23,7 @@ export interface IUser {
   surname: string;
   email: string;
   isAdmin: boolean;
-  scopes?: {
-    gmb?: boolean;
-    config?: {
-      transport?: boolean;
-    };
-  };
+  permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
 }

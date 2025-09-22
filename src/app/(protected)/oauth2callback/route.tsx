@@ -4,12 +4,13 @@ import { headers } from 'next/headers';
 
 import { googleClient } from '@/services/google-apis';
 import { pushGoogleAuth, getUser } from '@/services/firebase/server';
+import { checkIsAdmin } from '@/services/firebase/server/permissions';
 
 export async function GET(request: NextRequest) {
   const currentHeaders = await headers();
 
   const user = await getUser(currentHeaders);
-  if (!user.currentUser?.isAdmin) {
+  if (!checkIsAdmin(user.currentUser?.permissions)) {
     return Response.error();
   }
 

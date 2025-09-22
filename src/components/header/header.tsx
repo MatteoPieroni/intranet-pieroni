@@ -8,20 +8,21 @@ import styles from './header.module.css';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 import { MenuIcon } from '../icons/menu';
 import { CloseIcon } from '../icons/close';
+import { IUser } from '@/services/firebase/db-types';
+import {
+  checkCanEditConfig,
+  checkCanEditGMB,
+  checkCanEditRiscossi,
+  checkIsAdmin,
+} from '@/services/firebase/server/permissions';
 
 type HeaderProps = {
   mailUrl: string;
-  isAdmin: boolean;
-  scopes?: {
-    gmb?: boolean;
-    config?: {
-      transport?: boolean;
-    };
-  };
+  permissions: IUser['permissions'];
   theme?: 'light' | 'dark' | null;
 };
 
-export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
+export function Header({ mailUrl, theme, permissions }: HeaderProps) {
   const currentPath = usePathname();
 
   const getLinkProps = (href: string) => {
@@ -60,13 +61,19 @@ export function Header({ mailUrl, isAdmin, scopes, theme }: HeaderProps) {
           </a>
           <a {...getLinkProps('/maps')}>Costo trasporti</a>
           <a {...getLinkProps('/cartello')}>Crea cartello</a>
-          {(isAdmin || scopes?.gmb) && (
+          <a {...getLinkProps('/riscossi')}>Riscossi</a>
+          {checkCanEditRiscossi(permissions) && (
+            <a {...getLinkProps('/riscossi/admin')}>Gestione riscossi</a>
+          )}
+          {checkCanEditGMB(permissions) && (
             <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
           )}
-          {(isAdmin || scopes?.config?.transport) && (
+          {checkCanEditConfig(permissions) && (
             <a {...getLinkProps('/admin')}>Admin</a>
           )}
-          {isAdmin && <a {...getLinkProps('/admin/users')}>Utenti e team</a>}
+          {checkIsAdmin(permissions) && (
+            <a {...getLinkProps('/admin/users')}>Utenti e team</a>
+          )}
 
           <button className={styles.logOut} onClick={handleSignOut}>
             Esci

@@ -8,6 +8,7 @@ import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
 import { getTeams, getUsers } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
+import { checkIsAdmin } from '@/services/firebase/server/permissions';
 
 export const metadata: Metadata = {
   title: 'Admin utenti - Intranet Pieroni srl',
@@ -18,7 +19,7 @@ export default async function Admin() {
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  const isAdmin = currentUser?.isAdmin;
+  const isAdmin = checkIsAdmin(currentUser?.permissions);
 
   const [users, teams] = await Promise.all([
     getUsers(currentHeaders),

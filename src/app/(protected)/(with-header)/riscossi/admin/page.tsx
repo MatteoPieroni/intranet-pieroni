@@ -6,6 +6,7 @@ import template from '../../header-template.module.css';
 import { getRiscossi, getUser, getUsers } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
+import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 
 export const metadata: Metadata = {
   title: 'Gestisci riscossi - Intranet Pieroni srl',
@@ -22,10 +23,7 @@ export default async function Riscossi() {
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  if (
-    !currentUser?.isAdmin
-    // && !currentUser?.scopes?.gmb
-  ) {
+  if (!checkCanEditRiscossi(currentUser?.permissions)) {
     return redirect('/');
   }
 

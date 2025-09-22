@@ -8,6 +8,7 @@ import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
 import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
+import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',
@@ -49,12 +50,11 @@ export default async function Riscossi({
     throw new Error('User not found');
   }
 
-  // check scope for riscossi
-  const isAdminUser = currentUser.isAdmin;
+  const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
 
   const [riscosso, users] = await Promise.all([
     getRiscosso(currentHeaders, id),
-    isAdminUser ? getUsers(currentHeaders) : undefined,
+    canEditRiscossi ? getUsers(currentHeaders) : undefined,
   ]);
   const {
     company,
@@ -80,7 +80,7 @@ export default async function Riscossi({
       </div>
 
       <div className={styles.container}>
-        {isAdminUser && (
+        {canEditRiscossi && (
           <div className={`${styles.section} ${styles.noPrint}`}>
             <h2>Gestisci documento</h2>
             {isAlreadyChecked && (

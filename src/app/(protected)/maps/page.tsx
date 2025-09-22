@@ -36,10 +36,9 @@ export default async function Maps() {
         <div className={styles.mobileMenuContainer}>
           {currentUser && (
             <HeaderModal
-              isAdmin={currentUser.isAdmin}
+              permissions={currentUser.permissions}
               mailUrl={config.mailUrl}
               theme={currentUser.theme}
-              scopes={currentUser.scopes}
             />
           )}
         </div>
