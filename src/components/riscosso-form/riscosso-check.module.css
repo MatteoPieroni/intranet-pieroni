@@ -1,0 +1,22 @@
+.container {
+  display: grid;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.checkbox {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+.checkbox:has(input) {
+  margin-block-end: 0;
+}
