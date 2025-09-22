@@ -5,6 +5,11 @@
   grid-template-columns: 1fr;
   row-gap: 1rem;
   overflow: hidden;
+
+  @media print {
+    grid-template-areas: 'main';
+    grid-template-rows: 1fr;
+  }
 }
 
 .header {
@@ -14,4 +19,8 @@
   border: 1px solid var(--border-0);
   background-color: var(--background-0);
   padding: 0.5rem;
+
+  @media print {
+    display: none;
+  }
 }

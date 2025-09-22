@@ -5,6 +5,7 @@ import template from '../../header-template.module.css';
 import { getRiscosso, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
+import { PrintButton } from '@/components/print-button/print-button';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',
@@ -67,6 +68,12 @@ export default async function Riscossi({
       <div className={styles.container}>
         <div className={styles.section}>
           <h2 className={styles.noPrint}>Documento</h2>
+          <div className={`${styles.actionBar} ${styles.noPrint}`}>
+            <PrintButton />
+            <a href="#edit" className="button">
+              Modifica
+            </a>
+          </div>
           <div className={styles.documentContainer}>
             <div className={styles.document}>
               <div className={styles.documentRow}>
@@ -152,7 +159,8 @@ export default async function Riscossi({
             </div>
           </div>
         </div>
-        <div className={`${styles.noPrint} ${styles.section}`}>
+        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+          <h2>Modifica</h2>
           <RiscossiForm riscosso={riscosso} />
         </div>
       </div>
