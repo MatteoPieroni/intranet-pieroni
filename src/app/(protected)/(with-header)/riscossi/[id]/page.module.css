@@ -15,17 +15,48 @@
   background-color: var(--background-0);
 }
 
+.documentContainer {
+  border: 2px solid var(--border-0);
+  padding: 1rem;
+  aspect-ratio: 210/297;
+  max-width: 800px;
+  width: 75%;
+}
+
 .document {
   display: grid;
   gap: 1rem;
 }
 
+.documentTitle {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.documentSubtitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.documentSectionTitle {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
 .documentRow {
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.alignCenter {
+  justify-content: center;
+}
+
+.alignRight {
+  justify-content: right;
 }
 
 .docsContainer table {
