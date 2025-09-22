@@ -14,6 +14,7 @@ import { normaliseObjectKeysToArray } from '@/utils/normaliseObjectKeysToArray';
 import { type PassedHeaders } from '../serverApp';
 import { get, update } from './operations';
 import { getUser } from '../auth';
+import { checkCanEditConfig } from '../permissions';
 
 const SHORT_CACHE = 60 * 60; // one hour
 const LONG_CACHE = 60 * 60 * 24 * 7; // one week
@@ -122,10 +123,7 @@ export const pushConfig = async (
   try {
     const user = await getUser(headers);
 
-    if (
-      !user.currentUser?.isAdmin &&
-      !Object.values(user.currentUser?.scopes?.config || {}).some(Boolean)
-    ) {
+    if (!checkCanEditConfig(user.currentUser?.permissions)) {
       throw new Error(`Missing permissions for ${user.currentUser?.email}`);
     }
 

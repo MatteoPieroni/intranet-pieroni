@@ -16,6 +16,10 @@ import { LinkForm } from '@/components/link-form/link-form';
 import { QuoteForm } from '@/components/quote-form/quote-form';
 import template from '../header-template.module.css';
 import { ConfigForm } from '@/components/config-form/config-form';
+import {
+  checkCanEditConfig,
+  checkIsAdmin,
+} from '@/services/firebase/server/permissions';
 
 export const metadata: Metadata = {
   title: 'Admin - Intranet Pieroni srl',
@@ -26,8 +30,8 @@ export default async function Admin() {
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
-  const isAdmin = currentUser?.isAdmin;
-  const canEditTransport = currentUser?.scopes?.config?.transport;
+  const isAdmin = checkIsAdmin(currentUser?.permissions);
+  const canEditConfig = checkCanEditConfig(currentUser?.permissions);
 
   const [links, quote, tvText, config, teams] = await Promise.all([
     getLinksWithoutCache(currentHeaders),
@@ -37,7 +41,7 @@ export default async function Admin() {
     getTeams(currentHeaders),
   ]);
 
-  if (!isAdmin && !canEditTransport) {
+  if (!canEditConfig) {
     return redirect('/');
   }
 
@@ -84,43 +88,41 @@ export default async function Admin() {
             </div>
           </>
         )}
-        {(canEditTransport || isAdmin) && (
-          <div className={styles.section}>
-            <h2>Configurazione</h2>
-            <ConfigForm>
-              {isAdmin && (
-                <label>
-                  Url mail
-                  <input name="mailUrl" defaultValue={config.mailUrl} />
-                </label>
-              )}
+        <div className={styles.section}>
+          <h2>Configurazione</h2>
+          <ConfigForm>
+            {isAdmin && (
               <label>
-                Costo trasporto al minuto
-                <input
-                  type="number"
-                  name="transportCostPerMinute"
-                  defaultValue={config.transportCostPerMinute}
-                />
+                Url mail
+                <input name="mailUrl" defaultValue={config.mailUrl} />
               </label>
-              <label>
-                Costo trasporto minimo
-                <input
-                  type="number"
-                  name="transportCostMinimum"
-                  defaultValue={config.transportCostMinimum}
-                />
-              </label>
-              <label>
-                Ore base trasporto
-                <input
-                  type="number"
-                  name="transportHourBase"
-                  defaultValue={config.transportHourBase}
-                />
-              </label>
-            </ConfigForm>
-          </div>
-        )}
+            )}
+            <label>
+              Costo trasporto al minuto
+              <input
+                type="number"
+                name="transportCostPerMinute"
+                defaultValue={config.transportCostPerMinute}
+              />
+            </label>
+            <label>
+              Costo trasporto minimo
+              <input
+                type="number"
+                name="transportCostMinimum"
+                defaultValue={config.transportCostMinimum}
+              />
+            </label>
+            <label>
+              Ore base trasporto
+              <input
+                type="number"
+                name="transportHourBase"
+                defaultValue={config.transportHourBase}
+              />
+            </label>
+          </ConfigForm>
+        </div>
       </div>
     </main>
   );
