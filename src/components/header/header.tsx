@@ -12,6 +12,7 @@ import { IUser } from '@/services/firebase/db-types';
 import {
   checkCanEditConfig,
   checkCanEditGMB,
+  checkCanEditRiscossi,
   checkIsAdmin,
 } from '@/services/firebase/server/permissions';
 
@@ -60,6 +61,10 @@ export function Header({ mailUrl, theme, permissions }: HeaderProps) {
           </a>
           <a {...getLinkProps('/maps')}>Costo trasporti</a>
           <a {...getLinkProps('/cartello')}>Crea cartello</a>
+          <a {...getLinkProps('/riscossi')}>Riscossi</a>
+          {checkCanEditRiscossi(permissions) && (
+            <a {...getLinkProps('/riscossi/admin')}>Gestione riscossi</a>
+          )}
           {checkCanEditGMB(permissions) && (
             <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
           )}
