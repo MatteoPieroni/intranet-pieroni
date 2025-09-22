@@ -12,12 +12,6 @@ export interface IDbUser {
   cognome: string;
   email: string;
   isAdmin: boolean;
-  scopes?: {
-    gmb?: boolean;
-    config?: {
-      transport?: boolean;
-    };
-  };
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
@@ -29,12 +23,6 @@ export interface IUser {
   surname: string;
   email: string;
   isAdmin: boolean;
-  scopes?: {
-    gmb?: boolean;
-    config?: {
-      transport?: boolean;
-    };
-  };
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
