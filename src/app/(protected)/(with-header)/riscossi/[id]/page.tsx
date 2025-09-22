@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
-import { getRiscosso, getUser } from '@/services/firebase/server';
+import { getRiscosso, getUser, getUsers } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
+import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',
@@ -48,7 +49,13 @@ export default async function Riscossi({
     throw new Error('User not found');
   }
 
-  const riscosso = await getRiscosso(currentHeaders, id);
+  // check scope for riscossi
+  const isAdminUser = currentUser.isAdmin;
+
+  const [riscosso, users] = await Promise.all([
+    getRiscosso(currentHeaders, id),
+    isAdminUser ? getUsers(currentHeaders) : undefined,
+  ]);
   const {
     company,
     date,
@@ -58,8 +65,13 @@ export default async function Riscossi({
     paymentMethod,
     paymentChequeNumber,
     paymentChequeValue,
+    verification,
   } = riscosso;
-  const isAlreadyChecked = riscosso.verification.isVerified;
+  const isAlreadyChecked = verification.isVerified;
+
+  const userVerification = users?.find(
+    (user) => user.id === verification.verifyAuthor
+  );
 
   return (
     <main className={template.page}>
@@ -68,8 +80,28 @@ export default async function Riscossi({
       </div>
 
       <div className={styles.container}>
+        {isAdminUser && (
+          <div className={`${styles.section} ${styles.noPrint}`}>
+            <h2>Gestisci documento</h2>
+            {isAlreadyChecked && (
+              <p className={styles.confirmation}>
+                Confermato da {userVerification?.email} il{' '}
+                {formatDate(verification.verifiedAt)}
+              </p>
+            )}
+            <div>
+              <RiscossoCheck id={id} isVerified={verification.isVerified} />
+            </div>
+          </div>
+        )}
+
         <div className={styles.section}>
           <h2 className={styles.noPrint}>Documento</h2>
+          {isAlreadyChecked && (
+            <p className={styles.confirmation}>
+              Confermato il {formatDate(verification.verifiedAt)}
+            </p>
+          )}
           <div className={`${styles.actionBar} ${styles.noPrint}`}>
             <PrintButton />
             {!isAlreadyChecked && (

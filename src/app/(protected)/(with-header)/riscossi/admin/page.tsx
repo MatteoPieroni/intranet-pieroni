@@ -77,13 +77,15 @@ export default async function Riscossi() {
                   <td>{riscosso.user}</td>
                   <td>
                     <input
+                      readOnly
+                      disabled
                       aria-label="Verificato"
                       type="checkbox"
                       checked={riscosso.verification?.isVerified}
                     />
                   </td>
                   <td>
-                    <a href={`riscossi/${riscosso.id}`}>Vedi</a>
+                    <a href={`/riscossi/${riscosso.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}
