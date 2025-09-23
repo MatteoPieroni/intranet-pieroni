@@ -302,6 +302,7 @@ export const RiscossiForm = ({
         </div>
       </div>
       {!pending && <FormStatus text={state.success} type="success" />}
+      {!pending && <FormStatus text={state.partialSuccess} type="warning" />}
       {!pending && <FormStatus text={state.error} type="error" />}
     </form>
   );

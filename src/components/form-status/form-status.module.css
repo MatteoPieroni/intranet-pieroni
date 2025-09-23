@@ -18,3 +18,8 @@
   background-color: var(--background-error);
   color: var(--text-error);
 }
+
+.warning {
+  background-color: var(--background-warning);
+  color: var(--text-warning);
+}

@@ -20,12 +20,14 @@ export const configAction = async (_: StateValidation, values: FormData) => {
 
   try {
     const formMailUrl = values.get('mailUrl');
+    const formEmailRiscossi = values.get('emailRiscossi');
     const formTransportCostMinimum = values.get('transportCostMinimum');
     const formTransportCostPerMinute = values.get('transportCostPerMinute');
     const formTransportHourBase = values.get('transportHourBase');
 
     const data = {
       ...(formMailUrl && { mail_url: String(formMailUrl) }),
+      ...(formEmailRiscossi && { emailRiscossi: String(formEmailRiscossi) }),
       ...(formTransportCostMinimum &&
         !isNaN(Number(formTransportCostMinimum)) && {
           transport_cost_minimum: Number(formTransportCostMinimum),

@@ -88,6 +88,7 @@ export interface IDbConfig {
   transport_cost_per_minute: number;
   transport_cost_minimum: number;
   transport_hour_base: number;
+  emailRiscossi: string;
 }
 
 export type IConfig = {
@@ -95,6 +96,7 @@ export type IConfig = {
   transportCostPerMinute: number;
   transportCostMinimum: number;
   transportHourBase: number;
+  emailRiscossi: string;
 };
 
 export type IFileCategories = 'link-icons' | 'quote';

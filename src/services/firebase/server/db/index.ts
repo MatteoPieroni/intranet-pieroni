@@ -28,6 +28,7 @@ export const getConfigWithoutCache = async (headers: PassedHeaders) => {
       transportCostPerMinute: data.transport_cost_per_minute,
       transportCostMinimum: data.transport_cost_minimum,
       transportHourBase: data.transport_hour_base,
+      emailRiscossi: data.emailRiscossi,
     } satisfies IConfig;
   } catch (e) {
     console.error(e);

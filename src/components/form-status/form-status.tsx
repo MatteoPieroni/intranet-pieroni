@@ -1,6 +1,6 @@
 import styles from './form-status.module.css';
 
-type FormStatusProps = { text?: string; type: 'error' | 'success' };
+type FormStatusProps = { text?: string; type: 'error' | 'success' | 'warning' };
 
 export const FormStatus = ({ text, type }: FormStatusProps) => {
   return (

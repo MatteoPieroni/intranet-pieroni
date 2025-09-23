@@ -3,12 +3,21 @@
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
-import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
-import { createRiscosso } from '@/services/firebase/server';
+import {
+  FORM_FAIL_RISCOSSO,
+  FORM_PARTIAL_RISCOSSO,
+  FORM_SUCCESS_RISCOSSO,
+} from '@/consts';
+import {
+  createRiscosso,
+  getConfigWithoutCache,
+} from '@/services/firebase/server';
+import { sendRiscossoCreation } from '@/services/email';
 
 export type StateValidation = {
   error?: string;
   success?: string;
+  partialSuccess?: string;
 };
 
 const companies = ['pieroni', 'pieroni-mostra', 'pellet'] as const;
@@ -68,6 +77,8 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
   const currentHeaders = await headers();
 
   try {
+    const config = await getConfigWithoutCache(currentHeaders);
+
     const formClient = values.get('client');
     const formCompany = values.get('company');
     const formTotal = values.get('total');
@@ -127,7 +138,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     );
 
     if (isNew && !id) {
-      await createRiscosso(currentHeaders, {
+      const createdRiscosso = await createRiscosso(currentHeaders, {
         client,
         company,
         total,
@@ -136,6 +147,18 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
+
+      try {
+        await sendRiscossoCreation({
+          id: createdRiscosso.id,
+          client,
+          link: `https://interno.pieroni.it/riscossi/${createdRiscosso.id}`,
+          total,
+          emailTo: config.emailRiscossi,
+        });
+      } catch {
+        throw new Error('EMAIL_FAILED');
+      }
     } else {
       // await pushLink(currentHeaders, {
       //   description,
@@ -153,6 +176,15 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     };
   } catch (e) {
     console.error(e);
+
+    if (e instanceof Error) {
+      if (e.message === 'EMAIL_FAILED') {
+        return {
+          partialSuccess: FORM_PARTIAL_RISCOSSO,
+        };
+      }
+    }
+
     return {
       errors: {
         general: FORM_FAIL_RISCOSSO,
