@@ -13,6 +13,10 @@ import {
   getConfigWithoutCache,
 } from '@/services/firebase/server';
 import { sendRiscossoCreation } from '@/services/email';
+import {
+  RiscossoDocSchema,
+  RiscossoSchema,
+} from '@/services/firebase/validator';
 
 export type StateValidation = {
   error?: string;
@@ -20,24 +24,12 @@ export type StateValidation = {
   partialSuccess?: string;
 };
 
-const companies = ['pieroni', 'pieroni-mostra', 'pellet'] as const;
-const paymentMethods = ['assegno', 'contanti', 'bancomat'] as const;
-const documentType = ['DDT', 'fattura', 'impegno'] as const;
-
-const checkCompanyType = (
-  company: string
-): company is (typeof companies)[number] =>
-  companies.includes(<(typeof companies)[number]>company);
-const checkPaymentMethodType = (
-  paymentMethod: string
-): paymentMethod is (typeof paymentMethods)[number] =>
-  paymentMethods.includes(<(typeof paymentMethods)[number]>paymentMethod);
-const checkDocumentType = (
-  type: string
-): type is (typeof documentType)[number] =>
-  documentType.includes(<(typeof documentType)[number]>type);
-const checkDocumentDate = (date: FormDataEntryValue): date is string =>
-  typeof date === 'string' && !isNaN(Date.parse(date));
+const FormFieldsSchema = RiscossoSchema.omit({
+  id: true,
+  date: true,
+  meta: true,
+  verification: true,
+});
 
 const handleDocs = async (
   types: FormDataEntryValue[],
@@ -46,26 +38,22 @@ const handleDocs = async (
   totals: FormDataEntryValue[]
 ) => {
   if (
+    types.length === 0 ||
     types.length !== numbers.length ||
     types.length !== totals.length ||
     types.length !== dates.length
   ) {
-    throw new Error('Something wrong with docs');
+    throw new Error('DOCS_ERROR');
   }
 
   const documents = types
     .map((type, index) => {
-      const typeString = String(type);
-      if (!checkDocumentType(typeString) || !checkDocumentDate(dates[index])) {
-        throw new Error();
-      }
-
-      return {
-        type: typeString,
-        date: new Date(dates[index]),
+      return RiscossoDocSchema.parse({
+        type: String(type),
+        date: new Date(String(dates[index])),
         number: String(numbers[index]),
         total: Number(totals[index]),
-      };
+      });
     })
     // remove empty
     .filter((doc) => !!doc.type);
@@ -79,35 +67,12 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
   try {
     const config = await getConfigWithoutCache(currentHeaders);
 
-    const formClient = values.get('client');
-    const formCompany = values.get('company');
-    const formTotal = values.get('total');
-    const formPaymentMethod = values.get('payment-method');
-    const formPaymentChequeNumber = values.get('payment-cheque-number');
-    const formPaymentChequeValue = values.get('payment-cheque-value');
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
     const formDocsNumbers = values.getAll('doc-number');
     const formDocsDates = values.getAll('doc-date');
     const formDocsTypes = values.getAll('doc-type');
     const formDocsTotals = values.getAll('doc-total');
-
-    if (
-      formDocsNumbers.length === 0 ||
-      formDocsTypes.length === 0 ||
-      formDocsTotals.length === 0 ||
-      formDocsDates.length === 0
-    ) {
-      return {
-        error: FORM_FAIL_RISCOSSO,
-      };
-    }
-
-    if (!formClient || !formCompany || !formTotal || !formPaymentMethod) {
-      return {
-        error: FORM_FAIL_RISCOSSO,
-      };
-    }
 
     if (!formId && !formIsNew) {
       return {
@@ -117,25 +82,34 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    const client = String(formClient);
-    const company = String(formCompany);
-    const total = Number(formTotal);
-    const paymentMethod = String(formPaymentMethod);
-    const paymentChequeNumber = String(formPaymentChequeNumber);
-    const paymentChequeValue = Number(formPaymentChequeValue);
-    const id = String(formId);
-    const isNew = String(formIsNew) === 'NEW';
-
-    if (!checkCompanyType(company) || !checkPaymentMethodType(paymentMethod)) {
-      throw new Error('data invalid');
-    }
-
     const docs = await handleDocs(
       formDocsTypes,
       formDocsDates,
       formDocsNumbers,
       formDocsTotals
     );
+
+    const addedTotal = docs.reduce((total, doc) => total + doc.total, 0);
+
+    const {
+      client,
+      company,
+      total,
+      paymentMethod,
+      paymentChequeNumber,
+      paymentChequeValue,
+    } = FormFieldsSchema.parse({
+      total: addedTotal,
+      client: values.get('client'),
+      company: values.get('company'),
+      paymentMethod: values.get('payment-method'),
+      paymentChequeValue: Number(values.get('payment-cheque-number')),
+      paymentChequeNumber: values.get('payment-cheque-value'),
+      docs,
+    });
+
+    const id = String(formId);
+    const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
       const createdRiscosso = await createRiscosso(currentHeaders, {
@@ -186,9 +160,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     }
 
     return {
-      errors: {
-        general: FORM_FAIL_RISCOSSO,
-      },
+      error: FORM_FAIL_RISCOSSO,
     };
   }
 };
