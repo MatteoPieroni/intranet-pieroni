@@ -164,3 +164,101 @@ export type IRiscosso = Omit<
         verifyAuthor?: string;
       };
 };
+
+type IssueType =
+  | 'delay-preparation'
+  | 'missing-article'
+  | 'delay-arrival'
+  | 'wrong-supplier'
+  | 'client-return'
+  | 'insufficient-order'
+  | 'suppllier-defect'
+  | 'breakage'
+  | 'not-conforming'
+  | 'client-mistake'
+  | 'plumber-mistake'
+  | 'builder-mistake'
+  | 'project-mistake';
+
+type SupplierInfo = {
+  supplier: string;
+  documentType: string;
+  documentDate: string;
+  deliveryContext: string;
+  product: {
+    number: string;
+    quantity: number;
+    description: string;
+  };
+};
+
+type IDbAction = {
+  date: Timestamp;
+  content: string;
+  attachments?: string[];
+  result: string;
+};
+
+type IAction = {
+  date: Date;
+  content: string;
+  attachments?: string[];
+  result: string;
+};
+
+export type IDbIssue = {
+  id: string;
+  date: Timestamp;
+  commission: string;
+  client: string;
+  issueType: IssueType;
+  summary: string;
+  supplierInfo: SupplierInfo;
+  timeline: IDbAction[];
+  result: {
+    date: Timestamp;
+    summary: string;
+  };
+  meta: {
+    createdAt: Timestamp;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Timestamp;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Timestamp;
+        verifyAuthor?: string;
+      };
+};
+
+export type IIssue = Omit<
+  IDbIssue,
+  'date' | 'meta' | 'verification' | 'result' | 'timeline'
+> & {
+  date: Date;
+  timeline: IAction[];
+  result: {
+    date: Date;
+    summary: string;
+  };
+  meta: {
+    createdAt: Date;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Date;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Date;
+        verifyAuthor?: string;
+      };
+};
