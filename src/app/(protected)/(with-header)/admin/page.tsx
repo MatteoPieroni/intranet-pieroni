@@ -97,6 +97,17 @@ export default async function Admin() {
                 <input name="mailUrl" defaultValue={config.mailUrl} />
               </label>
             )}
+            {isAdmin && (
+              <label>
+                Email per nuovi riscossi
+                <input
+                  name="emailRiscossi"
+                  required
+                  type="email"
+                  defaultValue={config.emailRiscossi}
+                />
+              </label>
+            )}
             <label>
               Costo trasporto al minuto
               <input
