@@ -337,6 +337,8 @@ export const createRiscosso = async (
     await update<IDbRiscosso>(headers, ['riscossi', createdDoc.id], {
       id: createdDoc.id,
     });
+
+    return { id: createdDoc.id };
   } catch (e) {
     console.error(e);
     throw e;
