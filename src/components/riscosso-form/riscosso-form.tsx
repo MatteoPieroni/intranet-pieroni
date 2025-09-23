@@ -1,16 +1,12 @@
 'use client';
 
-import { useActionState, useState } from 'react';
-import * as z from 'zod';
+import { ChangeEvent, useActionState, useState } from 'react';
 
 import { IRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
 import { riscossoAction, StateValidation } from './riscosso-action';
 import styles from './riscosso-form.module.css';
 import { FormStatus } from '../form-status/form-status';
 import { DeleteIcon } from '../icons/delete';
-
-export const IconSchema = z.file();
-IconSchema.max(1_000_000, 'Too big');
 
 type RiscossiFormProps =
   | {
@@ -100,8 +96,7 @@ export const RiscossiForm = ({
     company,
     id,
     docs,
-    paymentMethod,
-    total,
+    paymentMethod: initialPaymentMethod,
     paymentChequeNumber,
     paymentChequeValue,
   } = riscosso || newRiscossoForForm;
@@ -114,6 +109,13 @@ export const RiscossiForm = ({
     riscossoAction,
     initialState
   );
+  const [paymentMethod, setPaymentMethod] = useState(
+    initialPaymentMethod || ''
+  );
+
+  const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
+    setPaymentMethod(event.target.value);
+  };
 
   return (
     <form action={formAction}>
@@ -203,6 +205,8 @@ export const RiscossiForm = ({
                       name="doc-total"
                       type="number"
                       defaultValue={doc.total}
+                      required
+                      min="1"
                     />
                   </label>
                   <button
@@ -244,7 +248,8 @@ export const RiscossiForm = ({
             <select
               name="payment-method"
               required
-              {...(!company && { defaultValue: '' })}
+              onChange={handlePaymentMethod}
+              value={paymentMethod}
             >
               {!paymentMethod && (
                 <option hidden value="">
@@ -252,45 +257,35 @@ export const RiscossiForm = ({
                 </option>
               )}
               {paymentMethods.map((method) => (
-                <option
-                  value={method.id}
-                  defaultChecked={paymentMethod === method.id}
-                  key={method.id}
-                >
+                <option value={method.id} key={method.id}>
                   {method.label}
                 </option>
               ))}
             </select>
           </label>
 
-          <label>
-            Numero assegno
-            <input
-              name="payment-cheque-number"
-              defaultValue={paymentChequeNumber}
-            />
-          </label>
-          <label>
-            Importo assegno
-            <input
-              name="payment-cheque-value"
-              type="number"
-              defaultValue={paymentChequeValue}
-            />
-          </label>
-        </div>
-
-        <div className={styles.row}>
-          <label>
-            Totale
-            <input
-              name="total"
-              type="number"
-              defaultValue={total}
-              required
-              min="1"
-            />
-          </label>
+          {paymentMethod === 'assegno' && (
+            <>
+              <label>
+                Numero assegno
+                <input
+                  name="payment-cheque-number"
+                  defaultValue={paymentChequeNumber}
+                  required
+                />
+              </label>
+              <label>
+                Importo assegno
+                <input
+                  name="payment-cheque-value"
+                  type="number"
+                  defaultValue={paymentChequeValue}
+                  required
+                  min="1"
+                />
+              </label>
+            </>
+          )}
         </div>
 
         <input type="hidden" name="id" value={id} />

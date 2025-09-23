@@ -23,6 +23,13 @@ export const LinkSchema = z.object({
   icon: z.optional(z.string()),
 });
 
+export const RiscossoDocSchema = z.object({
+  number: z.string(),
+  type: z.enum(['fattura', 'DDT', 'impegno']),
+  total: z.number(),
+  date: z.date(),
+});
+
 export const RiscossoSchema = z.object({
   id: z.string(),
   date: z.date(),
@@ -33,14 +40,7 @@ export const RiscossoSchema = z.object({
   // TODO: superRefine these to be dependent on payment method
   paymentChequeValue: z.optional(z.number()),
   paymentChequeNumber: z.optional(z.string()),
-  docs: z.array(
-    z.object({
-      number: z.string(),
-      type: z.enum(['fattura', 'DDT', 'impegno']),
-      total: z.number(),
-      date: z.date(),
-    })
-  ),
+  docs: z.array(RiscossoDocSchema),
   meta: z.object({
     createdAt: z.date(),
     author: z.string(),
