@@ -8,7 +8,10 @@ import {
   FORM_PARTIAL_RISCOSSO,
   FORM_SUCCESS_RISCOSSO,
 } from '@/consts';
-import { createRiscosso } from '@/services/firebase/server';
+import {
+  createRiscosso,
+  getConfigWithoutCache,
+} from '@/services/firebase/server';
 import { sendRiscossoCreation } from '@/services/email';
 
 export type StateValidation = {
@@ -74,6 +77,8 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
   const currentHeaders = await headers();
 
   try {
+    const config = await getConfigWithoutCache(currentHeaders);
+
     const formClient = values.get('client');
     const formCompany = values.get('company');
     const formTotal = values.get('total');
@@ -149,6 +154,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
           client,
           link: `https://interno.pieroni.it/riscossi/${createdRiscosso.id}`,
           total,
+          emailTo: config.emailRiscossi,
         });
       } catch {
         throw new Error('EMAIL_FAILED');

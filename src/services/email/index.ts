@@ -5,9 +5,8 @@ type RiscossoData = {
   total: number;
   id: string;
   link: string;
+  emailTo: string;
 };
-
-const address = 'matteopieroni6@gmail.com';
 
 const getPlainText = (data: RiscossoData) =>
   `Un nuovo riscosso e' stato aggiunto.\n\nCliente: ${data.client}\nImporto: ${data.total}\nId: ${data.id}\nVedilo su ${data.link}`;
@@ -32,13 +31,15 @@ export const sendRiscossoCreation = async (data: RiscossoData) => {
     await transporter.verify();
 
     const send = await transporter.sendMail({
-      to: address,
+      to: data.emailTo,
       subject: 'Nuovo riscosso aggiunto',
       text: getPlainText(data),
       html: getHtml(data),
     });
 
-    if (!send.accepted.some((acceptedAddress) => acceptedAddress === address)) {
+    if (
+      !send.accepted.some((acceptedAddress) => acceptedAddress === data.emailTo)
+    ) {
       throw new Error('Rejected send');
     }
   } catch (e) {
