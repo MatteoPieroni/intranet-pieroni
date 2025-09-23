@@ -42,6 +42,9 @@ export const FORM_FAIL_TEAM =
 export const FORM_SUCCESS_USER = '✔️ Utente aggiornato';
 export const FORM_FAIL_USER =
   "❌ Non siamo riusciti ad aggiornare l'utente. Ricontrolla per favore";
+
 export const FORM_SUCCESS_RISCOSSO = '✔️ Riscosso aggiornato';
 export const FORM_FAIL_RISCOSSO =
   '❌ Non siamo riusciti ad aggiornare il riscosso. Ricontrolla per favore';
+export const FORM_PARTIAL_RISCOSSO =
+  "Il riscosso è stato aggiornato, ma non siamo riusciti a notificare l'amministrazione. Ti preghiamo di notificare tu l'aggiunta";

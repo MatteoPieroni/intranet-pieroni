@@ -92,6 +92,8 @@ h6 {
   --text-success: #0a0a0a;
   --background-error: #e73f20;
   --text-error: #f1f1f1;
+  --background-warning: #e7bf20;
+  --text-warning: #0a0a0a;
 
   --field-background: #fdfdfd;
   --field-border: 1px solid #050a18;
