@@ -9,8 +9,10 @@ import {
   IUser,
   IRiscosso,
   IDbRiscosso,
+  IIssue,
 } from '../../db-types';
 import {
+  IssueSchema,
   LinkSchema,
   RiscossoSchema,
   TeamSchema,
@@ -27,7 +29,8 @@ import {
 } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
-import { convertTimestampToDate } from '../../utils/dto-riscossi';
+import { convertTimestampToDate as convertTimestampToDateRiscossi } from '../../utils/dto-riscossi';
+import { convertTimestampToDate as convertTimestampToDateIssues } from '../../utils/dto-issues';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -225,7 +228,7 @@ export const getRiscossi = async (headers: PassedHeaders) => {
       headers,
       'riscossi',
       (riscosso) => {
-        const convertToDate = convertTimestampToDate(riscosso);
+        const convertToDate = convertTimestampToDateRiscossi(riscosso);
 
         const record = RiscossoSchema.parse(convertToDate);
 
@@ -252,7 +255,7 @@ export const getRiscossiForUser = async (
       headers,
       'riscossi',
       (riscosso) => {
-        const convertToDate = convertTimestampToDate(riscosso);
+        const convertToDate = convertTimestampToDateRiscossi(riscosso);
 
         const record = RiscossoSchema.parse(convertToDate);
 
@@ -277,7 +280,7 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
       headers,
       ['riscossi', id],
       (riscosso) => {
-        const convertToDate = convertTimestampToDate(riscosso);
+        const convertToDate = convertTimestampToDateRiscossi(riscosso);
 
         const record = RiscossoSchema.parse(convertToDate);
 
@@ -378,6 +381,34 @@ export const checkRiscosso = async (
         verification,
       }
     );
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getIssuesForUser = async (
+  headers: PassedHeaders,
+  userId: string
+) => {
+  try {
+    const records = await getRecords<IIssue>(
+      headers,
+      'issues',
+      (issue) => {
+        const convertToDate = convertTimestampToDateIssues(issue);
+
+        const record = IssueSchema.parse(convertToDate);
+
+        return record;
+      },
+      {
+        queryData: { field: 'meta.author', value: userId },
+        orderData: { field: 'date', direction: 'desc' },
+      }
+    );
+
+    return records;
   } catch (e) {
     console.error(e);
     throw e;

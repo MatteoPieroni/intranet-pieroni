@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../header-template.module.css';
-import { getRiscossiForUser, getUser } from '@/services/firebase/server';
+import { getIssuesForUser, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { formatDate } from '@/utils/formatDate';
@@ -10,12 +10,6 @@ import { formatDate } from '@/utils/formatDate';
 export const metadata: Metadata = {
   title: 'Moduli qualità - Intranet Pieroni srl',
   description: 'Intranet - vedi i moduli qualità',
-};
-
-const companies = {
-  pieroni: 'Pieroni srl',
-  'pieroni-mostra': 'Pieroni in mostra',
-  pellet: 'Pellet',
 };
 
 export default async function Issues() {
@@ -26,7 +20,7 @@ export default async function Issues() {
     throw new Error('User not found');
   }
 
-  const issues = await getRiscossiForUser(currentHeaders, currentUser.id);
+  const issues = await getIssuesForUser(currentHeaders, currentUser.id);
 
   return (
     <main className={template.page}>
@@ -50,24 +44,23 @@ export default async function Issues() {
               </tr>
             </thead>
             <tbody>
-              {issues.map((riscosso) => (
-                <tr key={riscosso.id}>
-                  <th scope="row">{riscosso.id}</th>
-                  <td>{formatDate(riscosso.date)}</td>
-                  <td>{riscosso.client}</td>
-                  <td className="number">{riscosso.total} €</td>
-                  <td>{companies[riscosso.company]}</td>
+              {issues.map((issue) => (
+                <tr key={issue.id}>
+                  <th scope="row">{issue.id}</th>
+                  <td>{formatDate(issue.date)}</td>
+                  <td>{issue.client}</td>
                   <td>
                     <input
                       readOnly
                       disabled
                       aria-label="Verificato"
+                      name="verified"
                       type="checkbox"
-                      checked={riscosso.verification?.isVerified}
+                      checked={issue.verification?.isVerified}
                     />
                   </td>
                   <td>
-                    <a href={`riscossi/${riscosso.id}`}>Vedi</a>
+                    <a href={`issues/${issue.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}

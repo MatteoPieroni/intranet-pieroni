@@ -107,10 +107,10 @@ export const IssueSchema = z.object({
       summary: z.string(),
     })
   ),
-  meta: {
+  meta: z.object({
     createdAt: z.date(),
     author: z.string(),
-  },
+  }),
   verification: z.discriminatedUnion('isVerified', [
     z.object({
       isVerified: z.literal(true),

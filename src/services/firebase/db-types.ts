@@ -196,14 +196,14 @@ type IDbAction = {
   date: Timestamp;
   content: string;
   attachments?: string[];
-  result: string;
+  result?: string;
 };
 
 type IAction = {
   date: Date;
   content: string;
   attachments?: string[];
-  result: string;
+  result?: string;
 };
 
 export type IDbIssue = {
@@ -213,9 +213,9 @@ export type IDbIssue = {
   client: string;
   issueType: IssueType;
   summary: string;
-  supplierInfo: SupplierInfo;
+  supplierInfo?: SupplierInfo;
   timeline: IDbAction[];
-  result: {
+  result?: {
     date: Timestamp;
     summary: string;
   };
@@ -242,7 +242,7 @@ export type IIssue = Omit<
 > & {
   date: Date;
   timeline: IAction[];
-  result: {
+  result?: {
     date: Date;
     summary: string;
   };
