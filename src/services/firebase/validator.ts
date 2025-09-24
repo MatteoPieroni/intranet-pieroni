@@ -58,3 +58,69 @@ export const RiscossoSchema = z.object({
     }),
   ]),
 });
+
+export const IssueActionSchema = z.object({
+  date: z.date(),
+  content: z.string(),
+  attachments: z.optional(z.array(z.string())),
+  result: z.optional(z.string()),
+});
+
+export const IssueSchema = z.object({
+  id: z.string(),
+  date: z.date(),
+  commission: z.string(),
+  client: z.string(),
+  issueType: z.enum([
+    'delay-preparation',
+    'missing-article',
+    'delay-arrival',
+    'wrong-supplier',
+    'client-return',
+    'insufficient-order',
+    'suppllier-defect',
+    'breakage',
+    'not-conforming',
+    'client-mistake',
+    'plumber-mistake',
+    'builder-mistake',
+    'project-mistake',
+  ]),
+  summary: z.string(),
+  supplierInfo: z.optional(
+    z.object({
+      supplier: z.string(),
+      documentType: z.string(),
+      documentDate: z.string(),
+      deliveryContext: z.string(),
+      product: z.object({
+        number: z.string(),
+        quantity: z.number(),
+        description: z.string(),
+      }),
+    })
+  ),
+  timeline: z.array(IssueActionSchema),
+  result: z.optional(
+    z.object({
+      date: z.date(),
+      summary: z.string(),
+    })
+  ),
+  meta: {
+    createdAt: z.date(),
+    author: z.string(),
+  },
+  verification: z.discriminatedUnion('isVerified', [
+    z.object({
+      isVerified: z.literal(true),
+      verifiedAt: z.date(),
+      verifyAuthor: z.string(),
+    }),
+    z.object({
+      isVerified: z.literal(false),
+      verifiedAt: z.optional(z.date()),
+      verifiedAuthor: z.optional(z.string()),
+    }),
+  ]),
+});
