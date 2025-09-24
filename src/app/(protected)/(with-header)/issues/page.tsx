@@ -4,8 +4,8 @@ import styles from './page.module.css';
 import template from '../header-template.module.css';
 import { getIssuesForUser, getUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
-import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { formatDate } from '@/utils/formatDate';
+import { IssueForm } from '@/components/issue-form/issue-form';
 
 export const metadata: Metadata = {
   title: 'Moduli qualità - Intranet Pieroni srl',
@@ -37,8 +37,7 @@ export default async function Issues() {
                 <th scope="col">Numero</th>
                 <th scope="col">Data</th>
                 <th scope="col">Cliente</th>
-                <th scope="col">Totale</th>
-                <th scope="col">Azienda</th>
+                <th scope="col">Risolto</th>
                 <th scope="col">Confermato</th>
                 <th scope="col">Link</th>
               </tr>
@@ -49,6 +48,16 @@ export default async function Issues() {
                   <th scope="row">{issue.id}</th>
                   <td>{formatDate(issue.date)}</td>
                   <td>{issue.client}</td>
+                  <td>
+                    <input
+                      readOnly
+                      disabled
+                      aria-label="Risolto"
+                      name="resolved"
+                      type="checkbox"
+                      checked={!!issue.result?.date}
+                    />
+                  </td>
                   <td>
                     <input
                       readOnly
@@ -69,7 +78,7 @@ export default async function Issues() {
         </div>
         <div className={styles.section}>
           <h2>Crea nuovo modulo qualità</h2>
-          <RiscossiForm isNew riscosso={undefined} />
+          <IssueForm isNew issue={undefined} />
         </div>
       </div>
     </main>
