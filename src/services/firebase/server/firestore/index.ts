@@ -10,6 +10,7 @@ import {
   IRiscosso,
   IDbRiscosso,
   IIssue,
+  IDbIssue,
 } from '../../db-types';
 import {
   IssueSchema,
@@ -409,6 +410,81 @@ export const getIssuesForUser = async (
     );
 
     return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const createIssue = async (
+  headers: PassedHeaders,
+  data: Omit<IIssue, 'id' | 'meta' | 'verification' | 'date'>
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const {
+      result: resultWithDate,
+      supplierInfo: supplierWithDate,
+      ...verifiedData
+    } = IssueSchema.omit({
+      id: true,
+      meta: true,
+      verification: true,
+      date: true,
+      timeline: true,
+    }).parse(data);
+
+    const now = Timestamp.now();
+
+    const timeline = data.timeline.map((action) => ({
+      ...action,
+      date: Timestamp.fromDate(action.date),
+    }));
+
+    const result = resultWithDate
+      ? {
+          result: {
+            date: Timestamp.fromDate(resultWithDate.date),
+            summary: resultWithDate.summary,
+          },
+        }
+      : {};
+    const { documentDate, ...supplierInfoRest } = supplierWithDate || {};
+    const supplierInfo = supplierWithDate
+      ? {
+          supplierInfo: {
+            ...supplierInfoRest,
+            ...(documentDate instanceof Date && {
+              documentDate: Timestamp.fromDate(documentDate),
+            }),
+          },
+        }
+      : {};
+
+    const createdDoc = await create<Omit<IDbIssue, 'id'>>(headers, 'issues', {
+      ...verifiedData,
+      ...result,
+      ...supplierInfo,
+      date: now,
+      timeline,
+      meta: {
+        author: user.currentUser.id,
+        createdAt: now,
+      },
+      verification: {
+        isVerified: false,
+      },
+    });
+    await update<IDbRiscosso>(headers, ['issues', createdDoc.id], {
+      id: createdDoc.id,
+    });
+
+    return { id: createdDoc.id };
   } catch (e) {
     console.error(e);
     throw e;
