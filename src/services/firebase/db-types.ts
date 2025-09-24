@@ -169,10 +169,10 @@ type IssueType =
   | 'delay-preparation'
   | 'missing-article'
   | 'delay-arrival'
-  | 'wrong-supplier'
+  | 'supplier-mistake'
   | 'client-return'
   | 'insufficient-order'
-  | 'suppllier-defect'
+  | 'supplier-defect'
   | 'breakage'
   | 'not-conforming'
   | 'client-mistake'
@@ -180,15 +180,27 @@ type IssueType =
   | 'builder-mistake'
   | 'project-mistake';
 
-type SupplierInfo = {
-  supplier: string;
-  documentType: string;
-  documentDate: string;
-  deliveryContext: string;
-  product: {
-    number: string;
-    quantity: number;
-    description: string;
+type IDbSupplierInfo = {
+  supplier?: string;
+  documentType?: string;
+  documentDate?: Timestamp;
+  deliveryContext?: string;
+  product?: {
+    number?: string;
+    quantity?: number;
+    description?: string;
+  };
+};
+
+type ISupplierInfo = {
+  supplier?: string;
+  documentType?: string;
+  documentDate?: Date;
+  deliveryContext?: string;
+  product?: {
+    number?: string;
+    quantity?: number;
+    description?: string;
   };
 };
 
@@ -199,7 +211,7 @@ type IDbAction = {
   result?: string;
 };
 
-type IAction = {
+export type IIssueAction = {
   date: Date;
   content: string;
   attachments?: string[];
@@ -213,7 +225,7 @@ export type IDbIssue = {
   client: string;
   issueType: IssueType;
   summary: string;
-  supplierInfo?: SupplierInfo;
+  supplierInfo?: IDbSupplierInfo;
   timeline: IDbAction[];
   result?: {
     date: Timestamp;
@@ -238,10 +250,11 @@ export type IDbIssue = {
 
 export type IIssue = Omit<
   IDbIssue,
-  'date' | 'meta' | 'verification' | 'result' | 'timeline'
+  'date' | 'meta' | 'verification' | 'result' | 'timeline' | 'supplierInfo'
 > & {
   date: Date;
-  timeline: IAction[];
+  timeline: IIssueAction[];
+  supplierInfo?: ISupplierInfo;
   result?: {
     date: Date;
     summary: string;

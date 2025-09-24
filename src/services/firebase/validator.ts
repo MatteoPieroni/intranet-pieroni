@@ -75,10 +75,10 @@ export const IssueSchema = z.object({
     'delay-preparation',
     'missing-article',
     'delay-arrival',
-    'wrong-supplier',
+    'supplier-mistake',
     'client-return',
     'insufficient-order',
-    'suppllier-defect',
+    'supplier-defect',
     'breakage',
     'not-conforming',
     'client-mistake',
@@ -89,15 +89,17 @@ export const IssueSchema = z.object({
   summary: z.string(),
   supplierInfo: z.optional(
     z.object({
-      supplier: z.string(),
-      documentType: z.string(),
-      documentDate: z.string(),
-      deliveryContext: z.string(),
-      product: z.object({
-        number: z.string(),
-        quantity: z.number(),
-        description: z.string(),
-      }),
+      supplier: z.optional(z.string()),
+      documentType: z.optional(z.string()),
+      documentDate: z.optional(z.date()),
+      deliveryContext: z.optional(z.string()),
+      product: z.optional(
+        z.object({
+          number: z.optional(z.string()),
+          quantity: z.optional(z.number()),
+          description: z.optional(z.string()),
+        })
+      ),
     })
   ),
   timeline: z.array(IssueActionSchema),
