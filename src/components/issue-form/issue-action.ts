@@ -3,136 +3,119 @@
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
-import {
-  FORM_FAIL_RISCOSSO,
-  FORM_PARTIAL_RISCOSSO,
-  FORM_SUCCESS_RISCOSSO,
-} from '@/consts';
-import {
-  createRiscosso,
-  getConfigWithoutCache,
-} from '@/services/firebase/server';
-import { sendRiscossoCreation } from '@/services/email';
-import {
-  RiscossoDocSchema,
-  RiscossoSchema,
-} from '@/services/firebase/validator';
+import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
+import { createIssue } from '@/services/firebase/server';
+import { IssueActionSchema, IssueSchema } from '@/services/firebase/validator';
 
 export type StateValidation = {
   error?: string;
   success?: string;
-  partialSuccess?: string;
 };
 
-const FormFieldsSchema = RiscossoSchema.omit({
+const FormFieldsSchema = IssueSchema.omit({
   id: true,
   date: true,
   meta: true,
   verification: true,
+  timeline: true,
 });
 
-const handleDocs = async (
-  types: FormDataEntryValue[],
+const handleTimeline = async (
   dates: FormDataEntryValue[],
-  numbers: FormDataEntryValue[],
-  totals: FormDataEntryValue[]
+  contents: FormDataEntryValue[],
+  results: FormDataEntryValue[],
+  attachments: FormDataEntryValue[]
 ) => {
   if (
-    types.length === 0 ||
-    types.length !== numbers.length ||
-    types.length !== totals.length ||
-    types.length !== dates.length
+    dates.length === 0 ||
+    dates.length !== contents.length ||
+    dates.length !== results.length
   ) {
     throw new Error('DOCS_ERROR');
   }
 
-  const documents = types
-    .map((type, index) => {
-      return RiscossoDocSchema.parse({
-        type: String(type),
-        date: new Date(String(dates[index])),
-        number: String(numbers[index]),
-        total: Number(totals[index]),
+  // TODO: add attachments
+  console.log({ attachments });
+
+  const actions = dates
+    .map((date, index) => {
+      return IssueActionSchema.parse({
+        date: new Date(String(date)),
+        content: String(contents[index]),
+        results: Number(results[index]),
       });
     })
     // remove empty
-    .filter((doc) => !!doc.type);
+    .filter((doc) => !!doc.date);
 
-  return documents;
+  return actions;
 };
 
-export const riscossoAction = async (_: StateValidation, values: FormData) => {
+export const issueAction = async (_: StateValidation, values: FormData) => {
   const currentHeaders = await headers();
 
   try {
-    const config = await getConfigWithoutCache(currentHeaders);
-
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
-    const formDocsNumbers = values.getAll('doc-number');
-    const formDocsDates = values.getAll('doc-date');
-    const formDocsTypes = values.getAll('doc-type');
-    const formDocsTotals = values.getAll('doc-total');
 
     if (!formId && !formIsNew) {
       return {
-        errors: {
-          general: FORM_FAIL_RISCOSSO,
-        },
+        error: FORM_FAIL_RISCOSSO,
       };
     }
 
-    const docs = await handleDocs(
-      formDocsTypes,
-      formDocsDates,
-      formDocsNumbers,
-      formDocsTotals
+    const formActionDate = values.getAll('action-date');
+    const formActionNumber = values.getAll('action-number');
+    const formActionAttachment = values.getAll('action-attachment');
+    const formActionResult = values.getAll('action-result');
+
+    const timeline = await handleTimeline(
+      formActionDate,
+      formActionNumber,
+      formActionAttachment,
+      formActionResult
     );
 
-    const addedTotal = docs.reduce((total, doc) => total + doc.total, 0);
-
-    const {
-      client,
-      company,
-      total,
-      paymentMethod,
-      paymentChequeNumber,
-      paymentChequeValue,
-    } = FormFieldsSchema.parse({
-      total: addedTotal,
-      client: values.get('client'),
-      company: values.get('company'),
-      paymentMethod: values.get('payment-method'),
-      paymentChequeValue: Number(values.get('payment-cheque-value')),
-      paymentChequeNumber: values.get('payment-cheque-number'),
-      docs,
-    });
+    const { commission, client, issueType, summary, supplierInfo, result } =
+      FormFieldsSchema.parse({
+        commission: values.get('commission'),
+        client: values.get('client'),
+        issueType: values.get('issueType'),
+        summary: values.get('summary'),
+        supplierInfo: {
+          supplier: values.get('supplier'),
+          documentType: values.get('documentType'),
+          ...(values.get('documentDate') && {
+            documentDate: new Date(String(values.get('documentDate'))),
+          }),
+          deliveryContext: values.get('deliveryContext'),
+          product: {
+            number: values.get('productNumber'),
+            quantity: Number(values.get('productQuantity')),
+            description: values.get('productDescription'),
+          },
+        },
+        ...(String(values.get('resultDate')) && {
+          result: {
+            date: new Date(String(values.get('resultDate'))),
+            summary: values.get('resultSummary'),
+          },
+        }),
+      });
 
     const id = String(formId);
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      const createdRiscosso = await createRiscosso(currentHeaders, {
+      await createIssue(currentHeaders, {
+        commission,
         client,
-        company,
-        total,
-        paymentMethod,
-        paymentChequeNumber,
-        paymentChequeValue,
-        docs,
+        issueType,
+        summary,
+        supplierInfo,
+        timeline,
+        result,
       });
-
-      try {
-        await sendRiscossoCreation({
-          id: createdRiscosso.id,
-          client,
-          link: `https://interno.pieroni.it/riscossi/${createdRiscosso.id}`,
-          total,
-          emailTo: config.emailRiscossi,
-        });
-      } catch {
-        throw new Error('EMAIL_FAILED');
-      }
     } else {
       // await pushLink(currentHeaders, {
       //   description,
@@ -143,21 +126,13 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
       // });
     }
 
-    revalidatePath('/riscossi');
+    revalidatePath('/issues');
 
     return {
       success: FORM_SUCCESS_RISCOSSO,
     };
   } catch (e) {
     console.error(e);
-
-    if (e instanceof Error) {
-      if (e.message === 'EMAIL_FAILED') {
-        return {
-          partialSuccess: FORM_PARTIAL_RISCOSSO,
-        };
-      }
-    }
 
     return {
       error: FORM_FAIL_RISCOSSO,

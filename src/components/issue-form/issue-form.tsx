@@ -1,213 +1,224 @@
 'use client';
 
-import { ChangeEvent, useActionState, useState } from 'react';
+import { useActionState, useState } from 'react';
 
-import { IRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
-import { riscossoAction, StateValidation } from './issue-action';
+import { IIssueAction, type IIssue } from '@/services/firebase/db-types';
+import { issueAction, StateValidation } from './issue-action';
 import styles from './issue-form.module.css';
 import { FormStatus } from '../form-status/form-status';
 import { DeleteIcon } from '../icons/delete';
 
-type RiscossiFormProps =
+type IssueFormProps =
   | {
-      riscosso: IRiscosso;
+      issue: IIssue;
       isNew?: false;
     }
   | {
       isNew: true;
-      riscosso: undefined;
+      issue: undefined;
     };
 
 const initialState: StateValidation = {};
 
-const newRiscosso = {
+const actionTypes = [
+  { id: 'delay-preparation', label: 'Ritardo preparazione' },
+  { id: 'missing-article', label: 'Articolo mancante alla consegna' },
+  { id: 'delay-arrival', label: 'Ritardo arrivo' },
+  { id: 'supplier-mistake', label: 'Sbaglio fornitore' },
+  { id: 'client-return', label: 'Reso cliente' },
+  { id: 'insufficient-order', label: 'Riordino insufficiente' },
+  { id: 'supplier-defect', label: 'Difetto di fabbrica' },
+  { id: 'breakage', label: 'Rottura' },
+  { id: 'not-conforming', label: 'Non conforme' },
+  { id: 'client-mistake', label: 'Errore cliente' },
+  { id: 'plumber-mistake', label: 'Errore idraulico' },
+  { id: 'builder-mistake', label: 'Errore muratore' },
+  { id: 'project-mistake', label: 'Errore progettista' },
+];
+
+const newIssue = {
   client: '',
-  docs: [],
-  total: 0,
-  paymentChequeNumber: '',
-  paymentChequeValue: 0,
-} satisfies Partial<IRiscosso>;
-const newRiscossoForForm = {
-  ...newRiscosso,
-  company: '',
-  paymentMethod: '',
+  timeline: [],
+  commission: '',
+  summary: '',
+} satisfies Partial<IIssue>;
+const newIssueForForm = {
+  ...newIssue,
+  issueType: '',
+  supplier: '',
   id: '',
+  documentType: '',
+  documentDate: '',
+  deliveryContext: '',
+  productNumber: '',
+  productQuantity: '',
+  productDescription: '',
+  resultDate: '',
+  resultSummary: '',
 };
 
-const companies = [
-  {
-    id: 'pieroni',
-    label: 'Pieroni srl',
-  },
-  {
-    id: 'pieroni-mostra',
-    label: 'Pieroni in mostra',
-  },
-  {
-    id: 'pellet',
-    label: 'Pellet',
-  },
-];
-
-const paymentMethods = [
-  {
-    id: 'assegno',
-    label: 'Assegno',
-  },
-  {
-    id: 'contanti',
-    label: 'Contanti',
-  },
-  {
-    id: 'bancomat',
-    label: 'Bancomat',
-  },
-];
-
-const documentTypes = [
-  { id: 'fattura', label: 'Fattura' },
-  { id: 'DDT', label: 'DDT' },
-  { id: 'impegno', label: 'Impegno' },
-];
-
-const emptyDoc = {
-  number: '',
-  type: '',
-  total: 0,
+const emptyAction = {
   date: new Date(),
-};
+  content: '',
+  result: '',
+} satisfies IIssueAction;
 
-type LocalDoc = (IRiscossoDoc | typeof emptyDoc) & {
+type LocalAction = (IIssueAction | typeof emptyAction) & {
   id?: string;
 };
 
-const addDocWithId = (docsArray: LocalDoc[]) =>
-  docsArray.map((doc) => ({
-    ...doc,
-    id: doc.id || crypto.randomUUID(),
+const addActionWithId = (actionsArray: LocalAction[]) =>
+  actionsArray.map((action) => ({
+    ...action,
+    id: action.id || crypto.randomUUID(),
   }));
 
-export const RiscossiForm = ({
-  riscosso,
-  isNew = false,
-}: RiscossiFormProps) => {
+export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
   const {
     client,
-    company,
     id,
-    docs,
-    paymentMethod: initialPaymentMethod,
-    paymentChequeNumber,
-    paymentChequeValue,
-  } = riscosso || newRiscossoForForm;
+    commission,
+    issueType,
+    summary,
+    timeline,
+    supplier,
+    documentType,
+    documentDate,
+    deliveryContext,
+    productNumber,
+    productQuantity,
+    productDescription,
+    resultDate,
+    resultSummary,
+  } = { ...newIssueForForm, ...issue };
 
-  const [docsWithAdded, setDocsWithAdded] = useState<LocalDoc[]>(
-    addDocWithId(docs)
+  const [actionsWithAdded, setActionsWithAdded] = useState<LocalAction[]>(
+    addActionWithId(timeline)
   );
 
   const [state, formAction, pending] = useActionState(
-    riscossoAction,
+    issueAction,
     initialState
   );
-  const [paymentMethod, setPaymentMethod] = useState(
-    initialPaymentMethod || ''
-  );
-
-  const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
-    setPaymentMethod(event.target.value);
-  };
 
   return (
     <form action={formAction}>
       <div className={styles.container}>
         <div className={styles.row}>
           <label>
-            Azienda
+            Cliente
+            <input name="client" defaultValue={client} required />
+          </label>
+          <label>
+            Nr commissione
+            <input name="commission" defaultValue={commission} required />
+          </label>
+        </div>
+        <div className={styles.row}>
+          <label>
+            Tipo di problema
             <select
-              name="company"
+              name="issueType"
               required
-              {...(!company && { defaultValue: '' })}
+              {...(!issueType && { defaultValue: '' })}
             >
-              {!company && (
+              {!issueType && (
                 <option hidden value="">
-                  Seleziona azienda
+                  Seleziona problema
                 </option>
               )}
-              {companies.map((availableCompany) => (
+              {actionTypes.map((availableType) => (
                 <option
-                  value={availableCompany.id}
-                  defaultChecked={company === availableCompany.id}
-                  key={availableCompany.id}
+                  value={availableType.id}
+                  defaultChecked={issueType === availableType.id}
+                  key={availableType.id}
                 >
-                  {availableCompany.label}
+                  {availableType.label}
                 </option>
               ))}
             </select>
           </label>
         </div>
-
         <div className={styles.row}>
           <label>
-            Cliente
-            <input name="client" defaultValue={client} required />
+            Descrizione
+            <input name="summary" defaultValue={summary} required />
+          </label>
+        </div>
+        <div className={styles.row}>
+          <label>
+            Ditta fornitrice
+            <input name="supplier" defaultValue={supplier} />
+          </label>
+          <label>
+            Tipo di documento
+            <input name="documentType" defaultValue={documentType} />
+          </label>
+          <label>
+            Data documento
+            <input
+              type="date"
+              name="documentDate"
+              defaultValue={documentDate}
+            />
+          </label>
+          <label>
+            Consegnata con
+            <input name="deliveryContext" defaultValue={deliveryContext} />
+          </label>
+        </div>
+        <div className={styles.row}>
+          <label>
+            Articolo
+            <input name="productNumber" defaultValue={productNumber} />
+          </label>
+          <label>
+            Quantità
+            <input
+              type="number"
+              name="productQuantity"
+              defaultValue={productQuantity}
+            />
+          </label>
+          <label>
+            Descrizione prodotto
+            <input
+              name="productDescription"
+              defaultValue={productDescription}
+            />
           </label>
         </div>
 
         <div className={styles.row}>
           <fieldset>
-            <legend>Documenti</legend>
-            {docsWithAdded.map((doc) => {
+            <legend>Azioni</legend>
+            {actionsWithAdded.map((action) => {
               return (
-                <div key={doc.id}>
-                  <label>
-                    Numero
-                    <input
-                      name="doc-number"
-                      defaultValue={doc.number}
-                      required
-                    />
-                  </label>
+                <div key={action.id}>
                   <label>
                     Data
                     <input
-                      name="doc-date"
+                      name="action-date"
                       type="date"
-                      defaultValue={doc.date.toISOString().split('T')[0]}
+                      defaultValue={action.date.toISOString().split('T')[0]}
                       required
                     />
                   </label>
                   <label>
-                    Tipo di documento
-                    <select
-                      name="doc-type"
-                      required
-                      {...(!doc.type ? { defaultValue: '' } : {})}
-                    >
-                      {!doc.type && (
-                        <option hidden value="">
-                          Seleziona tipo documento
-                        </option>
-                      )}
-                      {documentTypes.map((docType) => (
-                        <option
-                          value={docType.id}
-                          defaultChecked={doc.type === docType.id}
-                          key={docType.id}
-                        >
-                          {docType.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Totale documento
+                    Azione
                     <input
-                      name="doc-total"
-                      type="number"
-                      defaultValue={doc.total}
+                      name="action-number"
+                      defaultValue={action.content}
                       required
-                      min="1"
                     />
+                  </label>
+                  <label>
+                    Allegati
+                    <input type="file" name="action-attachment" multiple />
+                  </label>
+                  <label>
+                    Risultato
+                    <input name="action-result" defaultValue={action.result} />
                   </label>
                   <button
                     type="button"
@@ -218,9 +229,9 @@ export const RiscossiForm = ({
 
                       if (!hasConfirmed) return;
 
-                      setDocsWithAdded(
-                        docsWithAdded.filter(
-                          (stateDoc) => stateDoc.id !== doc.id
+                      setActionsWithAdded(
+                        actionsWithAdded.filter(
+                          (stateAction) => stateAction.id !== action.id
                         )
                       );
                     }}
@@ -234,7 +245,9 @@ export const RiscossiForm = ({
             <button
               type="button"
               onClick={() => {
-                setDocsWithAdded(addDocWithId([...docsWithAdded, emptyDoc]));
+                setActionsWithAdded(
+                  addActionWithId([...actionsWithAdded, emptyAction])
+                );
               }}
             >
               Aggiungi documento
@@ -244,48 +257,13 @@ export const RiscossiForm = ({
 
         <div className={styles.row}>
           <label>
-            Metodo di pagamento
-            <select
-              name="payment-method"
-              required
-              onChange={handlePaymentMethod}
-              value={paymentMethod}
-            >
-              {!paymentMethod && (
-                <option hidden value="">
-                  Seleziona metodo di pagamento
-                </option>
-              )}
-              {paymentMethods.map((method) => (
-                <option value={method.id} key={method.id}>
-                  {method.label}
-                </option>
-              ))}
-            </select>
+            Data
+            <input type="date" name="resultDate" defaultValue={resultDate} />
           </label>
-
-          {paymentMethod === 'assegno' && (
-            <>
-              <label>
-                Numero assegno
-                <input
-                  name="payment-cheque-number"
-                  defaultValue={paymentChequeNumber}
-                  required
-                />
-              </label>
-              <label>
-                Importo assegno
-                <input
-                  name="payment-cheque-value"
-                  type="number"
-                  defaultValue={paymentChequeValue}
-                  required
-                  min="1"
-                />
-              </label>
-            </>
-          )}
+          <label>
+            Conclusione
+            <input name="resultSummary" defaultValue={resultSummary} />
+          </label>
         </div>
 
         <input type="hidden" name="id" value={id} />
@@ -297,7 +275,6 @@ export const RiscossiForm = ({
         </div>
       </div>
       {!pending && <FormStatus text={state.success} type="success" />}
-      {!pending && <FormStatus text={state.partialSuccess} type="warning" />}
       {!pending && <FormStatus text={state.error} type="error" />}
     </form>
   );
