@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import * as z from 'zod';
 
 import { IIssueAction, type IIssue } from '@/services/firebase/db-types';
 import { issueAction, StateValidation } from './issue-action';
@@ -35,6 +36,8 @@ const actionTypes = [
   { id: 'builder-mistake', label: 'Errore muratore' },
   { id: 'project-mistake', label: 'Errore progettista' },
 ];
+
+export const AttachmentSchema = z.file().max(1_000_000, 'Too big');
 
 const newIssue = {
   client: '',
@@ -107,11 +110,17 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
         <div className={styles.row}>
           <label>
             Cliente
-            <input name="client" defaultValue={client} required />
+            <input
+              name="client"
+              defaultValue={client} // required
+            />
           </label>
           <label>
             Nr commissione
-            <input name="commission" defaultValue={commission} required />
+            <input
+              name="commission"
+              defaultValue={commission} // required
+            />
           </label>
         </div>
         <div className={styles.row}>
@@ -119,7 +128,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
             Tipo di problema
             <select
               name="issueType"
-              required
+              // required
               {...(!issueType && { defaultValue: '' })}
             >
               {!issueType && (
@@ -142,7 +151,10 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
         <div className={styles.row}>
           <label>
             Descrizione
-            <textarea name="summary" defaultValue={summary} required />
+            <textarea
+              name="summary"
+              defaultValue={summary} // required
+            />
           </label>
         </div>
         <div className={styles.row}>
@@ -201,7 +213,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                       name="action-date"
                       type="date"
                       defaultValue={action.date.toISOString().split('T')[0]}
-                      required
+                      // required
                     />
                   </label>
                   <label>
@@ -209,12 +221,54 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                     <textarea
                       name="action-number"
                       defaultValue={action.content}
-                      required
+                      // required
                     />
                   </label>
                   <label>
                     Allegati
-                    <input type="file" name="action-attachment" multiple />
+                    <input
+                      type="file"
+                      name="action-attachment"
+                      multiple
+                      accept=".jpg,.png"
+                      onChange={(e) => {
+                        const files = e.target.files || [];
+                        const filesWithoutBig = new DataTransfer();
+                        let hasError = false;
+
+                        for (const file of files) {
+                          try {
+                            AttachmentSchema.parse(file);
+
+                            filesWithoutBig.items.add(file);
+                          } catch (error) {
+                            console.error(error);
+                            hasError = true;
+                          }
+                        }
+
+                        if (hasError) {
+                          alert(
+                            'Uno dei file era troppo grande, lo abbiamo rimosso'
+                          );
+                        }
+
+                        let total = 0;
+                        for (const finalFile of filesWithoutBig.files) {
+                          total += finalFile.size;
+                        }
+
+                        if (total > 1_000_000) {
+                          alert(
+                            'Il totale di allegati e troppo grande, riducili o rimuovine alcuni'
+                          );
+                          e.target.value = '';
+                          return;
+                        }
+
+                        e.target.files = filesWithoutBig.files;
+                      }}
+                    />
                   </label>
                   <label>
                     Risultato

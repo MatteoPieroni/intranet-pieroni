@@ -416,9 +416,19 @@ export const getIssuesForUser = async (
   }
 };
 
-export const createIssue = async (
+export const createEmptyIssue = async (headers: PassedHeaders) => {
+  try {
+    const createdDoc = await create(headers, 'issues', {});
+    return createdDoc.id;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateIssue = async (
   headers: PassedHeaders,
-  data: Omit<IIssue, 'id' | 'meta' | 'verification' | 'date'>
+  data: Omit<IIssue, 'meta' | 'verification' | 'date'>
 ) => {
   try {
     const user = await getUser(headers);
@@ -432,7 +442,6 @@ export const createIssue = async (
       supplierInfo: supplierWithDate,
       ...verifiedData
     } = IssueSchema.omit({
-      id: true,
       meta: true,
       verification: true,
       date: true,
@@ -466,7 +475,7 @@ export const createIssue = async (
         }
       : {};
 
-    const createdDoc = await create<Omit<IDbIssue, 'id'>>(headers, 'issues', {
+    await update<IDbIssue>(headers, 'issues', {
       ...verifiedData,
       ...result,
       ...supplierInfo,
@@ -480,11 +489,8 @@ export const createIssue = async (
         isVerified: false,
       },
     });
-    await update<IDbRiscosso>(headers, ['issues', createdDoc.id], {
-      id: createdDoc.id,
-    });
 
-    return { id: createdDoc.id };
+    return { id: verifiedData.id };
   } catch (e) {
     console.error(e);
     throw e;

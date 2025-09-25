@@ -99,7 +99,7 @@ export type IConfig = {
   emailRiscossi: string;
 };
 
-export type IFileCategories = 'link-icons' | 'quote';
+export type IFileCategories = 'link-icons' | 'quote' | `issues/${string}`;
 
 export type IDbRiscossoDoc = {
   number: string;
