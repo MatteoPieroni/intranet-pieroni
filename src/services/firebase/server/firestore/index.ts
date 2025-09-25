@@ -418,7 +418,9 @@ export const getIssuesForUser = async (
 
 export const createEmptyIssue = async (headers: PassedHeaders) => {
   try {
-    const createdDoc = await create(headers, 'issues', {});
+    const createdDoc = await create(headers, 'issues', {
+      timeline: [],
+    });
     return createdDoc.id;
   } catch (e) {
     console.error(e);
@@ -428,7 +430,7 @@ export const createEmptyIssue = async (headers: PassedHeaders) => {
 
 export const updateIssue = async (
   headers: PassedHeaders,
-  data: Omit<IIssue, 'meta' | 'verification' | 'date'>
+  data: Omit<IIssue, 'meta' | 'verification' | 'date' | 'timeline' | 'result'>
 ) => {
   try {
     const user = await getUser(headers);
@@ -438,7 +440,7 @@ export const updateIssue = async (
     }
 
     const {
-      result: resultWithDate,
+      // result: resultWithDate,
       supplierInfo: supplierWithDate,
       ...verifiedData
     } = IssueSchema.omit({
@@ -450,19 +452,19 @@ export const updateIssue = async (
 
     const now = Timestamp.now();
 
-    const timeline = data.timeline.map((action) => ({
-      ...action,
-      date: Timestamp.fromDate(action.date),
-    }));
+    // const timeline = data.timeline.map((action) => ({
+    //   ...action,
+    //   date: Timestamp.fromDate(action.date),
+    // }));
 
-    const result = resultWithDate
-      ? {
-          result: {
-            date: Timestamp.fromDate(resultWithDate.date),
-            summary: resultWithDate.summary,
-          },
-        }
-      : {};
+    // const result = resultWithDate
+    //   ? {
+    //       result: {
+    //         date: Timestamp.fromDate(resultWithDate.date),
+    //         summary: resultWithDate.summary,
+    //       },
+    //     }
+    //   : {};
     const { documentDate, ...supplierInfoRest } = supplierWithDate || {};
     const supplierInfo = supplierWithDate
       ? {
@@ -475,12 +477,10 @@ export const updateIssue = async (
         }
       : {};
 
-    await update<IDbIssue>(headers, 'issues', {
+    await update<IDbIssue>(headers, ['issues', verifiedData.id], {
       ...verifiedData,
-      ...result,
       ...supplierInfo,
       date: now,
-      timeline,
       meta: {
         author: user.currentUser.id,
         createdAt: now,

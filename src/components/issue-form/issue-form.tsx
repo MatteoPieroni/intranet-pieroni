@@ -1,13 +1,13 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState } from 'react';
 import * as z from 'zod';
 
-import { IIssueAction, type IIssue } from '@/services/firebase/db-types';
+import { type IIssue } from '@/services/firebase/db-types';
 import { issueAction, StateValidation } from './issue-action';
 import styles from './issue-form.module.css';
 import { FormStatus } from '../form-status/form-status';
-import { DeleteIcon } from '../icons/delete';
+// import { DeleteIcon } from '../icons/delete';
 
 type IssueFormProps =
   | {
@@ -60,21 +60,21 @@ const newIssueForForm = {
   resultSummary: '',
 };
 
-const emptyAction = {
-  date: new Date(),
-  content: '',
-  result: '',
-} satisfies IIssueAction;
+// const emptyAction = {
+//   date: new Date(),
+//   content: '',
+//   result: '',
+// } satisfies IIssueAction;
 
-type LocalAction = (IIssueAction | typeof emptyAction) & {
-  id?: string;
-};
+// type LocalAction = (IIssueAction | typeof emptyAction) & {
+//   id?: string;
+// };
 
-const addActionWithId = (actionsArray: LocalAction[]) =>
-  actionsArray.map((action) => ({
-    ...action,
-    id: action.id || crypto.randomUUID(),
-  }));
+// const addActionWithId = (actionsArray: LocalAction[]) =>
+//   actionsArray.map((action) => ({
+//     ...action,
+//     id: action.id || crypto.randomUUID(),
+//   }));
 
 export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
   const {
@@ -83,7 +83,6 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
     commission,
     issueType,
     summary,
-    timeline,
     supplier,
     documentType,
     documentDate,
@@ -91,13 +90,11 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
     productNumber,
     productQuantity,
     productDescription,
-    resultDate,
-    resultSummary,
   } = { ...newIssueForForm, ...issue };
 
-  const [actionsWithAdded, setActionsWithAdded] = useState<LocalAction[]>(
-    addActionWithId(timeline)
-  );
+  // const [actionsWithAdded, setActionsWithAdded] = useState<LocalAction[]>(
+  //   addActionWithId(timeline)
+  // );
 
   const [state, formAction, pending] = useActionState(
     issueAction,
@@ -110,17 +107,11 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
         <div className={styles.row}>
           <label>
             Cliente
-            <input
-              name="client"
-              defaultValue={client} // required
-            />
+            <input name="client" defaultValue={client} required />
           </label>
           <label>
             Nr commissione
-            <input
-              name="commission"
-              defaultValue={commission} // required
-            />
+            <input name="commission" defaultValue={commission} required />
           </label>
         </div>
         <div className={styles.row}>
@@ -128,7 +119,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
             Tipo di problema
             <select
               name="issueType"
-              // required
+              required
               {...(!issueType && { defaultValue: '' })}
             >
               {!issueType && (
@@ -151,10 +142,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
         <div className={styles.row}>
           <label>
             Descrizione
-            <textarea
-              name="summary"
-              defaultValue={summary} // required
-            />
+            <textarea name="summary" defaultValue={summary} required />
           </label>
         </div>
         <div className={styles.row}>
@@ -200,7 +188,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
             />
           </label>
         </div>
-
+        {/* 
         <div className={styles.row}>
           <fieldset>
             <legend>Azioni</legend>
@@ -213,7 +201,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                       name="action-date"
                       type="date"
                       defaultValue={action.date.toISOString().split('T')[0]}
-                      // required
+                      required
                     />
                   </label>
                   <label>
@@ -221,7 +209,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                     <textarea
                       name="action-number"
                       defaultValue={action.content}
-                      // required
+                      required
                     />
                   </label>
                   <label>
@@ -230,6 +218,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                       type="file"
                       name="action-attachment"
                       multiple
+                      defaultValue=""
                       accept=".jpg,.png"
                       onChange={(e) => {
                         const files = e.target.files || [];
@@ -310,8 +299,8 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
               Aggiungi azione
             </button>
           </fieldset>
-        </div>
-
+        </div> */}
+        {/* 
         <div className={styles.row}>
           <fieldset>
             <legend>Conclusione</legend>
@@ -324,7 +313,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
               <textarea name="resultSummary" defaultValue={resultSummary} />
             </label>
           </fieldset>
-        </div>
+        </div> */}
 
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
