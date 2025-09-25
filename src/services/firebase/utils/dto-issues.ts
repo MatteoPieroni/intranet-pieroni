@@ -6,6 +6,7 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
     meta: { createdAt, ...meta },
     verification: { verifiedAt, ...verification },
     timeline,
+    supplierInfo,
     result,
     ...rest
   } = riscosso;
@@ -17,6 +18,14 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
       ...action,
       date: new Date(action.date.seconds * 1000),
     })),
+    ...(supplierInfo
+      ? {
+          supplierInfo: {
+            ...supplierInfo,
+            documentDate: new Date(supplierInfo.documentDate.seconds * 1000),
+          },
+        }
+      : {}),
     ...(result
       ? {
           result: {

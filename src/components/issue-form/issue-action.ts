@@ -72,8 +72,8 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
     const timeline = await handleTimeline(
       formActionDate,
       formActionNumber,
-      formActionAttachment,
-      formActionResult
+      formActionResult,
+      formActionAttachment
     );
 
     const { commission, client, issueType, summary, supplierInfo, result } =
