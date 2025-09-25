@@ -1,7 +1,7 @@
 .container {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.25rem;
+  gap: 1rem;
   margin-block-end: 1.5rem;
 
   @media (min-width: 1024px) {
@@ -12,11 +12,31 @@
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+
+  @media (min-width: 1024px) {
+    flex-wrap: nowrap;
+    flex-basis: 500px;
+  }
 }
 
 .row label {
-  flex-basis: 500px;
+  width: 100%;
+
+  @media (min-width: 1024px) {
+    flex-basis: 500px;
+  }
+}
+
+.row label:has(textarea) {
+  flex-basis: initial;
+}
+
+.row label:has(input[type='number']),
+.row label:has(input[type='date']) {
+  flex-basis: initial;
+  flex-shrink: 1;
 }
 
 .row fieldset {
@@ -33,34 +53,4 @@
   @media (min-width: 1024px) {
     /* width: auto; */
   }
-}
-
-.iconLabel {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    'label label'
-    'icon input';
-  column-gap: 0.5rem;
-}
-
-.iconLabel input {
-  grid-area: input;
-}
-
-.iconContainer {
-  grid-area: icon;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border: var(--border-highlight) 2px solid;
-  border-radius: 50%;
-  overflow: hidden;
-
-  font-size: 1.5rem;
-  font-weight: bold;
 }

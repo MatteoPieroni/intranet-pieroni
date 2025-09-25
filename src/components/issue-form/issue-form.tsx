@@ -142,7 +142,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
         <div className={styles.row}>
           <label>
             Descrizione
-            <input name="summary" defaultValue={summary} required />
+            <textarea name="summary" defaultValue={summary} required />
           </label>
         </div>
         <div className={styles.row}>
@@ -206,7 +206,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                   </label>
                   <label>
                     Azione
-                    <input
+                    <textarea
                       name="action-number"
                       defaultValue={action.content}
                       required
@@ -218,7 +218,10 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                   </label>
                   <label>
                     Risultato
-                    <input name="action-result" defaultValue={action.result} />
+                    <textarea
+                      name="action-result"
+                      defaultValue={action.result}
+                    />
                   </label>
                   <button
                     type="button"
@@ -235,7 +238,7 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                         )
                       );
                     }}
-                    title="Rimuovi documento"
+                    title="Rimuovi azione"
                   >
                     <DeleteIcon />
                   </button>
@@ -250,20 +253,23 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
                 );
               }}
             >
-              Aggiungi documento
+              Aggiungi azione
             </button>
           </fieldset>
         </div>
 
         <div className={styles.row}>
-          <label>
-            Data
-            <input type="date" name="resultDate" defaultValue={resultDate} />
-          </label>
-          <label>
-            Conclusione
-            <input name="resultSummary" defaultValue={resultSummary} />
-          </label>
+          <fieldset>
+            <legend>Conclusione</legend>
+            <label>
+              Data
+              <input type="date" name="resultDate" defaultValue={resultDate} />
+            </label>
+            <label>
+              Commento
+              <textarea name="resultSummary" defaultValue={resultSummary} />
+            </label>
+          </fieldset>
         </div>
 
         <input type="hidden" name="id" value={id} />
