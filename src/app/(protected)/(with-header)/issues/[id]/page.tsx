@@ -196,6 +196,21 @@ export default async function Issue({
             </div>
           </div>
         </div>
+
+        {!isAlreadyChecked && (
+          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+            <h2>Aggiungi azione</h2>
+            {/* <RiscossiForm riscosso={riscosso} /> */}
+          </div>
+        )}
+
+        {!isAlreadyChecked && (
+          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+            <h2>Aggiungi conclusione</h2>
+            {/* <RiscossiForm riscosso={riscosso} /> */}
+          </div>
+        )}
+
         {!isAlreadyChecked && (
           <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
             <h2>Modifica</h2>
