@@ -416,6 +416,23 @@ export const getIssuesForUser = async (
   }
 };
 
+export const getIssue = async (headers: PassedHeaders, id: string) => {
+  try {
+    const records = await get<IIssue>(headers, ['issues', id], (issue) => {
+      const convertToDate = convertTimestampToDateIssues(issue);
+
+      const record = IssueSchema.parse(convertToDate);
+
+      return record;
+    });
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const createEmptyIssue = async (headers: PassedHeaders) => {
   try {
     const createdDoc = await create(headers, 'issues', {

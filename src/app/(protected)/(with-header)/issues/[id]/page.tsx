@@ -2,39 +2,57 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
-import { getRiscosso, getUser, getUsers } from '@/services/firebase/server';
+import { getIssue, getUser, getUsers } from '@/services/firebase/server';
 import { headers } from 'next/headers';
-import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
-import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
-import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
-import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
+import { checkCanEditIssues } from '@/services/firebase/server/permissions';
+import { IssueForm } from '@/components/issue-form/issue-form';
+import { IIssue } from '@/services/firebase/db-types';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
   description: 'Intranet - modulo qualità',
 };
 
-const companies = {
-  pieroni: {
-    label: 'Pieroni srl',
-    img: 'pieroni-logo.jpg',
-  },
-  'pieroni-mostra': {
-    label: 'Pieroni in mostra',
-    img: 'pieroni-mostra-logo.jpg',
-  },
-  pellet: { label: 'Pellet', img: 'pieroni-pellet-logo.jpg' },
+const actionTypes = {
+  'delay-preparation': 'Ritardo preparazione',
+  'missing-article': 'Articolo mancante alla consegna',
+  'delay-arrival': 'Ritardo arrivo',
+  'supplier-mistake': 'Sbaglio fornitore',
+  'client-return': 'Reso cliente',
+  'insufficient-order': 'Riordino insufficiente',
+  'supplier-defect': 'Difetto di fabbrica',
+  breakage: 'Rottura',
+  'not-conforming': 'Non conforme',
+  'client-mistake': 'Errore cliente',
+  'plumber-mistake': 'Errore idraulico',
+  'builder-mistake': 'Errore muratore',
+  'project-mistake': 'Errore progettista',
+} as const;
+
+const getSupplierInfo = (supplierInfo: IIssue['supplierInfo']) => {
+  const { deliveryContext, documentDate, documentType, supplier } =
+    supplierInfo || {};
+  return (
+    <p>
+      {supplier && `Ditta: ${supplier}`}
+      {documentType && ` - Documento: ${documentType}`}
+      {documentDate && ` - Data: ${formatDate(documentDate)}`}
+      {deliveryContext && ` - Consegnato con: ${deliveryContext}`}
+    </p>
+  );
 };
-
-const paymentMethods = {
-  assegno: 'Assegno',
-
-  contanti: 'Contanti',
-
-  bancomat: 'Bancomat',
+const getProductInfo = (supplierInfo: IIssue['supplierInfo']) => {
+  const { product } = supplierInfo || {};
+  const { description, number, quantity } = product || {};
+  return (
+    <>
+      {number && `Numero: ${number}`}
+      {description && ` - Descrizione: ${description}`}
+      {quantity && ` - Quantità: ${quantity}`}
+    </>
+  );
 };
-const documentTypes = { fattura: 'Fattura', DDT: 'DDT', impegno: 'Impegno' };
 
 export default async function Issue({
   params,
@@ -50,23 +68,14 @@ export default async function Issue({
     throw new Error('User not found');
   }
 
-  const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
+  const canEditIssues = checkCanEditIssues(currentUser.permissions);
 
-  const [riscosso, users] = await Promise.all([
-    getRiscosso(currentHeaders, id),
-    canEditRiscossi ? getUsers(currentHeaders) : undefined,
+  const [issue, users] = await Promise.all([
+    getIssue(currentHeaders, id),
+    canEditIssues ? getUsers(currentHeaders) : undefined,
   ]);
-  const {
-    company,
-    date,
-    client,
-    docs,
-    total,
-    paymentMethod,
-    paymentChequeNumber,
-    paymentChequeValue,
-    verification,
-  } = riscosso;
+  const { client, date, summary, supplierInfo, issueType, verification } =
+    issue;
   const isAlreadyChecked = verification.isVerified;
 
   const userVerification = users?.find(
@@ -76,11 +85,11 @@ export default async function Issue({
   return (
     <main className={template.page}>
       <div className={template.header}>
-        <h1 className={styles.noPrint}>Riscosso {id}</h1>
+        <h1 className={styles.noPrint}>Modulo qualità {id}</h1>
       </div>
 
       <div className={styles.container}>
-        {canEditRiscossi && (
+        {canEditIssues && (
           <div className={`${styles.section} ${styles.noPrint}`}>
             <h2>Gestisci modulo</h2>
             {isAlreadyChecked && (
@@ -90,7 +99,7 @@ export default async function Issue({
               </p>
             )}
             <div>
-              <RiscossoCheck id={id} isVerified={verification.isVerified} />
+              {/* <RiscossoCheck id={id} isVerified={verification.isVerified} /> */}
             </div>
           </div>
         )}
@@ -103,97 +112,35 @@ export default async function Issue({
             </p>
           )}
           <div className={`${styles.actionBar} ${styles.noPrint}`}>
-            <PrintButton />
+            {/* <PrintButton /> */}
             {!isAlreadyChecked && (
               <a href="#edit" className="button">
                 Modifica
               </a>
             )}
           </div>
-          <div className={styles.documentContainer}>
-            <div className={styles.document}>
-              <div className={styles.documentRow}>
-                <p className={styles.documentTitle}>
-                  {companies[company].label}
-                </p>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/assets/${companies[company].img}`} alt="" />
-              </div>
-              <div className={styles.documentRow}>
-                <p>
-                  Loc. Pastino, 67 – Diecimo
-                  <br />
-                  55020 Borgo a Mozzano (LU)
-                  <br />
-                  P. IVA 01798100465
-                </p>
-
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">Data</th>
-                      <th scope="col">Cliente</th>
-                      <th scope="col">Numero</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{formatDate(date)}</td>
-                      <td>{client}</td>
-                      <th scope="row">{id}</th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className={`${styles.documentRow} ${styles.alignCenter}`}>
-                <p className={styles.documentSubtitle}>Riscosso</p>
-              </div>
-
-              <div className={styles.documentRow}>
-                <p className={styles.documentSectionTitle}>Riferimento</p>
-              </div>
-              <div className={`${styles.documentRow} ${styles.docsContainer}`}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">Numero</th>
-                      <th scope="col">Data</th>
-                      <th scope="col">Tipo</th>
-                      <th scope="col">Importo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {docs.map((doc) => (
-                      <tr key={doc.number}>
-                        <th scope="row">{doc.number}</th>
-                        <td>{formatDate(doc.date)}</td>
-                        <td>{documentTypes[doc.type]}</td>
-                        <td className="number">{doc.total} €</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className={`${styles.documentRow} ${styles.alignRight}`}>
-                Totale pagato {total} €
-              </div>
-              <div className={styles.documentRow}>
-                <p className={styles.documentSectionTitle}>
-                  Modalità pagamento
-                </p>
-              </div>
-              <div className={styles.documentRow}>
-                {paymentMethods[paymentMethod]}
-                {paymentMethod === 'assegno' && (
-                  <>
-                    <br />
-                    N° assegno: {paymentChequeNumber} - Importo{' '}
-                    {paymentChequeValue}
-                  </>
-                )}
-              </div>
+          <div>
+            <p>
+              Numero: {id} - Data: {formatDate(date)}
+            </p>
+            <p>Cliente: {client}</p>
+            <p>Tipo di problema: {actionTypes[issueType]}</p>
+            <div>
+              <h3>Problema</h3>
+              <p>{summary}</p>
             </div>
+            {supplierInfo && (
+              <div>
+                <h3>Fornitore</h3>
+                <p>{getSupplierInfo(supplierInfo)}</p>
+              </div>
+            )}
+            {supplierInfo?.product && (
+              <div>
+                <h3>Prodotto</h3>
+                <p>{getProductInfo(supplierInfo)}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -214,7 +161,7 @@ export default async function Issue({
         {!isAlreadyChecked && (
           <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
             <h2>Modifica</h2>
-            <RiscossiForm riscosso={riscosso} />
+            <IssueForm issue={issue} />
           </div>
         )}
       </div>
