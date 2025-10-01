@@ -31,7 +31,7 @@ const converter = <T>(dto?: (snap: DocumentData) => T) => ({
 
 export const getRecords = async <Type extends DocumentData>(
   currentHeaders: PassedHeaders,
-  address: string,
+  address: string | string[],
   dto?: (dbData: DocumentData) => Type,
   options?: {
     orderData?: { field: string; direction: 'asc' | 'desc' };
@@ -40,8 +40,11 @@ export const getRecords = async <Type extends DocumentData>(
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);
   const db = getFirestore(firebaseServerApp);
+  const fullAddress = typeof address === 'string' ? [address] : address;
+  // doc typing is a bit dumb, so we gotta do this
+  const [first, ...rest] = fullAddress;
 
-  const collectionRef = collection(db, address).withConverter(
+  const collectionRef = collection(db, first, ...rest).withConverter(
     converter<Type>(dto)
   );
 

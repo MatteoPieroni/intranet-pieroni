@@ -1,11 +1,10 @@
-import { DocumentData, Timestamp } from 'firebase/firestore';
+import { DocumentData } from 'firebase/firestore';
 
 export const convertTimestampToDate = (riscosso: DocumentData) => {
   const {
     date,
     meta: { createdAt, ...meta },
     verification: { verifiedAt, ...verification },
-    timeline,
     supplierInfo,
     result,
     ...rest
@@ -14,10 +13,6 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
   return {
     ...rest,
     date: new Date(date.seconds * 1000),
-    timeline: timeline.map((action: { date: Timestamp }) => ({
-      ...action,
-      date: new Date(action.date.seconds * 1000),
-    })),
     ...(supplierInfo
       ? {
           supplierInfo: {
@@ -44,5 +39,13 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
         ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
         : {}),
     },
+  };
+};
+
+export const convertTimestampToDateAction = (action: DocumentData) => {
+  const { date, ...rest } = action;
+  return {
+    date: new Date(date.seconds * 1000),
+    ...rest,
   };
 };

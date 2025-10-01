@@ -11,8 +11,11 @@ import {
   IDbRiscosso,
   IIssue,
   IDbIssue,
+  IIssueAction,
+  IDbIssueAction,
 } from '../../db-types';
 import {
+  IssueActionSchema,
   IssueSchema,
   LinkSchema,
   RiscossoSchema,
@@ -31,7 +34,10 @@ import {
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
 import { convertTimestampToDate as convertTimestampToDateRiscossi } from '../../utils/dto-riscossi';
-import { convertTimestampToDate as convertTimestampToDateIssues } from '../../utils/dto-issues';
+import {
+  convertTimestampToDate as convertTimestampToDateIssues,
+  convertTimestampToDateAction as convertTimestampToDateIssueActions,
+} from '../../utils/dto-issues';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
@@ -435,8 +441,24 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
 
 export const createEmptyIssue = async (headers: PassedHeaders) => {
   try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const now = Timestamp.now();
+
     const createdDoc = await create(headers, 'issues', {
+      date: now,
       timeline: [],
+      meta: {
+        author: user.currentUser.id,
+        createdAt: now,
+      },
+      verification: {
+        isVerified: false,
+      },
     });
     return createdDoc.id;
   } catch (e) {
@@ -450,12 +472,6 @@ export const updateIssue = async (
   data: Omit<IIssue, 'meta' | 'verification' | 'date' | 'timeline' | 'result'>
 ) => {
   try {
-    const user = await getUser(headers);
-
-    if (!user.currentUser?.id) {
-      throw new Error('Missing user id');
-    }
-
     const {
       // result: resultWithDate,
       supplierInfo: supplierWithDate,
@@ -466,8 +482,6 @@ export const updateIssue = async (
       date: true,
       timeline: true,
     }).parse(data);
-
-    const now = Timestamp.now();
 
     // const timeline = data.timeline.map((action) => ({
     //   ...action,
@@ -497,17 +511,68 @@ export const updateIssue = async (
     await update<IDbIssue>(headers, ['issues', verifiedData.id], {
       ...verifiedData,
       ...supplierInfo,
-      date: now,
-      meta: {
-        author: user.currentUser.id,
-        createdAt: now,
-      },
-      verification: {
-        isVerified: false,
-      },
     });
 
     return { id: verifiedData.id };
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getIssueTimeline = async (headers: PassedHeaders, id: string) => {
+  try {
+    const records = await getRecords<IIssueAction>(
+      headers,
+      ['issues', id, 'timeline'],
+      (issue) => {
+        const convertToDate = convertTimestampToDateIssueActions(issue);
+
+        const record = IssueActionSchema.parse(convertToDate);
+
+        return record;
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const addActionToIssue = async (
+  headers: PassedHeaders,
+  data: {
+    issueId: string;
+    action: Omit<IIssueAction, 'id'>;
+  }
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const { date, ...verifiedData } = IssueActionSchema.omit({
+      id: true,
+    }).parse(data.action);
+
+    const createdDoc = await create<Omit<IDbIssueAction, 'id'>>(
+      headers,
+      `issues/${data.issueId}/timeline`,
+      { ...verifiedData, date: Timestamp.fromDate(date) }
+    );
+    await update<IDbIssueAction>(
+      headers,
+      ['issues', data.issueId, 'timeline', createdDoc.id],
+      {
+        id: createdDoc.id,
+      }
+    );
+
+    return createdDoc.id;
   } catch (e) {
     console.error(e);
     throw e;

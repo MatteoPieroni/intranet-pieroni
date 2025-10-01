@@ -3,6 +3,7 @@ import { Timestamp } from 'firebase/firestore';
 type UserScopes =
   | 'read/riscossi'
   | 'write/riscossi'
+  | 'write/issues'
   | 'write/gmb'
   | 'write/config'
   | 'admin';
@@ -204,7 +205,8 @@ type ISupplierInfo = {
   };
 };
 
-type IDbAction = {
+export type IDbIssueAction = {
+  id: string;
   date: Timestamp;
   content: string;
   attachments?: string[];
@@ -212,6 +214,7 @@ type IDbAction = {
 };
 
 export type IIssueAction = {
+  id: string;
   date: Date;
   content: string;
   attachments?: string[];
@@ -226,7 +229,7 @@ export type IDbIssue = {
   issueType: IssueType;
   summary: string;
   supplierInfo?: IDbSupplierInfo;
-  timeline: IDbAction[];
+  timeline: IDbIssueAction[];
   result?: {
     date: Timestamp;
     summary: string;

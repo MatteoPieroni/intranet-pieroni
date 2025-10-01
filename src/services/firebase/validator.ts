@@ -60,6 +60,7 @@ export const RiscossoSchema = z.object({
 });
 
 export const IssueActionSchema = z.object({
+  id: z.string(),
   date: z.date(),
   content: z.string(),
   attachments: z.optional(z.array(z.string())),
