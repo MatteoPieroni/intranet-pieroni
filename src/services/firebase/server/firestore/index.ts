@@ -16,6 +16,7 @@ import {
 } from '../../db-types';
 import {
   IssueActionSchema,
+  IssueResultSchema,
   IssueSchema,
   LinkSchema,
   RiscossoSchema,
@@ -573,6 +574,38 @@ export const addActionToIssue = async (
     );
 
     return createdDoc.id;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const addResultToIssue = async (
+  headers: PassedHeaders,
+  data: {
+    id: string;
+    summary: string;
+  }
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const { summary } = IssueResultSchema.omit({
+      date: true,
+    }).parse({ summary: data.summary });
+
+    const now = Timestamp.now();
+
+    await update<IDbIssue>(headers, ['issues', data.id], {
+      result: {
+        summary,
+        date: now,
+      },
+    });
   } catch (e) {
     console.error(e);
     throw e;

@@ -5,18 +5,28 @@ import { formatDate } from '@/utils/formatDate';
 import { useState } from 'react';
 import { IssueTimelineForm } from './issue-timeline-form';
 
-type IssueActionProps = { issueId: string; action: IIssueAction };
+type IssueActionProps = {
+  issueId: string;
+  action: IIssueAction;
+  readOnly: boolean;
+};
 
-export const IssueAction = ({ issueId, action }: IssueActionProps) => {
+export const IssueAction = ({
+  issueId,
+  action,
+  readOnly,
+}: IssueActionProps) => {
   const { content, date, attachments, result } = action;
 
   const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div>
-      <button onClick={() => setIsEditing(!isEditing)}>
-        {isEditing ? 'Annulla modifiche' : 'Modifica'}
-      </button>
+      {!readOnly && (
+        <button onClick={() => setIsEditing(!isEditing)}>
+          {isEditing ? 'Annulla modifiche' : 'Modifica'}
+        </button>
+      )}
       {!isEditing && (
         <>
           <p>{formatDate(date)}</p>
@@ -24,7 +34,9 @@ export const IssueAction = ({ issueId, action }: IssueActionProps) => {
           {result && <p>{result}</p>}
         </>
       )}
-      {isEditing && <IssueTimelineForm action={action} issueId={issueId} />}
+      {isEditing && !readOnly && (
+        <IssueTimelineForm action={action} issueId={issueId} />
+      )}
     </div>
   );
 };

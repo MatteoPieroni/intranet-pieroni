@@ -15,6 +15,7 @@ import { IssueForm } from '@/components/issue-form/issue-form';
 import { IIssue } from '@/services/firebase/db-types';
 import { IssueTimelineForm } from '@/components/issue-timeline/issue-timeline-form';
 import { IssueAction } from '@/components/issue-timeline/issue-action';
+import { IssueResultForm } from '@/components/issue-form/issue-result-form';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -81,9 +82,18 @@ export default async function Issue({
     getIssue(currentHeaders, id),
     canEditIssues ? getUsers(currentHeaders) : undefined,
   ]);
-  const { client, date, summary, supplierInfo, issueType, verification } =
-    issue;
+  const {
+    client,
+    date,
+    summary,
+    supplierInfo,
+    issueType,
+    verification,
+    result,
+  } = issue;
   const isAlreadyChecked = verification.isVerified;
+  const isResolved = !!result;
+  const isFinished = isAlreadyChecked || isResolved;
 
   const userVerification = users?.find(
     (user) => user.id === verification.verifyAuthor
@@ -121,8 +131,7 @@ export default async function Issue({
             </p>
           )}
           <div className={`${styles.actionBar} ${styles.noPrint}`}>
-            {/* <PrintButton /> */}
-            {!isAlreadyChecked && (
+            {!isFinished && (
               <a href="#edit" className="button">
                 Modifica
               </a>
@@ -156,9 +165,14 @@ export default async function Issue({
         <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
           <h2>Timeline</h2>
           {timeline.map((action) => (
-            <IssueAction action={action} issueId={id} key={action.id} />
+            <IssueAction
+              action={action}
+              issueId={id}
+              key={action.id}
+              readOnly={isFinished}
+            />
           ))}
-          {!isAlreadyChecked && (
+          {!isFinished && (
             <>
               <h3>Aggiungi azione</h3>
               <IssueTimelineForm isNew issueId={id} action={undefined} />
@@ -166,14 +180,28 @@ export default async function Issue({
           )}
         </div>
 
-        {!isAlreadyChecked && (
-          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
-            <h2>Aggiungi conclusione</h2>
-            {/* <RiscossiForm riscosso={riscosso} /> */}
-          </div>
-        )}
+        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+          <h2>Conclusione</h2>
+          {!isFinished && (
+            <>
+              <div>
+                <p>
+                  Attenzione: aggiungere la conclusione rendera il documento non
+                  piu modificabile
+                </p>
+              </div>
+              <IssueResultForm id={id} />
+            </>
+          )}
+          {isResolved && (
+            <div>
+              <p>{formatDate(result.date)}</p>
+              <p>{result.summary}</p>
+            </div>
+          )}
+        </div>
 
-        {!isAlreadyChecked && (
+        {!isFinished && (
           <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
             <h2>Modifica</h2>
             <IssueForm issue={issue} />

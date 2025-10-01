@@ -67,6 +67,11 @@ export const IssueActionSchema = z.object({
   result: z.optional(z.string()),
 });
 
+export const IssueResultSchema = z.object({
+  date: z.date(),
+  summary: z.string(),
+});
+
 export const IssueSchema = z.object({
   id: z.string(),
   date: z.date(),
@@ -104,12 +109,7 @@ export const IssueSchema = z.object({
     })
   ),
   timeline: z.array(IssueActionSchema),
-  result: z.optional(
-    z.object({
-      date: z.date(),
-      summary: z.string(),
-    })
-  ),
+  result: z.optional(IssueResultSchema),
   meta: z.object({
     createdAt: z.date(),
     author: z.string(),
