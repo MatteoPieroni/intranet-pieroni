@@ -1,0 +1,56 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
+
+  @media (min-width: 1024px) {
+    margin-block-end: 0;
+    padding: 0.5rem;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  @media (min-width: 1024px) {
+    flex-wrap: nowrap;
+    flex-basis: 500px;
+  }
+}
+
+.row label {
+  width: 100%;
+
+  @media (min-width: 1024px) {
+    flex-basis: 500px;
+  }
+}
+
+.row label:has(textarea) {
+  flex-basis: initial;
+}
+
+.row label:has(input[type='number']),
+.row label:has(input[type='date']) {
+  flex-basis: initial;
+  flex-shrink: 1;
+}
+
+.row fieldset {
+  flex-grow: 1;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 0.5rem;
+  margin-block-end: 0.5rem;
+
+  @media (min-width: 1024px) {
+    /* width: auto; */
+  }
+}

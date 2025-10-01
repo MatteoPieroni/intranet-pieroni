@@ -2,12 +2,19 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
-import { getIssue, getUser, getUsers } from '@/services/firebase/server';
+import {
+  getIssue,
+  getIssueTimeline,
+  getUser,
+  getUsers,
+} from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
 import { IssueForm } from '@/components/issue-form/issue-form';
 import { IIssue } from '@/services/firebase/db-types';
+import { IssueTimelineForm } from '@/components/issue-timeline/issue-timeline-form';
+import { IssueAction } from '@/components/issue-timeline/issue-action';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -34,12 +41,12 @@ const getSupplierInfo = (supplierInfo: IIssue['supplierInfo']) => {
   const { deliveryContext, documentDate, documentType, supplier } =
     supplierInfo || {};
   return (
-    <p>
+    <>
       {supplier && `Ditta: ${supplier}`}
       {documentType && ` - Documento: ${documentType}`}
       {documentDate && ` - Data: ${formatDate(documentDate)}`}
       {deliveryContext && ` - Consegnato con: ${deliveryContext}`}
-    </p>
+    </>
   );
 };
 const getProductInfo = (supplierInfo: IIssue['supplierInfo']) => {
@@ -81,6 +88,8 @@ export default async function Issue({
   const userVerification = users?.find(
     (user) => user.id === verification.verifyAuthor
   );
+
+  const timeline = await getIssueTimeline(currentHeaders, id);
 
   return (
     <main className={template.page}>
@@ -144,12 +153,18 @@ export default async function Issue({
           </div>
         </div>
 
-        {!isAlreadyChecked && (
-          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
-            <h2>Aggiungi azione</h2>
-            {/* <RiscossiForm riscosso={riscosso} /> */}
-          </div>
-        )}
+        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+          <h2>Timeline</h2>
+          {timeline.map((action) => (
+            <IssueAction action={action} issueId={id} key={action.id} />
+          ))}
+          {!isAlreadyChecked && (
+            <>
+              <h3>Aggiungi azione</h3>
+              <IssueTimelineForm isNew issueId={id} action={undefined} />
+            </>
+          )}
+        </div>
 
         {!isAlreadyChecked && (
           <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
