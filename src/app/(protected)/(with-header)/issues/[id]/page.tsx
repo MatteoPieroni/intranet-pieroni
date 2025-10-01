@@ -111,7 +111,7 @@ export default async function Issue({
           <h2 className={styles.noPrint}>Modulo</h2>
           {isAlreadyChecked && (
             <p className={styles.confirmation}>
-              Confermato il {formatDate(verification.verifiedAt)}
+              Confermato il <DateComponent date={verification.verifiedAt} />
             </p>
           )}
           <div className={styles.dataContainer}>
