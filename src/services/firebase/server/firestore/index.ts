@@ -482,21 +482,9 @@ export const updateIssue = async (
       verification: true,
       date: true,
       timeline: true,
+      result: true,
     }).parse(data);
 
-    // const timeline = data.timeline.map((action) => ({
-    //   ...action,
-    //   date: Timestamp.fromDate(action.date),
-    // }));
-
-    // const result = resultWithDate
-    //   ? {
-    //       result: {
-    //         date: Timestamp.fromDate(resultWithDate.date),
-    //         summary: resultWithDate.summary,
-    //       },
-    //     }
-    //   : {};
     const { documentDate, ...supplierInfoRest } = supplierWithDate || {};
     const supplierInfo = supplierWithDate
       ? {
@@ -605,6 +593,41 @@ export const addResultToIssue = async (
         summary,
         date: now,
       },
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const checkIssue = async (
+  headers: PassedHeaders,
+  data: {
+    id: string;
+    isChecked: boolean;
+  }
+) => {
+  try {
+    const user = await getUser(headers);
+
+    if (!user.currentUser?.id) {
+      throw new Error('Missing user id');
+    }
+
+    const now = Timestamp.now();
+
+    const verification = data.isChecked
+      ? {
+          isVerified: data.isChecked,
+          verifiedAt: now,
+          verifyAuthor: user.currentUser.id,
+        }
+      : ({
+          isVerified: false,
+        } as const);
+
+    await update<Pick<IIssue, 'verification'>>(headers, ['issues', data.id], {
+      verification,
     });
   } catch (e) {
     console.error(e);

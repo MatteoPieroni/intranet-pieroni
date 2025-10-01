@@ -2,13 +2,13 @@
 
 import { useActionState } from 'react';
 
-import { riscossoCheckAction, StateValidation } from './issue-check-action';
+import { issueCheckAction, StateValidation } from './issue-check-action';
 import { FormStatus } from '../form-status/form-status';
 import styles from './issue-check.module.css';
 
 const initialState: StateValidation = {};
 
-export const RiscossoCheck = ({
+export const IssueCheck = ({
   id,
   isVerified,
 }: {
@@ -16,7 +16,7 @@ export const RiscossoCheck = ({
   isVerified: boolean;
 }) => {
   const [state, formAction, pending] = useActionState(
-    riscossoCheckAction,
+    issueCheckAction,
     initialState
   );
 

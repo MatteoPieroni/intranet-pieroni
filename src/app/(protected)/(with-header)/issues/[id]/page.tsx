@@ -16,6 +16,7 @@ import { IIssue } from '@/services/firebase/db-types';
 import { IssueTimelineForm } from '@/components/issue-timeline/issue-timeline-form';
 import { IssueAction } from '@/components/issue-timeline/issue-action';
 import { IssueResultForm } from '@/components/issue-form/issue-result-form';
+import { IssueCheck } from '@/components/issue-form/issue-check';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -118,7 +119,14 @@ export default async function Issue({
               </p>
             )}
             <div>
-              {/* <RiscossoCheck id={id} isVerified={verification.isVerified} /> */}
+              {isResolved ? (
+                <IssueCheck id={id} isVerified={verification.isVerified} />
+              ) : (
+                <p>
+                  <a href="#result">Aggiungi una conclusione</a> prima di
+                  confermare il documento
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -162,7 +170,7 @@ export default async function Issue({
           </div>
         </div>
 
-        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+        <div className={`${styles.section}`}>
           <h2>Timeline</h2>
           {timeline.map((action) => (
             <IssueAction
@@ -180,7 +188,7 @@ export default async function Issue({
           )}
         </div>
 
-        <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+        <div id="result" className={`${styles.section}`}>
           <h2>Conclusione</h2>
           {!isFinished && (
             <>

@@ -4,14 +4,14 @@ import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
-import { checkRiscosso } from '@/services/firebase/server';
+import { checkIssue } from '@/services/firebase/server';
 
 export type StateValidation = {
   error?: string;
   success?: string;
 };
 
-export const riscossoCheckAction = async (
+export const issueCheckAction = async (
   _: StateValidation,
   values: FormData
 ) => {
@@ -30,9 +30,9 @@ export const riscossoCheckAction = async (
     const id = String(formId);
     const isChecked = String(formIsChecked) === 'on';
 
-    await checkRiscosso(currentHeaders, { id, isChecked });
+    await checkIssue(currentHeaders, { id, isChecked });
 
-    revalidatePath('/riscossi');
+    revalidatePath('/issues');
 
     return {
       success: FORM_SUCCESS_RISCOSSO,
