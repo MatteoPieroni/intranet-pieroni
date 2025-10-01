@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import * as z from 'zod';
 
 import { type IIssue } from '@/services/firebase/db-types';
@@ -41,40 +41,29 @@ export const AttachmentSchema = z.file().max(1_000_000, 'Too big');
 
 const newIssue = {
   client: '',
-  timeline: [],
   commission: '',
   summary: '',
+  supplierInfo: {
+    supplier: '',
+    documentType: '',
+    deliveryContext: '',
+    product: {
+      number: '',
+      description: '',
+    },
+  },
 } satisfies Partial<IIssue>;
 const newIssueForForm = {
   ...newIssue,
-  issueType: '',
-  supplier: '',
-  id: '',
-  documentType: '',
-  documentDate: '',
-  deliveryContext: '',
-  productNumber: '',
-  productQuantity: '',
-  productDescription: '',
-  resultDate: '',
-  resultSummary: '',
+  supplierInfo: {
+    ...newIssue.supplierInfo,
+    documentDate: '',
+    product: {
+      ...newIssue.supplierInfo.product,
+      quantity: '',
+    },
+  },
 };
-
-// const emptyAction = {
-//   date: new Date(),
-//   content: '',
-//   result: '',
-// } satisfies IIssueAction;
-
-// type LocalAction = (IIssueAction | typeof emptyAction) & {
-//   id?: string;
-// };
-
-// const addActionWithId = (actionsArray: LocalAction[]) =>
-//   actionsArray.map((action) => ({
-//     ...action,
-//     id: action.id || crypto.randomUUID(),
-//   }));
 
 export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
   const {
@@ -83,18 +72,18 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
     commission,
     issueType,
     summary,
-    supplier,
-    documentType,
-    documentDate,
-    deliveryContext,
-    productNumber,
-    productQuantity,
-    productDescription,
+    supplierInfo: {
+      supplier,
+      documentType,
+      documentDate,
+      deliveryContext,
+      product: {
+        number: productNumber,
+        quantity: productQuantity,
+        description: productDescription,
+      } = {},
+    } = {},
   } = { ...newIssueForForm, ...issue };
-
-  // const [actionsWithAdded, setActionsWithAdded] = useState<LocalAction[]>(
-  //   addActionWithId(timeline)
-  // );
 
   const [state, formAction, pending] = useActionState(
     issueAction,
@@ -145,175 +134,59 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
             <textarea name="summary" defaultValue={summary} required />
           </label>
         </div>
-        <div className={styles.row}>
-          <label>
-            Ditta fornitrice
-            <input name="supplier" defaultValue={supplier} />
-          </label>
-          <label>
-            Tipo di documento
-            <input name="documentType" defaultValue={documentType} />
-          </label>
-          <label>
-            Data documento
-            <input
-              type="date"
-              name="documentDate"
-              defaultValue={documentDate}
-            />
-          </label>
-          <label>
-            Consegnata con
-            <input name="deliveryContext" defaultValue={deliveryContext} />
-          </label>
-        </div>
-        <div className={styles.row}>
-          <label>
-            Articolo
-            <input name="productNumber" defaultValue={productNumber} />
-          </label>
-          <label>
-            Quantità
-            <input
-              type="number"
-              name="productQuantity"
-              defaultValue={productQuantity}
-            />
-          </label>
-          <label>
-            Descrizione prodotto
-            <input
-              name="productDescription"
-              defaultValue={productDescription}
-            />
-          </label>
-        </div>
-        {/* 
-        <div className={styles.row}>
-          <fieldset>
-            <legend>Azioni</legend>
-            {actionsWithAdded.map((action) => {
-              return (
-                <div key={action.id}>
-                  <label>
-                    Data
-                    <input
-                      name="action-date"
-                      type="date"
-                      defaultValue={action.date.toISOString().split('T')[0]}
-                      required
-                    />
-                  </label>
-                  <label>
-                    Azione
-                    <textarea
-                      name="action-number"
-                      defaultValue={action.content}
-                      required
-                    />
-                  </label>
-                  <label>
-                    Allegati
-                    <input
-                      type="file"
-                      name="action-attachment"
-                      multiple
-                      defaultValue=""
-                      accept=".jpg,.png"
-                      onChange={(e) => {
-                        const files = e.target.files || [];
-                        const filesWithoutBig = new DataTransfer();
-                        let hasError = false;
-
-                        for (const file of files) {
-                          try {
-                            AttachmentSchema.parse(file);
-
-                            filesWithoutBig.items.add(file);
-                          } catch (error) {
-                            console.error(error);
-                            hasError = true;
-                          }
-                        }
-
-                        if (hasError) {
-                          alert(
-                            'Uno dei file era troppo grande, lo abbiamo rimosso'
-                          );
-                        }
-
-                        let total = 0;
-                        for (const finalFile of filesWithoutBig.files) {
-                          total += finalFile.size;
-                        }
-
-                        if (total > 1_000_000) {
-                          alert(
-                            'Il totale di allegati e troppo grande, riducili o rimuovine alcuni'
-                          );
-                          e.target.value = '';
-                          return;
-                        }
-
-                        e.target.files = filesWithoutBig.files;
-                      }}
-                    />
-                  </label>
-                  <label>
-                    Risultato
-                    <textarea
-                      name="action-result"
-                      defaultValue={action.result}
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const hasConfirmed = confirm(
-                        'Confermi la cancellazione?'
-                      );
-
-                      if (!hasConfirmed) return;
-
-                      setActionsWithAdded(
-                        actionsWithAdded.filter(
-                          (stateAction) => stateAction.id !== action.id
-                        )
-                      );
-                    }}
-                    title="Rimuovi azione"
-                  >
-                    <DeleteIcon />
-                  </button>
-                </div>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => {
-                setActionsWithAdded(
-                  addActionWithId([...actionsWithAdded, emptyAction])
-                );
-              }}
-            >
-              Aggiungi azione
-            </button>
-          </fieldset>
-        </div> */}
-        {/* 
-        <div className={styles.row}>
-          <fieldset>
-            <legend>Conclusione</legend>
+        <fieldset>
+          <legend>Fornitore</legend>
+          <div className={styles.row}>
             <label>
-              Data
-              <input type="date" name="resultDate" defaultValue={resultDate} />
+              Ditta
+              <input name="supplier" defaultValue={supplier} />
             </label>
             <label>
-              Commento
-              <textarea name="resultSummary" defaultValue={resultSummary} />
+              Documento
+              <input name="documentType" defaultValue={documentType} />
             </label>
-          </fieldset>
-        </div> */}
+            <label>
+              Data documento
+              <input
+                type="date"
+                name="documentDate"
+                defaultValue={
+                  documentDate instanceof Date
+                    ? documentDate.toISOString().split('T')[0]
+                    : ''
+                }
+              />
+            </label>
+            <label>
+              Consegnata con
+              <input name="deliveryContext" defaultValue={deliveryContext} />
+            </label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Articolo</legend>
+          <div className={styles.row}>
+            <label>
+              Numero
+              <input name="productNumber" defaultValue={productNumber} />
+            </label>
+            <label>
+              Quantità
+              <input
+                type="number"
+                name="productQuantity"
+                defaultValue={productQuantity}
+              />
+            </label>
+            <label>
+              Descrizione prodotto
+              <input
+                name="productDescription"
+                defaultValue={productDescription}
+              />
+            </label>
+          </div>
+        </fieldset>
 
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="isNew" value={isNew ? 'NEW' : ''} />
@@ -326,5 +199,18 @@ export const IssueForm = ({ issue, isNew = false }: IssueFormProps) => {
       {!pending && <FormStatus text={state.success} type="success" />}
       {!pending && <FormStatus text={state.error} type="error" />}
     </form>
+  );
+};
+
+export const IssueFormWithButton = (props: IssueFormProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setIsEditing(!isEditing)}>
+        {isEditing ? 'Annulla modifiche' : 'Modifica'}
+      </button>
+      {isEditing && <IssueForm {...props} />}
+    </div>
   );
 };

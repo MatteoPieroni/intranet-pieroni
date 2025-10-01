@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -8,15 +9,14 @@ import {
   getUser,
   getUsers,
 } from '@/services/firebase/server';
-import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
-import { IssueForm } from '@/components/issue-form/issue-form';
-import { IIssue } from '@/services/firebase/db-types';
+import { IssueFormWithButton } from '@/components/issue-form/issue-form';
 import { IssueTimelineForm } from '@/components/issue-timeline/issue-timeline-form';
 import { IssueAction } from '@/components/issue-timeline/issue-action';
 import { IssueResultForm } from '@/components/issue-form/issue-result-form';
 import { IssueCheck } from '@/components/issue-form/issue-check';
+import { Instruction } from '@/components/instruction/instruction';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -38,30 +38,6 @@ const actionTypes = {
   'builder-mistake': 'Errore muratore',
   'project-mistake': 'Errore progettista',
 } as const;
-
-const getSupplierInfo = (supplierInfo: IIssue['supplierInfo']) => {
-  const { deliveryContext, documentDate, documentType, supplier } =
-    supplierInfo || {};
-  return (
-    <>
-      {supplier && `Ditta: ${supplier}`}
-      {documentType && ` - Documento: ${documentType}`}
-      {documentDate && ` - Data: ${formatDate(documentDate)}`}
-      {deliveryContext && ` - Consegnato con: ${deliveryContext}`}
-    </>
-  );
-};
-const getProductInfo = (supplierInfo: IIssue['supplierInfo']) => {
-  const { product } = supplierInfo || {};
-  const { description, number, quantity } = product || {};
-  return (
-    <>
-      {number && `Numero: ${number}`}
-      {description && ` - Descrizione: ${description}`}
-      {quantity && ` - Quantità: ${quantity}`}
-    </>
-  );
-};
 
 export default async function Issue({
   params,
@@ -138,35 +114,71 @@ export default async function Issue({
               Confermato il {formatDate(verification.verifiedAt)}
             </p>
           )}
-          <div className={`${styles.actionBar} ${styles.noPrint}`}>
-            {!isFinished && (
-              <a href="#edit" className="button">
-                Modifica
-              </a>
-            )}
-          </div>
-          <div>
+          <div className={styles.dataContainer}>
             <p>
-              Numero: {id} - Data: {formatDate(date)}
+              <strong>Numero:</strong> {id} - <strong>Data:</strong>{' '}
+              {formatDate(date)}
             </p>
-            <p>Cliente: {client}</p>
-            <p>Tipo di problema: {actionTypes[issueType]}</p>
+            <p>
+              <strong>Cliente:</strong> {client}
+            </p>
+            <p>
+              <strong>Tipo di problema:</strong> {actionTypes[issueType]}
+            </p>
             <div>
-              <h3>Problema</h3>
+              <h3>Riassunto</h3>
               <p>{summary}</p>
             </div>
             {supplierInfo && (
               <div>
                 <h3>Fornitore</h3>
-                <p>{getSupplierInfo(supplierInfo)}</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Ditta</th>
+                      <th scope="col">Documento</th>
+                      <th scope="col">Data</th>
+                      <th scope="col">Consegnato con</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{supplierInfo.supplier}</td>
+                      <td>{supplierInfo.documentType}</td>
+                      <td>
+                        {supplierInfo.documentDate &&
+                          formatDate(supplierInfo.documentDate)}
+                      </td>
+                      <td>{supplierInfo.deliveryContext}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             )}
             {supplierInfo?.product && (
               <div>
                 <h3>Prodotto</h3>
-                <p>{getProductInfo(supplierInfo)}</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Numero</th>
+                      <th scope="col">Descrizione</th>
+                      <th scope="col">Quantità</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{supplierInfo.product.number}</td>
+                      <td>{supplierInfo.product.description}</td>
+                      <td>{supplierInfo.product.quantity}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             )}
+          </div>
+          <div className={`${styles.actionBar} ${styles.noPrint}`}>
+            {!isFinished && <IssueFormWithButton issue={issue} />}
           </div>
         </div>
 
@@ -188,33 +200,29 @@ export default async function Issue({
           )}
         </div>
 
-        <div id="result" className={`${styles.section}`}>
+        <div
+          id="result"
+          className={`${styles.section} ${styles.dataContainer}`}
+        >
           <h2>Conclusione</h2>
           {!isFinished && (
             <>
               <div>
-                <p>
-                  Attenzione: aggiungere la conclusione rendera il documento non
-                  piu modificabile
-                </p>
+                <Instruction type="warning">
+                  Attenzione: aggiungere la conclusione renderà il documento non
+                  più modificabile
+                </Instruction>
               </div>
               <IssueResultForm id={id} />
             </>
           )}
           {isResolved && (
-            <div>
+            <>
               <p>{formatDate(result.date)}</p>
               <p>{result.summary}</p>
-            </div>
+            </>
           )}
         </div>
-
-        {!isFinished && (
-          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
-            <h2>Modifica</h2>
-            <IssueForm issue={issue} />
-          </div>
-        )}
       </div>
     </main>
   );

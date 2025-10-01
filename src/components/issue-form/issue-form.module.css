@@ -35,7 +35,7 @@
 
 .row label:has(input[type='number']),
 .row label:has(input[type='date']) {
-  flex-basis: initial;
+  flex-basis: 0;
   flex-shrink: 1;
 }
 
@@ -49,8 +49,4 @@
   width: 100%;
   gap: 0.5rem;
   margin-block-end: 0.5rem;
-
-  @media (min-width: 1024px) {
-    /* width: auto; */
-  }
 }
