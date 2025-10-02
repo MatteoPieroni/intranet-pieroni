@@ -1,0 +1,28 @@
+.status {
+  width: 100%;
+  border-radius: var(--border-radius-smaller);
+
+  &:not(:empty) {
+    display: block;
+    margin-block-start: 0.5rem;
+    padding: 0.125rem 0.5rem;
+  }
+}
+
+.success,
+.success a {
+  background-color: var(--background-success);
+  color: var(--text-success);
+}
+
+.error,
+.error a {
+  background-color: var(--background-error);
+  color: var(--text-error);
+}
+
+.warning,
+.warning a {
+  background-color: var(--background-warning);
+  color: var(--text-warning);
+}

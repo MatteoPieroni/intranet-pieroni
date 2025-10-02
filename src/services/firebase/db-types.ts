@@ -3,6 +3,7 @@ import { Timestamp } from 'firebase/firestore';
 type UserScopes =
   | 'read/riscossi'
   | 'write/riscossi'
+  | 'write/issues'
   | 'write/gmb'
   | 'write/config'
   | 'admin';
@@ -99,7 +100,7 @@ export type IConfig = {
   emailRiscossi: string;
 };
 
-export type IFileCategories = 'link-icons' | 'quote';
+export type IFileCategories = 'link-icons' | 'quote' | `issues/${string}`;
 
 export type IDbRiscossoDoc = {
   number: string;
@@ -148,6 +149,119 @@ export type IRiscosso = Omit<
 > & {
   date: Date;
   docs: IRiscossoDoc[];
+  meta: {
+    createdAt: Date;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Date;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Date;
+        verifyAuthor?: string;
+      };
+};
+
+type IssueType =
+  | 'delay-preparation'
+  | 'missing-article'
+  | 'delay-arrival'
+  | 'supplier-mistake'
+  | 'client-return'
+  | 'insufficient-order'
+  | 'supplier-defect'
+  | 'breakage'
+  | 'not-conforming'
+  | 'client-mistake'
+  | 'plumber-mistake'
+  | 'builder-mistake'
+  | 'project-mistake';
+
+type IDbSupplierInfo = {
+  supplier?: string;
+  documentType?: string;
+  documentDate?: Timestamp;
+  deliveryContext?: string;
+  product?: {
+    number?: string;
+    quantity?: number;
+    description?: string;
+  };
+};
+
+type ISupplierInfo = {
+  supplier?: string;
+  documentType?: string;
+  documentDate?: Date;
+  deliveryContext?: string;
+  product?: {
+    number?: string;
+    quantity?: number;
+    description?: string;
+  };
+};
+
+export type IDbIssueAction = {
+  id: string;
+  date: Timestamp;
+  content: string;
+  attachments?: string[];
+  result?: string;
+};
+
+export type IIssueAction = {
+  id: string;
+  date: Date;
+  content: string;
+  attachments?: string[];
+  result?: string;
+};
+
+export type IDbIssue = {
+  id: string;
+  date: Timestamp;
+  commission: string;
+  client: string;
+  issueType: IssueType;
+  summary: string;
+  supplierInfo?: IDbSupplierInfo;
+  timeline: IDbIssueAction[];
+  result?: {
+    date: Timestamp;
+    summary: string;
+  };
+  meta: {
+    createdAt: Timestamp;
+    author: string;
+  };
+  verification:
+    | {
+        isVerified: true;
+        verifiedAt: Timestamp;
+        verifyAuthor: string;
+      }
+    | {
+        isVerified: false;
+        verifiedAt?: Timestamp;
+        verifyAuthor?: string;
+      };
+};
+
+export type IIssue = Omit<
+  IDbIssue,
+  'date' | 'meta' | 'verification' | 'result' | 'timeline' | 'supplierInfo'
+> & {
+  date: Date;
+  timeline: IIssueAction[];
+  supplierInfo?: ISupplierInfo;
+  result?: {
+    date: Date;
+    summary: string;
+  };
   meta: {
     createdAt: Date;
     author: string;

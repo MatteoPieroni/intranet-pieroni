@@ -1,6 +1,7 @@
 export const permissions = [
   'read/riscossi',
   'write/riscossi',
+  'write/issues',
   'write/gmb',
   'write/config',
   'admin',
@@ -24,6 +25,10 @@ const withIsAdmin =
 
 export const checkCanEditRiscossi = withIsAdmin(
   checkForPermission('write/riscossi')
+);
+
+export const checkCanEditIssues = withIsAdmin(
+  checkForPermission('write/issues')
 );
 
 export const checkCanEditConfig = withIsAdmin(

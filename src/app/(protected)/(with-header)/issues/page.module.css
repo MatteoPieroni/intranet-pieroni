@@ -1,0 +1,18 @@
+.container {
+  padding-inline: 1rem;
+  overflow: auto;
+}
+
+.section {
+  margin-block-end: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background-0);
+
+  @media print {
+    padding: 0;
+  }
+}
+
+.section table {
+  width: 100%;
+}

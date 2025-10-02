@@ -29,9 +29,7 @@ const companies = {
 
 const paymentMethods = {
   assegno: 'Assegno',
-
   contanti: 'Contanti',
-
   bancomat: 'Bancomat',
 };
 const documentTypes = { fattura: 'Fattura', DDT: 'DDT', impegno: 'Impegno' };
