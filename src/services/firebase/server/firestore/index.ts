@@ -520,6 +520,12 @@ export const getIssueTimeline = async (headers: PassedHeaders, id: string) => {
         const record = IssueActionSchema.parse(convertToDate);
 
         return record;
+      },
+      {
+        orderData: {
+          field: 'date',
+          direction: 'asc',
+        },
       }
     );
 

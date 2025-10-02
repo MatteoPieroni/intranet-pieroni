@@ -17,7 +17,13 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
       ? {
           supplierInfo: {
             ...supplierInfo,
-            documentDate: new Date(supplierInfo.documentDate.seconds * 1000),
+            ...(supplierInfo.documentDate
+              ? {
+                  documentDate: new Date(
+                    supplierInfo.documentDate.seconds * 1000
+                  ),
+                }
+              : {}),
           },
         }
       : {}),
@@ -25,7 +31,11 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
       ? {
           result: {
             ...result,
-            date: new Date(result.date.seconds * 1000),
+            ...(result.date
+              ? {
+                  date: new Date(result.date.seconds * 1000),
+                }
+              : {}),
           },
         }
       : {}),
