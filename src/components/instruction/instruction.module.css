@@ -9,17 +9,20 @@
   }
 }
 
-.success {
+.success,
+.success a {
   background-color: var(--background-success);
   color: var(--text-success);
 }
 
-.error {
+.error,
+.error a {
   background-color: var(--background-error);
   color: var(--text-error);
 }
 
-.warning {
+.warning,
+.warning a {
   background-color: var(--background-warning);
   color: var(--text-warning);
 }

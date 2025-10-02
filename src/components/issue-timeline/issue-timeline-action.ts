@@ -51,8 +51,6 @@ export const issueAction = async (
       result: values.get('result'),
     });
 
-    console.log({ verifiedAction });
-
     let id = String(formId);
     const isNew = String(formIsNew) === 'NEW';
 
@@ -66,8 +64,6 @@ export const issueAction = async (
     } else {
       // TODO: update
     }
-
-    console.log({ id });
 
     revalidatePath('/issues');
 

@@ -1,9 +1,11 @@
 'use client';
 
-import { IIssueAction } from '@/services/firebase/db-types';
-import { formatDate } from '@/utils/formatDate';
 import { useState } from 'react';
+
+import styles from './issue-action.module.css';
+import { IIssueAction } from '@/services/firebase/db-types';
 import { IssueTimelineForm } from './issue-timeline-form';
+import { DateComponent } from '../date/date';
 
 type IssueActionProps = {
   issueId: string;
@@ -21,22 +23,37 @@ export const IssueAction = ({
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div>
-      {!readOnly && (
+    <>
+      {/* {!readOnly && (
         <button onClick={() => setIsEditing(!isEditing)}>
           {isEditing ? 'Annulla modifiche' : 'Modifica'}
         </button>
-      )}
+      )} */}
       {!isEditing && (
         <>
-          <p>{formatDate(date)}</p>
-          <p>{content}</p>
-          {result && <p>{result}</p>}
+          <p className={styles.dateContainer}>
+            <DateComponent date={date} />
+          </p>
+          <div className={styles.content}>
+            <p>
+              <strong>Azione</strong>
+            </p>
+            <p>{content}</p>
+          </div>
+          {result && (
+            <div className={styles.result}>
+              <p>
+                <strong>Risultato</strong>
+              </p>
+              <p>{result}</p>
+            </div>
+          )}
+          <div className={styles.attachments}></div>
         </>
       )}
       {isEditing && !readOnly && (
         <IssueTimelineForm action={action} issueId={issueId} />
       )}
-    </div>
+    </>
   );
 };

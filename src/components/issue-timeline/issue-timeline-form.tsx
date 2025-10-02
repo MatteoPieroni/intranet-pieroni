@@ -38,9 +38,6 @@ export const IssueTimelineForm = ({
   isNew,
 }: IssueFormProps) => {
   const actionWithIssueId = issueAction.bind(null, issueId);
-  // const [actionsWithAdded, setActionsWithAdded] = useState<LocalAction[]>(
-  //   addActionWithId(timeline)
-  // );
 
   const [state, formAction, pending] = useActionState(
     actionWithIssueId,

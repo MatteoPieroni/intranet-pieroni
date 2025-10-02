@@ -1,0 +1,15 @@
+.dateContainer {
+  grid-area: date;
+}
+
+.content {
+  grid-area: content;
+}
+
+.result {
+  grid-area: result;
+}
+
+.attachments {
+  grid-area: attachments;
+}
