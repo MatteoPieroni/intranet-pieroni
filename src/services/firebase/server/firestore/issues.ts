@@ -5,7 +5,7 @@ import {
   IssueSchema,
 } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { create, getRecords, update, get } from './operations';
+import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
 import {
@@ -242,12 +242,6 @@ export const addResultToIssue = async (
   }
 ) => {
   try {
-    const user = await getUser(headers);
-
-    if (!user.currentUser?.id) {
-      throw new Error('Missing user id');
-    }
-
     const { summary } = IssueResultSchema.omit({
       date: true,
     }).parse({ summary: data.summary });
@@ -295,6 +289,30 @@ export const checkIssue = async (
     await update<Pick<IIssue, 'verification'>>(headers, ['issues', data.id], {
       verification,
     });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getIssueAnalytics = async (headers: PassedHeaders) => {
+  try {
+    const total = await getRecordsCount(headers, 'issues');
+    const nonResolved = await getRecordsCount(headers, 'issues', {
+      queryData: {
+        field: 'result.summary',
+        value: '',
+        operator: '!=',
+      },
+    });
+    const nonVerified = await getRecordsCount(headers, 'issues', {
+      queryData: {
+        field: 'verification.isVerified',
+        value: false,
+      },
+    });
+
+    return { total, nonResolved, nonVerified };
   } catch (e) {
     console.error(e);
     throw e;
