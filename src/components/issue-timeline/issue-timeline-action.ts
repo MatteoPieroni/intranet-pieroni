@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
-import { addActionToIssue } from '@/services/firebase/server';
+import { addActionToIssue, editIssueAction } from '@/services/firebase/server';
 import { IssueActionSchema } from '@/services/firebase/validator';
 // import { uploadIssueAttachment } from '@/services/firebase/server/storage';
 // import z from 'zod';
@@ -62,7 +62,13 @@ export const issueAction = async (
         action: verifiedAction,
       });
     } else {
-      // TODO: update
+      await editIssueAction(currentHeaders, {
+        issueId,
+        action: {
+          id,
+          ...verifiedAction,
+        },
+      });
     }
 
     revalidatePath('/issues');

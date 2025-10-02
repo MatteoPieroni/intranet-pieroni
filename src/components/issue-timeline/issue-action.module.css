@@ -13,3 +13,7 @@
 .attachments {
   grid-area: attachments;
 }
+
+.editContainer {
+  grid-area: edit;
+}

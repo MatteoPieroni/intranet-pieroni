@@ -211,10 +211,7 @@ export default async function Issue({
           )}
         </div>
 
-        <div
-          id="result"
-          className={`${styles.section} ${styles.dataContainer}`}
-        >
+        <div id="result" className={`${styles.section}`}>
           <h2>Conclusione</h2>
           {!isFinished && (
             <>

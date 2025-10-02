@@ -544,12 +544,6 @@ export const addActionToIssue = async (
   }
 ) => {
   try {
-    const user = await getUser(headers);
-
-    if (!user.currentUser?.id) {
-      throw new Error('Missing user id');
-    }
-
     const { date, ...verifiedData } = IssueActionSchema.omit({
       id: true,
     }).parse(data.action);
@@ -568,6 +562,30 @@ export const addActionToIssue = async (
     );
 
     return createdDoc.id;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const editIssueAction = async (
+  headers: PassedHeaders,
+  data: {
+    issueId: string;
+    action: IIssueAction;
+  }
+) => {
+  try {
+    const { date, ...verifiedData } = IssueActionSchema.parse(data.action);
+
+    await update<IDbIssueAction>(
+      headers,
+      ['issues', data.issueId, 'timeline', verifiedData.id],
+      {
+        date: Timestamp.fromDate(date),
+        ...verifiedData,
+      }
+    );
   } catch (e) {
     console.error(e);
     throw e;

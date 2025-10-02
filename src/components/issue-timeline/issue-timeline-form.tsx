@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import * as z from 'zod';
 
 import { IIssueAction } from '@/services/firebase/db-types';
@@ -10,6 +10,7 @@ import { FormStatus } from '../form-status/form-status';
 
 type IssueFormProps = {
   issueId: string;
+  onSuccess?: () => void;
 } & (
   | {
       action: IIssueAction;
@@ -36,6 +37,7 @@ export const IssueTimelineForm = ({
   issueId,
   action: { id, content, date, attachments, result } = emptyAction,
   isNew,
+  onSuccess,
 }: IssueFormProps) => {
   const actionWithIssueId = issueAction.bind(null, issueId);
 
@@ -43,6 +45,16 @@ export const IssueTimelineForm = ({
     actionWithIssueId,
     initialState
   );
+
+  useEffect(() => {
+    if (state.success) {
+      const timeout = setTimeout(() => {
+        onSuccess?.();
+      }, 2000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [state, onSuccess]);
 
   return (
     <form action={formAction}>
