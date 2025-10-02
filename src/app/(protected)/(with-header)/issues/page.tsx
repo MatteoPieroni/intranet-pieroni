@@ -78,6 +78,16 @@ export default async function Issues() {
         </div>
         <div className={styles.section}>
           <h2>Crea nuovo modulo qualità</h2>
+
+          <p>
+            Preghiamo riempire in ogni parte, specificare ogni passaggio
+            effettuato, inserire nome e numeri chiamati, stabilire con il
+            venditore e il responsabile la linea da tenere, stabilire scadenze
+            progressive per risoluzione, tenere informato il cliente se lo
+            chiede specificatamente, richiedere la partecipazione di tutti per
+            risolvere al più presto.
+          </p>
+
           <IssueForm isNew issue={undefined} />
         </div>
       </div>

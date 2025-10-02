@@ -17,6 +17,7 @@ import { IssueAction } from '@/components/issue-timeline/issue-action';
 import { IssueResultForm } from '@/components/issue-form/issue-result-form';
 import { IssueCheck } from '@/components/issue-form/issue-check';
 import { Instruction } from '@/components/instruction/instruction';
+import { DateComponent } from '@/components/date/date';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -98,14 +99,25 @@ export default async function Issue({
               {isResolved ? (
                 <IssueCheck id={id} isVerified={verification.isVerified} />
               ) : (
-                <p>
+                <Instruction type="warning">
                   <a href="#result">Aggiungi una conclusione</a> prima di
                   confermare il documento
-                </p>
+                </Instruction>
               )}
             </div>
           </div>
         )}
+
+        <div className={styles.section}>
+          <p>
+            Preghiamo riempire in ogni parte, specificare ogni passaggio
+            effettuato, inserire nome e numeri chiamati, stabilire con il
+            venditore e il responsabile la linea da tenere, stabilire scadenze
+            progressive per risoluzione, tenere informato il cliente se lo
+            chiede specificatamente, richiedere la partecipazione di tutti per
+            risolvere al più presto.
+          </p>
+        </div>
 
         <div className={styles.section}>
           <h2 className={styles.noPrint}>Modulo</h2>
@@ -116,8 +128,10 @@ export default async function Issue({
           )}
           <div className={styles.dataContainer}>
             <p>
-              <strong>Numero:</strong> {id} - <strong>Data:</strong>{' '}
-              {formatDate(date)}
+              <DateComponent date={date} />
+            </p>
+            <p>
+              <strong>Numero:</strong> {id}
             </p>
             <p>
               <strong>Cliente:</strong> {client}
@@ -182,21 +196,18 @@ export default async function Issue({
           </div>
         </div>
 
-        <div className={`${styles.section}`}>
+        <div className={`${styles.sectionNoBackground} ${styles.timeline}`}>
           <h2>Timeline</h2>
           {timeline.map((action) => (
-            <IssueAction
-              action={action}
-              issueId={id}
-              key={action.id}
-              readOnly={isFinished}
-            />
+            <div className={styles.timelineAction} key={action.id}>
+              <IssueAction action={action} issueId={id} readOnly={isFinished} />
+            </div>
           ))}
           {!isFinished && (
-            <>
+            <div className={`${styles.section} ${styles.timelineForm}`}>
               <h3>Aggiungi azione</h3>
               <IssueTimelineForm isNew issueId={id} action={undefined} />
-            </>
+            </div>
           )}
         </div>
 
