@@ -14,6 +14,7 @@ import {
   updateDoc,
   where,
   WithFieldValue,
+  getCountFromServer,
 } from 'firebase/firestore';
 
 import { getApp, PassedHeaders } from '../serverApp';
@@ -68,6 +69,42 @@ export const getRecords = async <Type extends DocumentData>(
   });
 
   return data;
+};
+
+export const getRecordsCount = async (
+  currentHeaders: PassedHeaders,
+  address: string | string[],
+  options?: {
+    orderData?: { field: string; direction: 'asc' | 'desc' };
+    queryData?: { field: string; value: unknown; operator?: '==' | '!=' };
+  }
+) => {
+  const firebaseServerApp = await getApp(currentHeaders);
+  const db = getFirestore(firebaseServerApp);
+  const fullAddress = typeof address === 'string' ? [address] : address;
+  // doc typing is a bit dumb, so we gotta do this
+  const [first, ...rest] = fullAddress;
+
+  const collectionRef = collection(db, first, ...rest);
+
+  const args = [
+    options?.queryData
+      ? where(
+          options.queryData.field,
+          options.queryData.operator || '==',
+          options.queryData.value
+        )
+      : undefined,
+    options?.orderData
+      ? orderBy(options.orderData.field, options.orderData.direction)
+      : undefined,
+  ].filter((current) => current !== undefined);
+
+  const q = query(collectionRef, ...args);
+
+  const count = await getCountFromServer(q);
+
+  return count.data().count;
 };
 
 export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
