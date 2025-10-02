@@ -35,6 +35,7 @@ const emptyAction = {
 
 export const IssueTimelineForm = ({
   issueId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   action: { id, content, date, attachments, result } = emptyAction,
   isNew,
   onSuccess,

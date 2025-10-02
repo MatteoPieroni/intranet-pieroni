@@ -18,6 +18,7 @@ export const IssueAction = ({
   action,
   readOnly,
 }: IssueActionProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { content, date, attachments, result } = action;
 
   const [isEditing, setIsEditing] = useState(false);
