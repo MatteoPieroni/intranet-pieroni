@@ -12,6 +12,13 @@
 
 .attachments {
   grid-area: attachments;
+
+  display: flex;
+  gap: 0.5rem;
+}
+
+.attachments img {
+  max-width: 150px;
 }
 
 .editContainer {
