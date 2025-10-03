@@ -7,6 +7,7 @@ import { IIssueAction } from '@/services/firebase/db-types';
 import { issueAction, StateValidation } from './issue-timeline-action';
 import styles from './issue-timeline-form.module.css';
 import { FormStatus } from '../form-status/form-status';
+import { DeleteIcon } from '../icons/delete';
 
 type IssueFormProps = {
   issueId: string;
@@ -35,12 +36,11 @@ const emptyAction = {
 
 export const IssueTimelineForm = ({
   issueId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   action: { id, content, date, attachments, result } = emptyAction,
   isNew,
   onSuccess,
 }: IssueFormProps) => {
-  const actionWithIssueId = issueAction.bind(null, issueId);
+  const actionWithIssueId = issueAction.bind(null, issueId, attachments);
 
   const [state, formAction, pending] = useActionState(
     actionWithIssueId,
@@ -73,8 +73,34 @@ export const IssueTimelineForm = ({
           Azione
           <textarea name="content" defaultValue={content} required />
         </label>
+        {attachments && attachments?.length !== 0 && (
+          <fieldset>
+            <legend>Rimuovi allegati</legend>
+            <div className={styles.attachmentsContainer}>
+              {attachments.map((attachment) => (
+                <label
+                  key={attachment}
+                  className={styles.attachment}
+                  aria-label={`Seleziona ${attachment}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={attachment} alt="" />
+                  <input
+                    type="checkbox"
+                    name="attachments-removal"
+                    value={attachment}
+                  />
+                  <DeleteIcon
+                    aria-hidden
+                    className={styles.attachmentDeleteIcon}
+                  />
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <label>
-          Allegati
+          Aggiungi allegati
           <input
             type="file"
             name="attachment"

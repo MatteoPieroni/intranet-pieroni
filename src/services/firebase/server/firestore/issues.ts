@@ -234,6 +234,32 @@ export const editIssueAction = async (
   }
 };
 
+export const editAttachmentsIssue = async (
+  headers: PassedHeaders,
+  data: {
+    issueId: string;
+    actionId: string;
+    attachments: string[];
+  }
+) => {
+  try {
+    if (data.attachments.some((attachment) => !attachment)) {
+      throw new Error('Something wrong with attachments');
+    }
+
+    await update<IDbIssueAction>(
+      headers,
+      ['issues', data.issueId, 'timeline', data.actionId],
+      {
+        attachments: data.attachments,
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const addResultToIssue = async (
   headers: PassedHeaders,
   data: {

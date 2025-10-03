@@ -18,7 +18,6 @@ export const IssueAction = ({
   action,
   readOnly,
 }: IssueActionProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { content, date, attachments, result } = action;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -48,7 +47,23 @@ export const IssueAction = ({
           <p>{result}</p>
         </div>
       )}
-      <div className={styles.attachments}></div>
+      <div className={styles.attachments}>
+        {attachments && attachments?.length !== 0 && (
+          <>
+            <p>
+              <strong>Allegati</strong>
+            </p>
+            <div className={styles.attachmentsContainer}>
+              {attachments.map((attachment) => (
+                <a href={attachment} target="__blank" key={attachment}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={attachment} alt="" />
+                </a>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
       {!readOnly && (
         <div className={styles.editContainer}>
           <button onClick={() => setIsEditing(!isEditing)} ref={editButtonRef}>
