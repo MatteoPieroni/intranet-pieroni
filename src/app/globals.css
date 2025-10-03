@@ -247,6 +247,14 @@ a {
   }
 }
 
+a:has(img) {
+  &:hover {
+    outline: var(--focus-ring);
+    outline-width: 3px;
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
 button,
 a.button {
   border: none;

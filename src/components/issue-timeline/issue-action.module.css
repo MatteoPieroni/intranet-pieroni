@@ -12,7 +12,9 @@
 
 .attachments {
   grid-area: attachments;
+}
 
+.attachmentsContainer {
   display: flex;
   gap: 0.5rem;
 }

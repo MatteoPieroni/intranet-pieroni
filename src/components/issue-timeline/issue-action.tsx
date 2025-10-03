@@ -48,12 +48,21 @@ export const IssueAction = ({
         </div>
       )}
       <div className={styles.attachments}>
-        {attachments &&
-          attachments?.length !== 0 &&
-          attachments.map((attachment) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={attachment} alt="" key={attachment} />
-          ))}
+        {attachments && attachments?.length !== 0 && (
+          <>
+            <p>
+              <strong>Allegati</strong>
+            </p>
+            <div className={styles.attachmentsContainer}>
+              {attachments.map((attachment) => (
+                <a href={attachment} target="__blank" key={attachment}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={attachment} alt="" />
+                </a>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       {!readOnly && (
         <div className={styles.editContainer}>
