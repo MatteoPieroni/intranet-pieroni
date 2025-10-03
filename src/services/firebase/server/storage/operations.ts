@@ -28,13 +28,12 @@ export const upload = async (
 
 export const remove = async (
   currentHeaders: PassedHeaders,
-  category: IFileCategories,
   fileUrl: string
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);
   const storage = getStorage(firebaseServerApp);
 
-  const storageRef = ref(storage, `${category}/${fileUrl}`);
+  const storageRef = ref(storage, fileUrl);
 
   await deleteObject(storageRef);
 };

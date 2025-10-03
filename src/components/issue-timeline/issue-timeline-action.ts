@@ -12,7 +12,7 @@ import {
 import { IssueActionSchema } from '@/services/firebase/validator';
 import { IIssueAction } from '@/services/firebase/db-types';
 import {
-  deleteIssueAttachment,
+  deleteFileFromUrl,
   uploadIssueAttachment,
 } from '@/services/firebase/server/storage';
 import { PassedHeaders } from '@/services/firebase/server/serverApp';
@@ -29,7 +29,6 @@ const FormFieldsSchema = IssueActionSchema.omit({
 
 const deleteAttachments = async (
   currentHeaders: PassedHeaders,
-  issueId: string,
   attachments: FormDataEntryValue[]
 ) => {
   const deletedAttachments = [];
@@ -40,7 +39,7 @@ const deleteAttachments = async (
     }
 
     try {
-      await deleteIssueAttachment(currentHeaders, issueId, attachment);
+      await deleteFileFromUrl(currentHeaders, attachment);
       deletedAttachments.push(attachment);
     } catch (e) {
       // ignore error and don't push to final array, so it won't be filtered out
@@ -60,7 +59,7 @@ const uploadAndAddAttachment = async (
   const failedUploads = [];
 
   for (const attachment of attachments) {
-    if (!(attachment instanceof File)) {
+    if (!(attachment instanceof File) || attachment.size === 0) {
       continue;
     }
 
@@ -132,7 +131,6 @@ export const issueAction = async (
       // remove files then filter array
       const deletedAttachments = await deleteAttachments(
         currentHeaders,
-        issueId,
         formActionAttachmentRemoval
       );
       const attachmentsWithoutRemoved = (attachments || []).filter(
@@ -151,8 +149,6 @@ export const issueAction = async (
         ...attachmentsWithoutRemoved,
         ...uploadedAttachments,
       ];
-
-      console.log({ finalAttachments });
 
       await editAttachmentsIssue(currentHeaders, {
         issueId,

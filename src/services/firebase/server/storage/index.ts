@@ -25,13 +25,12 @@ export const uploadIssueAttachment = async (
   }
 };
 
-export const deleteIssueAttachment = async (
+export const deleteFileFromUrl = async (
   headers: PassedHeaders,
-  issueId: string,
   fileUrl: string
 ) => {
   try {
-    await remove(headers, `issues/${issueId}`, fileUrl);
+    await remove(headers, fileUrl);
   } catch (e) {
     console.error(e);
     throw e;
