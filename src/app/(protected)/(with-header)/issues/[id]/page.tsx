@@ -18,6 +18,7 @@ import { IssueResultForm } from '@/components/issue-form/issue-result-form';
 import { IssueCheck } from '@/components/issue-form/issue-check';
 import { Instruction } from '@/components/instruction/instruction';
 import { DateComponent } from '@/components/date/date';
+import { AdminBadge } from '@/components/admin-badge/admin-badge';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -88,7 +89,11 @@ export default async function Issue({
       <div className={styles.container}>
         {canEditIssues && (
           <div className={`${styles.section} ${styles.noPrint}`}>
-            <h2>Gestisci modulo</h2>
+            <div className={styles.sectionTitleContainer}>
+              <h2>Gestisci modulo</h2>
+              <AdminBadge />
+            </div>
+
             {isAlreadyChecked && (
               <p className={styles.confirmation}>
                 Confermato da {userVerification?.email} il{' '}

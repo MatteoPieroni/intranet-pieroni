@@ -15,7 +15,10 @@
   background-color: var(--background-0);
 }
 
-.section h2 {
+.sectionTitleContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
   margin-block-end: 1rem;
 }
 
