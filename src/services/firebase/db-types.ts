@@ -9,25 +9,16 @@ type UserScopes =
   | 'admin';
 
 export interface IDbUser {
-  nome: string;
-  cognome: string;
+  id: string;
+  name: string;
+  surname: string;
   email: string;
-  isAdmin?: boolean;
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
 }
 
-export interface IUser {
-  id: string;
-  name: string;
-  surname: string;
-  email: string;
-  isAdmin?: boolean;
-  permissions?: UserScopes[];
-  theme?: 'light' | 'dark' | null;
-  teams?: string[];
-}
+export type IUser = IDbUser;
 
 export interface IDbTeam {
   name: string;

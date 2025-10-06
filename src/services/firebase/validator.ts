@@ -2,10 +2,10 @@ import * as z from 'zod';
 import { permissions } from './server/permissions';
 
 export const UserSchema = z.object({
-  nome: z.string(),
-  cognome: z.string(),
+  id: z.string(),
+  name: z.string(),
+  surname: z.string(),
   email: z.string(),
-  isAdmin: z.optional(z.boolean()),
   permissions: z.optional(z.array(z.enum(permissions))),
   theme: z.optional(z.nullable(z.enum(['light', 'dark']))),
   teams: z.optional(z.array(z.string())),

@@ -7,7 +7,7 @@ export const permissions = [
   'admin',
 ] as const;
 
-type Permission = (typeof permissions)[number];
+export type Permission = (typeof permissions)[number];
 
 const checkForPermission =
   (permissionToCheck: Permission) => (userPermissions?: Permission[]) => {

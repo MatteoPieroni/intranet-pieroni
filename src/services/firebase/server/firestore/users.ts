@@ -1,5 +1,3 @@
-import * as z from 'zod';
-
 import { IDbUser, IUser } from '../../db-types';
 import { UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
@@ -9,15 +7,9 @@ import { getUser } from '../auth';
 export const getUsers = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<IUser>(headers, 'users', (dbUser) => {
-      const record = UserSchema.extend({
-        id: z.string(),
-      }).parse(dbUser);
-      const { cognome, nome, ...rest } = record;
-      return {
-        name: nome,
-        surname: cognome,
-        ...rest,
-      };
+      const record = UserSchema.parse(dbUser);
+
+      return record;
     });
 
     return records;
@@ -29,10 +21,9 @@ export const getUsers = async (headers: PassedHeaders) => {
 
 export const pushUser = async (headers: PassedHeaders, data: IUser) => {
   try {
-    const { name, surname, id, ...rest } = data;
+    const { id, ...rest } = data;
     const verifiedData = UserSchema.parse({
-      nome: name,
-      cognome: surname,
+      id,
       ...rest,
     });
 
