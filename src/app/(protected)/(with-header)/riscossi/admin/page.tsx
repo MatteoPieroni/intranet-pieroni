@@ -3,7 +3,12 @@ import { redirect } from 'next/navigation';
 
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
-import { getRiscossi, getUser, getUsers } from '@/services/firebase/server';
+import {
+  getRiscossi,
+  getRiscossiAnalytics,
+  getUser,
+  getUsers,
+} from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
@@ -27,10 +32,11 @@ export default async function Riscossi() {
     return redirect('/');
   }
 
-  const [riscossi, users] = await Promise.all([
+  const [riscossi, users, analytics] = await Promise.all([
     getRiscossi(currentHeaders),
     // check user view scope
     getUsers(currentHeaders),
+    getRiscossiAnalytics(currentHeaders),
   ]);
 
   const riscossiWithUser = riscossi.map((riscosso) => {
@@ -49,6 +55,25 @@ export default async function Riscossi() {
       </div>
 
       <div className={styles.container}>
+        <div className={styles.section}>
+          <h2>Analisi</h2>
+
+          <table className={styles.analytics}>
+            <thead>
+              <tr>
+                <th scope="col">Totale</th>
+                <th scope="col">Da verificare</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{analytics.total}</td>
+                <td>{analytics.nonVerified}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div className={styles.section}>
           <h2>Riscossi</h2>
           <table>

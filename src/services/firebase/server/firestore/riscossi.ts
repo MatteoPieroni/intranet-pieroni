@@ -1,7 +1,7 @@
 import { IRiscosso, IDbRiscosso } from '../../db-types';
 import { RiscossoSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { create, getRecords, update, get } from './operations';
+import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
 import { convertTimestampToDate } from '../../utils/dto-riscossi';
@@ -73,6 +73,24 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
     );
 
     return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
+  try {
+    const total = await getRecordsCount(headers, 'riscossi');
+
+    const nonVerified = await getRecordsCount(headers, 'riscossi', {
+      queryData: {
+        field: 'verification.isVerified',
+        value: false,
+      },
+    });
+
+    return { total, nonVerified };
   } catch (e) {
     console.error(e);
     throw e;
