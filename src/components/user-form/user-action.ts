@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { FORM_FAIL_USER, FORM_SUCCESS_USER } from '@/consts';
 import { pushUser } from '@/services/firebase/server';
 import { IUser } from '@/services/firebase/db-types';
+import { UserSchema } from '@/services/firebase/validator';
 
 export type StateValidation = {
   error?: string;
@@ -13,7 +14,7 @@ export type StateValidation = {
 };
 
 export const userAction = async (
-  userData: IUser,
+  userData: Omit<IUser, 'permissions' | 'teams' | 'theme' | 'isAdmin'>,
   _: StateValidation,
   values: FormData
 ) => {
@@ -21,6 +22,7 @@ export const userAction = async (
 
   try {
     const formTeams = values.getAll('teams');
+    const formPermissions = values.getAll('permissions');
 
     if (!formTeams) {
       return {
@@ -37,11 +39,15 @@ export const userAction = async (
     }
 
     const teams = formTeams.map((team) => String(team));
+    const permissions = formPermissions.map((permission) => String(permission));
 
-    await pushUser(currentHeaders, {
+    const verifiedData = UserSchema.parse({
       ...userData,
+      permissions,
       teams,
     });
+
+    await pushUser(currentHeaders, verifiedData);
 
     revalidatePath('/admin/users');
 

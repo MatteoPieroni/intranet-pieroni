@@ -8,6 +8,7 @@ import { SaveIcon } from '../icons/save';
 import { MultiSelect } from '../multiselect/multiselect';
 import { StateValidation, userAction } from './user-action';
 import { FormStatus } from '../form-status/form-status';
+import { Permission } from '@/services/firebase/server';
 
 type UserFormProps = {
   user: IUser;
@@ -16,8 +17,34 @@ type UserFormProps = {
 
 const initialState: StateValidation = {};
 
+const permissionsMap: {
+  value: Permission;
+  label: string;
+}[] = [
+  {
+    value: 'write/riscossi',
+    label: 'Admin riscossi',
+  },
+  {
+    value: 'write/issues',
+    label: 'Admin moduli qualità',
+  },
+  {
+    value: 'admin',
+    label: 'Admin generale',
+  },
+  {
+    value: 'write/config',
+    label: 'Admin configurazione',
+  },
+  {
+    value: 'write/gmb',
+    label: 'Admin Ferie Google',
+  },
+];
+
 export const UserForm = ({
-  user: { name, surname, email, id, teams, ...rest },
+  user: { name, surname, email, id, teams, permissions },
   availableTeams,
 }: UserFormProps) => {
   const userActionWithPrevious = userAction.bind(null, {
@@ -25,7 +52,6 @@ export const UserForm = ({
     surname,
     email,
     id,
-    ...rest,
   });
 
   const [state, formAction, pending] = useActionState(
@@ -37,6 +63,12 @@ export const UserForm = ({
     value: team.id,
     label: team.name,
     isDefaultChecked: !!teams?.some((current) => current === team.id),
+  }));
+  const selectPermissions = permissionsMap.map((permission) => ({
+    ...permission,
+    isDefaultChecked: !!permissions?.some(
+      (current) => current === permission.value
+    ),
   }));
 
   return (
@@ -52,6 +84,13 @@ export const UserForm = ({
         </label>
         <div className={styles.selectContainer}>
           <MultiSelect options={selectTeams} name="teams" legend="Teams" />
+        </div>
+        <div className={styles.selectContainer}>
+          <MultiSelect
+            options={selectPermissions}
+            name="permissions"
+            legend="Permessi"
+          />
         </div>
         <input type="hidden" name="id" value={id} />
         <div className={styles.buttonsContainer}>

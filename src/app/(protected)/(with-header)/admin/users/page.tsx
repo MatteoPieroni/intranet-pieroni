@@ -55,9 +55,11 @@ export default async function Admin() {
 
         <div className={styles.section}>
           <h2>Utenti</h2>
-          {users.map((user) => (
-            <UserForm user={user} key={user.id} availableTeams={teams} />
-          ))}
+          <div className={styles.linksContainer}>
+            {users.map((user) => (
+              <UserForm user={user} key={user.id} availableTeams={teams} />
+            ))}
+          </div>
         </div>
       </div>
     </main>

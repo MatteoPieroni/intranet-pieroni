@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   flex-wrap: wrap;
   gap: 0.25rem;
   margin-block-end: 1.5rem;
@@ -8,26 +8,21 @@
   width: 100%;
 
   @media (min-width: 1024px) {
-    flex-wrap: nowrap;
     margin-block-end: 0;
-    border-block-end: none;
+    padding: 0.5rem;
+    border: 2px solid var(--border-0);
   }
+}
+
+.container > label,
+.container .selectContainer {
+  flex-grow: 1;
 }
 
 .buttonsContainer {
   display: flex;
   justify-content: flex-end;
-  align-self: center;
   width: 100%;
   gap: 0.5rem;
   margin-block-end: 0.5rem;
-
-  @media (min-width: 1024px) {
-    width: auto;
-  }
-}
-
-.selectContainer {
-  flex-grow: 1;
-  max-width: 50%;
 }
