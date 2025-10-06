@@ -7,6 +7,7 @@ import { getRiscossi, getUser, getUsers } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
+import { AdminBadge } from '@/components/admin-badge/admin-badge';
 
 export const metadata: Metadata = {
   title: 'Gestisci riscossi - Intranet Pieroni srl',
@@ -46,6 +47,7 @@ export default async function Riscossi() {
     <main className={template.page}>
       <div className={template.header}>
         <h1>Gestisci i riscossi</h1>
+        <AdminBadge />
       </div>
 
       <div className={styles.container}>

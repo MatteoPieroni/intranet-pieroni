@@ -1,7 +1,4 @@
 .badge {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
   border-radius: var(--border-radius);
   padding: 0.15rem;
   background: var(--badge-background);
