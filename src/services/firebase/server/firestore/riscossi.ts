@@ -150,6 +150,33 @@ export const createRiscosso = async (
   }
 };
 
+export const updateRiscosso = async (
+  headers: PassedHeaders,
+  data: Omit<IRiscosso, 'meta' | 'verification' | 'date'>
+) => {
+  try {
+    const verifiedData = RiscossoSchema.omit({
+      meta: true,
+      verification: true,
+      date: true,
+      docs: true,
+    }).parse(data);
+
+    const docs = data.docs.map((doc) => ({
+      ...doc,
+      date: Timestamp.fromDate(doc.date),
+    }));
+
+    await update<IDbRiscosso>(headers, ['riscossi', verifiedData.id], {
+      ...verifiedData,
+      docs,
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const checkRiscosso = async (
   headers: PassedHeaders,
   data: {

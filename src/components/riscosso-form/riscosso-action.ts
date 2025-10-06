@@ -11,6 +11,7 @@ import {
 import {
   createRiscosso,
   getConfigWithoutCache,
+  updateRiscosso,
 } from '@/services/firebase/server';
 import { sendRiscossoCreation } from '@/services/email';
 import {
@@ -134,13 +135,16 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         throw new Error('EMAIL_FAILED');
       }
     } else {
-      // await pushLink(currentHeaders, {
-      //   description,
-      //   link,
-      //   id,
-      //   teams,
-      //   ...(iconUpload ? { icon: iconUpload } : {}),
-      // });
+      await updateRiscosso(currentHeaders, {
+        id,
+        client,
+        company,
+        total,
+        paymentMethod,
+        paymentChequeNumber,
+        paymentChequeValue,
+        docs,
+      });
     }
 
     revalidatePath('/riscossi');

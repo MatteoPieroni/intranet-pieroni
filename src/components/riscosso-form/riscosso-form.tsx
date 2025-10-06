@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useActionState, useState } from 'react';
+import { ChangeEvent, useActionState, useEffect, useState } from 'react';
 
 import { IRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
 import { riscossoAction, StateValidation } from './riscosso-action';
@@ -81,7 +81,7 @@ type LocalDoc = (IRiscossoDoc | typeof emptyDoc) & {
   id?: string;
 };
 
-const addDocWithId = (docsArray: LocalDoc[]) =>
+const mapDocsWithId = (docsArray: LocalDoc[]) =>
   docsArray.map((doc) => ({
     ...doc,
     id: doc.id || crypto.randomUUID(),
@@ -102,7 +102,7 @@ export const RiscossiForm = ({
   } = riscosso || newRiscossoForForm;
 
   const [docsWithAdded, setDocsWithAdded] = useState<LocalDoc[]>(
-    addDocWithId(docs)
+    mapDocsWithId(docs)
   );
 
   const [state, formAction, pending] = useActionState(
@@ -116,6 +116,26 @@ export const RiscossiForm = ({
   const handlePaymentMethod = (event: ChangeEvent<HTMLSelectElement>) => {
     setPaymentMethod(event.target.value);
   };
+
+  // on refresh of page after state, the form did not show the new doc
+  // since the state is not updated,
+  // so we update it ourselves
+  useEffect(() => {
+    // the form submission resets the fields that were added in the current edit,
+    // so we check for any empty fields and filter them out
+    const stateDocsWithoutEmpty = docsWithAdded.filter(
+      (oldDoc) => oldDoc.number !== ''
+    );
+
+    // if the two arrays don't have the same length, that means we have received updated docs from the BE refresh
+    // and we reset to these
+    if (stateDocsWithoutEmpty.length !== docs.length) {
+      setDocsWithAdded(mapDocsWithId(docs));
+    }
+
+    // this must only run on the update of the form state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [docs]);
 
   return (
     <form action={formAction}>
@@ -234,7 +254,7 @@ export const RiscossiForm = ({
             <button
               type="button"
               onClick={() => {
-                setDocsWithAdded(addDocWithId([...docsWithAdded, emptyDoc]));
+                setDocsWithAdded(mapDocsWithId([...docsWithAdded, emptyDoc]));
               }}
             >
               Aggiungi documento

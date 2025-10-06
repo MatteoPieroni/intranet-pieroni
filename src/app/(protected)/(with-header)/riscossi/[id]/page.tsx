@@ -107,7 +107,7 @@ export default async function Riscossi({
           )}
           <div className={`${styles.actionBar} ${styles.noPrint}`}>
             <PrintButton />
-            {!isAlreadyChecked && (
+            {!isAlreadyChecked && canEditRiscossi && (
               <a href="#edit" className="button">
                 Modifica
               </a>
@@ -199,7 +199,7 @@ export default async function Riscossi({
             </div>
           </div>
         </div>
-        {!isAlreadyChecked && (
+        {!isAlreadyChecked && canEditRiscossi && (
           <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
             <div className={styles.sectionTitleContainer}>
               <h2>Modifica</h2>
