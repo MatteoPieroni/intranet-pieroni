@@ -58,7 +58,6 @@ export async function getUser(headers: PassedHeaders) {
       const data = {
         displayName,
         email,
-        isAdmin: false,
       };
 
       if (!email.match('@pieroni.it')) {

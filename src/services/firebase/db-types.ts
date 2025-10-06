@@ -12,7 +12,6 @@ export interface IDbUser {
   nome: string;
   cognome: string;
   email: string;
-  isAdmin?: boolean;
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
@@ -23,7 +22,6 @@ export interface IUser {
   name: string;
   surname: string;
   email: string;
-  isAdmin?: boolean;
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
