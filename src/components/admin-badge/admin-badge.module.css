@@ -3,4 +3,6 @@
   padding: 0.15rem;
   background: var(--badge-background);
   color: var(--badge-text);
+  text-transform: none;
+  font-weight: normal;
 }

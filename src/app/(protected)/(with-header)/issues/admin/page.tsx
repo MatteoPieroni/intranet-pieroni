@@ -12,7 +12,6 @@ import {
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
-import { AdminBadge } from '@/components/admin-badge/admin-badge';
 
 export const metadata: Metadata = {
   title: 'Gestisci moduli qualità - Intranet Pieroni srl',
@@ -47,7 +46,6 @@ export default async function IssuesAdmin() {
     <main className={template.page}>
       <div className={template.header}>
         <h1>Gestisci i moduli qualità</h1>
-        <AdminBadge />
       </div>
 
       <div className={styles.container}>
@@ -115,7 +113,7 @@ export default async function IssuesAdmin() {
                     />
                   </td>
                   <td>
-                    <a href={`issues/${issue.id}`}>Vedi</a>
+                    <a href={`/issues/${issue.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}
