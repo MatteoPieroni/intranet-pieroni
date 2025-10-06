@@ -113,7 +113,7 @@ export default async function IssuesAdmin() {
                     />
                   </td>
                   <td>
-                    <a href={`issues/${issue.id}`}>Vedi</a>
+                    <a href={`/issues/${issue.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}

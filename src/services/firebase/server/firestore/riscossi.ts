@@ -1,7 +1,7 @@
 import { IRiscosso, IDbRiscosso } from '../../db-types';
 import { RiscossoSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { create, getRecords, update, get } from './operations';
+import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
 import { convertTimestampToDate } from '../../utils/dto-riscossi';
@@ -79,6 +79,24 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
   }
 };
 
+export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
+  try {
+    const total = await getRecordsCount(headers, 'riscossi');
+
+    const nonVerified = await getRecordsCount(headers, 'riscossi', {
+      queryData: {
+        field: 'verification.isVerified',
+        value: false,
+      },
+    });
+
+    return { total, nonVerified };
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const createRiscosso = async (
   headers: PassedHeaders,
   data: Omit<IRiscosso, 'id' | 'meta' | 'verification' | 'date'>
@@ -126,6 +144,33 @@ export const createRiscosso = async (
     });
 
     return { id: createdDoc.id };
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateRiscosso = async (
+  headers: PassedHeaders,
+  data: Omit<IRiscosso, 'meta' | 'verification' | 'date'>
+) => {
+  try {
+    const verifiedData = RiscossoSchema.omit({
+      meta: true,
+      verification: true,
+      date: true,
+      docs: true,
+    }).parse(data);
+
+    const docs = data.docs.map((doc) => ({
+      ...doc,
+      date: Timestamp.fromDate(doc.date),
+    }));
+
+    await update<IDbRiscosso>(headers, ['riscossi', verifiedData.id], {
+      ...verifiedData,
+      docs,
+    });
   } catch (e) {
     console.error(e);
     throw e;

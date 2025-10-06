@@ -16,6 +16,7 @@ import {
   checkCanEditRiscossi,
   checkIsAdmin,
 } from '@/services/firebase/server/permissions';
+import { AdminBadge } from '../admin-badge/admin-badge';
 
 type HeaderProps = {
   mailUrl: string;
@@ -64,20 +65,30 @@ export function Header({ mailUrl, theme, permissions }: HeaderProps) {
           <a {...getLinkProps('/cartello')}>Crea cartello</a>
           <a {...getLinkProps('/riscossi')}>Riscossi</a>
           {checkCanEditRiscossi(permissions) && (
-            <a {...getLinkProps('/riscossi/admin')}>Gestione riscossi</a>
+            <a {...getLinkProps('/riscossi/admin')}>
+              Gestione riscossi <AdminBadge />
+            </a>
           )}
           <a {...getLinkProps('/issues')}>Moduli qualità</a>
           {checkCanEditIssues(permissions) && (
-            <a {...getLinkProps('/issues/admin')}>Gestione moduli qualità</a>
+            <a {...getLinkProps('/issues/admin')}>
+              Gestione moduli qualità <AdminBadge />
+            </a>
           )}
           {checkCanEditGMB(permissions) && (
-            <a {...getLinkProps('/admin-google')}>Gestisci Google</a>
+            <a {...getLinkProps('/admin-google')}>
+              Gestisci Google <AdminBadge />
+            </a>
           )}
           {checkCanEditConfig(permissions) && (
-            <a {...getLinkProps('/admin')}>Admin</a>
+            <a {...getLinkProps('/admin')}>
+              Admin <AdminBadge />
+            </a>
           )}
           {checkIsAdmin(permissions) && (
-            <a {...getLinkProps('/admin/users')}>Utenti e team</a>
+            <a {...getLinkProps('/admin/users')}>
+              Utenti e team <AdminBadge />
+            </a>
           )}
 
           <button className={styles.logOut} onClick={handleSignOut}>

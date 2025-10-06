@@ -324,13 +324,16 @@ export const checkIssue = async (
 export const getIssueAnalytics = async (headers: PassedHeaders) => {
   try {
     const total = await getRecordsCount(headers, 'issues');
-    const nonResolved = await getRecordsCount(headers, 'issues', {
+
+    const resolved = await getRecordsCount(headers, 'issues', {
       queryData: {
         field: 'result.summary',
         value: '',
         operator: '!=',
       },
     });
+    const nonResolved = total - resolved;
+
     const nonVerified = await getRecordsCount(headers, 'issues', {
       queryData: {
         field: 'verification.isVerified',
