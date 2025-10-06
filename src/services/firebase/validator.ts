@@ -5,7 +5,7 @@ export const UserSchema = z.object({
   nome: z.string(),
   cognome: z.string(),
   email: z.string(),
-  isAdmin: z.boolean(),
+  isAdmin: z.optional(z.boolean()),
   permissions: z.optional(z.array(z.enum(permissions))),
   theme: z.optional(z.nullable(z.enum(['light', 'dark']))),
   teams: z.optional(z.array(z.string())),
