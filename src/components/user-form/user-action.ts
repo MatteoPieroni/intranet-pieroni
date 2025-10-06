@@ -14,7 +14,7 @@ export type StateValidation = {
 };
 
 export const userAction = async (
-  userData: Omit<IUser, 'permissions' | 'teams' | 'theme' | 'isAdmin'>,
+  userData: Omit<IUser, 'permissions' | 'teams' | 'theme'>,
   _: StateValidation,
   values: FormData
 ) => {
