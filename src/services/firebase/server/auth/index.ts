@@ -38,14 +38,7 @@ export async function getUser(headers: PassedHeaders) {
         fromFirestore: (snap: QueryDocumentSnapshot<IDbUser, IDbUser>) => {
           const data = snap.data();
 
-          const { nome, cognome, ...rest } = data;
-          const enrichedUser = {
-            name: nome,
-            surname: cognome,
-            ...rest,
-          };
-
-          return enrichedUser;
+          return data;
         },
       }))()
     );
@@ -73,12 +66,8 @@ export async function getUser(headers: PassedHeaders) {
     }
 
     const user = snapshot.data();
-    const enrichedUser: IUser = {
-      id: uid,
-      ...user,
-    };
 
-    return { firebaseServerApp, currentUser: enrichedUser };
+    return { firebaseServerApp, currentUser: user };
   } catch (error) {
     console.error(error);
     return { firebaseServerApp };

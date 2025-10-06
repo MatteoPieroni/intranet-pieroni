@@ -7,12 +7,7 @@ import { getUser } from '../auth';
 export const getUsers = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<IUser>(headers, 'users', (dbUser) => {
-      const { nome, cognome, ...user } = dbUser;
-      const record = UserSchema.parse({
-        name: nome,
-        surname: cognome,
-        ...user,
-      });
+      const record = UserSchema.parse(dbUser);
 
       return record;
     });
