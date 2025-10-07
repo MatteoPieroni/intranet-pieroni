@@ -44,7 +44,7 @@ export const TransportCost = class {
   private Driver: Types.TDriver;
   private Listeners: Types.TListener[];
 
-  constructor(driver: Types.TDriver, config: Types.IConfig, maps: unknown) {
+  constructor(driver: Types.TDriver, config: Types.Config, maps: unknown) {
     this.Driver = new driver(maps, config);
     this.Driver.subscribe(this.listenToChanges);
     this.Listeners = [];

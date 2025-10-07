@@ -1,4 +1,4 @@
-import { IDbUser, IUser } from '../../db-types';
+import { DbUser, User } from '../../db-types';
 import { UserSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { getRecords, update } from './operations';
@@ -6,7 +6,7 @@ import { getUser } from '../auth';
 
 export const getUsers = async (headers: PassedHeaders) => {
   try {
-    const records = await getRecords<IUser>(headers, 'users', (dbUser) => {
+    const records = await getRecords<User>(headers, 'users', (dbUser) => {
       const record = UserSchema.parse(dbUser);
 
       return record;
@@ -19,7 +19,7 @@ export const getUsers = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushUser = async (headers: PassedHeaders, data: IUser) => {
+export const pushUser = async (headers: PassedHeaders, data: User) => {
   try {
     const { id, ...rest } = data;
     const verifiedData = UserSchema.parse({
@@ -27,7 +27,7 @@ export const pushUser = async (headers: PassedHeaders, data: IUser) => {
       ...rest,
     });
 
-    await update<IDbUser>(headers, ['users', id], verifiedData);
+    await update<DbUser>(headers, ['users', id], verifiedData);
   } catch (e) {
     console.error(e);
     throw e;
@@ -45,11 +45,9 @@ export const pushTheme = async (
   }
 
   try {
-    await update<Pick<IUser, 'theme'>>(
-      headers,
-      `users/${user.currentUser.id}`,
-      { theme: data }
-    );
+    await update<Pick<User, 'theme'>>(headers, `users/${user.currentUser.id}`, {
+      theme: data,
+    });
   } catch (e) {
     console.error(e);
     throw e;

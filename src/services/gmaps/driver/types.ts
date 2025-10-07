@@ -12,9 +12,9 @@ export type TMaps = any;
 export type TDriver = any;
 export type TGeocoder = {
   geocode: (
-    place: IGeocodePromise,
+    place: GeocodePromise,
     callback: TGeocodePromise
-  ) => Promise<IGeocodeResults[]>;
+  ) => Promise<GeocodeResults[]>;
 };
 export type TService = () => any;
 export type TBounds = {
@@ -37,10 +37,10 @@ export type TMarker = Constructable<{
 export type TUnitSystem = any;
 export type TAnimation = any;
 export type TGeocodePromise = (
-  results: IGeocodeResults[],
+  results: GeocodeResults[],
   status: keyof typeof EStatus
 ) => void;
-export type TGeocodeCallback = (results: IGeocodeResults[]) => void;
+export type TGeocodeCallback = (results: GeocodeResults[]) => void;
 export type TDistanceMatrixService = {
   getDistanceMatrix: TDistanceMatrixPromise;
 };
@@ -49,13 +49,13 @@ export type TDistanceMatrixCallback = (
   status: keyof typeof EStatus
 ) => void;
 export type TDistanceMatrixPromise = (
-  distanceObject: IDistanceObject,
+  distanceObject: DistanceObject,
   callback: TDistanceMatrixCallback
 ) => void;
 export type TCurrent = {
-  origins: IOrigin[];
+  origins: Origin[];
   currentMarkers?: any;
-  routes?: IRoute[];
+  routes?: Route[];
   destination?: string;
   cost?: string;
 };
@@ -67,7 +67,7 @@ export type TTransportCost = {
   unsubscribe: (listener: TListener) => void;
 };
 
-export interface IRoute {
+export interface Route {
   name: string;
   address: any;
   duration: number;
@@ -75,13 +75,13 @@ export interface IRoute {
   cost: string;
 }
 
-interface IAutocompleteSettings {
+interface AutocompleteSettings {
   componentRestrictions: {
     country: string;
   };
 }
 
-interface IMapSettings {
+interface MapSettings {
   center: {
     lat: number;
     lng: number;
@@ -89,20 +89,20 @@ interface IMapSettings {
   zoom: number;
 }
 
-interface IOrigin {
+interface Origin {
   name: string;
   text: string;
 }
 
-export interface IConfig {
+export interface Config {
   div: string;
-  mapConfig: IMapSettings;
-  origins: IOrigin[];
+  mapConfig: MapSettings;
+  origins: Origin[];
   autocomplete: {
     div: string;
-    settings: IAutocompleteSettings;
+    settings: AutocompleteSettings;
   };
-  distanceMatrixOptions: IDistanceMatrixOptions;
+  distanceMatrixOptions: DistanceMatrixOptions;
   icons: {
     destination: string;
     origin: string;
@@ -115,37 +115,37 @@ export interface IConfig {
   };
 }
 
-interface IDistanceMatrixOptions {
+interface DistanceMatrixOptions {
   travelMode: string;
   avoidHighways: boolean;
   avoidTolls: boolean;
 }
 
-export interface IDistanceObject extends IDistanceMatrixOptions {
+export interface DistanceObject extends DistanceMatrixOptions {
   origins: string[];
-  destinations: IOrigin[];
+  destinations: Origin[];
   unitSystem: TUnitSystem;
 }
 
-export interface IGeocodePromise {
+export interface GeocodePromise {
   address: string;
 }
 
-export interface IGeocodeResults {
+export interface GeocodeResults {
   geometry: {
     location: any;
   };
 }
 
-export interface IDistanceMatrixResults {
+export interface DistanceMatrixResults {
   originAddresses: string[];
   destinationAddresses: string[];
   rows: {
-    elements: IElement[];
+    elements: Element[];
   }[];
 }
 
-export interface IElement {
+interface Element {
   distance: {
     text: string;
     value: number;

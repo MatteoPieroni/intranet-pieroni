@@ -1,11 +1,11 @@
-import { ILink } from '@/services/firebase/db-types';
+import { Link } from '@/services/firebase/db-types';
 import styles from './links.module.css';
 
-interface ILinkProps {
-  links: ILink[];
+interface LinkProps {
+  links: Link[];
 }
 
-export const Links: React.FC<ILinkProps> = ({ links }) => {
+export const Links: React.FC<LinkProps> = ({ links }) => {
   return (
     <div>
       <div className={styles.header}>

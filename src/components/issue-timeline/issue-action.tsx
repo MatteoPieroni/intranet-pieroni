@@ -3,13 +3,13 @@
 import { useRef, useState } from 'react';
 
 import styles from './issue-action.module.css';
-import { IIssueAction } from '@/services/firebase/db-types';
+import { IssueAction as IssueActionType } from '@/services/firebase/db-types';
 import { IssueTimelineForm } from './issue-timeline-form';
 import { DateComponent } from '../date/date';
 
 type IssueActionProps = {
   issueId: string;
-  action: IIssueAction;
+  action: IssueActionType;
   readOnly: boolean;
 };
 

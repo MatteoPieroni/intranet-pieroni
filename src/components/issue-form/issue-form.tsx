@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import * as z from 'zod';
 
-import { type IIssue } from '@/services/firebase/db-types';
+import { type Issue } from '@/services/firebase/db-types';
 import { issueAction, StateValidation } from './issue-action';
 import styles from './issue-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -11,7 +11,7 @@ import { FormStatus } from '../form-status/form-status';
 
 type IssueFormProps =
   | {
-      issue: IIssue;
+      issue: Issue;
       isNew?: false;
     }
   | {
@@ -52,7 +52,7 @@ const newIssue = {
       description: '',
     },
   },
-} satisfies Partial<IIssue>;
+} satisfies Partial<Issue>;
 const newIssueForForm = {
   ...newIssue,
   supplierInfo: {

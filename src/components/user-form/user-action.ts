@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_USER, FORM_SUCCESS_USER } from '@/consts';
 import { pushUser } from '@/services/firebase/server';
-import { IUser } from '@/services/firebase/db-types';
+import { User } from '@/services/firebase/db-types';
 import { UserSchema } from '@/services/firebase/validator';
 
 export type StateValidation = {
@@ -14,7 +14,7 @@ export type StateValidation = {
 };
 
 export const userAction = async (
-  userData: Omit<IUser, 'permissions' | 'teams' | 'theme'>,
+  userData: Omit<User, 'permissions' | 'teams' | 'theme'>,
   _: StateValidation,
   values: FormData
 ) => {

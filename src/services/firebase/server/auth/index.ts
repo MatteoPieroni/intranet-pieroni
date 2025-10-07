@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth';
 
 import { getApp, type PassedHeaders } from '../serverApp';
-import type { IDbUser, IUser } from '../../db-types';
+import type { DbUser, User } from '../../db-types';
 import {
   doc,
   getDoc,
@@ -34,8 +34,8 @@ export async function getUser(headers: PassedHeaders) {
     const userRef = doc(db, 'users', uid).withConverter(
       (() => ({
         // this is just for types
-        toFirestore: (data: IUser) => data,
-        fromFirestore: (snap: QueryDocumentSnapshot<IDbUser, IDbUser>) => {
+        toFirestore: (data: User) => data,
+        fromFirestore: (snap: QueryDocumentSnapshot<DbUser, DbUser>) => {
           const data = snap.data();
 
           return data;

@@ -1,4 +1,4 @@
-import { IDbLink, ILink } from '../../db-types';
+import { DbLink, Link } from '../../db-types';
 import { LinkSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import {
@@ -11,7 +11,7 @@ import {
 
 export const getLinksWithoutCache = async (headers: PassedHeaders) => {
   try {
-    const records = await getRecords<ILink>(headers, 'links', (dbTeam) => {
+    const records = await getRecords<Link>(headers, 'links', (dbTeam) => {
       const record = LinkSchema.parse(dbTeam);
 
       return record;
@@ -29,7 +29,7 @@ export const getLinksForTeam = async (
   teams: string[]
 ) => {
   try {
-    const records = await getRecordsWhereArrayToArray<ILink>(
+    const records = await getRecordsWhereArrayToArray<Link>(
       headers,
       'links',
       {
@@ -50,11 +50,11 @@ export const getLinksForTeam = async (
   }
 };
 
-export const pushLink = async (headers: PassedHeaders, data: IDbLink) => {
+export const pushLink = async (headers: PassedHeaders, data: DbLink) => {
   try {
     const verifiedData = LinkSchema.parse(data);
 
-    await update<IDbLink>(headers, ['links', data.id], verifiedData);
+    await update<DbLink>(headers, ['links', data.id], verifiedData);
   } catch (e) {
     console.error(e);
     throw e;
@@ -63,17 +63,17 @@ export const pushLink = async (headers: PassedHeaders, data: IDbLink) => {
 
 export const createLink = async (
   headers: PassedHeaders,
-  data: Omit<ILink, 'id'>
+  data: Omit<Link, 'id'>
 ) => {
   try {
     const verifiedData = LinkSchema.omit({ id: true }).parse(data);
 
-    const createdDoc = await create<Omit<ILink, 'id'>>(
+    const createdDoc = await create<Omit<Link, 'id'>>(
       headers,
       'links',
       verifiedData
     );
-    await update<IDbLink>(headers, ['links', createdDoc.id], {
+    await update<DbLink>(headers, ['links', createdDoc.id], {
       id: createdDoc.id,
     });
   } catch (e) {

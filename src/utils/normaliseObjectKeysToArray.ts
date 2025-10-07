@@ -1,8 +1,8 @@
-interface IObject<T> {
+interface Object<T> {
   [key: string]: T;
 }
 
-export const normaliseObjectKeysToArray: <T, P extends IObject<T>>(
+export const normaliseObjectKeysToArray: <T, P extends Object<T>>(
   object: P
 ) => T[] = (object) => {
   if (typeof object === 'object' && object !== null && !Array.isArray(object)) {

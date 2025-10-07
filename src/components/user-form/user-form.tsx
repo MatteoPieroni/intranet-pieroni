@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 
-import { ITeam, IUser } from '@/services/firebase/db-types';
+import { Team, User } from '@/services/firebase/db-types';
 import styles from './user-form.module.css';
 import { SaveIcon } from '../icons/save';
 import { MultiSelect } from '../multiselect/multiselect';
@@ -11,8 +11,8 @@ import { FormStatus } from '../form-status/form-status';
 import { Permission } from '@/services/firebase/server';
 
 type UserFormProps = {
-  user: IUser;
-  availableTeams: ITeam[];
+  user: User;
+  availableTeams: Team[];
 };
 
 const initialState: StateValidation = {};

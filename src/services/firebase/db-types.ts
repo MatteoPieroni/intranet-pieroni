@@ -8,7 +8,7 @@ type UserScopes =
   | 'write/config'
   | 'admin';
 
-export interface IDbUser {
+export interface DbUser {
   id: string;
   name: string;
   surname: string;
@@ -18,25 +18,25 @@ export interface IDbUser {
   teams?: string[];
 }
 
-export type IUser = IDbUser;
+export type User = DbUser;
 
-export interface IDbTeam {
+export interface DbTeam {
   name: string;
 }
 
-export interface ITeam {
+export interface Team {
   name: string;
   id: string;
 }
 
-export interface IDbLink {
+export interface DbLink {
   description: string;
   id: string;
   link: string;
   teams: string[];
   icon?: string;
 }
-export interface ILink {
+export interface Link {
   description: string;
   id: string;
   link: string;
@@ -44,38 +44,34 @@ export interface ILink {
   icon?: string;
 }
 
-export interface IQuote {
+export interface Quote {
   text: string;
   url: string;
 }
 
-export interface ITv {
-  text: string;
-}
-
-export interface IGoogleAuth {
+export interface GoogleAuth {
   refresh_token: string;
 }
 
-export interface IImage {
-  url: string;
-}
-
-export interface IDbImage {
+export interface DbImage {
   [id: string]: {
     url: string;
   };
 }
 
-export interface IDbTv {
+export interface Image {
+  url: string;
+}
+
+export interface DbTv {
   text: string;
 }
 
-export interface IStorageFile {
-  path: string;
+export interface Tv {
+  text: string;
 }
 
-export interface IDbConfig {
+export interface DbConfig {
   mail_url: string;
   transport_cost_per_minute: number;
   transport_cost_minimum: number;
@@ -83,7 +79,7 @@ export interface IDbConfig {
   emailRiscossi: string;
 }
 
-export type IConfig = {
+export type Config = {
   mailUrl: string;
   transportCostPerMinute: number;
   transportCostMinimum: number;
@@ -91,23 +87,23 @@ export type IConfig = {
   emailRiscossi: string;
 };
 
-export type IFileCategories = 'link-icons' | 'quote' | `issues/${string}`;
+export type FileCategories = 'link-icons' | 'quote' | `issues/${string}`;
 
-export type IDbRiscossoDoc = {
+export type DbRiscossoDoc = {
   number: string;
   type: 'fattura' | 'DDT' | 'impegno';
   total: number;
   date: Timestamp;
 };
 
-export type IRiscossoDoc = {
+export type RiscossoDoc = {
   number: string;
   type: 'fattura' | 'DDT' | 'impegno';
   total: number;
   date: Date;
 };
 
-export type IDbRiscosso = {
+export type DbRiscosso = {
   id: string;
   date: Timestamp;
   total: number;
@@ -116,7 +112,7 @@ export type IDbRiscosso = {
   paymentMethod: 'assegno' | 'contanti' | 'bancomat';
   paymentChequeValue?: number;
   paymentChequeNumber?: string;
-  docs: IDbRiscossoDoc[];
+  docs: DbRiscossoDoc[];
   meta: {
     createdAt: Timestamp;
     author: string;
@@ -134,12 +130,12 @@ export type IDbRiscosso = {
       };
 };
 
-export type IRiscosso = Omit<
-  IDbRiscosso,
+export type Riscosso = Omit<
+  DbRiscosso,
   'date' | 'meta' | 'verification' | 'docs'
 > & {
   date: Date;
-  docs: IRiscossoDoc[];
+  docs: RiscossoDoc[];
   meta: {
     createdAt: Date;
     author: string;
@@ -172,7 +168,7 @@ type IssueType =
   | 'builder-mistake'
   | 'project-mistake';
 
-type IDbSupplierInfo = {
+type DbSupplierInfo = {
   supplier?: string;
   documentType?: string;
   documentDate?: Timestamp;
@@ -184,7 +180,7 @@ type IDbSupplierInfo = {
   };
 };
 
-type ISupplierInfo = {
+type SupplierInfo = {
   supplier?: string;
   documentType?: string;
   documentDate?: Date;
@@ -196,7 +192,7 @@ type ISupplierInfo = {
   };
 };
 
-export type IDbIssueAction = {
+export type DbIssueAction = {
   id: string;
   date: Timestamp;
   content: string;
@@ -204,7 +200,7 @@ export type IDbIssueAction = {
   result?: string;
 };
 
-export type IIssueAction = {
+export type IssueAction = {
   id: string;
   date: Date;
   content: string;
@@ -212,15 +208,15 @@ export type IIssueAction = {
   result?: string;
 };
 
-export type IDbIssue = {
+export type DbIssue = {
   id: string;
   date: Timestamp;
   commission: string;
   client: string;
   issueType: IssueType;
   summary: string;
-  supplierInfo?: IDbSupplierInfo;
-  timeline: IDbIssueAction[];
+  supplierInfo?: DbSupplierInfo;
+  timeline: DbIssueAction[];
   result?: {
     date: Timestamp;
     summary: string;
@@ -242,13 +238,13 @@ export type IDbIssue = {
       };
 };
 
-export type IIssue = Omit<
-  IDbIssue,
+export type Issue = Omit<
+  DbIssue,
   'date' | 'meta' | 'verification' | 'result' | 'timeline' | 'supplierInfo'
 > & {
   date: Date;
-  timeline: IIssueAction[];
-  supplierInfo?: ISupplierInfo;
+  timeline: IssueAction[];
+  supplierInfo?: SupplierInfo;
   result?: {
     date: Date;
     summary: string;

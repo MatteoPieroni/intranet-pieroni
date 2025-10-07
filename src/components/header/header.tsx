@@ -8,7 +8,7 @@ import styles from './header.module.css';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 import { MenuIcon } from '../icons/menu';
 import { CloseIcon } from '../icons/close';
-import { IUser } from '@/services/firebase/db-types';
+import { User } from '@/services/firebase/db-types';
 import {
   checkCanEditConfig,
   checkCanEditGMB,
@@ -20,7 +20,7 @@ import { AdminBadge } from '../admin-badge/admin-badge';
 
 type HeaderProps = {
   mailUrl: string;
-  permissions: IUser['permissions'];
+  permissions: User['permissions'];
   theme?: 'light' | 'dark' | null;
 };
 

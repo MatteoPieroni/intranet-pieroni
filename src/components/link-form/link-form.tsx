@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import * as z from 'zod';
 
-import type { ILink, ITeam } from '@/services/firebase/db-types';
+import type { Link, Team } from '@/services/firebase/db-types';
 import { linkAction, linkDeleteAction, StateValidation } from './link-action';
 import styles from './link-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -15,9 +15,9 @@ export const IconSchema = z.file();
 IconSchema.max(1_000_000, 'Too big');
 
 type LinksFormProps = {
-  link: ILink;
+  link: Link;
   isNew?: boolean;
-  availableTeams: ITeam[];
+  availableTeams: Team[];
 };
 
 const getFakeIcon = (name: string) => {

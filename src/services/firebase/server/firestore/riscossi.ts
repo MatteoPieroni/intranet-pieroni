@@ -1,4 +1,4 @@
-import { IRiscosso, IDbRiscosso } from '../../db-types';
+import { Riscosso, DbRiscosso } from '../../db-types';
 import { RiscossoSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, get, getRecordsCount } from './operations';
@@ -8,7 +8,7 @@ import { convertTimestampToDate } from '../../utils/dto-riscossi';
 
 export const getRiscossi = async (headers: PassedHeaders) => {
   try {
-    const records = await getRecords<IRiscosso>(
+    const records = await getRecords<Riscosso>(
       headers,
       'riscossi',
       (riscosso) => {
@@ -35,7 +35,7 @@ export const getRiscossiForUser = async (
   userId: string
 ) => {
   try {
-    const records = await getRecords<IRiscosso>(
+    const records = await getRecords<Riscosso>(
       headers,
       'riscossi',
       (riscosso) => {
@@ -60,7 +60,7 @@ export const getRiscossiForUser = async (
 
 export const getRiscosso = async (headers: PassedHeaders, id: string) => {
   try {
-    const records = await get<IRiscosso>(
+    const records = await get<Riscosso>(
       headers,
       ['riscossi', id],
       (riscosso) => {
@@ -99,7 +99,7 @@ export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
 
 export const createRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<IRiscosso, 'id' | 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date'>
 ) => {
   try {
     const user = await getUser(headers);
@@ -123,7 +123,7 @@ export const createRiscosso = async (
       date: Timestamp.fromDate(doc.date),
     }));
 
-    const createdDoc = await create<Omit<IDbRiscosso, 'id'>>(
+    const createdDoc = await create<Omit<DbRiscosso, 'id'>>(
       headers,
       'riscossi',
       {
@@ -139,7 +139,7 @@ export const createRiscosso = async (
         },
       }
     );
-    await update<IDbRiscosso>(headers, ['riscossi', createdDoc.id], {
+    await update<DbRiscosso>(headers, ['riscossi', createdDoc.id], {
       id: createdDoc.id,
     });
 
@@ -152,7 +152,7 @@ export const createRiscosso = async (
 
 export const updateRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<IRiscosso, 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'meta' | 'verification' | 'date'>
 ) => {
   try {
     const verifiedData = RiscossoSchema.omit({
@@ -167,7 +167,7 @@ export const updateRiscosso = async (
       date: Timestamp.fromDate(doc.date),
     }));
 
-    await update<IDbRiscosso>(headers, ['riscossi', verifiedData.id], {
+    await update<DbRiscosso>(headers, ['riscossi', verifiedData.id], {
       ...verifiedData,
       docs,
     });
@@ -203,7 +203,7 @@ export const checkRiscosso = async (
           isVerified: false,
         } as const);
 
-    await update<Pick<IDbRiscosso, 'verification'>>(
+    await update<Pick<DbRiscosso, 'verification'>>(
       headers,
       ['riscossi', data.id],
       {

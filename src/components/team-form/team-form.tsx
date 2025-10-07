@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 
-import type { ITeam } from '@/services/firebase/db-types';
+import type { Team } from '@/services/firebase/db-types';
 import { teamAction, teamDeleteAction, StateValidation } from './team-action';
 import styles from './team-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -10,7 +10,7 @@ import { DeleteIcon } from '../icons/delete';
 import { SaveIcon } from '../icons/save';
 
 type LinksFormProps = {
-  team: ITeam;
+  team: Team;
   isNew?: boolean;
 };
 const initialState: StateValidation = {};

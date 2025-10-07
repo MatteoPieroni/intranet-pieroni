@@ -6,12 +6,12 @@ import '@/react-aria/react-aria.css';
 import { getGoogleAuth, getUser } from '@/services/firebase/server';
 import { googleClient } from '@/services/google-apis';
 import { Business } from '@/components/google/business/business';
-import { IGoogleAuth } from '@/services/firebase/db-types';
+import { GoogleAuth } from '@/services/firebase/db-types';
 import styles from './page.module.css';
 import template from '../header-template.module.css';
 import { checkCanEditGMB } from '@/services/firebase/server/permissions';
 
-const manageGoogleAuth = async (googleAuth: IGoogleAuth | undefined) => {
+const manageGoogleAuth = async (googleAuth: GoogleAuth | undefined) => {
   if (!googleAuth?.refresh_token) {
     return false;
   }

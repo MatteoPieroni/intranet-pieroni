@@ -1,4 +1,4 @@
-import { IIssue, IDbIssue, IIssueAction, IDbIssueAction } from '../../db-types';
+import { Issue, DbIssue, IssueAction, DbIssueAction } from '../../db-types';
 import {
   IssueActionSchema,
   IssueResultSchema,
@@ -15,7 +15,7 @@ import {
 
 export const getIssues = async (headers: PassedHeaders) => {
   try {
-    const records = await getRecords<IIssue>(
+    const records = await getRecords<Issue>(
       headers,
       'issues',
       (issue) => {
@@ -42,7 +42,7 @@ export const getIssuesForUser = async (
   userId: string
 ) => {
   try {
-    const records = await getRecords<IIssue>(
+    const records = await getRecords<Issue>(
       headers,
       'issues',
       (issue) => {
@@ -67,7 +67,7 @@ export const getIssuesForUser = async (
 
 export const getIssue = async (headers: PassedHeaders, id: string) => {
   try {
-    const records = await get<IIssue>(headers, ['issues', id], (issue) => {
+    const records = await get<Issue>(headers, ['issues', id], (issue) => {
       const convertToDate = convertTimestampToDate(issue);
 
       const record = IssueSchema.parse(convertToDate);
@@ -112,7 +112,7 @@ export const createEmptyIssue = async (headers: PassedHeaders) => {
 
 export const updateIssue = async (
   headers: PassedHeaders,
-  data: Omit<IIssue, 'meta' | 'verification' | 'date' | 'timeline' | 'result'>
+  data: Omit<Issue, 'meta' | 'verification' | 'date' | 'timeline' | 'result'>
 ) => {
   try {
     const {
@@ -139,7 +139,7 @@ export const updateIssue = async (
         }
       : {};
 
-    await update<IDbIssue>(headers, ['issues', verifiedData.id], {
+    await update<DbIssue>(headers, ['issues', verifiedData.id], {
       ...verifiedData,
       ...supplierInfo,
     });
@@ -153,7 +153,7 @@ export const updateIssue = async (
 
 export const getIssueTimeline = async (headers: PassedHeaders, id: string) => {
   try {
-    const records = await getRecords<IIssueAction>(
+    const records = await getRecords<IssueAction>(
       headers,
       ['issues', id, 'timeline'],
       (issue) => {
@@ -182,7 +182,7 @@ export const addActionToIssue = async (
   headers: PassedHeaders,
   data: {
     issueId: string;
-    action: Omit<IIssueAction, 'id'>;
+    action: Omit<IssueAction, 'id'>;
   }
 ) => {
   try {
@@ -190,12 +190,12 @@ export const addActionToIssue = async (
       id: true,
     }).parse(data.action);
 
-    const createdDoc = await create<Omit<IDbIssueAction, 'id'>>(
+    const createdDoc = await create<Omit<DbIssueAction, 'id'>>(
       headers,
       `issues/${data.issueId}/timeline`,
       { ...verifiedData, date: Timestamp.fromDate(date) }
     );
-    await update<IDbIssueAction>(
+    await update<DbIssueAction>(
       headers,
       ['issues', data.issueId, 'timeline', createdDoc.id],
       {
@@ -214,13 +214,13 @@ export const editIssueAction = async (
   headers: PassedHeaders,
   data: {
     issueId: string;
-    action: IIssueAction;
+    action: IssueAction;
   }
 ) => {
   try {
     const { date, ...verifiedData } = IssueActionSchema.parse(data.action);
 
-    await update<IDbIssueAction>(
+    await update<DbIssueAction>(
       headers,
       ['issues', data.issueId, 'timeline', verifiedData.id],
       {
@@ -247,7 +247,7 @@ export const editAttachmentsIssue = async (
       throw new Error('Something wrong with attachments');
     }
 
-    await update<IDbIssueAction>(
+    await update<DbIssueAction>(
       headers,
       ['issues', data.issueId, 'timeline', data.actionId],
       {
@@ -274,7 +274,7 @@ export const addResultToIssue = async (
 
     const now = Timestamp.now();
 
-    await update<IDbIssue>(headers, ['issues', data.id], {
+    await update<DbIssue>(headers, ['issues', data.id], {
       result: {
         summary,
         date: now,
@@ -312,7 +312,7 @@ export const checkIssue = async (
           isVerified: false,
         } as const);
 
-    await update<Pick<IIssue, 'verification'>>(headers, ['issues', data.id], {
+    await update<Pick<Issue, 'verification'>>(headers, ['issues', data.id], {
       verification,
     });
   } catch (e) {

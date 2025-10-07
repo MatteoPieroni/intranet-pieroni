@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { IQuote } from '@/services/firebase/db-types';
+import { Quote as QuoteType } from '@/services/firebase/db-types';
 import styles from './quote.module.css';
 
-interface IQuoteProps {
-  quote: IQuote;
+interface QuoteProps {
+  quote: QuoteType;
 }
 
-export const Quote: React.FC<IQuoteProps> = ({ quote }) => {
+export const Quote: React.FC<QuoteProps> = ({ quote }) => {
   const { url, text } = quote;
 
   return (

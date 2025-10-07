@@ -10,7 +10,7 @@ import {
   editIssueAction,
 } from '@/services/firebase/server';
 import { IssueActionSchema } from '@/services/firebase/validator';
-import { IIssueAction } from '@/services/firebase/db-types';
+import { IssueAction } from '@/services/firebase/db-types';
 import {
   deleteFileFromUrl,
   uploadIssueAttachment,
@@ -82,7 +82,7 @@ const uploadAndAddAttachment = async (
 
 export const issueAction = async (
   issueId: string,
-  attachments: IIssueAction['attachments'],
+  attachments: IssueAction['attachments'],
   _: StateValidation,
   values: FormData
 ) => {

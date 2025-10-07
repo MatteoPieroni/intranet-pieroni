@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from 'react';
 import * as z from 'zod';
 
-import { IIssueAction } from '@/services/firebase/db-types';
+import { IssueAction } from '@/services/firebase/db-types';
 import { issueAction, StateValidation } from './issue-timeline-action';
 import styles from './issue-timeline-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -14,7 +14,7 @@ type IssueFormProps = {
   onSuccess?: () => void;
 } & (
   | {
-      action: IIssueAction;
+      action: IssueAction;
       isNew?: false;
     }
   | {
@@ -32,7 +32,7 @@ const emptyAction = {
   date: new Date(),
   content: '',
   result: '',
-} satisfies IIssueAction;
+} satisfies IssueAction;
 
 export const IssueTimelineForm = ({
   issueId,

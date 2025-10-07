@@ -2,7 +2,7 @@ import * as Types from './types';
 import { mToKm, sToMin } from '../../../utils/formatMeasures';
 
 const Driver = class {
-  private config: Types.IConfig;
+  private config: Types.Config;
   private GeocoderService: Types.TGeocoder;
   private DistanceMatrixService: Types.TDistanceMatrixService;
   private BoundsService: Types.TBounds;
@@ -16,7 +16,7 @@ const Driver = class {
   private Current: Types.TCurrent;
   private Listeners: Types.TListener[];
 
-  constructor(mapsService: Types.TMaps, config: Types.IConfig) {
+  constructor(mapsService: Types.TMaps, config: Types.Config) {
     this.config = config;
     this.GeocoderService = new mapsService.Geocoder();
     this.DistanceMatrixService = new mapsService.DistanceMatrixService();
@@ -60,8 +60,8 @@ const Driver = class {
     this.Listeners.forEach((listener) => listener(this.Current));
 
   private geocodePromise: (
-    place: Types.IGeocodePromise
-  ) => Promise<Types.IGeocodeResults[]> = (place) => {
+    place: Types.GeocodePromise
+  ) => Promise<Types.GeocodeResults[]> = (place) => {
     return new Promise((resolve, reject) => {
       this.GeocoderService.geocode(place, (results, status) => {
         if (status !== 'OK') {
@@ -74,8 +74,8 @@ const Driver = class {
   };
 
   private getDistanceMatrixPromise: (
-    distanceObject: Types.IDistanceObject
-  ) => Promise<Types.IDistanceMatrixResults> = (distanceObject) => {
+    distanceObject: Types.DistanceObject
+  ) => Promise<Types.DistanceMatrixResults> = (distanceObject) => {
     return new Promise((resolve, reject) => {
       this.DistanceMatrixService.getDistanceMatrix(
         distanceObject,
@@ -91,7 +91,7 @@ const Driver = class {
   };
 
   private showGeocodedAddressOnMap: (
-    address: Types.IGeocodePromise,
+    address: Types.GeocodePromise,
     asDestination: boolean,
     fastest?: boolean
   ) => Promise<void> = async (address, asDestination, fastest) => {
@@ -132,7 +132,7 @@ const Driver = class {
     this.Current.currentMarkers = [];
   };
 
-  private setDistances: (distanceMatrix: Types.IDistanceMatrixResults) => void =
+  private setDistances: (distanceMatrix: Types.DistanceMatrixResults) => void =
     async (distanceMatrix) => {
       const { originAddresses, destinationAddresses, rows } = distanceMatrix;
       const { origins } = this.Current;
@@ -159,7 +159,7 @@ const Driver = class {
         );
       });
 
-      const calculatedRoutes = rows.map(({ elements }, i): Types.IRoute => {
+      const calculatedRoutes = rows.map(({ elements }, i): Types.Route => {
         // gmaps returns the value in seconds
         const duration = Math.floor(sToMin(elements[0].duration.value));
         // gmaps returns the value in metres
@@ -181,7 +181,7 @@ const Driver = class {
       };
     };
 
-  private calculateQuickestRoute: () => Types.IRoute = () => {
+  private calculateQuickestRoute: () => Types.Route = () => {
     const { routes } = this.Current;
 
     if (!routes) {
@@ -191,7 +191,7 @@ const Driver = class {
     // we set the aggregator to equal the route on the first run
     // then we compare the duration for each route with the existing one
     // and swap if the new one if faster
-    return routes.reduce<Types.IRoute>(
+    return routes.reduce<Types.Route>(
       (quickest, route) =>
         quickest
           ? quickest.duration <= route.duration
@@ -199,7 +199,7 @@ const Driver = class {
             : route
           : route,
       // TODO: fix reduce types
-      null as unknown as Types.IRoute
+      null as unknown as Types.Route
     );
   };
 

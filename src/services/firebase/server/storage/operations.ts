@@ -7,11 +7,11 @@ import {
 } from 'firebase/storage';
 
 import { getApp, PassedHeaders } from '../serverApp';
-import { IFileCategories } from '../../db-types';
+import { FileCategories } from '../../db-types';
 
 export const upload = async (
   currentHeaders: PassedHeaders,
-  category: IFileCategories,
+  category: FileCategories,
   file: File
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);

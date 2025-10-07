@@ -1,12 +1,12 @@
-import { IRoute } from '../../services/gmaps/driver/types';
+import { Route } from '../../services/gmaps/driver/types';
 import styles from './map.module.css';
 
-interface IRouteProps {
-  route: IRoute;
+interface RouteProps {
+  route: Route;
   quickest?: boolean;
 }
 
-export const Route = ({ route, quickest }: IRouteProps) => {
+export const Route = ({ route, quickest }: RouteProps) => {
   const { name, cost, km, duration } = route;
   return (
     <div className={styles.route} data-quickest={quickest}>

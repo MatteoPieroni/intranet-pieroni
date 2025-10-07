@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useActionState, useEffect, useState } from 'react';
 
-import { IRiscossoDoc, type IRiscosso } from '@/services/firebase/db-types';
+import { RiscossoDoc, type Riscosso } from '@/services/firebase/db-types';
 import { riscossoAction, StateValidation } from './riscosso-action';
 import styles from './riscosso-form.module.css';
 import { FormStatus } from '../form-status/form-status';
@@ -10,7 +10,7 @@ import { DeleteIcon } from '../icons/delete';
 
 type RiscossiFormProps =
   | {
-      riscosso: IRiscosso;
+      riscosso: Riscosso;
       isNew?: false;
     }
   | {
@@ -26,7 +26,7 @@ const newRiscosso = {
   total: 0,
   paymentChequeNumber: '',
   paymentChequeValue: 0,
-} satisfies Partial<IRiscosso>;
+} satisfies Partial<Riscosso>;
 const newRiscossoForForm = {
   ...newRiscosso,
   company: '',
@@ -77,7 +77,7 @@ const emptyDoc = {
   date: new Date(),
 };
 
-type LocalDoc = (IRiscossoDoc | typeof emptyDoc) & {
+type LocalDoc = (RiscossoDoc | typeof emptyDoc) & {
   id?: string;
 };
 
