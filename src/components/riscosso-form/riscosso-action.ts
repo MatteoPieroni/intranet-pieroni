@@ -8,12 +8,7 @@ import {
   FORM_PARTIAL_RISCOSSO,
   FORM_SUCCESS_RISCOSSO,
 } from '@/consts';
-import {
-  createRiscosso,
-  getConfigWithoutCache,
-  updateRiscosso,
-} from '@/services/firebase/server';
-import { sendRiscossoCreation } from '@/services/email';
+import { createRiscosso, updateRiscosso } from '@/services/firebase/server';
 import {
   RiscossoDocSchema,
   RiscossoSchema,
@@ -66,8 +61,6 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
   const currentHeaders = await headers();
 
   try {
-    const config = await getConfigWithoutCache(currentHeaders);
-
     const formId = values.get('id');
     const formIsNew = values.get('isNew');
     const formDocsNumbers = values.getAll('doc-number');
@@ -113,7 +106,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      const createdRiscosso = await createRiscosso(currentHeaders, {
+      await createRiscosso(currentHeaders, {
         client,
         company,
         total,
@@ -122,18 +115,6 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
-
-      try {
-        await sendRiscossoCreation({
-          id: createdRiscosso.id,
-          client,
-          link: `https://interno.pieroni.it/riscossi/${createdRiscosso.id}`,
-          total,
-          emailTo: config.emailRiscossi,
-        });
-      } catch {
-        throw new Error('EMAIL_FAILED');
-      }
     } else {
       await updateRiscosso(currentHeaders, {
         id,
