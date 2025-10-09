@@ -1,8 +1,8 @@
-import { Route } from '../../services/gmaps/driver/types';
+import { Route as RouteType } from '../../services/gmaps/driver/types';
 import styles from './map.module.css';
 
 interface RouteProps {
-  route: Route;
+  route: RouteType;
   quickest?: boolean;
 }
 
