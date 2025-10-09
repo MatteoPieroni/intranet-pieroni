@@ -23,5 +23,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/auth-service-worker.js"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "firebase-functions"]
 }
