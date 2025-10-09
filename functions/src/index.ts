@@ -38,165 +38,70 @@ setGlobalOptions({ maxInstances: 10 });
  */
 
 import { initializeApp } from 'firebase-admin/app';
-// import { getAuth } from 'firebase-admin/auth';
-// import { getDatabase } from 'firebase-admin/database';
-import { log } from 'firebase-functions/logger';
-import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import {
+  onDocumentCreated,
+  onDocumentUpdated,
+} from 'firebase-functions/v2/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
+import { MailerSend } from 'mailersend';
+import { handleIssueUpdate, handleIssueCreation } from './handlers/issues';
+import {
+  handleRiscossoCreation,
+  handleRiscossoUpdate,
+} from './handlers/riscossi';
 
 initializeApp();
-// const auth = getAuth();
 const db = getFirestore();
 
 /**
-
-
 New item creation
-- update subscribers with entity and IDs for admins
-- send email
-- add notification to above admin IDs 
+- send email and notification to admin IDs 
 
 Item update
 - (also for subcollections)
 - check for recent notification
   - yes: delete the old one
 - add notification
-
-Entity deleted
-- remove subscribers with entity and ID for admin
+- send email
 
 Entity checked
-- notification to creator
-- remove subscribers
+- email and notification to creator
 - archive
-
-Remove role
-- get subscriptions for each entity
-- remove the id
-- remove notifications 
-
-Subscriptions
-/Issues
-  /Id
-    [UserIds]
-/Riscossi
-  /Id
-    [UserIds]
-
-Notifications
-User
-  /Notifications 
-    /NotificationId
-			/ entity
-        / id
-        / type
-			/ id
-			/ text
-
 */
 
-/**
- * Triggers when a user gets a new follower and sends a notification. Followers
- * add a flag to `/followers/{followedUid}/{followerUid}`. Users save their
- * device notification tokens to
- * `/users/{followedUid}/notificationTokens/{notificationToken}`.
- */
-export const sendFollowerNotification = onDocumentUpdated(
-  '/issues/{issueId}',
-  async (event) => {
-    // const oldValue = event.data?.before.data();
-    const newValue = event.data?.after.data();
+/**CHECK LOGIN FOR CASAIMMOBILIARE */
 
-    // check that subscription exists
-    const subscribersSnapshot = await db
-      .doc(`subscription-issues/${event.params.issueId}`)
-      .get();
-    const subscribers = subscribersSnapshot.data()?.subscribers;
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILER_SEND_TOKEN || '',
+});
 
-    const userId = subscribers[0];
+export const onRiscossoCreation = onDocumentCreated(
+  '/riscossi/{id}',
+  async (...args) => await handleRiscossoCreation(db, mailerSend, ...args)
+);
 
-    const createdDoc = await db
-      .doc(`users/${userId}`)
-      .collection('notifications')
-      .add({
-        // timestamp
-        entity: {
-          id: event.params.issueId,
-          // update to allow more
-          type: 'issue',
-        },
-        text: `New data: ${JSON.stringify(newValue)}`,
-      });
+export const onRiscossoUpdate = onDocumentUpdated(
+  '/riscossi/{id}',
+  async (...args) => await handleRiscossoUpdate(db, ...args)
+);
 
-    log(createdDoc);
+export const onIssueCreation = onDocumentCreated(
+  '/issues/{id}',
+  async (...args) => await handleIssueCreation(db, mailerSend, ...args)
+);
 
-    // // If un-follow we exit the function.
-    // if (!event.data.after.val()) {
-    //   log(
-    //     `User ${event.params.followerUid} unfollowed` +
-    //       ` user ${event.params.followedUid} :(`
-    //   );
-    //   return;
-    // }
+export const onIssueUpdate = onDocumentUpdated(
+  '/issues/{id}',
+  async (...args) => await handleIssueUpdate(db, ...args)
+);
 
-    // log(
-    //   `User ${event.params.followerUid} is now following` +
-    //     ` user ${event.params.followedUid}`
-    // );
-    // const tokensRef = db.ref(
-    //   `/users/${event.params.followedUid}/notificationTokens`
-    // );
-    // const notificationTokens = await tokensRef.get();
-    // if (!notificationTokens.hasChildren()) {
-    //   log('There are no tokens to send notifications to.');
-    //   return;
-    // }
+// count this as an update since it's a subcollection
+export const onIssueActionCreation = onDocumentCreated(
+  '/issues/{id}/timeline/{actionId}',
+  async (...args) => await handleIssueUpdate(db, ...args)
+);
 
-    // log(
-    //   `There are ${notificationTokens.numChildren()} tokens` +
-    //     ' to send notifications to.'
-    // );
-    // const followerProfile = await auth.getUser(event.params.followerUid);
-
-    // // Notification details.
-    // const notification = {
-    //   title: 'You have a new follower!',
-    //   body:
-    //     (followerProfile.displayName ?? 'Someone') + ' is now following you.',
-    //   image: followerProfile.photoURL ?? '',
-    // };
-
-    // // Send notifications to all tokens.
-    // const messages = [];
-    // notificationTokens.forEach((child) => {
-    //   messages.push({
-    //     token: child.key,
-    //     notification: notification,
-    //   });
-    // });
-    // const batchResponse = await messaging.sendEach(messages);
-
-    // if (batchResponse.failureCount < 1) {
-    //   // Messages sent sucessfully. We're done!
-    //   log('Messages sent.');
-    //   return;
-    // }
-    // warn(`${batchResponse.failureCount} messages weren't sent.`, batchResponse);
-
-    // // Clean up the tokens that are not registered any more.
-    // for (let i = 0; i < batchResponse.responses.length; i++) {
-    //   const errorCode = batchResponse.responses[i].error?.code;
-    //   const errorMessage = batchResponse.responses[i].error?.message;
-    //   if (
-    //     errorCode === 'messaging/invalid-registration-token' ||
-    //     errorCode === 'messaging/registration-token-not-registered' ||
-    //     (errorCode === 'messaging/invalid-argument' &&
-    //       errorMessage ===
-    //         'The registration token is not a valid FCM registration token')
-    //   ) {
-    //     log(`Removing invalid token: ${messages[i].token}`);
-    //     await tokensRef.child(messages[i].token).remove();
-    //   }
-    // }
-  }
+export const onIssueActionUpdate = onDocumentUpdated(
+  '/issues/{id}/timeline/{actionId}',
+  async (...args) => await handleIssueUpdate(db, ...args)
 );
