@@ -82,7 +82,16 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
   }
 };
 
-export const createEmptyIssue = async (headers: PassedHeaders) => {
+type CreatedDbIssue = Pick<
+  DbIssue,
+  // IMPORTANT: we rely on client to send out emails
+  'client' | 'date' | 'timeline' | 'meta' | 'verification'
+>;
+
+export const createEmptyIssue = async (
+  headers: PassedHeaders,
+  data: Pick<Issue, 'client'>
+) => {
   try {
     const user = await getUser(headers);
 
@@ -92,7 +101,8 @@ export const createEmptyIssue = async (headers: PassedHeaders) => {
 
     const now = Timestamp.now();
 
-    const createdDoc = await create(headers, 'issues', {
+    const createdDoc = await create<CreatedDbIssue>(headers, 'issues', {
+      client: data.client,
       date: now,
       timeline: [],
       meta: {

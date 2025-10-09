@@ -65,7 +65,9 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      id = await createEmptyIssue(currentHeaders);
+      id = await createEmptyIssue(currentHeaders, {
+        client,
+      });
     }
 
     await updateIssue(currentHeaders, {
