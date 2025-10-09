@@ -7,6 +7,7 @@ import { addUpdateToUser, getAdmins } from '../services/firestore';
 import { Firestore } from 'firebase-admin/firestore';
 import { MailerSend } from 'mailersend';
 import { sendRiscossoCreation } from '../services/email';
+import { error } from 'firebase-functions/logger';
 
 const entityType = 'riscossi';
 
@@ -20,35 +21,41 @@ export const handleRiscossoCreation = async (
     }
   >
 ) => {
-  // const oldValue = event.data?.before.data();
   const created = event.data?.data();
+  const id = event.data?.id;
 
-  if (!created) {
+  if (!created || !id) {
     return;
   }
 
-  const admins = await getAdmins(db, 'riscossi');
+  const { client, total } = created;
 
-  await Promise.all(
-    admins.map(async (admin) => {
-      if (!event.data?.id) {
-        return;
-      }
+  if (!client || !total) {
+    return;
+  }
 
-      await addUpdateToUser(db, admin.id, {
-        id: event.data.id,
-        entityType,
-        actionType: 'created',
-      });
+  const admins = await getAdmins(db, entityType);
 
-      await sendRiscossoCreation(transporter, admin.email, {
-        client: created.client,
-        id: created.id,
-        link: `${process.env.BASE_URL}/riscossi/${created.id}`,
-        total: created.total,
-      });
-    })
-  );
+  try {
+    await Promise.all(
+      admins.map(async (admin) => {
+        await addUpdateToUser(db, admin.id, {
+          id,
+          entityType,
+          actionType: 'created',
+        });
+
+        await sendRiscossoCreation(transporter, admin.email, {
+          client,
+          id,
+          total,
+          link: `${process.env.BASE_URL}/riscossi/${id}`,
+        });
+      })
+    );
+  } catch (e) {
+    error('Error sending riscosso creation', e);
+  }
 };
 
 export const handleRiscossoUpdate = async (
@@ -60,22 +67,25 @@ export const handleRiscossoUpdate = async (
     }
   >
 ) => {
-  // const oldValue = event.data?.before.data();
-  const updated = event.data?.after?.id;
+  const id = event.data?.after?.id;
 
-  if (!updated) {
+  if (!id) {
     return;
   }
 
-  const admins = await getAdmins(db, 'riscossi');
+  const admins = await getAdmins(db, entityType);
 
-  await Promise.all(
-    admins.map(async (admin) => {
-      await addUpdateToUser(db, admin.id, {
-        id: updated,
-        entityType,
-        actionType: 'created',
-      });
-    })
-  );
+  try {
+    await Promise.all(
+      admins.map(async (admin) => {
+        await addUpdateToUser(db, admin.id, {
+          id,
+          entityType,
+          actionType: 'updated',
+        });
+      })
+    );
+  } catch (e) {
+    error('Error sending riscosso update', e);
+  }
 };

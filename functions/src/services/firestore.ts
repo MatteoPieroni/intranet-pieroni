@@ -46,7 +46,7 @@ export const addUpdateToUser = async (
 ) => {
   await db
     .doc(`users/${userId}`)
-    .collection('notifications')
+    .collection('updates')
     .add({
       // timestamp
       entity: {

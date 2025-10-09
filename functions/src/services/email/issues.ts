@@ -23,10 +23,7 @@ export const sendIssueCreation = async (
   data: IssueData
 ) => {
   try {
-    const emailTo = new Recipient(
-      // recipient
-      process.env.TEST_EMAIL || ''
-    );
+    const emailTo = new Recipient(recipient);
 
     const emailParams = new EmailParams()
       .setFrom(sentFrom)

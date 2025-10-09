@@ -7,6 +7,7 @@ import { addUpdateToUser, getAdmins } from '../services/firestore';
 import { Firestore } from 'firebase-admin/firestore';
 import { sendIssueCreation } from '../services/email';
 import { MailerSend } from 'mailersend';
+import { error } from 'firebase-functions/logger';
 
 const entityType = 'issues';
 
@@ -20,34 +21,40 @@ export const handleIssueCreation = async (
     }
   >
 ) => {
-  // const oldValue = event.data?.before.data();
   const created = event.data?.data();
+  const id = event.data?.id;
 
-  if (!created) {
+  if (!created || !id) {
+    return;
+  }
+
+  const { client } = created;
+
+  if (!client) {
     return;
   }
 
   const admins = await getAdmins(db, 'issues');
 
-  await Promise.all(
-    admins.map(async (admin) => {
-      if (!event.data?.id) {
-        return;
-      }
+  try {
+    await Promise.all(
+      admins.map(async (admin) => {
+        await addUpdateToUser(db, admin.id, {
+          id,
+          entityType,
+          actionType: 'created',
+        });
 
-      await addUpdateToUser(db, admin.id, {
-        id: event.data.id,
-        entityType,
-        actionType: 'created',
-      });
-
-      await sendIssueCreation(transporter, admin.email, {
-        client: created.client,
-        id: created.id,
-        link: `${process.env.BASE_URL}/issues/${created.id}`,
-      });
-    })
-  );
+        await sendIssueCreation(transporter, admin.email, {
+          client,
+          id,
+          link: `${process.env.BASE_URL}/issues/${id}`,
+        });
+      })
+    );
+  } catch (e) {
+    error('Error sending issue creation', e);
+  }
 };
 
 export const handleIssueUpdate = async (
@@ -73,13 +80,17 @@ export const handleIssueUpdate = async (
 
   const admins = await getAdmins(db, 'issues');
 
-  await Promise.all(
-    admins.map(async (admin) => {
-      await addUpdateToUser(db, admin.id, {
-        id: id,
-        entityType,
-        actionType: 'updated',
-      });
-    })
-  );
+  try {
+    await Promise.all(
+      admins.map(async (admin) => {
+        await addUpdateToUser(db, admin.id, {
+          id,
+          entityType,
+          actionType: 'updated',
+        });
+      })
+    );
+  } catch (e) {
+    error('Error sending issue update', e);
+  }
 };
