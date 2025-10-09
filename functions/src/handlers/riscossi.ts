@@ -22,7 +22,7 @@ export const handleRiscossoCreation = async (
   >
 ) => {
   const created = event.data?.data();
-  const id = event.data?.id;
+  const id = event.params.id;
 
   if (!created || !id) {
     return;
@@ -67,7 +67,7 @@ export const handleRiscossoUpdate = async (
     }
   >
 ) => {
-  const id = event.data?.after?.id;
+  const id = event.params.id;
 
   if (!id) {
     return;

@@ -22,7 +22,7 @@ export const handleIssueCreation = async (
   >
 ) => {
   const created = event.data?.data();
-  const id = event.data?.id;
+  const id = event.params.id;
 
   if (!created || !id) {
     return;
@@ -66,13 +66,18 @@ export const handleIssueUpdate = async (
           id: string;
         }
       >
-    | FirestoreEvent<Change<QueryDocumentSnapshot | undefined> | undefined>
+    | FirestoreEvent<
+        Change<QueryDocumentSnapshot | undefined> | undefined,
+        {
+          id: string;
+        }
+      >
 ) => {
   if (!event.data) {
     return;
   }
 
-  const id = 'data' in event.data ? event.data?.id : event.data.after?.id;
+  const id = event.params.id;
 
   if (!id) {
     return;

@@ -1,7 +1,13 @@
-import { Firestore } from 'firebase-admin/firestore';
+import { Firestore, Timestamp } from 'firebase-admin/firestore';
 
 type EntityTypes = 'issues' | 'riscossi';
 type ActionTypes = 'created' | 'updated';
+
+type DbUpdate = {
+  id: string;
+  entityType: 'issues' | 'riscossi';
+  actionType: ActionTypes;
+};
 
 const entityTypeToPermissionMap = {
   issues: 'write/issues',
@@ -38,21 +44,26 @@ export const getAdmins = async (db: Firestore, entityType: EntityTypes) => {
 export const addUpdateToUser = async (
   db: Firestore,
   userId: string,
-  update: {
-    entityType: EntityTypes;
-    id: string;
-    actionType: ActionTypes;
-  }
+  update: Omit<DbUpdate, 'timestamp'>
 ) => {
-  await db
+  const dbEntityType = entityTypeToCollectionMap[update.entityType];
+
+  const pendingUpdatesForIssue = await db
     .doc(`users/${userId}`)
     .collection('updates')
-    .add({
-      // timestamp
-      entity: {
-        id: update.id,
-        entityType: entityTypeToCollectionMap[update.entityType],
-        actionType: update.actionType,
-      },
-    });
+    .where('entityType', '==', dbEntityType)
+    .where('entityId', '==', update.id)
+    .count()
+    .get();
+
+  if (pendingUpdatesForIssue.data().count > 0) {
+    return;
+  }
+
+  await db.doc(`users/${userId}`).collection('updates').add({
+    timestamp: Timestamp.now(),
+    actionType: update.actionType,
+    entityId: update.id,
+    entityType: dbEntityType,
+  });
 };
