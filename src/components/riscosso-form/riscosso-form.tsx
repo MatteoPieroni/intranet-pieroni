@@ -102,7 +102,7 @@ export const RiscossiForm = ({
   } = riscosso || newRiscossoForForm;
 
   const [docsWithAdded, setDocsWithAdded] = useState<LocalDoc[]>(
-    mapDocsWithId(docs)
+    mapDocsWithId([...docs, ...(isNew ? [emptyDoc] : [])])
   );
 
   const [state, formAction, pending] = useActionState(
@@ -136,6 +136,12 @@ export const RiscossiForm = ({
     // this must only run on the update of the form state
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [docs]);
+
+  // on refresh of page after state, the select for payment method goes out of sync
+  // so we reset it ourselves
+  useEffect(() => {
+    setPaymentMethod(initialPaymentMethod);
+  }, [state]);
 
   return (
     <form action={formAction}>

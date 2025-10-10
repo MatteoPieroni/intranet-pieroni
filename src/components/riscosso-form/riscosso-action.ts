@@ -98,7 +98,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
       company: values.get('company'),
       paymentMethod: values.get('payment-method'),
       paymentChequeValue: Number(values.get('payment-cheque-value')),
-      paymentChequeNumber: values.get('payment-cheque-number'),
+      paymentChequeNumber: values.get('payment-cheque-number') ?? '',
       docs,
     });
 
