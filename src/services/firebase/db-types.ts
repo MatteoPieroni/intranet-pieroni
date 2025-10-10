@@ -8,6 +8,20 @@ type UserScopes =
   | 'write/config'
   | 'admin';
 
+export type DbUserUpdate = {
+  timestamp: Timestamp;
+  actionType: 'created' | 'updated';
+  entityId: string;
+  entityType: 'issues' | 'riscossi';
+};
+
+export type UserUpdate = {
+  timestamp: Date;
+  actionType: 'created' | 'updated';
+  entityId: string;
+  entityType: 'issues' | 'riscossi';
+};
+
 export interface DbUser {
   id: string;
   name: string;
@@ -16,6 +30,7 @@ export interface DbUser {
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
+  updates?: UserUpdate[];
 }
 
 export type User = DbUser;

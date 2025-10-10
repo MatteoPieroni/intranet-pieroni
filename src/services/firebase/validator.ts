@@ -11,6 +11,13 @@ export const UserSchema = z.object({
   teams: z.optional(z.array(z.string())),
 });
 
+export const UserUpdateSchema = z.object({
+  timestamp: z.date(),
+  actionType: z.enum(['created', 'updated']),
+  entityId: z.string(),
+  entityType: z.enum(['issues', 'riscossi']),
+});
+
 export const TeamSchema = z.object({
   name: z.string(),
 });

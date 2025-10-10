@@ -75,7 +75,6 @@ export const getRecordsCount = async (
   currentHeaders: PassedHeaders,
   address: string | string[],
   options?: {
-    orderData?: { field: string; direction: 'asc' | 'desc' };
     queryData?: { field: string; value: unknown; operator?: '==' | '!=' };
   }
 ) => {
@@ -94,9 +93,6 @@ export const getRecordsCount = async (
           options.queryData.operator || '==',
           options.queryData.value
         )
-      : undefined,
-    options?.orderData
-      ? orderBy(options.orderData.field, options.orderData.direction)
       : undefined,
   ].filter((current) => current !== undefined);
 
