@@ -38,6 +38,31 @@ export const getIssues = async (headers: PassedHeaders) => {
   }
 };
 
+export const getIssuesFromArchive = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<Issue>(
+      headers,
+      'issues-archive',
+      (issue) => {
+        const convertToDate = convertTimestampToDate(issue);
+
+        const record = IssueSchema.parse(convertToDate);
+
+        return record;
+      },
+      {
+        orderData: { field: 'date', direction: 'desc' },
+        limit: 20,
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const getIssuesForUser = async (
   headers: PassedHeaders,
   userId: string
