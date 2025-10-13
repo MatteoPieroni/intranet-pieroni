@@ -44,7 +44,11 @@ import {
 } from 'firebase-functions/v2/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
 import { MailerSend } from 'mailersend';
-import { handleIssueUpdate, handleIssueCreation } from './handlers/issues';
+import {
+  handleIssueUpdate,
+  handleIssueCreation,
+  handleIssueActionUpdate,
+} from './handlers/issues';
 import {
   handleRiscossoCreation,
   handleRiscossoUpdate,
@@ -82,7 +86,7 @@ export const onRiscossoCreation = onDocumentCreated(
 
 export const onRiscossoUpdate = onDocumentUpdated(
   '/riscossi/{id}',
-  async (...args) => await handleRiscossoUpdate(db, ...args)
+  async (...args) => await handleRiscossoUpdate(db, mailerSend, ...args)
 );
 
 export const onIssueCreation = onDocumentCreated(
@@ -92,16 +96,16 @@ export const onIssueCreation = onDocumentCreated(
 
 export const onIssueUpdate = onDocumentUpdated(
   '/issues/{id}',
-  async (...args) => await handleIssueUpdate(db, ...args)
+  async (...args) => await handleIssueUpdate(db, mailerSend, ...args)
 );
 
 // count this as an update since it's a subcollection
 export const onIssueActionCreation = onDocumentCreated(
   '/issues/{id}/timeline/{actionId}',
-  async (...args) => await handleIssueUpdate(db, ...args)
+  async (...args) => await handleIssueActionUpdate(db, ...args)
 );
 
 export const onIssueActionUpdate = onDocumentUpdated(
   '/issues/{id}/timeline/{actionId}',
-  async (...args) => await handleIssueUpdate(db, ...args)
+  async (...args) => await handleIssueActionUpdate(db, ...args)
 );

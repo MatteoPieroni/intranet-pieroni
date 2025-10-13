@@ -39,3 +39,41 @@ export const sendIssueCreation = async (
     throw e;
   }
 };
+
+type CheckedIssueData = {
+  client: string;
+  id: string;
+  confirmerEmail: string;
+};
+
+const getPlainTextForChecked = (data: CheckedIssueData) =>
+  `Il tuo modulo e' stato confermato.\n\nCliente: ${data.client}\nId: ${data.id}\nConfemato da: ${data.confirmerEmail}`;
+const getHtmlForChecked = (data: CheckedIssueData) =>
+  `<h1>Il tuo modulo e' stato confermato.</h1>\n\n
+		<p>Cliente: ${data.client}</p>
+		<p>Id: ${data.id}</p>
+		<p>Modulo confermato da: ${data.confirmerEmail}</p>
+	`;
+
+export const sendIssueChecked = async (
+  transporter: MailerSend,
+  recipient: string,
+  data: CheckedIssueData
+) => {
+  try {
+    const emailTo = new Recipient(recipient);
+
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo([emailTo])
+      .setReplyTo(sentFrom)
+      .setSubject('Modulo confermato')
+      .setHtml(getHtmlForChecked(data))
+      .setText(getPlainTextForChecked(data));
+
+    await transporter.email.send(emailParams);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
