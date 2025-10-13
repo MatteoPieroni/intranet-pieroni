@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -62,6 +63,11 @@ export default async function Issue({
     getIssue(currentHeaders, id),
     canEditIssues ? getUsers(currentHeaders) : undefined,
   ]);
+
+  if ('errorCode' in issue) {
+    return notFound();
+  }
+
   const {
     client,
     date,
