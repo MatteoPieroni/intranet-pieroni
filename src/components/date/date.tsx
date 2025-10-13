@@ -9,7 +9,7 @@ type DateComponentProps = {
 
 export const DateComponent = ({ date, className }: DateComponentProps) => {
   return (
-    <span className={`${styles.date} ${className}`}>
+    <span className={`${styles.date} ${className || ''}`}>
       <DateIcon aria-hidden /> {formatDate(date)}
     </span>
   );

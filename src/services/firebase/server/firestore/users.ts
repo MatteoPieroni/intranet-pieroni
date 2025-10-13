@@ -57,7 +57,7 @@ export const pushTheme = async (
 export const getUserUpdates = async (
   headers: PassedHeaders,
   userId: string,
-  type: 'issues'
+  type: 'issues' | 'riscossi'
 ) => {
   try {
     const records = await getRecords<UserUpdate>(
