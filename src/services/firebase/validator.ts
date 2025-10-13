@@ -64,6 +64,7 @@ export const RiscossoSchema = z.object({
       verifiedAuthor: z.optional(z.string()),
     }),
   ]),
+  updatedAt: z.optional(z.date()),
 });
 
 export const IssueActionSchema = z.object({
@@ -133,4 +134,5 @@ export const IssueSchema = z.object({
       verifiedAuthor: z.optional(z.string()),
     }),
   ]),
+  updatedAt: z.optional(z.date()),
 });

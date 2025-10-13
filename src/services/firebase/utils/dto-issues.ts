@@ -7,6 +7,7 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
     verification: { verifiedAt, ...verification },
     supplierInfo,
     result,
+    updatedAt,
     ...rest
   } = riscosso;
 
@@ -49,6 +50,7 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
         ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
         : {}),
     },
+    ...(updatedAt ? { updatedAt: new Date(updatedAt.seconds * 1000) } : {}),
   };
 };
 
