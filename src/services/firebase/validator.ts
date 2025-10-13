@@ -134,5 +134,5 @@ export const IssueSchema = z.object({
       verifiedAuthor: z.optional(z.string()),
     }),
   ]),
-  updatedAt: z.optional(z.date()),
+  updatedAt: z.date(),
 });
