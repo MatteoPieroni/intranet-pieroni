@@ -27,7 +27,7 @@ export const getIssues = async (headers: PassedHeaders) => {
         return record;
       },
       {
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
       }
     );
 
@@ -51,7 +51,7 @@ export const getIssuesFromArchive = async (headers: PassedHeaders) => {
         return record;
       },
       {
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
         limit: 20,
       }
     );
@@ -80,7 +80,7 @@ export const getIssuesForUser = async (
       },
       {
         queryData: { field: 'meta.author', value: userId },
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
       }
     );
 
