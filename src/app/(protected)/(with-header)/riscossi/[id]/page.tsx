@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -8,7 +10,6 @@ import {
   getUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
-import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
@@ -60,6 +61,11 @@ export default async function Riscossi({
     getRiscosso(currentHeaders, id),
     canEditRiscossi ? getUsers(currentHeaders) : undefined,
   ]);
+
+  if ('errorCode' in riscosso) {
+    return notFound();
+  }
+
   const {
     company,
     date,

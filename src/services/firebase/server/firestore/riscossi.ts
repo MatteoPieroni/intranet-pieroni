@@ -74,6 +74,13 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
+    if (e instanceof Error) {
+      if (e.message === '404') {
+        return {
+          errorCode: 404,
+        };
+      }
+    }
     console.error(e);
     throw e;
   }
