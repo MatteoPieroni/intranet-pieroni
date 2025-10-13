@@ -20,7 +20,32 @@ export const getRiscossi = async (headers: PassedHeaders) => {
         return record;
       },
       {
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscossiFromArchive = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<Riscosso>(
+      headers,
+      'riscossi-archive',
+      (riscosso) => {
+        const convertToDate = convertTimestampToDate(riscosso);
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      },
+      {
+        orderData: { field: 'updatedAt', direction: 'desc' },
+        limit: 20,
       }
     );
 
@@ -48,7 +73,7 @@ export const getRiscossiForUser = async (
       },
       {
         queryData: { field: 'meta.author', value: userId },
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
       }
     );
 
@@ -75,7 +100,7 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
-    if (!(e instanceof Error) || !(e instanceof FirebaseError)) {
+    if (!(e instanceof Error) && !(e instanceof FirebaseError)) {
       console.error(e);
       throw e;
     }
@@ -140,7 +165,7 @@ export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
 
 export const createRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
     const user = await getUser(headers);
@@ -179,6 +204,7 @@ export const createRiscosso = async (
         verification: {
           isVerified: false,
         },
+        updatedAt: now,
       }
     );
     await update<DbRiscosso>(headers, ['riscossi', createdDoc.id], {
@@ -194,7 +220,7 @@ export const createRiscosso = async (
 
 export const updateRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<Riscosso, 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
     const verifiedData = RiscossoSchema.omit({

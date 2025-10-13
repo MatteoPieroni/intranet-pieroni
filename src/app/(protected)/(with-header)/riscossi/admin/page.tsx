@@ -6,6 +6,7 @@ import template from '../../header-template.module.css';
 import {
   getRiscossi,
   getRiscossiAnalytics,
+  getRiscossiFromArchive,
   getUser,
   getUsers,
   getUserUpdates,
@@ -35,15 +36,14 @@ export default async function Riscossi() {
     return redirect('/');
   }
 
-  const [riscossi, users, updates, analytics] = await Promise.all([
-    getRiscossi(currentHeaders),
-    // check user view scope
-    getUsers(currentHeaders),
-    checkCanEditRiscossi(currentUser?.permissions)
-      ? getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi')
-      : [],
-    getRiscossiAnalytics(currentHeaders),
-  ]);
+  const [riscossi, users, updates, analytics, riscossiArchive] =
+    await Promise.all([
+      getRiscossi(currentHeaders),
+      getUsers(currentHeaders),
+      getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi'),
+      getRiscossiAnalytics(currentHeaders),
+      getRiscossiFromArchive(currentHeaders),
+    ]);
 
   const riscossiWithAdditionalData = riscossi.map((riscosso) => {
     const user = users.find((user) => user.id === riscosso.meta.author);
@@ -52,6 +52,14 @@ export default async function Riscossi() {
     return {
       ...riscosso,
       hasUpdate,
+      user: user?.email,
+    };
+  });
+  const riscossiArchiveWithUser = riscossiArchive.map((riscosso) => {
+    const user = users.find((user) => user.id === riscosso.meta.author);
+
+    return {
+      ...riscosso,
       user: user?.email,
     };
   });
@@ -102,9 +110,7 @@ export default async function Riscossi() {
               {riscossiWithAdditionalData.map((riscosso) => (
                 <tr key={riscosso.id}>
                   <td>
-                    <DateComponent
-                      date={riscosso?.updatedAt || riscosso.date}
-                    />
+                    <DateComponent date={riscosso.updatedAt} />
                     {riscosso.hasUpdate && <UnreadBadge align="super" />}
                   </td>
 
@@ -126,6 +132,53 @@ export default async function Riscossi() {
                   <td>
                     <a href={`/riscossi/${riscosso.id}`}>Vedi</a>
                     {riscosso.hasUpdate && <UnreadBadge />}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className={styles.section}>
+          <h2>Archivio riscossi</h2>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Aggiornato</th>
+                <th scope="col">Numero</th>
+                <th scope="col">Data</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Totale</th>
+                <th scope="col">Azienda</th>
+                <th scope="col">Creato da</th>
+                <th scope="col">Confermato</th>
+                <th scope="col">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {riscossiArchiveWithUser.map((riscosso) => (
+                <tr key={riscosso.id}>
+                  <td>
+                    <DateComponent date={riscosso.updatedAt} />
+                  </td>
+
+                  <th scope="row">{riscosso.id}</th>
+                  <td>{formatDate(riscosso.date)}</td>
+                  <td>{riscosso.client}</td>
+                  <td className="number">{riscosso.total} €</td>
+                  <td>{companies[riscosso.company]}</td>
+                  <td>{riscosso.user}</td>
+                  <td>
+                    <input
+                      readOnly
+                      disabled
+                      aria-label="Verificato"
+                      type="checkbox"
+                      checked={riscosso.verification?.isVerified}
+                    />
+                  </td>
+                  <td>
+                    <a href={`/riscossi/${riscosso.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}

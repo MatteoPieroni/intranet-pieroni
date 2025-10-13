@@ -105,11 +105,11 @@ export type Config = {
 export type FileCategories = 'link-icons' | 'quote' | `issues/${string}`;
 
 type DbWithUpdate = {
-  updatedAt?: Timestamp;
+  updatedAt: Timestamp;
 };
 
 type WithUpdate = {
-  updatedAt?: Date;
+  updatedAt: Date;
 };
 
 export type DbRiscossoDoc = {
