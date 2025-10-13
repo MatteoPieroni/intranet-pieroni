@@ -8,10 +8,13 @@ import {
   getRiscossiAnalytics,
   getUser,
   getUsers,
+  getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
+import { DateComponent } from '@/components/date/date';
+import { UnreadBadge } from '@/components/unread-badge/unread-badge';
 
 export const metadata: Metadata = {
   title: 'Gestisci riscossi - Intranet Pieroni srl',
@@ -32,18 +35,23 @@ export default async function Riscossi() {
     return redirect('/');
   }
 
-  const [riscossi, users, analytics] = await Promise.all([
+  const [riscossi, users, updates, analytics] = await Promise.all([
     getRiscossi(currentHeaders),
     // check user view scope
     getUsers(currentHeaders),
+    checkCanEditRiscossi(currentUser?.permissions)
+      ? getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi')
+      : [],
     getRiscossiAnalytics(currentHeaders),
   ]);
 
-  const riscossiWithUser = riscossi.map((riscosso) => {
+  const riscossiWithAdditionalData = riscossi.map((riscosso) => {
     const user = users.find((user) => user.id === riscosso.meta.author);
+    const hasUpdate = updates.some((update) => update.entityId === riscosso.id);
 
     return {
       ...riscosso,
+      hasUpdate,
       user: user?.email,
     };
   });
@@ -79,6 +87,7 @@ export default async function Riscossi() {
           <table>
             <thead>
               <tr>
+                <th scope="col">Aggiornato</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Data</th>
                 <th scope="col">Cliente</th>
@@ -90,8 +99,15 @@ export default async function Riscossi() {
               </tr>
             </thead>
             <tbody>
-              {riscossiWithUser.map((riscosso) => (
+              {riscossiWithAdditionalData.map((riscosso) => (
                 <tr key={riscosso.id}>
+                  <td>
+                    <DateComponent
+                      date={riscosso?.updatedAt || riscosso.date}
+                    />
+                    {riscosso.hasUpdate && <UnreadBadge align="super" />}
+                  </td>
+
                   <th scope="row">{riscosso.id}</th>
                   <td>{formatDate(riscosso.date)}</td>
                   <td>{riscosso.client}</td>
@@ -109,6 +125,7 @@ export default async function Riscossi() {
                   </td>
                   <td>
                     <a href={`/riscossi/${riscosso.id}`}>Vedi</a>
+                    {riscosso.hasUpdate && <UnreadBadge />}
                   </td>
                 </tr>
               ))}

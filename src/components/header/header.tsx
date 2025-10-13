@@ -17,14 +17,19 @@ import {
   checkIsAdmin,
 } from '@/services/firebase/server/permissions';
 import { AdminBadge } from '../admin-badge/admin-badge';
+import { NotificationBadge } from '../notification-badge/notification-badge';
 
 type HeaderProps = {
   mailUrl: string;
   permissions: User['permissions'];
+  updates?: {
+    issues: number;
+    riscossi: number;
+  };
   theme?: 'light' | 'dark' | null;
 };
 
-export function Header({ mailUrl, theme, permissions }: HeaderProps) {
+export function Header({ mailUrl, theme, permissions, updates }: HeaderProps) {
   const currentPath = usePathname();
 
   const getLinkProps = (href: string) => {
@@ -66,13 +71,23 @@ export function Header({ mailUrl, theme, permissions }: HeaderProps) {
           <a {...getLinkProps('/riscossi')}>Riscossi</a>
           {checkCanEditRiscossi(permissions) && (
             <a {...getLinkProps('/riscossi/admin')}>
-              Gestione riscossi <AdminBadge />
+              Gestione riscossi{' '}
+              {updates?.riscossi ? (
+                <NotificationBadge newUpdates={updates?.riscossi} />
+              ) : (
+                <AdminBadge />
+              )}
             </a>
           )}
           <a {...getLinkProps('/issues')}>Moduli qualità</a>
           {checkCanEditIssues(permissions) && (
             <a {...getLinkProps('/issues/admin')}>
-              Gestione moduli qualità <AdminBadge />
+              Gestione moduli qualità{' '}
+              {updates?.issues ? (
+                <NotificationBadge newUpdates={updates?.issues} />
+              ) : (
+                <AdminBadge />
+              )}
             </a>
           )}
           {checkCanEditGMB(permissions) && (

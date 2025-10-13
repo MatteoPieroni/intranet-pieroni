@@ -2,7 +2,12 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
-import { getRiscosso, getUser, getUsers } from '@/services/firebase/server';
+import {
+  getRiscosso,
+  getUser,
+  getUsers,
+  removeUserUpdate,
+} from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
@@ -67,6 +72,16 @@ export default async function Riscossi({
     verification,
   } = riscosso;
   const isAlreadyChecked = verification.isVerified;
+
+  try {
+    // delete user updates relative to riscosso on page view
+    await removeUserUpdate(currentHeaders, currentUser.id, {
+      entityType: 'riscossi',
+      entityId: id,
+    });
+  } catch (e) {
+    console.error(e);
+  }
 
   const userVerification = users?.find(
     (user) => user.id === verification.verifyAuthor

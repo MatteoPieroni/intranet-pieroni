@@ -67,7 +67,10 @@ export async function getUser(headers: PassedHeaders) {
 
     const user = snapshot.data();
 
-    return { firebaseServerApp, currentUser: user };
+    return {
+      firebaseServerApp,
+      currentUser: user,
+    };
   } catch (error) {
     console.error(error);
     return { firebaseServerApp };

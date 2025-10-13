@@ -152,6 +152,7 @@ export const updateIssue = async (
     await update<DbIssue>(headers, ['issues', verifiedData.id], {
       ...verifiedData,
       ...supplierInfo,
+      updatedAt: Timestamp.now(),
     });
 
     return { id: verifiedData.id };
@@ -188,6 +189,11 @@ export const getIssueTimeline = async (headers: PassedHeaders, id: string) => {
   }
 };
 
+const addUpdateDate = async (headers: PassedHeaders, issueId: string) =>
+  await update<Pick<DbIssue, 'updatedAt'>>(headers, ['issues', issueId], {
+    updatedAt: Timestamp.now(),
+  });
+
 export const addActionToIssue = async (
   headers: PassedHeaders,
   data: {
@@ -212,6 +218,9 @@ export const addActionToIssue = async (
         id: createdDoc.id,
       }
     );
+
+    // update timestamp
+    await addUpdateDate(headers, data.issueId);
 
     return createdDoc.id;
   } catch (e) {
@@ -238,6 +247,9 @@ export const editIssueAction = async (
         ...verifiedData,
       }
     );
+
+    // update timestamp
+    await addUpdateDate(headers, data.issueId);
   } catch (e) {
     console.error(e);
     throw e;
@@ -264,6 +276,9 @@ export const editAttachmentsIssue = async (
         attachments: data.attachments,
       }
     );
+
+    // update timestamp
+    await addUpdateDate(headers, data.issueId);
   } catch (e) {
     console.error(e);
     throw e;
@@ -284,12 +299,17 @@ export const addResultToIssue = async (
 
     const now = Timestamp.now();
 
-    await update<DbIssue>(headers, ['issues', data.id], {
-      result: {
-        summary,
-        date: now,
-      },
-    });
+    await update<Pick<DbIssue, 'result' | 'updatedAt'>>(
+      headers,
+      ['issues', data.id],
+      {
+        result: {
+          summary,
+          date: now,
+        },
+        updatedAt: Timestamp.now(),
+      }
+    );
   } catch (e) {
     console.error(e);
     throw e;
@@ -322,9 +342,14 @@ export const checkIssue = async (
           isVerified: false,
         } as const);
 
-    await update<Pick<Issue, 'verification'>>(headers, ['issues', data.id], {
-      verification,
-    });
+    await update<Pick<DbIssue, 'verification' | 'updatedAt'>>(
+      headers,
+      ['issues', data.id],
+      {
+        verification,
+        updatedAt: Timestamp.now(),
+      }
+    );
   } catch (e) {
     console.error(e);
     throw e;

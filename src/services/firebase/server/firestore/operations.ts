@@ -36,7 +36,9 @@ export const getRecords = async <Type extends DocumentData>(
   dto?: (dbData: DocumentData) => Type,
   options?: {
     orderData?: { field: string; direction: 'asc' | 'desc' };
-    queryData?: { field: string; value: unknown };
+    queryData?:
+      | { field: string; value: unknown }
+      | { field: string; value: unknown }[];
   }
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);
@@ -49,10 +51,18 @@ export const getRecords = async <Type extends DocumentData>(
     converter<Type>(dto)
   );
 
+  const queryArray = Array.isArray(options?.queryData)
+    ? options.queryData
+    : options?.queryData
+    ? [options.queryData]
+    : undefined;
+
+  const queries = queryArray
+    ? queryArray.map((query) => where(query.field, '==', query.value))
+    : [];
+
   const args = [
-    options?.queryData
-      ? where(options.queryData.field, '==', options.queryData.value)
-      : undefined,
+    ...queries,
     options?.orderData
       ? orderBy(options.orderData.field, options.orderData.direction)
       : undefined,
@@ -75,7 +85,6 @@ export const getRecordsCount = async (
   currentHeaders: PassedHeaders,
   address: string | string[],
   options?: {
-    orderData?: { field: string; direction: 'asc' | 'desc' };
     queryData?: { field: string; value: unknown; operator?: '==' | '!=' };
   }
 ) => {
@@ -94,9 +103,6 @@ export const getRecordsCount = async (
           options.queryData.operator || '==',
           options.queryData.value
         )
-      : undefined,
-    options?.orderData
-      ? orderBy(options.orderData.field, options.orderData.direction)
       : undefined,
   ].filter((current) => current !== undefined);
 
@@ -208,14 +214,18 @@ export const create = async <Type extends DocumentData>(
 
 export const remove = async (
   headers: PassedHeaders,
-  address: string,
+  address: string | string[],
   id: string
 ) => {
   const firebaseServerApp = await getApp(headers);
   const db = getFirestore(firebaseServerApp);
 
+  const fullAddress = typeof address === 'string' ? [address] : address;
+  // doc typing is a bit dumb, so we gotta do this
+  const [first, ...rest] = fullAddress;
+
   try {
-    const docToDelete = doc(db, address, id);
+    const docToDelete = doc(db, first, ...rest, id);
 
     const docRef = await deleteDoc(docToDelete);
 

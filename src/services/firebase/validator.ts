@@ -11,6 +11,13 @@ export const UserSchema = z.object({
   teams: z.optional(z.array(z.string())),
 });
 
+export const UserUpdateSchema = z.object({
+  timestamp: z.date(),
+  actionType: z.enum(['created', 'updated']),
+  entityId: z.string(),
+  entityType: z.enum(['issues', 'riscossi']),
+});
+
 export const TeamSchema = z.object({
   name: z.string(),
 });
@@ -57,6 +64,7 @@ export const RiscossoSchema = z.object({
       verifiedAuthor: z.optional(z.string()),
     }),
   ]),
+  updatedAt: z.optional(z.date()),
 });
 
 export const IssueActionSchema = z.object({
@@ -126,4 +134,5 @@ export const IssueSchema = z.object({
       verifiedAuthor: z.optional(z.string()),
     }),
   ]),
+  updatedAt: z.optional(z.date()),
 });

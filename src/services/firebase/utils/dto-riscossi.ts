@@ -6,6 +6,7 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
     meta: { createdAt, ...meta },
     verification: { verifiedAt, ...verification },
     docs,
+    updatedAt,
     ...rest
   } = riscosso;
 
@@ -26,5 +27,6 @@ export const convertTimestampToDate = (riscosso: DocumentData) => {
         ? { verifiedAt: new Date(verifiedAt.seconds * 1000) }
         : {}),
     },
+    ...(updatedAt ? { updatedAt: new Date(updatedAt.seconds * 1000) } : {}),
   };
 };

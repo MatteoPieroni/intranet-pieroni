@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
-import { getUser, getConfig } from '@/services/firebase/server';
+import {
+  getUser,
+  getConfig,
+  getUserUpdatesCount,
+} from '@/services/firebase/server';
 import { Header, HeaderModal } from '@/components/header/header';
 import styles from './layout.module.css';
+import {
+  checkCanEditIssues,
+  checkCanEditRiscossi,
+} from '@/services/firebase/server/permissions';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,6 +26,26 @@ export default async function RootLayout({
   const currentHeaders = await headers();
   const { currentUser } = await getUser(currentHeaders);
 
+  const [issuesUpdatesCount, riscossiUpdatesCount] = currentUser?.id
+    ? await Promise.all([
+        checkCanEditIssues(currentUser?.permissions)
+          ? await getUserUpdatesCount(currentHeaders, currentUser.id, 'issues')
+          : 0,
+        checkCanEditRiscossi(currentUser?.permissions)
+          ? await getUserUpdatesCount(
+              currentHeaders,
+              currentUser.id,
+              'riscossi'
+            )
+          : 0,
+      ])
+    : [0, 0];
+
+  const updates = {
+    issues: issuesUpdatesCount,
+    riscossi: riscossiUpdatesCount,
+  };
+
   const config = await getConfig(currentHeaders);
 
   return (
@@ -28,6 +56,7 @@ export default async function RootLayout({
             mailUrl={config.mailUrl}
             permissions={currentUser.permissions}
             theme={currentUser.theme}
+            updates={updates}
           />
         )}
       </div>
@@ -38,6 +67,7 @@ export default async function RootLayout({
             mailUrl={config.mailUrl}
             permissions={currentUser.permissions}
             theme={currentUser.theme}
+            updates={updates}
           />
         )}
       </div>

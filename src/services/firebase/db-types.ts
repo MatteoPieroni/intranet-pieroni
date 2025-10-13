@@ -8,6 +8,20 @@ type UserScopes =
   | 'write/config'
   | 'admin';
 
+export type DbUserUpdate = {
+  timestamp: Timestamp;
+  actionType: 'created' | 'updated';
+  entityId: string;
+  entityType: 'issues' | 'riscossi';
+};
+
+export type UserUpdate = {
+  timestamp: Date;
+  actionType: 'created' | 'updated';
+  entityId: string;
+  entityType: 'issues' | 'riscossi';
+};
+
 export interface DbUser {
   id: string;
   name: string;
@@ -16,6 +30,7 @@ export interface DbUser {
   permissions?: UserScopes[];
   theme?: 'light' | 'dark' | null;
   teams?: string[];
+  updates?: UserUpdate[];
 }
 
 export type User = DbUser;
@@ -89,6 +104,14 @@ export type Config = {
 
 export type FileCategories = 'link-icons' | 'quote' | `issues/${string}`;
 
+type DbWithUpdate = {
+  updatedAt?: Timestamp;
+};
+
+type WithUpdate = {
+  updatedAt?: Date;
+};
+
 export type DbRiscossoDoc = {
   number: string;
   type: 'fattura' | 'DDT' | 'impegno';
@@ -128,11 +151,11 @@ export type DbRiscosso = {
         verifiedAt?: Timestamp;
         verifyAuthor?: string;
       };
-};
+} & DbWithUpdate;
 
 export type Riscosso = Omit<
   DbRiscosso,
-  'date' | 'meta' | 'verification' | 'docs'
+  'date' | 'meta' | 'verification' | 'docs' | 'updatedAt'
 > & {
   date: Date;
   docs: RiscossoDoc[];
@@ -151,7 +174,7 @@ export type Riscosso = Omit<
         verifiedAt?: Date;
         verifyAuthor?: string;
       };
-};
+} & WithUpdate;
 
 type IssueType =
   | 'delay-preparation'
@@ -236,11 +259,17 @@ export type DbIssue = {
         verifiedAt?: Timestamp;
         verifyAuthor?: string;
       };
-};
+} & DbWithUpdate;
 
 export type Issue = Omit<
   DbIssue,
-  'date' | 'meta' | 'verification' | 'result' | 'timeline' | 'supplierInfo'
+  | 'date'
+  | 'meta'
+  | 'verification'
+  | 'result'
+  | 'timeline'
+  | 'supplierInfo'
+  | 'updatedAt'
 > & {
   date: Date;
   timeline: IssueAction[];
@@ -264,4 +293,4 @@ export type Issue = Omit<
         verifiedAt?: Date;
         verifyAuthor?: string;
       };
-};
+} & WithUpdate;

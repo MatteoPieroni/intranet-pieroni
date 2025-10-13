@@ -1,0 +1,12 @@
+.badge {
+  display: inline-block;
+  margin-inline-start: 0.25rem;
+  border-radius: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  background: var(--background-warning);
+  color: var(--text-warning);
+  line-height: 1.2em;
+  text-align: center;
+  vertical-align: text-bottom;
+}

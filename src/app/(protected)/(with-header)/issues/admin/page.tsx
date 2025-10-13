@@ -8,10 +8,12 @@ import {
   getIssues,
   getUser,
   getUsers,
+  getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
-import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
+import { DateComponent } from '@/components/date/date';
+import { UnreadBadge } from '@/components/unread-badge/unread-badge';
 
 export const metadata: Metadata = {
   title: 'Gestisci moduli qualità - Intranet Pieroni srl',
@@ -26,18 +28,23 @@ export default async function IssuesAdmin() {
     return redirect('/');
   }
 
-  const [issues, users, analytics] = await Promise.all([
+  const [issues, users, updates, analytics] = await Promise.all([
     getIssues(currentHeaders),
     // check user view scope
     getUsers(currentHeaders),
+    checkCanEditIssues(currentUser?.permissions)
+      ? getUserUpdates(currentHeaders, currentUser?.id || '', 'issues')
+      : [],
     getIssueAnalytics(currentHeaders),
   ]);
 
-  const issuesWithUser = issues.map((issue) => {
+  const issuesWithAdditionalData = issues.map((issue) => {
     const user = users.find((user) => user.id === issue.meta.author);
+    const hasUpdate = updates.some((update) => update.entityId === issue.id);
 
     return {
       ...issue,
+      hasUpdate,
       user: user?.email,
     };
   });
@@ -76,6 +83,7 @@ export default async function IssuesAdmin() {
           <table>
             <thead>
               <tr>
+                <th scope="col">Aggiornato</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Data</th>
                 <th scope="col">Cliente</th>
@@ -86,10 +94,16 @@ export default async function IssuesAdmin() {
               </tr>
             </thead>
             <tbody>
-              {issuesWithUser.map((issue) => (
+              {issuesWithAdditionalData.map((issue) => (
                 <tr key={issue.id}>
+                  <td>
+                    <DateComponent date={issue?.updatedAt || issue.date} />
+                    {issue.hasUpdate && <UnreadBadge align="super" />}
+                  </td>
                   <th scope="row">{issue.id}</th>
-                  <td>{formatDate(issue.date)}</td>
+                  <td>
+                    <DateComponent date={issue.date} />
+                  </td>
                   <td>{issue.client}</td>
                   <td>{issue.user}</td>
                   <td>
@@ -114,6 +128,7 @@ export default async function IssuesAdmin() {
                   </td>
                   <td>
                     <a href={`/issues/${issue.id}`}>Vedi</a>
+                    {issue.hasUpdate && <UnreadBadge />}
                   </td>
                 </tr>
               ))}

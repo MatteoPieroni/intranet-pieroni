@@ -8,6 +8,7 @@ import {
   getIssueTimeline,
   getUser,
   getUsers,
+  removeUserUpdate,
 } from '@/services/firebase/server';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
@@ -77,6 +78,16 @@ export default async function Issue({
   const userVerification = users?.find(
     (user) => user.id === verification.verifyAuthor
   );
+
+  try {
+    // delete user updates relative to issue on page view
+    await removeUserUpdate(currentHeaders, currentUser.id, {
+      entityType: 'issues',
+      entityId: id,
+    });
+  } catch (e) {
+    console.error(e);
+  }
 
   const timeline = await getIssueTimeline(currentHeaders, id);
 
