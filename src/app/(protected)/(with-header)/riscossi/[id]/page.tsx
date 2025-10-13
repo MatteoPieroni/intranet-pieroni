@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { forbidden, notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -8,7 +10,6 @@ import {
   getUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
-import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
@@ -60,6 +61,19 @@ export default async function Riscossi({
     getRiscosso(currentHeaders, id),
     canEditRiscossi ? getUsers(currentHeaders) : undefined,
   ]);
+
+  if ('errorCode' in riscosso) {
+    if (riscosso.errorCode === 404) {
+      return notFound();
+    }
+
+    if (riscosso.errorCode === 403) {
+      return forbidden();
+    }
+
+    throw new Error();
+  }
+
   const {
     company,
     date,
@@ -72,6 +86,7 @@ export default async function Riscossi({
     verification,
   } = riscosso;
   const isAlreadyChecked = verification.isVerified;
+  const isArchive = 'isArchive' in riscosso;
 
   try {
     // delete user updates relative to riscosso on page view
@@ -107,9 +122,12 @@ export default async function Riscossi({
                 {formatDate(verification.verifiedAt)}
               </p>
             )}
-            <div>
-              <RiscossoCheck id={id} isVerified={verification.isVerified} />
-            </div>
+
+            {!isArchive && (
+              <div>
+                <RiscossoCheck id={id} isVerified={verification.isVerified} />
+              </div>
+            )}
           </div>
         )}
 

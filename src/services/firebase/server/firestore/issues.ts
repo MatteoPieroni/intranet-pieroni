@@ -12,6 +12,7 @@ import {
   convertTimestampToDate,
   convertTimestampToDateAction,
 } from '../../utils/dto-issues';
+import { FirebaseError } from 'firebase/app';
 
 export const getIssues = async (headers: PassedHeaders) => {
   try {
@@ -77,8 +78,48 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
-    console.error(e);
-    throw e;
+    if (!(e instanceof Error) || !(e instanceof FirebaseError)) {
+      console.error(e);
+      throw e;
+    }
+
+    if (e instanceof FirebaseError) {
+      if (e.code === 'permission-denied') {
+        return { errorCode: 403 };
+      }
+    }
+
+    if (e.message !== '404') {
+      console.error(e);
+      throw e;
+    }
+
+    // if we get 404 error because record does not exist we check the archive
+    try {
+      const record = await get<Issue>(
+        headers,
+        ['issues-archive', id],
+        (issue) => {
+          const convertToDate = convertTimestampToDate(issue);
+
+          const record = IssueSchema.parse(convertToDate);
+
+          return record;
+        }
+      );
+
+      return { ...record, isArchive: true };
+    } catch (e) {
+      if (!(e instanceof Error) || e.message !== '404') {
+        console.error(e);
+        throw e;
+      }
+
+      // if we get 404 error because record does not exist we show not found
+      return {
+        errorCode: 404,
+      };
+    }
   }
 };
 
@@ -162,11 +203,15 @@ export const updateIssue = async (
   }
 };
 
-export const getIssueTimeline = async (headers: PassedHeaders, id: string) => {
+export const getIssueTimeline = async (
+  headers: PassedHeaders,
+  id: string,
+  isArchive = false
+) => {
   try {
     const records = await getRecords<IssueAction>(
       headers,
-      ['issues', id, 'timeline'],
+      [!isArchive ? 'issues' : 'issues-archive', id, 'timeline'],
       (issue) => {
         const convertToDate = convertTimestampToDateAction(issue);
 

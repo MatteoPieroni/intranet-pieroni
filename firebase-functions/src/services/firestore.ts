@@ -1,4 +1,5 @@
 import { Firestore, Timestamp } from 'firebase-admin/firestore';
+import { error } from 'firebase-functions/logger';
 
 type EntityTypes = 'issues' | 'riscossi';
 type ActionTypes = 'created' | 'updated';
@@ -16,6 +17,10 @@ const entityTypeToPermissionMap = {
 const entityTypeToCollectionMap = {
   issues: 'issues',
   riscossi: 'riscossi',
+} as const;
+const entityTypeToArchiveCollectionMap = {
+  issues: 'issues-archive',
+  riscossi: 'riscossi-archive',
 } as const;
 
 export const getAdmins = async (db: Firestore, entityType: EntityTypes) => {
@@ -39,6 +44,17 @@ export const getAdmins = async (db: Firestore, entityType: EntityTypes) => {
   });
 
   return admins;
+};
+
+export const getUserEmail = async (db: Firestore, userId: string) => {
+  const admin = await db.doc(`users/${userId}`).get();
+  const adminData = admin.data();
+
+  if (!adminData) {
+    throw new Error('No verifier');
+  }
+
+  return adminData.email;
 };
 
 export const addUpdateToUser = async (
@@ -66,4 +82,54 @@ export const addUpdateToUser = async (
     entityId: update.id,
     entityType: dbEntityType,
   });
+};
+
+export const moveToArchive = async (
+  db: Firestore,
+  entityType: 'issues' | 'riscossi',
+  entityId: string
+) => {
+  const dbEntityType = entityTypeToCollectionMap[entityType];
+  const dbEntityArchiveType = entityTypeToArchiveCollectionMap[entityType];
+
+  const originalDataRef = db.doc(`${dbEntityType}/${entityId}`);
+  const originalData = (await originalDataRef.get()).data();
+
+  if (!originalData) {
+    return;
+  }
+
+  try {
+    await db.collection(dbEntityArchiveType).doc(entityId).set(originalData);
+
+    // issues have a subcollection that we need to replicate
+    if (entityType === 'issues') {
+      const originalActionsSnapshot = await originalDataRef
+        .collection('timeline')
+        .get();
+
+      for (const action of originalActionsSnapshot.docs) {
+        const actionData = action.data();
+
+        await db
+          .collection(dbEntityArchiveType)
+          .doc(entityId)
+          .collection('timeline')
+          .doc(action.id)
+          .set(actionData);
+      }
+    }
+  } catch (e) {
+    error(
+      'Could not create new record',
+      `${dbEntityArchiveType}/${entityId}`,
+      e
+    );
+  }
+
+  try {
+    await db.recursiveDelete(originalDataRef);
+  } catch (e) {
+    error('Could not delete old record', `${dbEntityType}/${entityId}`, e);
+  }
 };
