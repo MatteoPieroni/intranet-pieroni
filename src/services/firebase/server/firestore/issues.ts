@@ -12,6 +12,7 @@ import {
   convertTimestampToDate,
   convertTimestampToDateAction,
 } from '../../utils/dto-issues';
+import { FirebaseError } from 'firebase/app';
 
 export const getIssues = async (headers: PassedHeaders) => {
   try {
@@ -77,7 +78,18 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
-    if (!(e instanceof Error) || e.message !== '404') {
+    if (!(e instanceof Error) || !(e instanceof FirebaseError)) {
+      console.error(e);
+      throw e;
+    }
+
+    if (e instanceof FirebaseError) {
+      if (e.code === 'permission-denied') {
+        return { errorCode: 403 };
+      }
+    }
+
+    if (e.message !== '404') {
       console.error(e);
       throw e;
     }

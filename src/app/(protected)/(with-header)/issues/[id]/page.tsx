@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { forbidden, notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -65,7 +65,15 @@ export default async function Issue({
   ]);
 
   if ('errorCode' in issue) {
-    return notFound();
+    if (issue.errorCode === 404) {
+      return notFound();
+    }
+
+    if (issue.errorCode === 403) {
+      return forbidden();
+    }
+
+    throw new Error();
   }
 
   const {
