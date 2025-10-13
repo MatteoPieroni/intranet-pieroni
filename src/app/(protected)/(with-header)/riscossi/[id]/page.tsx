@@ -78,6 +78,7 @@ export default async function Riscossi({
     verification,
   } = riscosso;
   const isAlreadyChecked = verification.isVerified;
+  const isArchive = 'isArchive' in riscosso;
 
   try {
     // delete user updates relative to riscosso on page view
@@ -113,9 +114,12 @@ export default async function Riscossi({
                 {formatDate(verification.verifiedAt)}
               </p>
             )}
-            <div>
-              <RiscossoCheck id={id} isVerified={verification.isVerified} />
-            </div>
+
+            {!isArchive && (
+              <div>
+                <RiscossoCheck id={id} isVerified={verification.isVerified} />
+              </div>
+            )}
           </div>
         )}
 
