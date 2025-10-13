@@ -36,3 +36,9 @@
   padding: 1rem;
   background-color: var(--background-0);
 }
+
+.section svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 80%;
+}

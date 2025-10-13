@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import styles from '../../not-found.module.css';
+import { Illustration404 } from '@/components/illustrations/404';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità non trovato',
@@ -20,6 +21,7 @@ export default async function NotFound() {
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/issues/">Vedi i moduli qualità</a>
           </p>
+          <Illustration404 />
         </div>
       </div>
     </main>
