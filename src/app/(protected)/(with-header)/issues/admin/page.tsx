@@ -8,6 +8,7 @@ import {
   getIssues,
   getUser,
   getUsers,
+  getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
@@ -26,18 +27,25 @@ export default async function IssuesAdmin() {
     return redirect('/');
   }
 
-  const [issues, users, analytics] = await Promise.all([
+  const [issues, users, updates, analytics] = await Promise.all([
     getIssues(currentHeaders),
     // check user view scope
     getUsers(currentHeaders),
+    checkCanEditIssues(currentUser?.permissions)
+      ? getUserUpdates(currentHeaders, currentUser?.id || '', 'issues')
+      : [],
     getIssueAnalytics(currentHeaders),
   ]);
 
-  const issuesWithUser = issues.map((issue) => {
+  console.log({ updates });
+
+  const issuesWithAdditionalData = issues.map((issue) => {
     const user = users.find((user) => user.id === issue.meta.author);
+    const hasUpdate = updates.some((update) => update.entityId === issue.id);
 
     return {
       ...issue,
+      hasUpdate,
       user: user?.email,
     };
   });
@@ -76,6 +84,7 @@ export default async function IssuesAdmin() {
           <table>
             <thead>
               <tr>
+                <th scope="col">Non visualizzato</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Data</th>
                 <th scope="col">Cliente</th>
@@ -86,8 +95,9 @@ export default async function IssuesAdmin() {
               </tr>
             </thead>
             <tbody>
-              {issuesWithUser.map((issue) => (
+              {issuesWithAdditionalData.map((issue) => (
                 <tr key={issue.id}>
+                  <td>{issue.hasUpdate ? 'Non ancora' : ''}</td>
                   <th scope="row">{issue.id}</th>
                   <td>{formatDate(issue.date)}</td>
                   <td>{issue.client}</td>
