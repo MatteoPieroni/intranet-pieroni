@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { forbidden, notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
@@ -63,7 +63,15 @@ export default async function Riscossi({
   ]);
 
   if ('errorCode' in riscosso) {
-    return notFound();
+    if (riscosso.errorCode === 404) {
+      return notFound();
+    }
+
+    if (riscosso.errorCode === 403) {
+      return forbidden();
+    }
+
+    throw new Error();
   }
 
   const {

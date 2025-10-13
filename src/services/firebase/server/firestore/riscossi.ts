@@ -5,6 +5,7 @@ import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
 import { convertTimestampToDate } from '../../utils/dto-riscossi';
+import { FirebaseError } from 'firebase/app';
 
 export const getRiscossi = async (headers: PassedHeaders) => {
   try {
@@ -74,7 +75,18 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
-    if (!(e instanceof Error) || e.message !== '404') {
+    if (!(e instanceof Error) || !(e instanceof FirebaseError)) {
+      console.error(e);
+      throw e;
+    }
+
+    if (e instanceof FirebaseError) {
+      if (e.code === 'permission-denied') {
+        return { errorCode: 403 };
+      }
+    }
+
+    if (e.message !== '404') {
       console.error(e);
       throw e;
     }
