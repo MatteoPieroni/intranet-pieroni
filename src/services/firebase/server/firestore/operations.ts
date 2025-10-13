@@ -15,6 +15,7 @@ import {
   where,
   WithFieldValue,
   getCountFromServer,
+  limit,
 } from 'firebase/firestore';
 
 import { getApp, PassedHeaders } from '../serverApp';
@@ -39,6 +40,7 @@ export const getRecords = async <Type extends DocumentData>(
     queryData?:
       | { field: string; value: unknown }
       | { field: string; value: unknown }[];
+    limit?: number;
   }
 ) => {
   const firebaseServerApp = await getApp(currentHeaders);
@@ -66,6 +68,7 @@ export const getRecords = async <Type extends DocumentData>(
     options?.orderData
       ? orderBy(options.orderData.field, options.orderData.direction)
       : undefined,
+    options?.limit ? limit(options.limit) : undefined,
   ].filter((current) => current !== undefined);
 
   const q = query(collectionRef, ...args);
