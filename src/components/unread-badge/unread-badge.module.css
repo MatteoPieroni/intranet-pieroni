@@ -1,0 +1,9 @@
+.badge {
+  display: inline-block;
+  margin-inline-start: 0.25rem;
+  border-radius: 50%;
+  width: 0.8em;
+  height: 0.8em;
+  background: var(--background-warning);
+  vertical-align: middle;
+}
