@@ -11,8 +11,9 @@ import {
   getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
-import { formatDate } from '@/utils/formatDate';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
+import { DateComponent } from '@/components/date/date';
+import { UnreadBadge } from '@/components/unread-badge/unread-badge';
 
 export const metadata: Metadata = {
   title: 'Gestisci moduli qualità - Intranet Pieroni srl',
@@ -36,8 +37,6 @@ export default async function IssuesAdmin() {
       : [],
     getIssueAnalytics(currentHeaders),
   ]);
-
-  console.log({ updates });
 
   const issuesWithAdditionalData = issues.map((issue) => {
     const user = users.find((user) => user.id === issue.meta.author);
@@ -84,7 +83,7 @@ export default async function IssuesAdmin() {
           <table>
             <thead>
               <tr>
-                <th scope="col">Non visualizzato</th>
+                <th scope="col">Aggiornato</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Data</th>
                 <th scope="col">Cliente</th>
@@ -97,9 +96,14 @@ export default async function IssuesAdmin() {
             <tbody>
               {issuesWithAdditionalData.map((issue) => (
                 <tr key={issue.id}>
-                  <td>{issue.hasUpdate ? 'Non ancora' : ''}</td>
+                  <td>
+                    <DateComponent date={issue?.updatedAt || issue.date} />
+                    {issue.hasUpdate && <UnreadBadge align="super" />}
+                  </td>
                   <th scope="row">{issue.id}</th>
-                  <td>{formatDate(issue.date)}</td>
+                  <td>
+                    <DateComponent date={issue.date} />
+                  </td>
                   <td>{issue.client}</td>
                   <td>{issue.user}</td>
                   <td>
@@ -124,6 +128,7 @@ export default async function IssuesAdmin() {
                   </td>
                   <td>
                     <a href={`/issues/${issue.id}`}>Vedi</a>
+                    {issue.hasUpdate && <UnreadBadge />}
                   </td>
                 </tr>
               ))}
