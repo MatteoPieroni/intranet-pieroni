@@ -103,7 +103,7 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
 
     return records;
   } catch (e) {
-    if (!(e instanceof Error) || !(e instanceof FirebaseError)) {
+    if (!(e instanceof Error) && !(e instanceof FirebaseError)) {
       console.error(e);
       throw e;
     }

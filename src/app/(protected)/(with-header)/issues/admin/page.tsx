@@ -6,6 +6,7 @@ import template from '../../header-template.module.css';
 import {
   getIssueAnalytics,
   getIssues,
+  getIssuesFromArchive,
   getUser,
   getUsers,
   getUserUpdates,
@@ -28,14 +29,13 @@ export default async function IssuesAdmin() {
     return redirect('/');
   }
 
-  const [issues, users, updates, analytics] = await Promise.all([
+  const [issues, users, updates, analytics, issuesArchive] = await Promise.all([
     getIssues(currentHeaders),
     // check user view scope
     getUsers(currentHeaders),
-    checkCanEditIssues(currentUser?.permissions)
-      ? getUserUpdates(currentHeaders, currentUser?.id || '', 'issues')
-      : [],
+    getUserUpdates(currentHeaders, currentUser?.id || '', 'issues'),
     getIssueAnalytics(currentHeaders),
+    getIssuesFromArchive(currentHeaders),
   ]);
 
   const issuesWithAdditionalData = issues.map((issue) => {
@@ -45,6 +45,14 @@ export default async function IssuesAdmin() {
     return {
       ...issue,
       hasUpdate,
+      user: user?.email,
+    };
+  });
+  const issuesArchiveWithUsers = issuesArchive.map((issue) => {
+    const user = users.find((user) => user.id === issue.meta.author);
+
+    return {
+      ...issue,
       user: user?.email,
     };
   });
@@ -97,7 +105,7 @@ export default async function IssuesAdmin() {
               {issuesWithAdditionalData.map((issue) => (
                 <tr key={issue.id}>
                   <td>
-                    <DateComponent date={issue?.updatedAt || issue.date} />
+                    <DateComponent date={issue.updatedAt} />
                     {issue.hasUpdate && <UnreadBadge align="super" />}
                   </td>
                   <th scope="row">{issue.id}</th>
@@ -129,6 +137,63 @@ export default async function IssuesAdmin() {
                   <td>
                     <a href={`/issues/${issue.id}`}>Vedi</a>
                     {issue.hasUpdate && <UnreadBadge />}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className={styles.section}>
+          <h2>Archivio moduli</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Aggiornato</th>
+                <th scope="col">Numero</th>
+                <th scope="col">Data</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Creato da</th>
+                <th scope="col">Risolto</th>
+                <th scope="col">Confermato</th>
+                <th scope="col">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {issuesArchiveWithUsers.map((issue) => (
+                <tr key={issue.id}>
+                  <td>
+                    <DateComponent date={issue.updatedAt} />
+                  </td>
+                  <th scope="row">{issue.id}</th>
+                  <td>
+                    <DateComponent date={issue.date} />
+                  </td>
+                  <td>{issue.client}</td>
+                  <td>{issue.user}</td>
+                  <td>
+                    <input
+                      readOnly
+                      disabled
+                      aria-label="Risolto"
+                      name="resolved"
+                      type="checkbox"
+                      checked={!!issue.result?.date}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      readOnly
+                      disabled
+                      aria-label="Verificato"
+                      name="verified"
+                      type="checkbox"
+                      checked={issue.verification?.isVerified}
+                    />
+                  </td>
+                  <td>
+                    <a href={`/issues/${issue.id}`}>Vedi</a>
                   </td>
                 </tr>
               ))}
