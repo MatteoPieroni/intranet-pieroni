@@ -80,6 +80,7 @@ export default async function Issue({
   const isAlreadyChecked = verification.isVerified;
   const isResolved = !!result;
   const isFinished = isAlreadyChecked || isResolved;
+  const isArchive = 'isArchive' in issue;
 
   const userVerification = users?.find(
     (user) => user.id === verification.verifyAuthor
@@ -95,7 +96,7 @@ export default async function Issue({
     console.error(e);
   }
 
-  const timeline = await getIssueTimeline(currentHeaders, id);
+  const timeline = await getIssueTimeline(currentHeaders, id, isArchive);
 
   return (
     <main className={template.page}>
@@ -117,16 +118,19 @@ export default async function Issue({
                 {formatDate(verification.verifiedAt)}
               </p>
             )}
-            <div>
-              {isResolved ? (
-                <IssueCheck id={id} isVerified={verification.isVerified} />
-              ) : (
-                <Instruction type="warning">
-                  <a href="#result">Aggiungi una conclusione</a> prima di
-                  confermare il documento
-                </Instruction>
-              )}
-            </div>
+
+            {!isArchive && (
+              <div>
+                {isResolved ? (
+                  <IssueCheck id={id} isVerified={verification.isVerified} />
+                ) : (
+                  <Instruction type="warning">
+                    <a href="#result">Aggiungi una conclusione</a> prima di
+                    confermare il documento
+                  </Instruction>
+                )}
+              </div>
+            )}
           </div>
         )}
 
