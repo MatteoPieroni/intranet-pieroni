@@ -71,7 +71,7 @@ export function Header({ mailUrl, theme, permissions, updates }: HeaderProps) {
           <a {...getLinkProps('/riscossi')}>Riscossi</a>
           {checkCanEditRiscossi(permissions) && (
             <a {...getLinkProps('/riscossi/admin')}>
-              Gestione riscossi
+              Gestione riscossi{' '}
               {updates?.riscossi ? (
                 <NotificationBadge newUpdates={updates?.riscossi} />
               ) : (
