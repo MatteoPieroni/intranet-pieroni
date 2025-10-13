@@ -1,0 +1,38 @@
+.page {
+  display: grid;
+  grid-template-areas: 'header' 'main';
+  grid-template-rows: 65px 1fr;
+  grid-template-columns: 1fr;
+  row-gap: 1rem;
+  overflow: hidden;
+
+  @media print {
+    grid-template-areas: 'main';
+    grid-template-rows: 1fr;
+  }
+}
+
+.header {
+  grid-area: header;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid var(--border-0);
+  background-color: var(--background-0);
+  padding: 0.5rem;
+
+  @media print {
+    display: none;
+  }
+}
+
+.container {
+  padding-inline: 1rem;
+  overflow: auto;
+}
+
+.section {
+  margin-block-end: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background-0);
+}
