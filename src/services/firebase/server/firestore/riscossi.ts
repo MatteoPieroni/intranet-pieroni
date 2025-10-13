@@ -20,7 +20,32 @@ export const getRiscossi = async (headers: PassedHeaders) => {
         return record;
       },
       {
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
+      }
+    );
+
+    return records;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const getRiscossiFromArchive = async (headers: PassedHeaders) => {
+  try {
+    const records = await getRecords<Riscosso>(
+      headers,
+      'riscossi-archive',
+      (riscosso) => {
+        const convertToDate = convertTimestampToDate(riscosso);
+
+        const record = RiscossoSchema.parse(convertToDate);
+
+        return record;
+      },
+      {
+        orderData: { field: 'updatedAt', direction: 'desc' },
+        limit: 20,
       }
     );
 
@@ -48,7 +73,7 @@ export const getRiscossiForUser = async (
       },
       {
         queryData: { field: 'meta.author', value: userId },
-        orderData: { field: 'date', direction: 'desc' },
+        orderData: { field: 'updatedAt', direction: 'desc' },
       }
     );
 
@@ -179,6 +204,7 @@ export const createRiscosso = async (
         verification: {
           isVerified: false,
         },
+        updatedAt: now,
       }
     );
     await update<DbRiscosso>(headers, ['riscossi', createdDoc.id], {
