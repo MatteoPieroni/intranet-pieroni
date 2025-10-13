@@ -165,7 +165,7 @@ export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
 
 export const createRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
     const user = await getUser(headers);
@@ -220,7 +220,7 @@ export const createRiscosso = async (
 
 export const updateRiscosso = async (
   headers: PassedHeaders,
-  data: Omit<Riscosso, 'meta' | 'verification' | 'date'>
+  data: Omit<Riscosso, 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
     const verifiedData = RiscossoSchema.omit({

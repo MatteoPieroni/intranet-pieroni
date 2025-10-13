@@ -188,7 +188,10 @@ export const createEmptyIssue = async (
 
 export const updateIssue = async (
   headers: PassedHeaders,
-  data: Omit<Issue, 'meta' | 'verification' | 'date' | 'timeline' | 'result'>
+  data: Omit<
+    Issue,
+    'meta' | 'verification' | 'date' | 'timeline' | 'result' | 'updatedAt'
+  >
 ) => {
   try {
     const {
