@@ -41,3 +41,41 @@ export const sendRiscossoCreation = async (
     throw e;
   }
 };
+
+type CheckedRiscossoData = {
+  client: string;
+  id: string;
+  confirmerEmail: string;
+};
+
+const getPlainTextForChecked = (data: CheckedRiscossoData) =>
+  `Il tuo riscosso e' stato confermato.\n\nCliente: ${data.client}\nId: ${data.id}\nConfemato da: ${data.confirmerEmail}`;
+const getHtmlForChecked = (data: CheckedRiscossoData) =>
+  `<h1>Il tuo riscosso e' stato confermato.</h1>\n\n
+    <p>Cliente: ${data.client}</p>
+    <p>Id: ${data.id}</p>
+    <p>Riscosso confermato da: ${data.confirmerEmail}</p>
+  `;
+
+export const sendRiscossoChecked = async (
+  transporter: MailerSend,
+  recipient: string,
+  data: CheckedRiscossoData
+) => {
+  try {
+    const emailTo = new Recipient(recipient);
+
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo([emailTo])
+      .setReplyTo(sentFrom)
+      .setSubject('Riscosso confermato')
+      .setHtml(getHtmlForChecked(data))
+      .setText(getPlainTextForChecked(data));
+
+    await transporter.email.send(emailParams);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
