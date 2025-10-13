@@ -114,6 +114,7 @@ export const createRiscosso = async (
       verification: true,
       date: true,
       docs: true,
+      updatedAt: true,
     }).parse(data);
 
     const now = Timestamp.now();
@@ -170,6 +171,7 @@ export const updateRiscosso = async (
     await update<DbRiscosso>(headers, ['riscossi', verifiedData.id], {
       ...verifiedData,
       docs,
+      updatedAt: Timestamp.now(),
     });
   } catch (e) {
     console.error(e);
@@ -203,11 +205,12 @@ export const checkRiscosso = async (
           isVerified: false,
         } as const);
 
-    await update<Pick<DbRiscosso, 'verification'>>(
+    await update<Pick<DbRiscosso, 'verification' | 'updatedAt'>>(
       headers,
       ['riscossi', data.id],
       {
         verification,
+        updatedAt: Timestamp.now(),
       }
     );
   } catch (e) {
