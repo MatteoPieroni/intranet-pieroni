@@ -1,7 +1,7 @@
 import { DbUser, User, UserUpdate } from '../../db-types';
 import { UserSchema, UserUpdateSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
-import { getRecords, getRecordsCount, update } from './operations';
+import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
 
 export const getUsers = async (headers: PassedHeaders) => {
@@ -102,15 +102,33 @@ export const getUserUpdatesCount = async (
   }
 };
 
-export const removeUpdate = async (headers: PassedHeaders, data: User) => {
+export const removeUserUpdate = async (
+  headers: PassedHeaders,
+  userId: string,
+  data: Pick<UserUpdate, 'entityId' | 'entityType'>
+) => {
   try {
-    const { id, ...rest } = data;
-    const verifiedData = UserSchema.parse({
-      id,
-      ...rest,
-    });
+    const updates = await getRecords<{ id: string }>(
+      headers,
+      ['users', userId, 'updates'],
+      (update) => ({ id: update.id }),
+      {
+        queryData: [
+          {
+            field: 'entityType',
+            value: data.entityType,
+          },
+          {
+            field: 'entityId',
+            value: data.entityId,
+          },
+        ],
+      }
+    );
 
-    await update<DbUser>(headers, ['users', id], verifiedData);
+    for (const update of updates) {
+      await remove(headers, ['users', userId, 'updates'], update.id);
+    }
   } catch (e) {
     console.error(e);
     throw e;
