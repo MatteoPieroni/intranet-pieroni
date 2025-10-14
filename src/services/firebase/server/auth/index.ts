@@ -53,7 +53,11 @@ export async function getUser(headers: PassedHeaders) {
         email,
       };
 
-      if (!email.match('@pieroni.it')) {
+      if (
+        !email.match('@pieroni.it') &&
+        !email.match('@casa-immobiliare.it') &&
+        !email.match('@atelierark.it')
+      ) {
         throw new Error(`Email not supported: ${email} - ${uid}`);
       }
 
