@@ -151,7 +151,7 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
 type CreatedDbIssue = Pick<
   DbIssue,
   // IMPORTANT: we rely on client to send out emails
-  'client' | 'date' | 'timeline' | 'meta' | 'verification'
+  'client' | 'date' | 'timeline' | 'meta' | 'verification' | 'updatedAt'
 >;
 
 export const createEmptyIssue = async (
@@ -178,6 +178,7 @@ export const createEmptyIssue = async (
       verification: {
         isVerified: false,
       },
+      updatedAt: now,
     });
     return createdDoc.id;
   } catch (e) {
@@ -204,6 +205,7 @@ export const updateIssue = async (
       date: true,
       timeline: true,
       result: true,
+      updatedAt: true,
     }).parse(data);
 
     const { documentDate, ...supplierInfoRest } = supplierWithDate || {};
@@ -380,7 +382,7 @@ export const addResultToIssue = async (
           summary,
           date: now,
         },
-        updatedAt: Timestamp.now(),
+        updatedAt: now,
       }
     );
   } catch (e) {
@@ -420,7 +422,7 @@ export const checkIssue = async (
       ['issues', data.id],
       {
         verification,
-        updatedAt: Timestamp.now(),
+        updatedAt: now,
       }
     );
   } catch (e) {
