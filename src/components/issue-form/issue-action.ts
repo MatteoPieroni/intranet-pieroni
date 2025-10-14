@@ -19,6 +19,7 @@ const FormFieldsSchema = IssueSchema.omit({
   verification: true,
   timeline: true,
   result: true,
+  updatedAt: true,
 });
 
 export const issueAction = async (_: StateValidation, values: FormData) => {

@@ -25,6 +25,7 @@ const FormFieldsSchema = RiscossoSchema.omit({
   date: true,
   meta: true,
   verification: true,
+  updatedAt: true,
 });
 
 const handleDocs = async (
