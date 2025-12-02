@@ -45,7 +45,7 @@ export const configAction = async (_: StateValidation, values: FormData) => {
     await pushConfig(currentHeaders, data);
 
     revalidatePath('/admin');
-    revalidateTag('config');
+    revalidateTag('config', 'days');
 
     return {
       success: FORM_SUCCESS_CONFIG,
