@@ -1,14 +1,26 @@
 import type { NextConfig } from 'next';
-import localesPlugin from '@react-aria/optimize-locales-plugin';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  webpack(config, { isServer }) {
-    if (!isServer) {
-      // Don't include any locale strings in the client JS bundle.
-      config.plugins.push(localesPlugin.webpack({ locales: [] }));
-    }
-    return config;
+  turbopack: {
+    rules: {
+      '*': [
+        {
+          condition: {
+            all: [
+              'foreign',
+              'browser',
+              {
+                path: /(@react-stately|@react-aria|@react-spectrum|react-aria-components)\/.*\/[a-z]{2}-[A-Z]{2}/,
+              },
+            ],
+          },
+          loaders: ['null-loader'],
+          options: {},
+          as: '*.js',
+        },
+      ],
+    },
   },
   experimental: {
     authInterrupts: true,

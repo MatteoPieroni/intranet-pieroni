@@ -118,7 +118,11 @@ h6 {
 /**
   theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%22-1.1%22%2C%222.36%22%2C%224.12%22%2C%225.89%22%2C%227.65%22%2C%229.42%22%2C%2211.18%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
 */
-:root {
+/*
+  there is a specificity problem with the default styles bundled using :is()
+  so we need to be more specific here
+*/
+:root:not(:has([data-theme='light'])) {
   @media (prefers-color-scheme: dark) {
     --background-0: #050a18;
     --background-1: #09112a;

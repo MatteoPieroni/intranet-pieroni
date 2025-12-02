@@ -38,7 +38,7 @@ export const quoteAction = async (_: StateValidation, values: FormData) => {
     await pushQuote(currentHeaders, { text: message, url: image });
 
     revalidatePath('/admin');
-    revalidateTag('quote');
+    revalidateTag('quote', 'max');
 
     return {
       success: FORM_SUCCESS_TV,
