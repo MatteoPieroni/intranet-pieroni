@@ -11,7 +11,6 @@ export const ERROR_EMPTY_FIELD = '❌ Questo campo è obbligatorio';
 export const ERROR_FIELD_TOO_LONG = '❌ Questo testo è troppo lungo';
 
 // form states
-export const FORM_SUCCESS_PDF = '✔️ Stiamo scaricando il Pdf';
 export const FORM_FAIL_PDF =
   '❌ Non siamo riusciti a creare il pdf. Ricontrolla per favore';
 export const FORM_SUCCESS_LOGIN = '✔️ Ti sto reindirizzando';
