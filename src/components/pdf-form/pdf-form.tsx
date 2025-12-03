@@ -1,39 +1,80 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
-
-import { pdfVfs } from '../../services/pdf/pdfVfs';
-import { defineFilesystem, createSign } from '../../services/pdf';
-
+import { useState, FormEvent } from 'react';
 import {
-  FORM_SUCCESS_PDF,
-  FORM_FAIL_PDF,
-  ERROR_FIELD_TOO_LONG,
-} from '../../consts';
+  Document,
+  Page,
+  Text,
+  StyleSheet,
+  Font,
+  Image,
+  View,
+  PDFDownloadLink,
+} from '@react-pdf/renderer';
+
+import { FORM_FAIL_PDF, ERROR_FIELD_TOO_LONG } from '../../consts';
 
 import styles from './pdf-form.module.css';
 import { FormStatus } from '../form-status/form-status';
 
+Font.register({
+  family: 'SourceSans',
+  src: '/assets/SourceSans3-Black.ttf',
+});
+
+const pdfStyles = StyleSheet.create({
+  page: {
+    backgroundColor: '#fff',
+  },
+  imageContainer: {
+    display: 'flex',
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    maxWidth: '15%',
+  },
+  text: {
+    fontFamily: 'SourceSans',
+    fontSize: 47,
+    marginTop: 134,
+    marginHorizontal: 118,
+    alignment: 'center',
+  },
+  footer: {
+    backgroundColor: '#ee8900',
+    height: 100,
+    position: 'absolute',
+    left: 50,
+    right: 50,
+    bottom: 0,
+  },
+});
+
+const Cartello = ({ text }: { text: string }) => (
+  <Document>
+    <Page size="A4" orientation="landscape">
+      <View style={pdfStyles.imageContainer}>
+        <Image src="/assets/pieroni-logo.jpg" style={pdfStyles.image} />
+      </View>
+      <Text style={pdfStyles.text}>{text}</Text>
+      <View style={pdfStyles.footer}></View>
+    </Page>
+  </Document>
+);
+
 export const PdfForm: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
-  const [success, setSuccess] = useState('');
+  const [text, setText] = useState('');
   const [fail, setFail] = useState('');
 
-  useEffect(() => {
-    defineFilesystem(pdfVfs);
-
-    return (): void => {
-      defineFilesystem({});
-    };
-  }, []);
-
-  const printPdf: (event: FormEvent<HTMLFormElement>) => void = (event) => {
+  const printPdf = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const values = new FormData(event.currentTarget);
 
     setIsSaving(true);
-    setSuccess('');
     setFail('');
 
     const formText = values.get('text');
@@ -51,32 +92,36 @@ export const PdfForm: React.FC = () => {
       return;
     }
 
-    try {
-      createSign(text);
-      setSuccess(FORM_SUCCESS_PDF);
-    } catch (e) {
-      console.error(e);
-      setFail(FORM_FAIL_PDF);
-    }
-
+    setText(text);
     setIsSaving(false);
   };
 
   return (
-    <form onSubmit={printPdf}>
-      <p aria-live="polite">{success}</p>
-
+    <form onSubmit={printPdf} method="POST">
       <label>
         Scrivi il tuo testo qui sotto
         <textarea name="text" className={styles.textarea} required />
       </label>
       {!isSaving && <FormStatus text={fail} type="error" />}
       <div className={styles.buttonsContainer}>
-        <button type="submit" disabled={isSaving}>
-          Scarica il cartello
-        </button>
+        {!text ? (
+          <button type="submit" aria-disabled={isSaving}>
+            Genera cartello
+          </button>
+        ) : (
+          <>
+            <PDFDownloadLink
+              document={<Cartello text={text} />}
+              fileName="cartello.pdf"
+              className="button"
+            >
+              {({ loading }) =>
+                loading ? 'Stiamo generando il cartello' : 'Scarica il cartello'
+              }
+            </PDFDownloadLink>
+          </>
+        )}
       </div>
-      {!isSaving && <FormStatus text={success} type="success" />}
     </form>
   );
 };
