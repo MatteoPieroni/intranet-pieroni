@@ -7,7 +7,7 @@ import {
   getIssueAnalytics,
   getIssues,
   getIssuesFromArchive,
-  getUser,
+  cachedGetUser,
   getUsers,
   getUserUpdates,
 } from '@/services/firebase/server';
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default async function IssuesAdmin() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!checkCanEditIssues(currentUser?.permissions)) {
     return redirect('/');

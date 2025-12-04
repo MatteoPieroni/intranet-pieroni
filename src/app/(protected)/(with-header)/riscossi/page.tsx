@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../header-template.module.css';
-import { getRiscossiForUser, getUser } from '@/services/firebase/server';
+import { getRiscossiForUser, cachedGetUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { formatDate } from '@/utils/formatDate';
@@ -20,7 +20,7 @@ const companies = {
 
 export default async function Riscossi() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!currentUser) {
     throw new Error('User not found');

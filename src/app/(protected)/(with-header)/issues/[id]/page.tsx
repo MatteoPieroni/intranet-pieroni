@@ -7,7 +7,7 @@ import template from '../../header-template.module.css';
 import {
   getIssue,
   getIssueTimeline,
-  getUser,
+  cachedGetUser,
   getUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
@@ -51,7 +51,7 @@ export default async function Issue({
   const { id } = await params;
 
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!currentUser) {
     throw new Error('User not found');

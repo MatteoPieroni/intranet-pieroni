@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import template from '../header-template.module.css';
-import { getIssuesForUser, getUser } from '@/services/firebase/server';
+import { getIssuesForUser, cachedGetUser } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { IssueForm } from '@/components/issue-form/issue-form';
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function Issues() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!currentUser) {
     throw new Error('User not found');

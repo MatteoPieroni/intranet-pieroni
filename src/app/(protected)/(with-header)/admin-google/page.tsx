@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 import '@/react-aria/react-aria.css';
-import { getGoogleAuth, getUser } from '@/services/firebase/server';
+import { getGoogleAuth, cachedGetUser } from '@/services/firebase/server';
 import { googleClient } from '@/services/google-apis';
 import { Business } from '@/components/google/business/business';
 import { GoogleAuth } from '@/services/firebase/db-types';
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 
 export default async function AdminGoogle() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!checkCanEditGMB(currentUser?.permissions)) {
     return redirect('/');

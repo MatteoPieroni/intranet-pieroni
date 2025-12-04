@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import {
-  getUser,
+  cachedGetUser,
   getQuoteWithImages,
   getTvText,
   getLinksWithoutCache,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default async function Admin() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
   const canEditConfig = checkCanEditConfig(currentUser?.permissions);

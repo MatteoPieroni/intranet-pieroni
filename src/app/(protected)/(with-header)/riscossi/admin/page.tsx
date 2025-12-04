@@ -7,7 +7,7 @@ import {
   getRiscossi,
   getRiscossiAnalytics,
   getRiscossiFromArchive,
-  getUser,
+  cachedGetUser,
   getUsers,
   getUserUpdates,
 } from '@/services/firebase/server';
@@ -30,7 +30,7 @@ const companies = {
 
 export default async function Riscossi() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!checkCanEditRiscossi(currentUser?.permissions)) {
     return redirect('/');

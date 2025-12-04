@@ -3,10 +3,9 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 import styles from '../page.module.css';
-import { getUser } from '@/services/firebase/server';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
-import { getTeams, getUsers } from '@/services/firebase/server';
+import { getTeams, cachedGetUser, getUsers } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
 
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function Admin() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
 
