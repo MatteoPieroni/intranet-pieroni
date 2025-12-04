@@ -4,7 +4,11 @@ import type { Metadata } from 'next';
 import { Quote } from '@/components/quote/quote';
 import { WelcomeMessage } from '@/components/welcome-message/welcome-message';
 import { Links } from '@/components/links/links';
-import { getUser, getQuote, getLinksForTeam } from '@/services/firebase/server';
+import {
+  cachedGetUser,
+  getQuote,
+  getLinksForTeam,
+} from '@/services/firebase/server';
 import template from './header-template.module.css';
 import styles from './page.module.css';
 
@@ -15,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   if (!currentUser) {
     throw new Error('User not found');

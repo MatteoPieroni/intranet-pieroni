@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
 import {
-  getUser,
+  cachedGetUser,
   getConfig,
   getUserUpdatesCount,
 } from '@/services/firebase/server';
@@ -24,7 +24,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const { currentUser } = await cachedGetUser(currentHeaders);
 
   const [issuesUpdatesCount, riscossiUpdatesCount] = currentUser?.id
     ? await Promise.all([
