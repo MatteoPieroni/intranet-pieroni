@@ -15,7 +15,6 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { withCache } from '@/services/cache';
 
-// long cache
 export const getIssues = async (headers: PassedAuth) => {
   console.log('getIssues');
   try {
@@ -41,9 +40,6 @@ export const getIssues = async (headers: PassedAuth) => {
   }
 };
 
-export const cachedGetIssues = withCache(getIssues, ['issues'], 'long');
-
-// long cache
 export const getIssuesFromArchive = async (headers: PassedAuth) => {
   console.log('getIssuesFromArchive');
 
@@ -70,12 +66,6 @@ export const getIssuesFromArchive = async (headers: PassedAuth) => {
     throw e;
   }
 };
-
-export const cachedGetIssuesFromArchive = withCache(
-  getIssuesFromArchive,
-  ['issuesArchive'],
-  'long'
-);
 
 export const getIssuesForUser = async (headers: PassedAuth, userId: string) => {
   try {
@@ -160,7 +150,6 @@ export const getIssue = async (headers: PassedAuth, id: string) => {
   }
 };
 
-// long cache
 export const getIssueAnalytics = async (headers: PassedAuth) => {
   console.log('getIssueAnalytics');
 
@@ -189,11 +178,6 @@ export const getIssueAnalytics = async (headers: PassedAuth) => {
     throw e;
   }
 };
-export const cachedGetIssueAnalytics = withCache(
-  getIssueAnalytics,
-  ['issues'],
-  'long'
-);
 
 type CreatedDbIssue = Pick<
   DbIssue,
