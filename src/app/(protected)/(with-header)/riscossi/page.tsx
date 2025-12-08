@@ -19,14 +19,14 @@ const companies = {
 };
 
 export default async function Riscossi() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     throw new Error('User not found');
   }
 
-  const riscossi = await getRiscossiForUser(currentHeaders, currentUser.id);
+  const riscossi = await getRiscossiForUser(authHeader, currentUser.id);
 
   return (
     <main className={template.page}>

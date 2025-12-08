@@ -23,7 +23,7 @@ const FormFieldsSchema = IssueSchema.omit({
 });
 
 export const issueAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -66,12 +66,12 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      id = await createEmptyIssue(currentHeaders, {
+      id = await createEmptyIssue(authHeader, {
         client,
       });
     }
 
-    await updateIssue(currentHeaders, {
+    await updateIssue(authHeader, {
       id,
       commission,
       client,

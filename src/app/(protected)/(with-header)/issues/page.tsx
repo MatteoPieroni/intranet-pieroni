@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Issues() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     throw new Error('User not found');
   }
 
-  const issues = await getIssuesForUser(currentHeaders, currentUser.id);
+  const issues = await getIssuesForUser(authHeader, currentUser.id);
 
   return (
     <main className={template.page}>

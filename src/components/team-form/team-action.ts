@@ -13,7 +13,7 @@ export type StateValidation = {
 };
 
 export const teamAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formName = values.get('name');
@@ -39,11 +39,11 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await createTeam(currentHeaders, {
+      await createTeam(authHeader, {
         name,
       });
     } else {
-      await pushTeam(currentHeaders, {
+      await pushTeam(authHeader, {
         name,
         id,
       });
@@ -66,14 +66,14 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
 };
 
 export const teamDeleteAction = async (id: string) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     if (!id) {
       throw new Error('No id provided');
     }
 
-    await deleteTeam(currentHeaders, id);
+    await deleteTeam(authHeader, id);
 
     revalidatePath('/admin/users');
     bustCache('teams');

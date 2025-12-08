@@ -1,11 +1,13 @@
 import { DbUser, User, UserUpdate } from '../../db-types';
 import { UserSchema, UserUpdateSchema } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
 import { withCache } from '@/services/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 
-export const getUsers = async (headers: PassedHeaders) => {
+export const getUsers = async (headers: PassedAuth) => {
+  console.log('getUsers');
   try {
     const records = await getRecords<User>(headers, 'users', (dbUser) => {
       const record = UserSchema.parse(dbUser);
@@ -20,9 +22,20 @@ export const getUsers = async (headers: PassedHeaders) => {
   }
 };
 
-export const cachedGetUsers = withCache(getUsers, ['users'], 'short');
+const withCacheUsers =
+  (fn: (headers: PassedAuth) => ReturnType<typeof getUsers>) =>
+  async (headers: PassedAuth) => {
+    'use cache';
+    console.log({ headers });
+    cacheTag('users');
+    cacheLife({ expire: 3000 });
 
-export const pushUser = async (headers: PassedHeaders, data: User) => {
+    return await fn(headers);
+  };
+
+export const cachedGetUsers = withCacheUsers(getUsers);
+
+export const pushUser = async (headers: PassedAuth, data: User) => {
   try {
     const { id, ...rest } = data;
     const verifiedData = UserSchema.parse({
@@ -38,7 +51,7 @@ export const pushUser = async (headers: PassedHeaders, data: User) => {
 };
 
 export const pushTheme = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: 'light' | 'dark' | null
 ) => {
   const user = await getUser(headers);
@@ -58,7 +71,7 @@ export const pushTheme = async (
 };
 
 export const getUserUpdates = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   type: 'issues' | 'riscossi'
 ) => {
@@ -89,7 +102,7 @@ export const getUserUpdates = async (
   }
 };
 export const getUserUpdatesCount = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   type: 'issues' | 'riscossi'
 ) => {
@@ -106,7 +119,7 @@ export const getUserUpdatesCount = async (
 };
 
 export const removeUserUpdate = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   data: Pick<UserUpdate, 'entityId' | 'entityType'>
 ) => {

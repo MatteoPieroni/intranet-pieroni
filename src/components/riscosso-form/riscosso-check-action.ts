@@ -15,7 +15,7 @@ export const riscossoCheckAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -30,7 +30,7 @@ export const riscossoCheckAction = async (
     const id = String(formId);
     const isChecked = String(formIsChecked) === 'on';
 
-    await checkRiscosso(currentHeaders, { id, isChecked });
+    await checkRiscosso(authHeader, { id, isChecked });
 
     revalidatePath('/riscossi');
 

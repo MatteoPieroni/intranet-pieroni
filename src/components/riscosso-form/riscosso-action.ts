@@ -59,7 +59,7 @@ const handleDocs = async (
 };
 
 export const riscossoAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -107,7 +107,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await createRiscosso(currentHeaders, {
+      await createRiscosso(authHeader, {
         client,
         company,
         total,
@@ -117,7 +117,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         docs,
       });
     } else {
-      await updateRiscosso(currentHeaders, {
+      await updateRiscosso(authHeader, {
         id,
         client,
         company,

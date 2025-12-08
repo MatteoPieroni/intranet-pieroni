@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Maps() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
-  const config = await getConfig(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
+  const config = await getConfig(authHeader);
 
   return (
     <main className={styles.page}>

@@ -18,16 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     throw new Error('User not found');
   }
 
   const [links, quote] = await Promise.all([
-    getLinksForTeam(currentHeaders, currentUser.teams || ['']),
-    getQuote(currentHeaders),
+    getLinksForTeam(authHeader, currentUser.teams || ['']),
+    getQuote(authHeader),
   ]);
 
   const name = currentUser.name;

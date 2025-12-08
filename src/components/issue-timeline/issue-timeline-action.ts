@@ -15,7 +15,7 @@ import {
   deleteFileFromUrl,
   uploadIssueAttachment,
 } from '@/services/firebase/server/storage';
-import { PassedHeaders } from '@/services/firebase/server/serverApp';
+import { PassedAuth } from '@/services/firebase/server/serverApp';
 
 export type StateValidation = {
   error?: string;
@@ -28,7 +28,7 @@ const FormFieldsSchema = IssueActionSchema.omit({
 });
 
 const deleteAttachments = async (
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   attachments: FormDataEntryValue[]
 ) => {
   const deletedAttachments = [];
@@ -39,7 +39,7 @@ const deleteAttachments = async (
     }
 
     try {
-      await deleteFileFromUrl(currentHeaders, attachment);
+      await deleteFileFromUrl(authHeader, attachment);
       deletedAttachments.push(attachment);
     } catch (e) {
       // ignore error and don't push to final array, so it won't be filtered out
@@ -51,7 +51,7 @@ const deleteAttachments = async (
 };
 
 const uploadAndAddAttachment = async (
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   issueId: string,
   attachments: FormDataEntryValue[]
 ) => {
@@ -64,11 +64,7 @@ const uploadAndAddAttachment = async (
     }
 
     try {
-      const url = await uploadIssueAttachment(
-        currentHeaders,
-        issueId,
-        attachment
-      );
+      const url = await uploadIssueAttachment(authHeader, issueId, attachment);
       uploadedAttachments.push(url);
     } catch (e) {
       // ignore error and don't push to final array, so it won't be filtered out
@@ -86,7 +82,7 @@ export const issueAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -108,12 +104,12 @@ export const issueAction = async (
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await addActionToIssue(currentHeaders, {
+      await addActionToIssue(authHeader, {
         issueId,
         action: verifiedAction,
       });
     } else {
-      await editIssueAction(currentHeaders, {
+      await editIssueAction(authHeader, {
         issueId,
         action: {
           id,
@@ -130,7 +126,7 @@ export const issueAction = async (
 
       // remove files then filter array
       const deletedAttachments = await deleteAttachments(
-        currentHeaders,
+        authHeader,
         formActionAttachmentRemoval
       );
       const attachmentsWithoutRemoved = (attachments || []).filter(
@@ -139,18 +135,14 @@ export const issueAction = async (
 
       // upload file and push to array
       const { uploadedAttachments, failedUploads } =
-        await uploadAndAddAttachment(
-          currentHeaders,
-          issueId,
-          formActionAttachment
-        );
+        await uploadAndAddAttachment(authHeader, issueId, formActionAttachment);
 
       const finalAttachments = [
         ...attachmentsWithoutRemoved,
         ...uploadedAttachments,
       ];
 
-      await editAttachmentsIssue(currentHeaders, {
+      await editAttachmentsIssue(authHeader, {
         issueId,
         actionId: id,
         attachments: finalAttachments,

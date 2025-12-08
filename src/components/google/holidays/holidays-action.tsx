@@ -12,15 +12,15 @@ import {
 } from '@/consts';
 import { DbSpecialHourPeriod, googleClient } from '@/services/google-apis';
 import { getGoogleAuth } from '@/services/firebase/server';
-import { PassedHeaders } from '@/services/firebase/server/serverApp';
+import { PassedAuth } from '@/services/firebase/server/serverApp';
 
 export type StateValidation = {
   success?: string;
   error?: string;
 };
 
-const getGoogleInstanceWithAuth = async (currentHeaders: PassedHeaders) => {
-  const tokenData = await getGoogleAuth(currentHeaders);
+const getGoogleInstanceWithAuth = async (authHeader: PassedAuth) => {
+  const tokenData = await getGoogleAuth(authHeader);
 
   if (!tokenData?.refresh_token) {
     throw new Error('NO_TOKEN');
@@ -44,10 +44,8 @@ export const holidaysAction = async (
   values: FormData
 ) => {
   try {
-    const currentHeaders = await headers();
-    const googleClientWithAuth = await getGoogleInstanceWithAuth(
-      currentHeaders
-    );
+    const authHeader = (await headers()).get('Authorization');
+    const googleClientWithAuth = await getGoogleInstanceWithAuth(authHeader);
 
     const formStartDate = values.get('startDate');
     const formEndDate = values.get('endDate');

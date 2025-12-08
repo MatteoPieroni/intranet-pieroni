@@ -11,7 +11,7 @@ import {
   type Tv,
 } from '../../db-types';
 import { normaliseObjectKeysToArray } from '@/utils/normaliseObjectKeysToArray';
-import { type PassedHeaders } from '../serverApp';
+import { type PassedAuth } from '../serverApp';
 import { get, update } from './operations';
 import { getUser } from '../auth';
 import { checkCanEditConfig } from '../permissions';
@@ -19,7 +19,7 @@ import { checkCanEditConfig } from '../permissions';
 const SHORT_CACHE = 60 * 60; // one hour
 const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
-export const getConfigWithoutCache = async (headers: PassedHeaders) => {
+export const getConfigWithoutCache = async (headers: PassedAuth) => {
   try {
     const data = await get<DbConfig>(headers, 'config/current');
 
@@ -42,7 +42,7 @@ export const getConfig = unstable_cache(getConfigWithoutCache, ['config'], {
 });
 
 export const getQuote = unstable_cache(
-  async (headers: PassedHeaders) => {
+  async (headers: PassedAuth) => {
     try {
       const record = await get<Quote>(headers, 'quote/active');
 
@@ -56,7 +56,7 @@ export const getQuote = unstable_cache(
   { revalidate: LONG_CACHE, tags: ['quote'] }
 );
 
-export const getQuoteWithImages = async (headers: PassedHeaders) => {
+export const getQuoteWithImages = async (headers: PassedAuth) => {
   try {
     const quote = await getQuote(headers);
 
@@ -74,7 +74,7 @@ export const getQuoteWithImages = async (headers: PassedHeaders) => {
   }
 };
 
-export const getTvText = async (headers: PassedHeaders) => {
+export const getTvText = async (headers: PassedAuth) => {
   try {
     const record = await get<Tv>(headers, 'tv/active');
 
@@ -85,7 +85,7 @@ export const getTvText = async (headers: PassedHeaders) => {
   }
 };
 
-export const getGoogleAuth = async (headers: PassedHeaders) => {
+export const getGoogleAuth = async (headers: PassedAuth) => {
   try {
     const record = await get<GoogleAuth | undefined>(
       headers,
@@ -99,7 +99,7 @@ export const getGoogleAuth = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushQuote = async (headers: PassedHeaders, data: Quote) => {
+export const pushQuote = async (headers: PassedAuth, data: Quote) => {
   try {
     await update(headers, 'quote/active', data);
   } catch (e) {
@@ -108,7 +108,7 @@ export const pushQuote = async (headers: PassedHeaders, data: Quote) => {
   }
 };
 
-export const pushTv = async (headers: PassedHeaders, data: DbTv) => {
+export const pushTv = async (headers: PassedAuth, data: DbTv) => {
   try {
     await update(headers, 'tv/active', data);
   } catch (e) {
@@ -118,7 +118,7 @@ export const pushTv = async (headers: PassedHeaders, data: DbTv) => {
 };
 
 export const pushConfig = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Partial<DbConfig>
 ) => {
   try {
@@ -135,10 +135,7 @@ export const pushConfig = async (
   }
 };
 
-export const pushGoogleAuth = async (
-  headers: PassedHeaders,
-  data: GoogleAuth
-) => {
+export const pushGoogleAuth = async (headers: PassedAuth, data: GoogleAuth) => {
   try {
     await update(headers, 'googleAuth/active', data);
   } catch (e) {

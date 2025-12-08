@@ -27,19 +27,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Admin() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
   const canEditConfig = checkCanEditConfig(currentUser?.permissions);
 
   const [links, quote, tvText, config, teams] = await Promise.all([
-    getLinksWithoutCache(currentHeaders),
+    getLinksWithoutCache(authHeader),
     // TODO: is this needed?
-    isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
-    getTvText(currentHeaders),
-    getConfigWithoutCache(currentHeaders),
-    cachedGetTeams(currentHeaders),
+    isAdmin ? getQuoteWithImages(authHeader) : undefined,
+    getTvText(authHeader),
+    getConfigWithoutCache(authHeader),
+    cachedGetTeams(authHeader),
   ]);
 
   if (!canEditConfig) {

@@ -20,7 +20,7 @@ export const issueResultAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -37,7 +37,7 @@ export const issueResultAction = async (
 
     const id = String(formId);
 
-    await addResultToIssue(currentHeaders, {
+    await addResultToIssue(authHeader, {
       id,
       summary,
     });

@@ -25,7 +25,7 @@ const FormSchema = z.object({
 });
 
 export const configAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const data = FormSchema.parse({
@@ -42,7 +42,7 @@ export const configAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushConfig(currentHeaders, data);
+    await pushConfig(authHeader, data);
 
     revalidatePath('/admin');
     updateTag('config');

@@ -29,8 +29,8 @@ const companies = {
 };
 
 export default async function Riscossi() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!checkCanEditRiscossi(currentUser?.permissions)) {
     return redirect('/');
@@ -38,11 +38,11 @@ export default async function Riscossi() {
 
   const [riscossi, users, updates, analytics, riscossiArchive] =
     await Promise.all([
-      getRiscossi(currentHeaders),
-      cachedGetUsers(currentHeaders),
-      getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi'),
-      getRiscossiAnalytics(currentHeaders),
-      getRiscossiFromArchive(currentHeaders),
+      getRiscossi(authHeader),
+      cachedGetUsers(authHeader),
+      getUserUpdates(authHeader, currentUser?.id || '', 'riscossi'),
+      getRiscossiAnalytics(authHeader),
+      getRiscossiFromArchive(authHeader),
     ]);
 
   const riscossiWithAdditionalData = riscossi.map((riscosso) => {

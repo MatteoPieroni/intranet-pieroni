@@ -18,7 +18,7 @@ import {
   limit,
 } from 'firebase/firestore';
 
-import { getApp, PassedHeaders } from '../serverApp';
+import { getApp, PassedAuth } from '../serverApp';
 
 const converter = <T>(dto?: (snap: DocumentData) => T) => ({
   toFirestore: (data: WithFieldValue<T>) => data,
@@ -32,7 +32,7 @@ const converter = <T>(dto?: (snap: DocumentData) => T) => ({
 });
 
 export const getRecords = async <Type extends DocumentData>(
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   address: string | string[],
   dto?: (dbData: DocumentData) => Type,
   options?: {
@@ -43,7 +43,7 @@ export const getRecords = async <Type extends DocumentData>(
     limit?: number;
   }
 ) => {
-  const firebaseServerApp = await getApp(currentHeaders);
+  const firebaseServerApp = await getApp(authHeader);
   const db = getFirestore(firebaseServerApp);
   const fullAddress = typeof address === 'string' ? [address] : address;
   // doc typing is a bit dumb, so we gotta do this
@@ -85,13 +85,13 @@ export const getRecords = async <Type extends DocumentData>(
 };
 
 export const getRecordsCount = async (
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   address: string | string[],
   options?: {
     queryData?: { field: string; value: unknown; operator?: '==' | '!=' };
   }
 ) => {
-  const firebaseServerApp = await getApp(currentHeaders);
+  const firebaseServerApp = await getApp(authHeader);
   const db = getFirestore(firebaseServerApp);
   const fullAddress = typeof address === 'string' ? [address] : address;
   // doc typing is a bit dumb, so we gotta do this
@@ -117,12 +117,12 @@ export const getRecordsCount = async (
 };
 
 export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   address: string,
   queryData: { field: string; array: string[] },
   dto?: (dbData: DocumentData) => Type
 ) => {
-  const firebaseServerApp = await getApp(currentHeaders);
+  const firebaseServerApp = await getApp(authHeader);
   const db = getFirestore(firebaseServerApp);
 
   const collectionRef = collection(db, address).withConverter(
@@ -146,7 +146,7 @@ export const getRecordsWhereArrayToArray = async <Type extends DocumentData>(
 };
 
 export const get = async <Type extends DocumentData>(
-  headers: PassedHeaders,
+  headers: PassedAuth,
   address: string | string[],
   dto?: (dbData: DocumentData) => Type
 ) => {
@@ -171,7 +171,7 @@ export const get = async <Type extends DocumentData>(
 };
 
 export const update = async <Type extends DocumentData>(
-  headers: PassedHeaders,
+  headers: PassedAuth,
   address: string | string[],
   data: UpdateData<Type>,
   dto?: (dbData: DocumentData) => Type
@@ -194,7 +194,7 @@ export const update = async <Type extends DocumentData>(
 };
 
 export const create = async <Type extends DocumentData>(
-  headers: PassedHeaders,
+  headers: PassedAuth,
   address: string,
   data: Type,
   dto?: (dbData: DocumentData) => Type
@@ -216,7 +216,7 @@ export const create = async <Type extends DocumentData>(
 };
 
 export const remove = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   address: string | string[],
   id: string
 ) => {

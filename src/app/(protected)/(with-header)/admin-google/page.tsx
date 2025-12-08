@@ -34,14 +34,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminGoogle() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!checkCanEditGMB(currentUser?.permissions)) {
     return redirect('/');
   }
 
-  const googleAuth = await getGoogleAuth(currentHeaders);
+  const googleAuth = await getGoogleAuth(authHeader);
 
   const isTokenSet = await manageGoogleAuth(googleAuth);
 

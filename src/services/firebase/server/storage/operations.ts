@@ -6,15 +6,15 @@ import {
   uploadBytes,
 } from 'firebase/storage';
 
-import { getApp, PassedHeaders } from '../serverApp';
+import { getApp, PassedAuth } from '../serverApp';
 import { FileCategories } from '../../db-types';
 
 export const upload = async (
-  currentHeaders: PassedHeaders,
+  authHeader: PassedAuth,
   category: FileCategories,
   file: File
 ) => {
-  const firebaseServerApp = await getApp(currentHeaders);
+  const firebaseServerApp = await getApp(authHeader);
   const storage = getStorage(firebaseServerApp);
 
   const storageRef = ref(storage, `${category}/${file.name}`);
@@ -26,11 +26,8 @@ export const upload = async (
   return fileUrl;
 };
 
-export const remove = async (
-  currentHeaders: PassedHeaders,
-  fileUrl: string
-) => {
-  const firebaseServerApp = await getApp(currentHeaders);
+export const remove = async (authHeader: PassedAuth, fileUrl: string) => {
+  const firebaseServerApp = await getApp(authHeader);
   const storage = getStorage(firebaseServerApp);
 
   const storageRef = ref(storage, fileUrl);

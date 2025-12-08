@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Admin() {
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
 
@@ -29,8 +29,8 @@ export default async function Admin() {
   }
 
   const [users, teams] = await Promise.all([
-    cachedGetUsers(currentHeaders),
-    cachedGetTeams(currentHeaders),
+    cachedGetUsers(authHeader),
+    cachedGetTeams(authHeader),
   ]);
 
   return (

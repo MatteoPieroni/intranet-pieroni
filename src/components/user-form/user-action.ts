@@ -19,7 +19,7 @@ export const userAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formTeams = values.getAll('teams');
@@ -48,7 +48,7 @@ export const userAction = async (
       teams,
     });
 
-    await pushUser(currentHeaders, verifiedData);
+    await pushUser(authHeader, verifiedData);
 
     revalidatePath('/admin/users');
     bustCache('users');

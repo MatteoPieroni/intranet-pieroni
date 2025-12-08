@@ -7,9 +7,9 @@ import { pushGoogleAuth, getUser } from '@/services/firebase/server';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
 
 export async function GET(request: NextRequest) {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
-  const user = await getUser(currentHeaders);
+  const user = await getUser(authHeader);
   if (!checkIsAdmin(user.currentUser?.permissions)) {
     return Response.error();
   }
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     throw new Error('Only access token');
   }
 
-  pushGoogleAuth(currentHeaders, {
+  pushGoogleAuth(authHeader, {
     refresh_token,
   });
 

@@ -4,7 +4,7 @@ import {
   IssueResultSchema,
   IssueSchema,
 } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
@@ -13,9 +13,11 @@ import {
   convertTimestampToDateAction,
 } from '../../utils/dto-issues';
 import { FirebaseError } from 'firebase/app';
+import { withCache } from '@/services/cache';
 
 // long cache
-export const getIssues = async (headers: PassedHeaders) => {
+export const getIssues = async (headers: PassedAuth) => {
+  console.log('getIssues');
   try {
     const records = await getRecords<Issue>(
       headers,
@@ -39,8 +41,12 @@ export const getIssues = async (headers: PassedHeaders) => {
   }
 };
 
+export const cachedGetIssues = withCache(getIssues, ['issues'], 'long');
+
 // long cache
-export const getIssuesFromArchive = async (headers: PassedHeaders) => {
+export const getIssuesFromArchive = async (headers: PassedAuth) => {
+  console.log('getIssuesFromArchive');
+
   try {
     const records = await getRecords<Issue>(
       headers,
@@ -65,10 +71,13 @@ export const getIssuesFromArchive = async (headers: PassedHeaders) => {
   }
 };
 
-export const getIssuesForUser = async (
-  headers: PassedHeaders,
-  userId: string
-) => {
+export const cachedGetIssuesFromArchive = withCache(
+  getIssuesFromArchive,
+  ['issuesArchive'],
+  'long'
+);
+
+export const getIssuesForUser = async (headers: PassedAuth, userId: string) => {
   try {
     const records = await getRecords<Issue>(
       headers,
@@ -94,7 +103,7 @@ export const getIssuesForUser = async (
 };
 
 // long cache
-export const getIssue = async (headers: PassedHeaders, id: string) => {
+export const getIssue = async (headers: PassedAuth, id: string) => {
   try {
     const records = await get<Issue>(headers, ['issues', id], (issue) => {
       const convertToDate = convertTimestampToDate(issue);
@@ -151,6 +160,41 @@ export const getIssue = async (headers: PassedHeaders, id: string) => {
   }
 };
 
+// long cache
+export const getIssueAnalytics = async (headers: PassedAuth) => {
+  console.log('getIssueAnalytics');
+
+  try {
+    const total = await getRecordsCount(headers, 'issues');
+
+    const resolved = await getRecordsCount(headers, 'issues', {
+      queryData: {
+        field: 'result.summary',
+        value: '',
+        operator: '!=',
+      },
+    });
+    const nonResolved = total - resolved;
+
+    const nonVerified = await getRecordsCount(headers, 'issues', {
+      queryData: {
+        field: 'verification.isVerified',
+        value: false,
+      },
+    });
+
+    return { total, nonResolved, nonVerified };
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+export const cachedGetIssueAnalytics = withCache(
+  getIssueAnalytics,
+  ['issues'],
+  'long'
+);
+
 type CreatedDbIssue = Pick<
   DbIssue,
   // IMPORTANT: we rely on client to send out emails
@@ -158,7 +202,7 @@ type CreatedDbIssue = Pick<
 >;
 
 export const createEmptyIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Pick<Issue, 'client'>
 ) => {
   try {
@@ -191,7 +235,7 @@ export const createEmptyIssue = async (
 };
 
 export const updateIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Omit<
     Issue,
     'meta' | 'verification' | 'date' | 'timeline' | 'result' | 'updatedAt'
@@ -237,7 +281,7 @@ export const updateIssue = async (
 };
 
 export const getIssueTimeline = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   id: string,
   isArchive = false
 ) => {
@@ -267,13 +311,13 @@ export const getIssueTimeline = async (
   }
 };
 
-const addUpdateDate = async (headers: PassedHeaders, issueId: string) =>
+const addUpdateDate = async (headers: PassedAuth, issueId: string) =>
   await update<Pick<DbIssue, 'updatedAt'>>(headers, ['issues', issueId], {
     updatedAt: Timestamp.now(),
   });
 
 export const addActionToIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     issueId: string;
     action: Omit<IssueAction, 'id'>;
@@ -308,7 +352,7 @@ export const addActionToIssue = async (
 };
 
 export const editIssueAction = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     issueId: string;
     action: IssueAction;
@@ -335,7 +379,7 @@ export const editIssueAction = async (
 };
 
 export const editAttachmentsIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     issueId: string;
     actionId: string;
@@ -364,7 +408,7 @@ export const editAttachmentsIssue = async (
 };
 
 export const addResultToIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     id: string;
     summary: string;
@@ -395,7 +439,7 @@ export const addResultToIssue = async (
 };
 
 export const checkIssue = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     id: string;
     isChecked: boolean;
@@ -428,34 +472,6 @@ export const checkIssue = async (
         updatedAt: now,
       }
     );
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
-// long cache
-export const getIssueAnalytics = async (headers: PassedHeaders) => {
-  try {
-    const total = await getRecordsCount(headers, 'issues');
-
-    const resolved = await getRecordsCount(headers, 'issues', {
-      queryData: {
-        field: 'result.summary',
-        value: '',
-        operator: '!=',
-      },
-    });
-    const nonResolved = total - resolved;
-
-    const nonVerified = await getRecordsCount(headers, 'issues', {
-      queryData: {
-        field: 'verification.isVerified',
-        value: false,
-      },
-    });
-
-    return { total, nonResolved, nonVerified };
   } catch (e) {
     console.error(e);
     throw e;

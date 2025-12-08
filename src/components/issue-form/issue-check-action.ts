@@ -15,7 +15,7 @@ export const issueCheckAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -30,7 +30,7 @@ export const issueCheckAction = async (
     const id = String(formId);
     const isChecked = String(formIsChecked) === 'on';
 
-    await checkIssue(currentHeaders, { id, isChecked });
+    await checkIssue(authHeader, { id, isChecked });
 
     revalidatePath('/issues');
 

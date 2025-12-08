@@ -1,6 +1,6 @@
 import { Riscosso, DbRiscosso } from '../../db-types';
 import { RiscossoSchema } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { create, getRecords, update, get, getRecordsCount } from './operations';
 import { getUser } from '../auth';
 import { Timestamp } from 'firebase/firestore';
@@ -8,7 +8,7 @@ import { convertTimestampToDate } from '../../utils/dto-riscossi';
 import { FirebaseError } from 'firebase/app';
 
 // long cache
-export const getRiscossi = async (headers: PassedHeaders) => {
+export const getRiscossi = async (headers: PassedAuth) => {
   try {
     const records = await getRecords<Riscosso>(
       headers,
@@ -33,7 +33,7 @@ export const getRiscossi = async (headers: PassedHeaders) => {
 };
 
 // long cache
-export const getRiscossiFromArchive = async (headers: PassedHeaders) => {
+export const getRiscossiFromArchive = async (headers: PassedAuth) => {
   try {
     const records = await getRecords<Riscosso>(
       headers,
@@ -59,7 +59,7 @@ export const getRiscossiFromArchive = async (headers: PassedHeaders) => {
 };
 
 export const getRiscossiForUser = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string
 ) => {
   try {
@@ -87,7 +87,7 @@ export const getRiscossiForUser = async (
 };
 
 // long cache
-export const getRiscosso = async (headers: PassedHeaders, id: string) => {
+export const getRiscosso = async (headers: PassedAuth, id: string) => {
   try {
     const records = await get<Riscosso>(
       headers,
@@ -149,7 +149,7 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
 };
 
 // long cache
-export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
+export const getRiscossiAnalytics = async (headers: PassedAuth) => {
   try {
     const total = await getRecordsCount(headers, 'riscossi');
 
@@ -168,7 +168,7 @@ export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
 };
 
 export const createRiscosso = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Omit<Riscosso, 'id' | 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
@@ -223,7 +223,7 @@ export const createRiscosso = async (
 };
 
 export const updateRiscosso = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Omit<Riscosso, 'meta' | 'verification' | 'date' | 'updatedAt'>
 ) => {
   try {
@@ -251,7 +251,7 @@ export const updateRiscosso = async (
 };
 
 export const checkRiscosso = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: {
     id: string;
     isChecked: boolean;

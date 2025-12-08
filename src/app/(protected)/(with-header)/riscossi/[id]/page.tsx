@@ -48,8 +48,8 @@ export default async function Riscossi({
 }) {
   const { id } = await params;
 
-  const currentHeaders = await headers();
-  const { currentUser } = await cachedGetUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     throw new Error('User not found');
@@ -58,8 +58,8 @@ export default async function Riscossi({
   const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
 
   const [riscosso, users] = await Promise.all([
-    getRiscosso(currentHeaders, id),
-    canEditRiscossi ? cachedGetUsers(currentHeaders) : undefined,
+    getRiscosso(authHeader, id),
+    canEditRiscossi ? cachedGetUsers(authHeader) : undefined,
   ]);
 
   if ('errorCode' in riscosso) {
@@ -90,7 +90,7 @@ export default async function Riscossi({
 
   try {
     // delete user updates relative to riscosso on page view
-    await removeUserUpdate(currentHeaders, currentUser.id, {
+    await removeUserUpdate(authHeader, currentUser.id, {
       entityType: 'riscossi',
       entityId: id,
     });
