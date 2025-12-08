@@ -3,8 +3,6 @@ import { UserSchema, UserUpdateSchema } from '../../validator';
 import { PassedAuth } from '../serverApp';
 import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
-import { withCache } from '@/services/cache';
-import { cacheLife, cacheTag } from 'next/cache';
 
 export const getUsers = async (headers: PassedAuth) => {
   console.log('getUsers');
@@ -21,19 +19,6 @@ export const getUsers = async (headers: PassedAuth) => {
     throw e;
   }
 };
-
-const withCacheUsers =
-  (fn: (headers: PassedAuth) => ReturnType<typeof getUsers>) =>
-  async (headers: PassedAuth) => {
-    'use cache';
-    console.log({ headers });
-    cacheTag('users');
-    cacheLife({ expire: 3000 });
-
-    return await fn(headers);
-  };
-
-export const cachedGetUsers = withCacheUsers(getUsers);
 
 export const pushUser = async (headers: PassedAuth, data: User) => {
   try {
