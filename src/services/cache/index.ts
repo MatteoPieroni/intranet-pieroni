@@ -14,8 +14,8 @@ const cacheDuration = {
   long: LONG_CACHE,
 } as const;
 
-export const withCache = (
-  fn: Parameters<typeof unstable_cache>[0],
+export const withCache = <T extends Parameters<typeof unstable_cache>[0]>(
+  fn: T,
   tags: Tags,
   duration: 'short' | 'long'
 ) => unstable_cache(fn, tags, { revalidate: cacheDuration[duration], tags });

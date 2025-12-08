@@ -6,7 +6,6 @@ import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
 import { withCache } from '../../../cache';
 
-// TODO: long cache
 export const getTeams = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Team>(headers, 'teams', (dbTeam) => {

@@ -24,14 +24,14 @@ export default async function Admin() {
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
 
+  if (!isAdmin) {
+    return redirect('/');
+  }
+
   const [users, teams] = await Promise.all([
     getUsers(currentHeaders),
     cachedGetTeams(currentHeaders),
   ]);
-
-  if (!isAdmin) {
-    return redirect('/');
-  }
 
   return (
     <main className={template.page}>

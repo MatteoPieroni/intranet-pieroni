@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_TEAM, FORM_SUCCESS_TEAM } from '@/consts';
 import { createTeam, deleteTeam, pushTeam } from '@/services/firebase/server';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -49,7 +50,7 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
     }
 
     revalidatePath('/admin/users');
-    // do we need this? revalidateTag('teams');
+    bustCache(['teams']);
 
     return {
       success: FORM_SUCCESS_TEAM,
@@ -75,7 +76,7 @@ export const teamDeleteAction = async (id: string) => {
     await deleteTeam(currentHeaders, id);
 
     revalidatePath('/admin/users');
-    // do we need this? revalidateTag('teams');
+    bustCache(['teams']);
   } catch (e) {
     console.error(e);
     throw e;
