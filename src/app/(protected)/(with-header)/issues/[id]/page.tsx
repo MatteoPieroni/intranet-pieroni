@@ -8,7 +8,7 @@ import {
   getIssue,
   getIssueTimeline,
   cachedGetUser,
-  getUsers,
+  cachedGetUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
 import { formatDate } from '@/utils/formatDate';
@@ -61,7 +61,7 @@ export default async function Issue({
 
   const [issue, users] = await Promise.all([
     getIssue(currentHeaders, id),
-    canEditIssues ? getUsers(currentHeaders) : undefined,
+    canEditIssues ? cachedGetUsers(currentHeaders) : undefined,
   ]);
 
   if ('errorCode' in issue) {

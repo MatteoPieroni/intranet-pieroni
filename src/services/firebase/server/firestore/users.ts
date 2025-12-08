@@ -3,8 +3,8 @@ import { UserSchema, UserUpdateSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
+import { withCache } from '@/services/cache';
 
-// TODO: short cache
 export const getUsers = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<User>(headers, 'users', (dbUser) => {
@@ -19,6 +19,8 @@ export const getUsers = async (headers: PassedHeaders) => {
     throw e;
   }
 };
+
+export const cachedGetUsers = withCache(getUsers, ['users'], 'short');
 
 export const pushUser = async (headers: PassedHeaders, data: User) => {
   try {

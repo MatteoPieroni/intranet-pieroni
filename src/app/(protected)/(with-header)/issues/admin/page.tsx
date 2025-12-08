@@ -8,7 +8,7 @@ import {
   getIssues,
   getIssuesFromArchive,
   cachedGetUser,
-  getUsers,
+  cachedGetUsers,
   getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
@@ -32,7 +32,7 @@ export default async function IssuesAdmin() {
   const [issues, users, updates, analytics, issuesArchive] = await Promise.all([
     getIssues(currentHeaders),
     // check user view scope
-    getUsers(currentHeaders),
+    cachedGetUsers(currentHeaders),
     getUserUpdates(currentHeaders, currentUser?.id || '', 'issues'),
     getIssueAnalytics(currentHeaders),
     getIssuesFromArchive(currentHeaders),

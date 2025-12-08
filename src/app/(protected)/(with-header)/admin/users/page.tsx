@@ -8,7 +8,7 @@ import { UserForm } from '@/components/user-form/user-form';
 import {
   cachedGetTeams,
   cachedGetUser,
-  getUsers,
+  cachedGetUsers,
 } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
@@ -29,7 +29,7 @@ export default async function Admin() {
   }
 
   const [users, teams] = await Promise.all([
-    getUsers(currentHeaders),
+    cachedGetUsers(currentHeaders),
     cachedGetTeams(currentHeaders),
   ]);
 

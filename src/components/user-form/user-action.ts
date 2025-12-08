@@ -7,6 +7,7 @@ import { FORM_FAIL_USER, FORM_SUCCESS_USER } from '@/consts';
 import { pushUser } from '@/services/firebase/server';
 import { User } from '@/services/firebase/db-types';
 import { UserSchema } from '@/services/firebase/validator';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -50,6 +51,7 @@ export const userAction = async (
     await pushUser(currentHeaders, verifiedData);
 
     revalidatePath('/admin/users');
+    bustCache('users');
 
     return {
       success: FORM_SUCCESS_USER,

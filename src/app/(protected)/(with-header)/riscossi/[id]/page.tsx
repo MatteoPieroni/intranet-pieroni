@@ -7,7 +7,7 @@ import template from '../../header-template.module.css';
 import {
   getRiscosso,
   cachedGetUser,
-  getUsers,
+  cachedGetUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
@@ -59,7 +59,7 @@ export default async function Riscossi({
 
   const [riscosso, users] = await Promise.all([
     getRiscosso(currentHeaders, id),
-    canEditRiscossi ? getUsers(currentHeaders) : undefined,
+    canEditRiscossi ? cachedGetUsers(currentHeaders) : undefined,
   ]);
 
   if ('errorCode' in riscosso) {

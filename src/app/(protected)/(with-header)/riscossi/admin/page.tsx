@@ -8,7 +8,7 @@ import {
   getRiscossiAnalytics,
   getRiscossiFromArchive,
   cachedGetUser,
-  getUsers,
+  cachedGetUsers,
   getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
@@ -39,7 +39,7 @@ export default async function Riscossi() {
   const [riscossi, users, updates, analytics, riscossiArchive] =
     await Promise.all([
       getRiscossi(currentHeaders),
-      getUsers(currentHeaders),
+      cachedGetUsers(currentHeaders),
       getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi'),
       getRiscossiAnalytics(currentHeaders),
       getRiscossiFromArchive(currentHeaders),
