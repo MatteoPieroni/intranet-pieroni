@@ -9,7 +9,7 @@ import {
   getTvText,
   getLinksWithoutCache,
   getConfigWithoutCache,
-  getTeams,
+  cachedGetTeams,
 } from '@/services/firebase/server';
 import { TvForm } from '@/components/tv-form/tv-form';
 import { LinkForm } from '@/components/link-form/link-form';
@@ -35,10 +35,11 @@ export default async function Admin() {
 
   const [links, quote, tvText, config, teams] = await Promise.all([
     getLinksWithoutCache(currentHeaders),
+    // TODO: is this needed?
     isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
     getTvText(currentHeaders),
     getConfigWithoutCache(currentHeaders),
-    getTeams(currentHeaders),
+    cachedGetTeams(currentHeaders),
   ]);
 
   if (!canEditConfig) {

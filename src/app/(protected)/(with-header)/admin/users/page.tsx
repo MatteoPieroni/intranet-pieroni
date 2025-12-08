@@ -5,7 +5,11 @@ import type { Metadata } from 'next';
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
-import { getTeams, cachedGetUser, getUsers } from '@/services/firebase/server';
+import {
+  cachedGetTeams,
+  cachedGetUser,
+  getUsers,
+} from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
 
@@ -22,7 +26,7 @@ export default async function Admin() {
 
   const [users, teams] = await Promise.all([
     getUsers(currentHeaders),
-    getTeams(currentHeaders),
+    cachedGetTeams(currentHeaders),
   ]);
 
   if (!isAdmin) {

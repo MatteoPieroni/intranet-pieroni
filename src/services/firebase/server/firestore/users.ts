@@ -4,6 +4,7 @@ import { PassedHeaders } from '../serverApp';
 import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
 
+// TODO: short cache
 export const getUsers = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<User>(headers, 'users', (dbUser) => {

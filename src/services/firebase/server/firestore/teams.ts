@@ -4,7 +4,9 @@ import { DbTeam, Team } from '../../db-types';
 import { TeamSchema } from '../../validator';
 import { PassedHeaders } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
+import { withCache } from '../../../cache';
 
+// TODO: long cache
 export const getTeams = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Team>(headers, 'teams', (dbTeam) => {
@@ -21,6 +23,8 @@ export const getTeams = async (headers: PassedHeaders) => {
     throw e;
   }
 };
+
+export const cachedGetTeams = withCache(getTeams, ['teams'], 'long');
 
 export const pushTeam = async (headers: PassedHeaders, data: Team) => {
   try {

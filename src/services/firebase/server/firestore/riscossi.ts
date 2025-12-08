@@ -7,6 +7,7 @@ import { Timestamp } from 'firebase/firestore';
 import { convertTimestampToDate } from '../../utils/dto-riscossi';
 import { FirebaseError } from 'firebase/app';
 
+// long cache
 export const getRiscossi = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Riscosso>(
@@ -31,6 +32,7 @@ export const getRiscossi = async (headers: PassedHeaders) => {
   }
 };
 
+// long cache
 export const getRiscossiFromArchive = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Riscosso>(
@@ -84,6 +86,7 @@ export const getRiscossiForUser = async (
   }
 };
 
+// long cache
 export const getRiscosso = async (headers: PassedHeaders, id: string) => {
   try {
     const records = await get<Riscosso>(
@@ -145,6 +148,7 @@ export const getRiscosso = async (headers: PassedHeaders, id: string) => {
   }
 };
 
+// long cache
 export const getRiscossiAnalytics = async (headers: PassedHeaders) => {
   try {
     const total = await getRecordsCount(headers, 'riscossi');

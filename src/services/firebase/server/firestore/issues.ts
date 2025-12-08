@@ -14,6 +14,7 @@ import {
 } from '../../utils/dto-issues';
 import { FirebaseError } from 'firebase/app';
 
+// long cache
 export const getIssues = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Issue>(
@@ -38,6 +39,7 @@ export const getIssues = async (headers: PassedHeaders) => {
   }
 };
 
+// long cache
 export const getIssuesFromArchive = async (headers: PassedHeaders) => {
   try {
     const records = await getRecords<Issue>(
@@ -91,6 +93,7 @@ export const getIssuesForUser = async (
   }
 };
 
+// long cache
 export const getIssue = async (headers: PassedHeaders, id: string) => {
   try {
     const records = await get<Issue>(headers, ['issues', id], (issue) => {
@@ -431,6 +434,7 @@ export const checkIssue = async (
   }
 };
 
+// long cache
 export const getIssueAnalytics = async (headers: PassedHeaders) => {
   try {
     const total = await getRecordsCount(headers, 'issues');

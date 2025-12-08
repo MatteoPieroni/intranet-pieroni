@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import * as z from 'zod';
 
 import {
@@ -45,7 +45,7 @@ export const configAction = async (_: StateValidation, values: FormData) => {
     await pushConfig(currentHeaders, data);
 
     revalidatePath('/admin');
-    revalidateTag('config', 'days');
+    updateTag('config');
 
     return {
       success: FORM_SUCCESS_CONFIG,
