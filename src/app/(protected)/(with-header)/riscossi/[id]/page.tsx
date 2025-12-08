@@ -7,7 +7,6 @@ import template from '../../header-template.module.css';
 import {
   getRiscosso,
   cachedGetUser,
-  cachedGetUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
@@ -16,6 +15,7 @@ import { formatDate } from '@/utils/formatDate';
 import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 import { AdminBadge } from '@/components/admin-badge/admin-badge';
+import { cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',

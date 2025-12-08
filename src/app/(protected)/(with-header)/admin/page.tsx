@@ -9,7 +9,6 @@ import {
   getTvText,
   getLinksWithoutCache,
   getConfigWithoutCache,
-  cachedGetTeams,
 } from '@/services/firebase/server';
 import { TvForm } from '@/components/tv-form/tv-form';
 import { LinkForm } from '@/components/link-form/link-form';
@@ -20,6 +19,7 @@ import {
   checkCanEditConfig,
   checkIsAdmin,
 } from '@/services/firebase/server/permissions';
+import { cachedGetTeams } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Admin - Intranet Pieroni srl',

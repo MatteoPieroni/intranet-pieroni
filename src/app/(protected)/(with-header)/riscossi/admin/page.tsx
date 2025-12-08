@@ -8,7 +8,6 @@ import {
   getRiscossiAnalytics,
   getRiscossiFromArchive,
   cachedGetUser,
-  cachedGetUsers,
   getUserUpdates,
 } from '@/services/firebase/server';
 import { headers } from 'next/headers';
@@ -16,6 +15,7 @@ import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 import { DateComponent } from '@/components/date/date';
 import { UnreadBadge } from '@/components/unread-badge/unread-badge';
+import { cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Gestisci riscossi - Intranet Pieroni srl',

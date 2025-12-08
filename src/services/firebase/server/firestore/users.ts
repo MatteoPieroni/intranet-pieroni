@@ -5,7 +5,6 @@ import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
 
 export const getUsers = async (headers: PassedAuth) => {
-  console.log('getUsers');
   try {
     const records = await getRecords<User>(headers, 'users', (dbUser) => {
       const record = UserSchema.parse(dbUser);

@@ -5,10 +5,10 @@ import type { Metadata } from 'next';
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
-import { cachedGetTeams, cachedGetUser } from '@/services/firebase/server';
+import { cachedGetUser } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
-import { cachedGetUsers } from '@/services/cache/firestore';
+import { cachedGetTeams, cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Admin utenti - Intranet Pieroni srl',

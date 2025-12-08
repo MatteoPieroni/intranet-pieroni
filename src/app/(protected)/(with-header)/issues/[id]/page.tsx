@@ -8,7 +8,6 @@ import {
   getIssue,
   getIssueTimeline,
   cachedGetUser,
-  cachedGetUsers,
   removeUserUpdate,
 } from '@/services/firebase/server';
 import { formatDate } from '@/utils/formatDate';
@@ -21,6 +20,7 @@ import { IssueCheck } from '@/components/issue-form/issue-check';
 import { Instruction } from '@/components/instruction/instruction';
 import { DateComponent } from '@/components/date/date';
 import { AdminBadge } from '@/components/admin-badge/admin-badge';
+import { cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',

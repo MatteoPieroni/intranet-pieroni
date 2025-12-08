@@ -4,7 +4,6 @@ import { DbTeam, Team } from '../../db-types';
 import { TeamSchema } from '../../validator';
 import { PassedAuth } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
-import { withCache } from '../../../cache';
 
 export const getTeams = async (headers: PassedAuth) => {
   try {
@@ -22,8 +21,6 @@ export const getTeams = async (headers: PassedAuth) => {
     throw e;
   }
 };
-
-export const cachedGetTeams = withCache(getTeams, ['teams'], 'long');
 
 export const pushTeam = async (headers: PassedAuth, data: Team) => {
   try {
