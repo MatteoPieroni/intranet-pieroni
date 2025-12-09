@@ -7,6 +7,9 @@ export const cacheTags = {
   issues: 'issues',
   issuesArchive: 'issues-archive',
   issuesAnalytics: 'issues-analytics',
+  riscossi: 'riscossi',
+  riscossiArchive: 'riscossi-archive',
+  riscossiAnalytics: 'riscossi-analytics',
 } as const;
 
 export const cacheDuration = {

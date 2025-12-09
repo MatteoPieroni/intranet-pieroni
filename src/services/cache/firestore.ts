@@ -1,8 +1,12 @@
 import { cacheLife, cacheTag } from 'next/cache';
 import {
+  getIssue,
   getIssueAnalytics,
   getIssues,
   getIssuesFromArchive,
+  getRiscossi,
+  getRiscossiAnalytics,
+  getRiscossiFromArchive,
   getTeams,
   getUsers,
 } from '../firebase/server';
@@ -52,4 +56,32 @@ export const cachedGetIssueAnalytics: CachedCall<
   cacheLife(cacheDuration.long);
 
   return getIssueAnalytics(...args);
+};
+
+export const cachedGetRiscossi: CachedCall<typeof getRiscossi> = async (
+  ...args
+) => {
+  'use cache';
+  cacheTag(cacheTags.riscossi);
+  cacheLife(cacheDuration.long);
+
+  return getRiscossi(...args);
+};
+export const cachedGetRiscossiFromArchive: CachedCall<
+  typeof getRiscossiFromArchive
+> = async (...args) => {
+  'use cache';
+  cacheTag(cacheTags.riscossiArchive);
+  cacheLife(cacheDuration.long);
+
+  return getRiscossiFromArchive(...args);
+};
+export const cachedGetRiscossiAnalytics: CachedCall<
+  typeof getRiscossiAnalytics
+> = async (...args) => {
+  'use cache';
+  cacheTag(cacheTags.riscossiAnalytics);
+  cacheLife(cacheDuration.long);
+
+  return getRiscossiAnalytics(...args);
 };

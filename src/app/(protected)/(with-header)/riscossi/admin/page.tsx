@@ -4,12 +4,11 @@ import { redirect } from 'next/navigation';
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
 import {
-  getRiscossi,
-  getRiscossiAnalytics,
-  getRiscossiFromArchive,
-  cachedGetUser,
-  getUserUpdates,
-} from '@/services/firebase/server';
+  cachedGetRiscossi,
+  cachedGetRiscossiAnalytics,
+  cachedGetRiscossiFromArchive,
+} from '@/services/cache/firestore';
+import { cachedGetUser, getUserUpdates } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
@@ -38,11 +37,11 @@ export default async function Riscossi() {
 
   const [riscossi, users, updates, analytics, riscossiArchive] =
     await Promise.all([
-      getRiscossi(authHeader),
+      cachedGetRiscossi(authHeader),
       cachedGetUsers(authHeader),
       getUserUpdates(authHeader, currentUser?.id || '', 'riscossi'),
-      getRiscossiAnalytics(authHeader),
-      getRiscossiFromArchive(authHeader),
+      cachedGetRiscossiAnalytics(authHeader),
+      cachedGetRiscossiFromArchive(authHeader),
     ]);
 
   const riscossiWithAdditionalData = riscossi.map((riscosso) => {
