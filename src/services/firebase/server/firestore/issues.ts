@@ -13,10 +13,8 @@ import {
   convertTimestampToDateAction,
 } from '../../utils/dto-issues';
 import { FirebaseError } from 'firebase/app';
-import { withCache } from '@/services/cache';
 
 export const getIssues = async (headers: PassedAuth) => {
-  console.log('getIssues');
   try {
     const records = await getRecords<Issue>(
       headers,
@@ -41,8 +39,6 @@ export const getIssues = async (headers: PassedAuth) => {
 };
 
 export const getIssuesFromArchive = async (headers: PassedAuth) => {
-  console.log('getIssuesFromArchive');
-
   try {
     const records = await getRecords<Issue>(
       headers,
@@ -151,8 +147,6 @@ export const getIssue = async (headers: PassedAuth, id: string) => {
 };
 
 export const getIssueAnalytics = async (headers: PassedAuth) => {
-  console.log('getIssueAnalytics');
-
   try {
     const total = await getRecordsCount(headers, 'issues');
 
