@@ -16,6 +16,7 @@ import {
   uploadIssueAttachment,
 } from '@/services/firebase/server/storage';
 import { PassedAuth } from '@/services/firebase/server/serverApp';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -118,6 +119,7 @@ export const issueAction = async (
       });
     }
 
+    bustCache('patch', 'issue');
     revalidatePath('/issues');
 
     try {
@@ -156,6 +158,7 @@ export const issueAction = async (
       throw new Error('ATTACHMENT_ERROR');
     }
 
+    bustCache('patch', 'issue');
     revalidatePath('/issues');
 
     return {

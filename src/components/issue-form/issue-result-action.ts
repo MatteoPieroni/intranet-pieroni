@@ -6,8 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
 import { addResultToIssue } from '@/services/firebase/server';
 import { IssueResultSchema } from '@/services/firebase/validator';
-// import { uploadIssueAttachment } from '@/services/firebase/server/storage';
-// import z from 'zod';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -42,6 +41,7 @@ export const issueResultAction = async (
       summary,
     });
 
+    bustCache('patch', 'issue');
     revalidatePath('/issues');
 
     return {

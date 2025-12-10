@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
 import { createEmptyIssue, updateIssue } from '@/services/firebase/server';
 import { IssueSchema } from '@/services/firebase/validator';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -64,11 +65,13 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
 
     let id = String(formId);
     const isNew = String(formIsNew) === 'NEW';
+    let isCreation = false;
 
     if (isNew && !id) {
       id = await createEmptyIssue(authHeader, {
         client,
       });
+      isCreation = true;
     }
 
     await updateIssue(authHeader, {
@@ -79,6 +82,12 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
       summary,
       supplierInfo,
     });
+
+    if (isCreation) {
+      bustCache('create', 'issue');
+    } else {
+      bustCache('patch', 'issue');
+    }
 
     revalidatePath('/issues');
 
