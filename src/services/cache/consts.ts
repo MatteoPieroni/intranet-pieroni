@@ -62,8 +62,8 @@ export const connectedDataCaches = {
 
 export type AllowedCachesForBusting =
   | ['patch', keyof (typeof connectedDataCaches)['patch']]
-  | ['patch', keyof (typeof connectedDataCaches)['patch'], string]
+  | ['patch', 'issue' | 'riscosso', string]
   | ['create', keyof (typeof connectedDataCaches)['create']]
-  | ['create', keyof (typeof connectedDataCaches)['create'], string]
+  | ['create', 'issue' | 'riscosso', string]
   | ['delete', keyof (typeof connectedDataCaches)['delete']]
-  | ['delete', keyof (typeof connectedDataCaches)['delete'], string];
+  | ['delete', 'issue' | 'riscosso', string];
