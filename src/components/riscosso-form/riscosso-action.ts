@@ -13,6 +13,7 @@ import {
   RiscossoDocSchema,
   RiscossoSchema,
 } from '@/services/firebase/validator';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -116,6 +117,8 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
+
+      bustCache('create', 'riscosso');
     } else {
       await updateRiscosso(authHeader, {
         id,
@@ -127,6 +130,8 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
+
+      bustCache('patch', 'riscosso');
     }
 
     revalidatePath('/riscossi');
