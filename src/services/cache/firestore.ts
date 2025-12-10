@@ -1,6 +1,5 @@
 import { cacheLife, cacheTag } from 'next/cache';
 import {
-  getIssue,
   getIssueAnalytics,
   getIssues,
   getIssuesFromArchive,

@@ -1,24 +1,23 @@
 import { updateTag } from 'next/cache';
-import { connectedDataCaches } from './consts';
+import { AllowedCachesForBusting, connectedDataCaches, Entity } from './consts';
 
-export const withCache =
-  <T extends (...args: any[]) => ReturnType<T>>(
-    fn: T,
-    tags: string[],
-    duration: 'short' | 'long'
-  ) =>
-  async (...args: Parameters<T>) => {
-    // 'use cache';
-    // cacheTag(...tags);
-    // cacheLife({ expire: cacheDuration[duration] });
+export const bustCache = (...args: AllowedCachesForBusting) => {
+  const [operation, entity] = args;
 
-    return fn(...args);
-  };
+  // this is not nice, but TS is complaining about key being in record
+  const operationTags = connectedDataCaches[operation] as Record<
+    string,
+    string[]
+  >;
 
-export const bustCache = (tags: keyof typeof connectedDataCaches) => {
-  const connectedTags = connectedDataCaches[tags];
+  // we check the key is actually there, even though the args typing is correct
+  if (!(entity in operationTags)) {
+    throw new Error('Trying to bust inexistent cache');
+  }
 
-  for (const tag of connectedTags) {
+  const tags = operationTags[entity];
+
+  for (const tag of tags) {
     updateTag(tag);
   }
 };

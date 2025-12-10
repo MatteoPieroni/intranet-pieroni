@@ -50,8 +50,8 @@ export const userAction = async (
 
     await pushUser(authHeader, verifiedData);
 
+    bustCache('patch', 'user');
     revalidatePath('/admin/users');
-    bustCache('users');
 
     return {
       success: FORM_SUCCESS_USER,

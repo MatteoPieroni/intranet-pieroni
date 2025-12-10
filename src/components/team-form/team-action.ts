@@ -42,15 +42,16 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
       await createTeam(authHeader, {
         name,
       });
+      bustCache('create', 'team');
     } else {
       await pushTeam(authHeader, {
         name,
         id,
       });
+      bustCache('patch', 'team');
     }
 
     revalidatePath('/admin/users');
-    bustCache('teams');
 
     return {
       success: FORM_SUCCESS_TEAM,
@@ -76,7 +77,7 @@ export const teamDeleteAction = async (id: string) => {
     await deleteTeam(authHeader, id);
 
     revalidatePath('/admin/users');
-    bustCache('teams');
+    bustCache('delete', 'team');
   } catch (e) {
     console.error(e);
     throw e;
