@@ -6,6 +6,7 @@ import {
   getRiscossi,
   getRiscossiAnalytics,
   getRiscossiFromArchive,
+  getRiscosso,
   getTeams,
   getUsers,
 } from '../firebase/server';
@@ -90,4 +91,13 @@ export const cachedGetRiscossiAnalytics: CachedCall<
   setCacheDuration('long');
 
   return getRiscossiAnalytics(...args);
+};
+export const cachedGetRiscosso: CachedCall<typeof getRiscosso> = async (
+  ...args
+) => {
+  'use cache';
+  setCacheTags([`riscosso-${args[1]}`]);
+  setCacheDuration('long');
+
+  return getRiscosso(...args);
 };

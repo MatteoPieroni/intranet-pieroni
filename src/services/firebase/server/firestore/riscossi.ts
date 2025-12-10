@@ -84,7 +84,6 @@ export const getRiscossiForUser = async (
   }
 };
 
-// long cache
 export const getRiscosso = async (headers: PassedAuth, id: string) => {
   try {
     const records = await get<Riscosso>(

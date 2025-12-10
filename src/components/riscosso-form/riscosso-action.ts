@@ -131,7 +131,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         docs,
       });
 
-      bustCache('patch', 'riscosso');
+      bustCache('patch', 'riscosso', id);
     }
 
     revalidatePath('/riscossi');

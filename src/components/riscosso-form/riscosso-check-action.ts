@@ -33,7 +33,7 @@ export const riscossoCheckAction = async (
 
     await checkRiscosso(authHeader, { id, isChecked });
 
-    bustCache('patch', 'riscosso');
+    bustCache('patch', 'riscosso', id);
     revalidatePath('/riscossi');
 
     return {

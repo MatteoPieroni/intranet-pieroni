@@ -4,18 +4,14 @@ import { forbidden, notFound } from 'next/navigation';
 
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
-import {
-  getRiscosso,
-  cachedGetUser,
-  removeUserUpdate,
-} from '@/services/firebase/server';
+import { cachedGetUser, removeUserUpdate } from '@/services/firebase/server';
 import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
 import { PrintButton } from '@/components/print-button/print-button';
 import { formatDate } from '@/utils/formatDate';
 import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 import { AdminBadge } from '@/components/admin-badge/admin-badge';
-import { cachedGetUsers } from '@/services/cache/firestore';
+import { cachedGetUsers, cachedGetRiscosso } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Riscosso - Intranet Pieroni srl',
@@ -58,7 +54,7 @@ export default async function Riscossi({
   const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
 
   const [riscosso, users] = await Promise.all([
-    getRiscosso(authHeader, id),
+    cachedGetRiscosso(authHeader, id),
     canEditRiscossi ? cachedGetUsers(authHeader) : undefined,
   ]);
 
