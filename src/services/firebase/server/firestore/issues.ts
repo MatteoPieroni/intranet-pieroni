@@ -88,7 +88,6 @@ export const getIssuesForUser = async (headers: PassedAuth, userId: string) => {
   }
 };
 
-// long cache
 export const getIssue = async (headers: PassedAuth, id: string) => {
   try {
     const records = await get<Issue>(headers, ['issues', id], (issue) => {

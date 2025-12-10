@@ -41,7 +41,7 @@ export const issueResultAction = async (
       summary,
     });
 
-    bustCache('patch', 'issue');
+    bustCache('patch', 'issue', id);
     revalidatePath('/issues');
 
     return {

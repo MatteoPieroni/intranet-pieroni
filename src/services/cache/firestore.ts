@@ -1,5 +1,5 @@
-import { cacheLife, cacheTag } from 'next/cache';
 import {
+  getIssue,
   getIssueAnalytics,
   getIssues,
   getIssuesFromArchive,
@@ -9,22 +9,22 @@ import {
   getTeams,
   getUsers,
 } from '../firebase/server';
-import { cacheDuration, cacheTags } from './consts';
+import { setCacheDuration, setCacheTags } from './operations';
 
 type CachedCall<T extends (...args: any[]) => Promise<any>> = T;
 
 export const cachedGetUsers: CachedCall<typeof getUsers> = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.users);
-  cacheLife(cacheDuration.short);
+  setCacheTags(['users']);
+  setCacheDuration('short');
 
   return getUsers(...args);
 };
 
 export const cachedGetTeams: CachedCall<typeof getTeams> = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.teams);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['teams']);
+  setCacheDuration('long');
 
   return getTeams(...args);
 };
@@ -33,8 +33,8 @@ export const cachedGetIssues: CachedCall<typeof getIssues> = async (
   ...args
 ) => {
   'use cache';
-  cacheTag(cacheTags.issues);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['issues']);
+  setCacheDuration('long');
 
   return getIssues(...args);
 };
@@ -42,8 +42,8 @@ export const cachedGetIssuesFromArchive: CachedCall<
   typeof getIssuesFromArchive
 > = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.issuesArchive);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['issuesArchive']);
+  setCacheDuration('long');
 
   return getIssuesFromArchive(...args);
 };
@@ -51,18 +51,25 @@ export const cachedGetIssueAnalytics: CachedCall<
   typeof getIssueAnalytics
 > = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.issuesAnalytics);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['issuesAnalytics']);
+  setCacheDuration('long');
 
   return getIssueAnalytics(...args);
+};
+export const cachedGetIssue: CachedCall<typeof getIssue> = async (...args) => {
+  'use cache';
+  setCacheTags([`issue-${args[1]}`]);
+  setCacheDuration('long');
+
+  return getIssue(...args);
 };
 
 export const cachedGetRiscossi: CachedCall<typeof getRiscossi> = async (
   ...args
 ) => {
   'use cache';
-  cacheTag(cacheTags.riscossi);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['riscossi']);
+  setCacheDuration('long');
 
   return getRiscossi(...args);
 };
@@ -70,8 +77,8 @@ export const cachedGetRiscossiFromArchive: CachedCall<
   typeof getRiscossiFromArchive
 > = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.riscossiArchive);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['riscossiArchive']);
+  setCacheDuration('long');
 
   return getRiscossiFromArchive(...args);
 };
@@ -79,8 +86,8 @@ export const cachedGetRiscossiAnalytics: CachedCall<
   typeof getRiscossiAnalytics
 > = async (...args) => {
   'use cache';
-  cacheTag(cacheTags.riscossiAnalytics);
-  cacheLife(cacheDuration.long);
+  setCacheTags(['riscossiAnalytics']);
+  setCacheDuration('long');
 
   return getRiscossiAnalytics(...args);
 };

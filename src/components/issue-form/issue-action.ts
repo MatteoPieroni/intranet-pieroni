@@ -86,7 +86,7 @@ export const issueAction = async (_: StateValidation, values: FormData) => {
     if (isCreation) {
       bustCache('create', 'issue');
     } else {
-      bustCache('patch', 'issue');
+      bustCache('patch', 'issue', id);
     }
 
     revalidatePath('/issues');

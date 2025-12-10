@@ -1,7 +1,7 @@
 const SHORT_CACHE = 60 * 60; // one hour
 const LONG_CACHE = 60 * 60 * 24 * 7; // one week
 
-export const cacheTags = {
+export const collectionCacheTags = {
   teams: 'teams',
   users: 'users',
   issues: 'issues',
@@ -18,7 +18,9 @@ export const cacheDuration = {
   long: { expire: LONG_CACHE },
 } as const;
 
-export type CacheTag = (typeof cacheTags)[keyof typeof cacheTags];
+export type IssueCacheTag = `issue-${string}`;
+export type RiscossoCacheTag = `riscosso-${string}`;
+export type CollectionCacheTag = keyof typeof collectionCacheTags;
 
 const entities = {
   team: 'team',
@@ -30,7 +32,7 @@ const entities = {
 export type Entity = keyof typeof entities;
 
 type EntityCache = {
-  [key in Entity]?: (typeof cacheTags)[keyof typeof cacheTags][];
+  [key in Entity]?: (typeof collectionCacheTags)[keyof typeof collectionCacheTags][];
 };
 type Operations = 'patch' | 'create' | 'delete';
 
@@ -60,5 +62,8 @@ export const connectedDataCaches = {
 
 export type AllowedCachesForBusting =
   | ['patch', keyof (typeof connectedDataCaches)['patch']]
+  | ['patch', keyof (typeof connectedDataCaches)['patch'], string]
   | ['create', keyof (typeof connectedDataCaches)['create']]
-  | ['delete', keyof (typeof connectedDataCaches)['delete']];
+  | ['create', keyof (typeof connectedDataCaches)['create'], string]
+  | ['delete', keyof (typeof connectedDataCaches)['delete']]
+  | ['delete', keyof (typeof connectedDataCaches)['delete'], string];

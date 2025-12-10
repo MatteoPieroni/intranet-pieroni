@@ -5,7 +5,6 @@ import { forbidden, notFound } from 'next/navigation';
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
 import {
-  getIssue,
   getIssueTimeline,
   cachedGetUser,
   removeUserUpdate,
@@ -20,7 +19,7 @@ import { IssueCheck } from '@/components/issue-form/issue-check';
 import { Instruction } from '@/components/instruction/instruction';
 import { DateComponent } from '@/components/date/date';
 import { AdminBadge } from '@/components/admin-badge/admin-badge';
-import { cachedGetUsers } from '@/services/cache/firestore';
+import { cachedGetUsers, cachedGetIssue } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -60,7 +59,7 @@ export default async function Issue({
   const canEditIssues = checkCanEditIssues(currentUser.permissions);
 
   const [issue, users] = await Promise.all([
-    getIssue(authHeader, id),
+    cachedGetIssue(authHeader, id),
     canEditIssues ? cachedGetUsers(authHeader) : undefined,
   ]);
 
