@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-import { getUser } from '@/services/firebase/server';
+import { cachedGetUser } from '@/services/firebase/server';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,8 +14,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     return redirect('/signin');

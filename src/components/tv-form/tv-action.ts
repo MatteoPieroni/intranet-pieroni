@@ -18,7 +18,7 @@ export type StateValidation = {
 };
 
 export const tvAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formMessage = values.get('message');
@@ -39,7 +39,7 @@ export const tvAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushTv(currentHeaders, { text: message });
+    await pushTv(authHeader, { text: message });
 
     revalidatePath('/admin');
 

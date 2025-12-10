@@ -6,8 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
 import { addResultToIssue } from '@/services/firebase/server';
 import { IssueResultSchema } from '@/services/firebase/validator';
-// import { uploadIssueAttachment } from '@/services/firebase/server/storage';
-// import z from 'zod';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -20,7 +19,7 @@ export const issueResultAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -37,11 +36,12 @@ export const issueResultAction = async (
 
     const id = String(formId);
 
-    await addResultToIssue(currentHeaders, {
+    await addResultToIssue(authHeader, {
       id,
       summary,
     });
 
+    bustCache('patch', 'issue', id);
     revalidatePath('/issues');
 
     return {

@@ -3,12 +3,12 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 import styles from '../page.module.css';
-import { getUser } from '@/services/firebase/server';
 import template from '../../header-template.module.css';
 import { UserForm } from '@/components/user-form/user-form';
-import { getTeams, getUsers } from '@/services/firebase/server';
+import { cachedGetUser } from '@/services/firebase/server';
 import { TeamForm } from '@/components/team-form/team-form';
 import { checkIsAdmin } from '@/services/firebase/server/permissions';
+import { cachedGetTeams, cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Admin utenti - Intranet Pieroni srl',
@@ -16,19 +16,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Admin() {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
-
-  const [users, teams] = await Promise.all([
-    getUsers(currentHeaders),
-    getTeams(currentHeaders),
-  ]);
 
   if (!isAdmin) {
     return redirect('/');
   }
+
+  const [users, teams] = await Promise.all([
+    cachedGetUsers(authHeader),
+    cachedGetTeams(authHeader),
+  ]);
 
   return (
     <main className={template.page}>

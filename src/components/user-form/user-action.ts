@@ -7,6 +7,7 @@ import { FORM_FAIL_USER, FORM_SUCCESS_USER } from '@/consts';
 import { pushUser } from '@/services/firebase/server';
 import { User } from '@/services/firebase/db-types';
 import { UserSchema } from '@/services/firebase/validator';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -18,7 +19,7 @@ export const userAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formTeams = values.getAll('teams');
@@ -47,8 +48,9 @@ export const userAction = async (
       teams,
     });
 
-    await pushUser(currentHeaders, verifiedData);
+    await pushUser(authHeader, verifiedData);
 
+    bustCache('patch', 'user');
     revalidatePath('/admin/users');
 
     return {

@@ -4,12 +4,11 @@ import type { Metadata } from 'next';
 
 import styles from './page.module.css';
 import {
-  getUser,
+  cachedGetUser,
   getQuoteWithImages,
   getTvText,
   getLinksWithoutCache,
   getConfigWithoutCache,
-  getTeams,
 } from '@/services/firebase/server';
 import { TvForm } from '@/components/tv-form/tv-form';
 import { LinkForm } from '@/components/link-form/link-form';
@@ -20,6 +19,7 @@ import {
   checkCanEditConfig,
   checkIsAdmin,
 } from '@/services/firebase/server/permissions';
+import { cachedGetTeams } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Admin - Intranet Pieroni srl',
@@ -27,18 +27,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Admin() {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   const isAdmin = checkIsAdmin(currentUser?.permissions);
   const canEditConfig = checkCanEditConfig(currentUser?.permissions);
 
   const [links, quote, tvText, config, teams] = await Promise.all([
-    getLinksWithoutCache(currentHeaders),
-    isAdmin ? getQuoteWithImages(currentHeaders) : undefined,
-    getTvText(currentHeaders),
-    getConfigWithoutCache(currentHeaders),
-    getTeams(currentHeaders),
+    getLinksWithoutCache(authHeader),
+    // TODO: is this needed?
+    isAdmin ? getQuoteWithImages(authHeader) : undefined,
+    getTvText(authHeader),
+    getConfigWithoutCache(authHeader),
+    cachedGetTeams(authHeader),
   ]);
 
   if (!canEditConfig) {

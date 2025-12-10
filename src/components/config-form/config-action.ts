@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import * as z from 'zod';
 
 import {
@@ -25,7 +25,7 @@ const FormSchema = z.object({
 });
 
 export const configAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const data = FormSchema.parse({
@@ -42,10 +42,10 @@ export const configAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushConfig(currentHeaders, data);
+    await pushConfig(authHeader, data);
 
     revalidatePath('/admin');
-    revalidateTag('config', 'days');
+    updateTag('config');
 
     return {
       success: FORM_SUCCESS_CONFIG,

@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { pushTheme } from '@/services/firebase/server';
 
 export const themeToggleAction = async (values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formValue = values.get('theme');
@@ -21,7 +21,7 @@ export const themeToggleAction = async (values: FormData) => {
       return;
     }
 
-    await pushTheme(currentHeaders, value);
+    await pushTheme(authHeader, value);
 
     revalidatePath('/');
   } catch (e) {

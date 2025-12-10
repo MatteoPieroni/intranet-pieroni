@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_TEAM, FORM_SUCCESS_TEAM } from '@/consts';
 import { createTeam, deleteTeam, pushTeam } from '@/services/firebase/server';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -12,7 +13,7 @@ export type StateValidation = {
 };
 
 export const teamAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formName = values.get('name');
@@ -38,18 +39,19 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await createTeam(currentHeaders, {
+      await createTeam(authHeader, {
         name,
       });
+      bustCache('create', 'team');
     } else {
-      await pushTeam(currentHeaders, {
+      await pushTeam(authHeader, {
         name,
         id,
       });
+      bustCache('patch', 'team');
     }
 
     revalidatePath('/admin/users');
-    // do we need this? revalidateTag('teams');
 
     return {
       success: FORM_SUCCESS_TEAM,
@@ -65,17 +67,17 @@ export const teamAction = async (_: StateValidation, values: FormData) => {
 };
 
 export const teamDeleteAction = async (id: string) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     if (!id) {
       throw new Error('No id provided');
     }
 
-    await deleteTeam(currentHeaders, id);
+    await deleteTeam(authHeader, id);
 
     revalidatePath('/admin/users');
-    // do we need this? revalidateTag('teams');
+    bustCache('delete', 'team');
   } catch (e) {
     console.error(e);
     throw e;

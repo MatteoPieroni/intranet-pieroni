@@ -1,6 +1,6 @@
 import { DbLink, Link } from '../../db-types';
 import { LinkSchema } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import {
   create,
   getRecords,
@@ -9,7 +9,7 @@ import {
   getRecordsWhereArrayToArray,
 } from './operations';
 
-export const getLinksWithoutCache = async (headers: PassedHeaders) => {
+export const getLinksWithoutCache = async (headers: PassedAuth) => {
   try {
     const records = await getRecords<Link>(headers, 'links', (dbTeam) => {
       const record = LinkSchema.parse(dbTeam);
@@ -24,10 +24,7 @@ export const getLinksWithoutCache = async (headers: PassedHeaders) => {
   }
 };
 
-export const getLinksForTeam = async (
-  headers: PassedHeaders,
-  teams: string[]
-) => {
+export const getLinksForTeam = async (headers: PassedAuth, teams: string[]) => {
   try {
     const records = await getRecordsWhereArrayToArray<Link>(
       headers,
@@ -50,7 +47,7 @@ export const getLinksForTeam = async (
   }
 };
 
-export const pushLink = async (headers: PassedHeaders, data: DbLink) => {
+export const pushLink = async (headers: PassedAuth, data: DbLink) => {
   try {
     const verifiedData = LinkSchema.parse(data);
 
@@ -62,7 +59,7 @@ export const pushLink = async (headers: PassedHeaders, data: DbLink) => {
 };
 
 export const createLink = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: Omit<Link, 'id'>
 ) => {
   try {
@@ -82,7 +79,7 @@ export const createLink = async (
   }
 };
 
-export const deleteLink = async (headers: PassedHeaders, id: string) => {
+export const deleteLink = async (headers: PassedAuth, id: string) => {
   try {
     await remove(headers, 'links', id);
   } catch (e) {

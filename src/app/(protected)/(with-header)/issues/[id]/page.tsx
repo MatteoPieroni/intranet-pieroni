@@ -5,10 +5,8 @@ import { forbidden, notFound } from 'next/navigation';
 import styles from './page.module.css';
 import template from '../../header-template.module.css';
 import {
-  getIssue,
   getIssueTimeline,
-  getUser,
-  getUsers,
+  cachedGetUser,
   removeUserUpdate,
 } from '@/services/firebase/server';
 import { formatDate } from '@/utils/formatDate';
@@ -21,6 +19,7 @@ import { IssueCheck } from '@/components/issue-form/issue-check';
 import { Instruction } from '@/components/instruction/instruction';
 import { DateComponent } from '@/components/date/date';
 import { AdminBadge } from '@/components/admin-badge/admin-badge';
+import { cachedGetUsers, cachedGetIssue } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Modulo qualità - Intranet Pieroni srl',
@@ -50,8 +49,8 @@ export default async function Issue({
 }) {
   const { id } = await params;
 
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!currentUser) {
     throw new Error('User not found');
@@ -60,8 +59,8 @@ export default async function Issue({
   const canEditIssues = checkCanEditIssues(currentUser.permissions);
 
   const [issue, users] = await Promise.all([
-    getIssue(currentHeaders, id),
-    canEditIssues ? getUsers(currentHeaders) : undefined,
+    cachedGetIssue(authHeader, id),
+    canEditIssues ? cachedGetUsers(authHeader) : undefined,
   ]);
 
   if ('errorCode' in issue) {
@@ -96,7 +95,7 @@ export default async function Issue({
 
   try {
     // delete user updates relative to issue on page view
-    await removeUserUpdate(currentHeaders, currentUser.id, {
+    await removeUserUpdate(authHeader, currentUser.id, {
       entityType: 'issues',
       entityId: id,
     });
@@ -104,7 +103,7 @@ export default async function Issue({
     console.error(e);
   }
 
-  const timeline = await getIssueTimeline(currentHeaders, id, isArchive);
+  const timeline = await getIssueTimeline(authHeader, id, isArchive);
 
   return (
     <main className={template.page}>

@@ -19,7 +19,7 @@ const FormSchema = z.object({
 });
 
 export const quoteAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const { message, image } = FormSchema.parse({
@@ -35,7 +35,7 @@ export const quoteAction = async (_: StateValidation, values: FormData) => {
       };
     }
 
-    await pushQuote(currentHeaders, { text: message, url: image });
+    await pushQuote(authHeader, { text: message, url: image });
 
     revalidatePath('/admin');
     revalidateTag('quote', 'max');

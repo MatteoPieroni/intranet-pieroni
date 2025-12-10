@@ -109,3 +109,13 @@ export const onIssueActionUpdate = onDocumentUpdated(
   '/issues/{id}/timeline/{actionId}',
   async (...args) => await handleIssueActionUpdate(db, ...args)
 );
+
+/**
+Team deletion
+  - remove team from users
+  - remove team from links
+
+User deletion
+  - change issue owner to dummy
+  - change riscosso owner to dummy
+ */

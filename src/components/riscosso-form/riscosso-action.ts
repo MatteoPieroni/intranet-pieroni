@@ -13,6 +13,7 @@ import {
   RiscossoDocSchema,
   RiscossoSchema,
 } from '@/services/firebase/validator';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -59,7 +60,7 @@ const handleDocs = async (
 };
 
 export const riscossoAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -107,7 +108,7 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
     const isNew = String(formIsNew) === 'NEW';
 
     if (isNew && !id) {
-      await createRiscosso(currentHeaders, {
+      await createRiscosso(authHeader, {
         client,
         company,
         total,
@@ -116,8 +117,10 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
+
+      bustCache('create', 'riscosso');
     } else {
-      await updateRiscosso(currentHeaders, {
+      await updateRiscosso(authHeader, {
         id,
         client,
         company,
@@ -127,6 +130,8 @@ export const riscossoAction = async (_: StateValidation, values: FormData) => {
         paymentChequeValue,
         docs,
       });
+
+      bustCache('patch', 'riscosso', id);
     }
 
     revalidatePath('/riscossi');

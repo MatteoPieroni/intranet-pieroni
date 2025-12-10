@@ -2,10 +2,10 @@ import * as z from 'zod';
 
 import { DbTeam, Team } from '../../db-types';
 import { TeamSchema } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { create, getRecords, update, remove } from './operations';
 
-export const getTeams = async (headers: PassedHeaders) => {
+export const getTeams = async (headers: PassedAuth) => {
   try {
     const records = await getRecords<Team>(headers, 'teams', (dbTeam) => {
       const record = TeamSchema.extend({
@@ -22,7 +22,7 @@ export const getTeams = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushTeam = async (headers: PassedHeaders, data: Team) => {
+export const pushTeam = async (headers: PassedAuth, data: Team) => {
   try {
     const { id, ...teamData } = data;
     const verifiedData = TeamSchema.parse(teamData);
@@ -34,7 +34,7 @@ export const pushTeam = async (headers: PassedHeaders, data: Team) => {
   }
 };
 
-export const createTeam = async (headers: PassedHeaders, data: DbTeam) => {
+export const createTeam = async (headers: PassedAuth, data: DbTeam) => {
   try {
     const verifiedData = TeamSchema.parse(data);
 
@@ -45,7 +45,7 @@ export const createTeam = async (headers: PassedHeaders, data: DbTeam) => {
   }
 };
 
-export const deleteTeam = async (headers: PassedHeaders, id: string) => {
+export const deleteTeam = async (headers: PassedAuth, id: string) => {
   try {
     await remove(headers, 'teams', id);
   } catch (e) {

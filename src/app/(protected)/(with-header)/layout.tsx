@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
 import {
-  getUser,
+  cachedGetUser,
   getConfig,
   getUserUpdatesCount,
 } from '@/services/firebase/server';
@@ -23,20 +23,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   const [issuesUpdatesCount, riscossiUpdatesCount] = currentUser?.id
     ? await Promise.all([
         checkCanEditIssues(currentUser?.permissions)
-          ? await getUserUpdatesCount(currentHeaders, currentUser.id, 'issues')
+          ? await getUserUpdatesCount(authHeader, currentUser.id, 'issues')
           : 0,
         checkCanEditRiscossi(currentUser?.permissions)
-          ? await getUserUpdatesCount(
-              currentHeaders,
-              currentUser.id,
-              'riscossi'
-            )
+          ? await getUserUpdatesCount(authHeader, currentUser.id, 'riscossi')
           : 0,
       ])
     : [0, 0];
@@ -46,7 +42,7 @@ export default async function RootLayout({
     riscossi: riscossiUpdatesCount,
   };
 
-  const config = await getConfig(currentHeaders);
+  const config = await getConfig(authHeader);
 
   return (
     <div className={styles.container}>

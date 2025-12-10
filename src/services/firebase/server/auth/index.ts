@@ -1,6 +1,7 @@
 import { getAuth } from 'firebase/auth';
+import { cache } from 'react';
 
-import { getApp, type PassedHeaders } from '../serverApp';
+import { getApp, type PassedAuth } from '../serverApp';
 import type { DbUser, User } from '../../db-types';
 import {
   doc,
@@ -11,7 +12,7 @@ import {
 
 export const USER_ACTIVATION_ERROR = 'USER_404';
 
-export async function getUser(headers: PassedHeaders) {
+export async function getUser(headers: PassedAuth) {
   const firebaseServerApp = await getApp(headers);
   const auth = getAuth(firebaseServerApp);
   await auth.authStateReady();
@@ -80,3 +81,5 @@ export async function getUser(headers: PassedHeaders) {
     return { firebaseServerApp };
   }
 }
+
+export const cachedGetUser = cache(getUser);

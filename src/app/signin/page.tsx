@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function SignInPage() {
-  const currentHeaders = await headers();
-  const { currentUser, error } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser, error } = await getUser(authHeader);
 
   if (currentUser) {
     return redirect('/');

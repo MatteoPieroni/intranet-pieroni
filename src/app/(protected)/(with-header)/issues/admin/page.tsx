@@ -3,18 +3,17 @@ import { redirect } from 'next/navigation';
 
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
-import {
-  getIssueAnalytics,
-  getIssues,
-  getIssuesFromArchive,
-  getUser,
-  getUsers,
-  getUserUpdates,
-} from '@/services/firebase/server';
+import { cachedGetUser, getUserUpdates } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { checkCanEditIssues } from '@/services/firebase/server/permissions';
 import { DateComponent } from '@/components/date/date';
 import { UnreadBadge } from '@/components/unread-badge/unread-badge';
+import {
+  cachedGetUsers,
+  cachedGetIssues,
+  cachedGetIssuesFromArchive,
+  cachedGetIssueAnalytics,
+} from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Gestisci moduli qualità - Intranet Pieroni srl',
@@ -22,20 +21,20 @@ export const metadata: Metadata = {
 };
 
 export default async function IssuesAdmin() {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!checkCanEditIssues(currentUser?.permissions)) {
     return redirect('/');
   }
 
   const [issues, users, updates, analytics, issuesArchive] = await Promise.all([
-    getIssues(currentHeaders),
+    cachedGetIssues(authHeader),
     // check user view scope
-    getUsers(currentHeaders),
-    getUserUpdates(currentHeaders, currentUser?.id || '', 'issues'),
-    getIssueAnalytics(currentHeaders),
-    getIssuesFromArchive(currentHeaders),
+    cachedGetUsers(authHeader),
+    getUserUpdates(authHeader, currentUser?.id || '', 'issues'),
+    cachedGetIssueAnalytics(authHeader),
+    cachedGetIssuesFromArchive(authHeader),
   ]);
 
   const issuesWithAdditionalData = issues.map((issue) => {

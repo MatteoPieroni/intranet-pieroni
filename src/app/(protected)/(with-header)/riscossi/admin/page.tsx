@@ -4,18 +4,17 @@ import { redirect } from 'next/navigation';
 import styles from '../page.module.css';
 import template from '../../header-template.module.css';
 import {
-  getRiscossi,
-  getRiscossiAnalytics,
-  getRiscossiFromArchive,
-  getUser,
-  getUsers,
-  getUserUpdates,
-} from '@/services/firebase/server';
+  cachedGetRiscossi,
+  cachedGetRiscossiAnalytics,
+  cachedGetRiscossiFromArchive,
+} from '@/services/cache/firestore';
+import { cachedGetUser, getUserUpdates } from '@/services/firebase/server';
 import { headers } from 'next/headers';
 import { formatDate } from '@/utils/formatDate';
 import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
 import { DateComponent } from '@/components/date/date';
 import { UnreadBadge } from '@/components/unread-badge/unread-badge';
+import { cachedGetUsers } from '@/services/cache/firestore';
 
 export const metadata: Metadata = {
   title: 'Gestisci riscossi - Intranet Pieroni srl',
@@ -29,8 +28,8 @@ const companies = {
 };
 
 export default async function Riscossi() {
-  const currentHeaders = await headers();
-  const { currentUser } = await getUser(currentHeaders);
+  const authHeader = (await headers()).get('Authorization');
+  const { currentUser } = await cachedGetUser(authHeader);
 
   if (!checkCanEditRiscossi(currentUser?.permissions)) {
     return redirect('/');
@@ -38,11 +37,11 @@ export default async function Riscossi() {
 
   const [riscossi, users, updates, analytics, riscossiArchive] =
     await Promise.all([
-      getRiscossi(currentHeaders),
-      getUsers(currentHeaders),
-      getUserUpdates(currentHeaders, currentUser?.id || '', 'riscossi'),
-      getRiscossiAnalytics(currentHeaders),
-      getRiscossiFromArchive(currentHeaders),
+      cachedGetRiscossi(authHeader),
+      cachedGetUsers(authHeader),
+      getUserUpdates(authHeader, currentUser?.id || '', 'riscossi'),
+      cachedGetRiscossiAnalytics(authHeader),
+      cachedGetRiscossiFromArchive(authHeader),
     ]);
 
   const riscossiWithAdditionalData = riscossi.map((riscosso) => {

@@ -21,7 +21,7 @@ const FormSchema = z.object({
 });
 
 export const linkAction = async (_: StateValidation, values: FormData) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -48,19 +48,19 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
     let iconUpload: string | undefined = undefined;
 
     if (icon && icon.size > 0) {
-      const uploadFileUrl = await uploadLinkIcon(currentHeaders, icon);
+      const uploadFileUrl = await uploadLinkIcon(authHeader, icon);
       iconUpload = uploadFileUrl;
     }
 
     if (isNew && !id) {
-      await createLink(currentHeaders, {
+      await createLink(authHeader, {
         description,
         link,
         teams,
         ...(iconUpload ? { icon: iconUpload } : {}),
       });
     } else {
-      await pushLink(currentHeaders, {
+      await pushLink(authHeader, {
         description,
         link,
         id,
@@ -83,14 +83,14 @@ export const linkAction = async (_: StateValidation, values: FormData) => {
 };
 
 export const linkDeleteAction = async (id: string) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     if (!id) {
       throw new Error('No id provided');
     }
 
-    await deleteLink(currentHeaders, id);
+    await deleteLink(authHeader, id);
 
     revalidatePath('/admin');
   } catch (e) {

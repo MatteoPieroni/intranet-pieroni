@@ -1,10 +1,10 @@
 import { DbUser, User, UserUpdate } from '../../db-types';
 import { UserSchema, UserUpdateSchema } from '../../validator';
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { getRecords, getRecordsCount, remove, update } from './operations';
 import { getUser } from '../auth';
 
-export const getUsers = async (headers: PassedHeaders) => {
+export const getUsers = async (headers: PassedAuth) => {
   try {
     const records = await getRecords<User>(headers, 'users', (dbUser) => {
       const record = UserSchema.parse(dbUser);
@@ -19,7 +19,7 @@ export const getUsers = async (headers: PassedHeaders) => {
   }
 };
 
-export const pushUser = async (headers: PassedHeaders, data: User) => {
+export const pushUser = async (headers: PassedAuth, data: User) => {
   try {
     const { id, ...rest } = data;
     const verifiedData = UserSchema.parse({
@@ -35,7 +35,7 @@ export const pushUser = async (headers: PassedHeaders, data: User) => {
 };
 
 export const pushTheme = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   data: 'light' | 'dark' | null
 ) => {
   const user = await getUser(headers);
@@ -55,7 +55,7 @@ export const pushTheme = async (
 };
 
 export const getUserUpdates = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   type: 'issues' | 'riscossi'
 ) => {
@@ -86,7 +86,7 @@ export const getUserUpdates = async (
   }
 };
 export const getUserUpdatesCount = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   type: 'issues' | 'riscossi'
 ) => {
@@ -103,7 +103,7 @@ export const getUserUpdatesCount = async (
 };
 
 export const removeUserUpdate = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   userId: string,
   data: Pick<UserUpdate, 'entityId' | 'entityType'>
 ) => {

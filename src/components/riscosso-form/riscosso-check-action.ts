@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 import { FORM_FAIL_RISCOSSO, FORM_SUCCESS_RISCOSSO } from '@/consts';
 import { checkRiscosso } from '@/services/firebase/server';
+import { bustCache } from '@/services/cache';
 
 export type StateValidation = {
   error?: string;
@@ -15,7 +16,7 @@ export const riscossoCheckAction = async (
   _: StateValidation,
   values: FormData
 ) => {
-  const currentHeaders = await headers();
+  const authHeader = (await headers()).get('Authorization');
 
   try {
     const formId = values.get('id');
@@ -30,8 +31,9 @@ export const riscossoCheckAction = async (
     const id = String(formId);
     const isChecked = String(formIsChecked) === 'on';
 
-    await checkRiscosso(currentHeaders, { id, isChecked });
+    await checkRiscosso(authHeader, { id, isChecked });
 
+    bustCache('patch', 'riscosso', id);
     revalidatePath('/riscossi');
 
     return {

@@ -1,7 +1,7 @@
-import { PassedHeaders } from '../serverApp';
+import { PassedAuth } from '../serverApp';
 import { remove, upload } from './operations';
 
-export const uploadLinkIcon = async (headers: PassedHeaders, file: File) => {
+export const uploadLinkIcon = async (headers: PassedAuth, file: File) => {
   try {
     const uploadFileUrl = await upload(headers, 'link-icons', file);
     return uploadFileUrl;
@@ -12,7 +12,7 @@ export const uploadLinkIcon = async (headers: PassedHeaders, file: File) => {
 };
 
 export const uploadIssueAttachment = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   issueId: string,
   file: File
 ) => {
@@ -26,7 +26,7 @@ export const uploadIssueAttachment = async (
 };
 
 export const deleteFileFromUrl = async (
-  headers: PassedHeaders,
+  headers: PassedAuth,
   fileUrl: string
 ) => {
   try {
