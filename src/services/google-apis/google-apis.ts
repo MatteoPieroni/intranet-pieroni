@@ -149,6 +149,7 @@ class GoogleApisClient {
         parent: accountName,
         readMask:
           'name,title,storefrontAddress,regularHours,specialHours,metadata',
+        orderBy: 'storeCode',
       });
 
     const locationData = ownedLocations.data.locations;
