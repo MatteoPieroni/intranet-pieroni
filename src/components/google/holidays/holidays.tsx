@@ -18,7 +18,7 @@ export const Holidays = ({ locations }: HolidayProps) => {
       {locations.map((location) => (
         <div key={location.name}>
           <h3 className={sharedStyles.title}>
-            {location.storefrontAddress.locality}
+            {location.title} - {location.storefrontAddress.locality}
           </h3>
           <div className={sharedStyles.content}>
             <ul className={styles.list}>

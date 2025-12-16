@@ -25,7 +25,7 @@ export const GooglePerformance = async ({
         {locationsWithPerformance.map((location) => (
           <div key={location.name}>
             <h3 className={sharedStyles.title}>
-              {location.storefrontAddress.locality}
+              {location.title} - {location.storefrontAddress.locality}
             </h3>
             <div className={styles.performanceContainer}>
               <table className={styles.table}>
