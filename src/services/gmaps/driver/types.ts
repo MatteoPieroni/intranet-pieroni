@@ -40,9 +40,8 @@ export type TMarker = {
 		map: any;
 		position: any;
 		title?: string;
-		append: (pin: TPin) => void;
+		append: (pin: HTMLElement) => void;
 	}>;
-	PinElement: Constructable<TPin>;
 };
 
 export type TUnitSystem = any;
