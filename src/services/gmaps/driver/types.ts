@@ -1,158 +1,164 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 enum EStatus {
-  OK = 'OK',
-  FAIL = '',
+	OK = "OK",
+	FAIL = "",
 }
 
 interface Constructable<T> {
-  new (...args: any): T;
+	new (...args: any): T;
 }
 
 export type TMaps = any;
 export type TDriver = any;
 export type TGeocoder = {
-  geocode: (
-    place: GeocodePromise,
-    callback: TGeocodePromise
-  ) => Promise<GeocodeResults[]>;
+	geocode: (
+		place: GeocodePromise,
+		callback: TGeocodePromise,
+	) => Promise<GeocodeResults[]>;
 };
 export type TService = () => any;
 export type TBounds = {
-  extend: (place: any) => any;
+	extend: (place: any) => any;
 };
 export type TAutocompleteService = Constructable<any>;
 export type TAutocomplete = {
-  getPlace: () => any;
-  addListener: (eventType: string, callback: () => void) => void;
+	getPlace: () => any;
+	addListener: (eventType: string, callback: () => void) => void;
 };
 export type TMapService = Constructable<any>;
 export type TMap = {
-  fitBounds: (bounds: any) => void;
+	fitBounds: (bounds: any) => void;
 };
-export type TMarker = Constructable<{
-  map: any;
-  position: any;
-  icon: string;
-}>;
+type TPin = {
+	scale?: number;
+	background?: string;
+	borderColor?: string;
+	glyphColor?: string;
+};
+export type TMarker = {
+	AdvancedMarkerElement: Constructable<{
+		map: any;
+		position: any;
+		title?: string;
+		append: (pin: TPin) => void;
+	}>;
+	PinElement: Constructable<TPin>;
+};
+
 export type TUnitSystem = any;
 export type TAnimation = any;
 export type TGeocodePromise = (
-  results: GeocodeResults[],
-  status: keyof typeof EStatus
+	results: GeocodeResults[],
+	status: keyof typeof EStatus,
 ) => void;
 export type TGeocodeCallback = (results: GeocodeResults[]) => void;
 export type TDistanceMatrixService = {
-  getDistanceMatrix: TDistanceMatrixPromise;
+	getDistanceMatrix: TDistanceMatrixPromise;
 };
 export type TDistanceMatrixCallback = (
-  results: any,
-  status: keyof typeof EStatus
+	results: any,
+	status: keyof typeof EStatus,
 ) => void;
 export type TDistanceMatrixPromise = (
-  distanceObject: DistanceObject,
-  callback: TDistanceMatrixCallback
+	distanceObject: DistanceObject,
+	callback: TDistanceMatrixCallback,
 ) => void;
 export type TCurrent = {
-  origins: Origin[];
-  currentMarkers?: any;
-  routes?: Route[];
-  destination?: string;
-  cost?: string;
+	origins: Origin[];
+	currentMarkers?: any;
+	routes?: Route[];
+	destination?: string;
+	cost?: string;
 };
 export type TListener = (data: TCurrent) => void;
 
 export type TTransportCost = {
-  initialise: () => void;
-  subscribe: (listener: TListener) => void;
-  unsubscribe: (listener: TListener) => void;
+	initialise: () => void;
+	subscribe: (listener: TListener) => void;
+	unsubscribe: (listener: TListener) => void;
 };
 
 export interface Route {
-  name: string;
-  address: any;
-  duration: number;
-  km: number;
-  cost: string;
+	name: string;
+	address: any;
+	duration: number;
+	km: number;
+	cost: string;
 }
 
 interface AutocompleteSettings {
-  componentRestrictions: {
-    country: string;
-  };
+	componentRestrictions: {
+		country: string;
+	};
 }
 
 interface MapSettings {
-  center: {
-    lat: number;
-    lng: number;
-  };
-  zoom: number;
+	center: {
+		lat: number;
+		lng: number;
+	};
+	zoom: number;
 }
 
 interface Origin {
-  name: string;
-  text: string;
+	name: string;
+	text: string;
 }
 
 export interface Config {
-  div: string;
-  mapConfig: MapSettings;
-  origins: Origin[];
-  autocomplete: {
-    div: string;
-    settings: AutocompleteSettings;
-  };
-  distanceMatrixOptions: DistanceMatrixOptions;
-  icons: {
-    destination: string;
-    origin: string;
-    faster: string;
-  };
-  costs: {
-    costPerMinute: number;
-    hourBase: number;
-    minimumCost: number;
-  };
+	div: string;
+	mapConfig: MapSettings;
+	origins: Origin[];
+	autocomplete: {
+		div: string;
+		settings: AutocompleteSettings;
+	};
+	distanceMatrixOptions: DistanceMatrixOptions;
+	costs: {
+		costPerMinute: number;
+		hourBase: number;
+		minimumCost: number;
+	};
 }
 
 interface DistanceMatrixOptions {
-  travelMode: string;
-  avoidHighways: boolean;
-  avoidTolls: boolean;
+	travelMode: string;
+	avoidHighways: boolean;
+	avoidTolls: boolean;
 }
 
 export interface DistanceObject extends DistanceMatrixOptions {
-  origins: string[];
-  destinations: Origin[];
-  unitSystem: TUnitSystem;
+	origins: string[];
+	destinations: Origin[];
+	unitSystem: TUnitSystem;
 }
 
 export interface GeocodePromise {
-  address: string;
+	address: string;
 }
 
 export interface GeocodeResults {
-  geometry: {
-    location: any;
-  };
+	geometry: {
+		location: any;
+	};
 }
 
 export interface DistanceMatrixResults {
-  originAddresses: string[];
-  destinationAddresses: string[];
-  rows: {
-    elements: Element[];
-  }[];
+	originAddresses: string[];
+	destinationAddresses: string[];
+	rows: {
+		elements: Element[];
+	}[];
 }
 
 interface Element {
-  distance: {
-    text: string;
-    value: number;
-  };
-  duration: {
-    text: string;
-    value: number;
-  };
-  status: EStatus;
+	distance: {
+		text: string;
+		value: number;
+	};
+	duration: {
+		text: string;
+		value: number;
+	};
+	status: EStatus;
 }

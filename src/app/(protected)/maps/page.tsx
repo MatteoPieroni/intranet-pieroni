@@ -61,7 +61,7 @@ export default async function Maps() {
 
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS}&libraries=places&loading=async`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS}&libraries=places,marker&loading=async`}
       ></script>
     </main>
   );
