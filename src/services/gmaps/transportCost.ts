@@ -6,10 +6,18 @@ export const mapConfig = {
 		{
 			name: "Pieroni srl, Diecimo, Lucca",
 			text: "Diecimo",
+			coordinates: {
+				lat: 43.95545625179135,
+				lng: 10.50189202868833,
+			},
 		},
 		{
 			name: "Pieroni srl, via della Canovetta, Lucca",
 			text: "Lucca",
+			coordinates: {
+				lat: 43.86263827514731,
+				lng: 10.521366784508059,
+			},
 		},
 	],
 	distanceMatrixOptions: {
@@ -19,11 +27,11 @@ export const mapConfig = {
 	},
 	mapConfig: {
 		center: {
-			lat: 43.955955,
-			lng: 10.502336,
+			lat: 43.9084255,
+			lng: 10.5158615,
 		},
-		zoom: 10,
-		mapId: "intranet-pieroni",
+		zoom: 13,
+		mapId: "b994950262a4301394908a42",
 	},
 	div: "map",
 	autocomplete: {
@@ -33,11 +41,6 @@ export const mapConfig = {
 				country: "it",
 			},
 		},
-	},
-	icons: {
-		origin: "assets/origIcon.png",
-		destination: "assets/destIcon.png",
-		faster: "assets/fastestIconWhite.png",
 	},
 };
 

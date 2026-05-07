@@ -50,6 +50,12 @@ export type TGeocodePromise = (
 	results: GeocodeResults[],
 	status: keyof typeof EStatus,
 ) => void;
+export type TPolyline = Constructable<{
+	path: any[];
+	strokeColor?: string;
+	strokeOpacity?: number;
+	strokeWeight?: number;
+}>;
 export type TGeocodeCallback = (results: GeocodeResults[]) => void;
 export type TDistanceMatrixService = {
 	getDistanceMatrix: TDistanceMatrixPromise;

@@ -17,6 +17,7 @@ const Driver = class {
 	private Map: Types.TMap | undefined;
 	private UnitSystem: Types.TUnitSystem;
 	private MarkerService: Types.TMarker;
+	private PolylineService: Types.TPolyline;
 	private Current: Types.TCurrent;
 	private Listeners: Types.TListener[];
 
@@ -29,6 +30,7 @@ const Driver = class {
 		this.MapService = mapsService.Map;
 		this.MarkerService = mapsService.marker;
 		this.UnitSystem = mapsService.UnitSystem.METRIC;
+		this.PolylineService = mapsService.Polyline;
 		this.Listeners = [];
 
 		this.Current = {
@@ -272,6 +274,18 @@ const Driver = class {
 					true,
 				);
 			}
+
+			const quickestPlace = origins.find(
+				(origin) => origin.name === quickestRoute.name,
+			);
+
+			const path = new this.PolylineService({
+				map: this.Map,
+				path: [quickestPlace.coordinates, location],
+				strokeColor: "#1e9542",
+				strokeOpacity: 1.0,
+				strokeWeight: 2,
+			});
 		} catch (e) {
 			console.error(e);
 		}
