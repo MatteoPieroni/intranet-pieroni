@@ -1,95 +1,82 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from "react";
 
-import { mapConfig, Driver, TransportCost } from '@/services/gmaps';
-import type { TCurrent, TTransportCost } from '@/services/gmaps/driver/types';
-import { Route } from './route';
-import styles from './map.module.css';
+import { mapConfig, TransportCost } from "@/services/gmaps";
+import { InputDriver, MapDriver } from "@/services/gmaps/driver/new-driver";
+import type { TransportState } from "@/services/gmaps/transportCost";
+import { Route } from "./route";
+import styles from "./map.module.css";
 
 type MapProps = {
-  transportCostMinimum: number;
-  transportCostPerMinute: number;
-  transportHourBase: number;
+	transportCostMinimum: number;
+	transportCostPerMinute: number;
+	transportHourBase: number;
+};
+
+const TransportCostDriver = new TransportCost(
+	InputDriver,
+	MapDriver,
+	mapConfig,
+);
+
+const initialState: TransportState = {
+	routes: [],
+	destination: undefined,
 };
 
 export const Map = ({
-  transportCostMinimum,
-  transportCostPerMinute,
-  transportHourBase,
+	transportCostMinimum,
+	transportCostPerMinute,
+	transportHourBase,
 }: MapProps) => {
-  const [routeData, setRouteData] = useState({} as TCurrent);
+	const snapshot = useSyncExternalStore(
+		TransportCostDriver.subscribe,
+		TransportCostDriver.getState,
+		() => initialState,
+	);
 
-  useEffect(() => {
-    if (typeof window === undefined) {
-      return;
-    }
+	useEffect(() => {
+		if (typeof window === undefined) {
+			return;
+		}
 
-    if (!('google' in window) || !(window.google instanceof Object)) {
-      return;
-    }
+		const mapContainer = document.getElementById(mapConfig.div);
+		const autocompleteContainer = document.getElementById(
+			mapConfig.autocomplete.div,
+		);
 
-    if (!('maps' in window.google)) {
-      return;
-    }
+		if (!mapContainer || !autocompleteContainer) {
+			console.error("no div", { mapContainer, autocompleteContainer });
+			return;
+		}
 
-    const gmaps = window.google && window.google.maps;
+		TransportCostDriver.initialise(autocompleteContainer, mapContainer, {
+			costPerMinute: transportCostPerMinute,
+			hourBase: transportHourBase,
+			minimumCost: transportCostMinimum,
+		});
+	}, [transportCostMinimum, transportCostPerMinute, transportHourBase]);
 
-    if (!gmaps) {
-      throw new Error('Qualcosa non va con Google Maps');
-    }
+	console.log({ snapshot });
 
-    if (!document.getElementById(mapConfig.div)) {
-      return;
-    }
+	const { destination, routes } = snapshot;
+	const [quickestRoute, ...remainingRoutes] = routes;
 
-    let mapsDriver: TTransportCost | null = null;
-    const initMap = setTimeout(() => {
-      mapsDriver = new TransportCost(
-        Driver,
-        {
-          ...mapConfig,
-          costs: {
-            costPerMinute: transportCostPerMinute,
-            hourBase: transportHourBase,
-            minimumCost: transportCostMinimum,
-          },
-        },
-        gmaps
-      );
-      mapsDriver.initialise();
-      mapsDriver.subscribe(setRouteData);
-    }, 1000);
-
-    return (): void => {
-      clearTimeout(initMap);
-      if (mapsDriver) mapsDriver.unsubscribe(setRouteData);
-    };
-  }, [transportCostMinimum, transportCostPerMinute, transportHourBase]);
-
-  const { destination, routes, cost } = routeData;
-  const quickestRoute =
-    routes && routes.filter((route) => route.cost === cost)[0];
-  const remainingRoutes =
-    routes &&
-    routes
-      .filter((route) => route.name !== quickestRoute?.name)
-      .sort((a, b) => (+a.cost > +b.cost ? 1 : -1));
-
-  return (
-    routes &&
-    routes.length > 0 && (
-      <div className={styles.results}>
-        <h2 className={styles.destination}>
-          Destinazione
-          <br />
-          <strong>{destination}</strong>
-        </h2>
-        {quickestRoute && <Route route={quickestRoute} quickest />}
-        {remainingRoutes?.map((route) => (
-          <Route key={route.name} route={route} />
-        ))}
-      </div>
-    )
-  );
+	return (
+		routes &&
+		routes.length > 0 && (
+			<div className={styles.results}>
+				<h2 className={styles.destination}>
+					Destinazione
+					<br />
+					<strong>{destination}</strong>
+				</h2>
+				{quickestRoute && <Route route={quickestRoute} quickest />}
+				{remainingRoutes?.map((route) => (
+					<Route key={route.name} route={route} />
+				))}
+			</div>
+		)
+	);
 };
