@@ -2,9 +2,13 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
-import { mapConfig, TransportCost } from "@/services/gmaps";
-import { InputDriver, MapDriver } from "@/services/gmaps/driver/new-driver";
-import type { TransportState } from "@/services/gmaps/transportCost";
+import {
+	mapConfig,
+	TransportCost,
+	InputDriver,
+	MapDriver,
+	type TransportState,
+} from "@/services/gmaps";
 import { Route } from "./route";
 import styles from "./map.module.css";
 
@@ -41,9 +45,9 @@ export const Map = ({
 			return;
 		}
 
-		const mapContainer = document.getElementById(mapConfig.div);
+		const mapContainer = document.getElementById(mapConfig.mapContainer);
 		const autocompleteContainer = document.getElementById(
-			mapConfig.autocomplete.div,
+			mapConfig.autocompleteContainer,
 		);
 
 		if (!mapContainer || !autocompleteContainer) {

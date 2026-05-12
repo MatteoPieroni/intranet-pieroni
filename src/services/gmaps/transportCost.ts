@@ -1,4 +1,4 @@
-import { InputDriver, MapConfig, MapDriver } from "./driver/new-driver";
+import { InputDriver, MapConfig, MapDriver } from "./driver/driver";
 
 // Config Object
 export const mapConfig = {
@@ -8,8 +8,8 @@ export const mapConfig = {
 			address: "Pieroni srl, Diecimo, Lucca",
 			id: "Diecimo",
 			coordinates: {
-				latitude: 43.95545625179135,
-				longitude: 10.50189202868833,
+				lat: 43.95545625179135,
+				lng: 10.50189202868833,
 			},
 		},
 		{
@@ -17,33 +17,26 @@ export const mapConfig = {
 			address: "Pieroni srl, via della Canovetta, Lucca",
 			id: "Lucca",
 			coordinates: {
-				latitude: 43.86263827514731,
-				longitude: 10.521366784508059,
+				lat: 43.86263827514731,
+				lng: 10.521366784508059,
 			},
 		},
 	],
 	distanceMatrixOptions: {
-		travelMode: "DRIVING",
+		travelMode: "DRIVING" as const,
 		avoidHighways: false,
 		avoidTolls: false,
 	},
 	mapConfig: {
 		center: {
-			latitude: 43.9084255,
-			longitude: 10.5158615,
+			lat: 43.9084255,
+			lng: 10.5158615,
 		},
 		zoom: 13,
 		mapId: "76b18e78ad699c4b99e86c27",
 	},
-	div: "map",
-	autocomplete: {
-		div: "autocomplete-container",
-		settings: {
-			componentRestrictions: {
-				country: "it",
-			},
-		},
-	},
+	mapContainer: "map",
+	autocompleteContainer: "autocomplete-container",
 };
 
 export type Location = {
@@ -51,8 +44,8 @@ export type Location = {
 	name: string;
 	address: string;
 	coordinates: {
-		latitude: number;
-		longitude: number;
+		lat: number;
+		lng: number;
 	};
 };
 
@@ -74,6 +67,11 @@ type Config = {
 	mapConfig: MapConfig;
 	origins: Location[];
 	costs?: CostConfig;
+	distanceMatrixOptions: {
+		travelMode: "DRIVING";
+		avoidHighways: boolean;
+		avoidTolls: boolean;
+	};
 };
 
 type CostConfig = {
@@ -109,7 +107,10 @@ export const TransportCost = class {
 		costConfig: CostConfig,
 	) => {
 		this.InputDriver.init(inputContainer, this.onInputLocation);
-		this.MapDriver.init(mapContainer, this.config.mapConfig);
+		this.MapDriver.init(mapContainer, {
+			...this.config.mapConfig,
+			distanceMatrixOptions: this.config.distanceMatrixOptions,
+		});
 		this.config.costs = costConfig;
 	};
 
