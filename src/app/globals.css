@@ -2,19 +2,19 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 /* 2. Remove default margin */
 * {
-  margin: 0;
+	margin: 0;
 }
 
 body {
-  /* 3. Add accessible line-height */
-  line-height: 1.5;
-  /* 4. Improve text rendering */
-  -webkit-font-smoothing: antialiased;
+	/* 3. Add accessible line-height */
+	line-height: 1.5;
+	/* 4. Improve text rendering */
+	-webkit-font-smoothing: antialiased;
 }
 
 /* 5. Improve media defaults */
@@ -23,8 +23,8 @@ picture,
 video,
 canvas,
 svg {
-  display: block;
-  max-width: 100%;
+	display: block;
+	max-width: 100%;
 }
 
 /* 6. Inherit fonts for form controls */
@@ -32,7 +32,7 @@ input,
 button,
 textarea,
 select {
-  font: inherit;
+	font: inherit;
 }
 
 /* 7. Avoid text overflows */
@@ -43,12 +43,12 @@ h3,
 h4,
 h5,
 h6 {
-  overflow-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 /* 8. Improve line wrapping */
 p {
-  text-wrap: pretty;
+	text-wrap: pretty;
 }
 
 h1,
@@ -57,8 +57,8 @@ h3,
 h4,
 h5,
 h6 {
-  text-wrap: balance;
-  font-weight: 500;
+	text-wrap: balance;
+	font-weight: 500;
 }
 
 /*
@@ -66,53 +66,56 @@ h6 {
 */
 #root,
 #__next {
-  isolation: isolate;
+	isolation: isolate;
 }
 
 /**
   theme: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Blu%22%2C%22colorKeys%22%3A%5B%22%23142863%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Arancio%22%2C%22colorKeys%22%3A%5B%22%23ee8900%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22White%22%2C%22colorKeys%22%3A%5B%22%23ffffff%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.17%22%2C%220.84%22%2C%222.85%22%2C%224.86%22%2C%226.88%22%2C%228.89%22%2C%2210.9%22%2C%2212.91%22%2C%2214.92%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D
 */
 :root,
-:root:has([data-theme='light']) {
-  --background-0: #f1f1f1;
-  --background-1: #e1e1e1;
-  --border-0: #d3d3d3;
-  --border-highlight: #ee8900;
-  --border-radius: 5px;
-  --border-radius-smaller: 2px;
-  --text: #0d1b42;
-  --text-low-contrast: #cfcfcf;
-  --focus-ring: 2px solid var(--focus-ring-color);
-  --focus-ring-offset: 1px;
-  --focus-ring-color: #0d1b42;
+:root:has([data-theme="light"]) {
+	--background-0: #f1f1f1;
+	--background-1: #e1e1e1;
+	--border-0: #d3d3d3;
+	--border-highlight: #ee8900;
+	--border-radius: 5px;
+	--border-radius-smaller: 2px;
+	--text: #0d1b42;
+	--text-low-contrast: #cfcfcf;
+	--focus-ring: 2px solid var(--focus-ring-color);
+	--focus-ring-offset: 1px;
+	--focus-ring-color: #0d1b42;
 
-  --background-highlight: #050a18;
-  --text-highlight: #f1f1f1;
-  --background-success: #1e9542;
-  --text-success: #0a0a0a;
-  --background-error: #e73f20;
-  --text-error: #f1f1f1;
-  --background-warning: #e7bf20;
-  --text-warning: #0a0a0a;
+	--background-highlight: #050a18;
+	--text-highlight: #f1f1f1;
+	--background-success: #1e9542;
+	--text-success: #0a0a0a;
+	--background-error: #e73f20;
+	--text-error: #f1f1f1;
+	--background-warning: #e7bf20;
+	--text-warning: #0a0a0a;
 
-  --field-background: #fdfdfd;
-  --field-border: 1px solid #050a18;
-  --field-color: #0a0a0a;
-  --field-color-placeholder: #646464;
-  --field-focus-ring-color: #0d1b42;
-  --field-background-highlight: #050a18;
-  --field-invalid-border: #e73f20;
-  --field-invalid-color: #e73f20;
-  --field-invalid-focus-background: #e73f20;
-  --field-invalid-focus-text: #f1f1f1;
-  --button-background: #f19c29;
-  --button-text: #0a0a0a;
-  --button-background-hover: #ee8900;
-  --button-empty-text: #0a0a0a;
-  --star-color: #d8bb00;
-  --timeline-border: 1px dotted #050a18;
-  --badge-background: #f19c29;
-  --badge-text: #0a0a0a;
+	--field-background: #fdfdfd;
+	--field-border: 1px solid #050a18;
+	--field-color: #0a0a0a;
+	--field-color-placeholder: #646464;
+	--field-focus-ring-color: #0d1b42;
+	--field-background-highlight: #050a18;
+	--field-invalid-border: #e73f20;
+	--field-invalid-color: #e73f20;
+	--field-invalid-focus-background: #e73f20;
+	--field-invalid-focus-text: #f1f1f1;
+	--button-background: #f19c29;
+	--button-text: #0a0a0a;
+	--button-background-hover: #ee8900;
+	--button-empty-text: #0a0a0a;
+	--star-color: #d8bb00;
+	--timeline-border: 1px dotted #050a18;
+	--badge-background: #f19c29;
+	--badge-text: #0a0a0a;
+	--map-marker-base: #646464;
+	--map-marker-destination: #ea4335;
+	--map-marker-fastest: #1e9542;
 }
 
 /**
@@ -122,92 +125,92 @@ h6 {
   there is a specificity problem with the default styles bundled using :is()
   so we need to be more specific here
 */
-:root:not(:has([data-theme='light'])) {
-  @media (prefers-color-scheme: dark) {
-    --background-0: #050a18;
-    --background-1: #09112a;
-    --border-0: #09112a;
-    --border-highlight: #f19c29;
-    --text: #f1f1f1;
-    --text-low-contrast: #646464;
-    --focus-ring-color: #f1f1f1;
+:root:not(:has([data-theme="light"])) {
+	@media (prefers-color-scheme: dark) {
+		--background-0: #050a18;
+		--background-1: #09112a;
+		--border-0: #09112a;
+		--border-highlight: #f19c29;
+		--text: #f1f1f1;
+		--text-low-contrast: #646464;
+		--focus-ring-color: #f1f1f1;
 
-    --background-highlight: #475685;
-    --field-border: 1px solid #475685;
-    --field-focus-ring-color: #475685;
-    --field-background-highlight: #f19c29;
-    --field-text-highlight: #0a0a0a;
-    --button-empty-text: #f1f1f1;
-    --star-color: #efcf00;
-    --timeline-border: 1px dotted #475685;
-  }
+		--background-highlight: #475685;
+		--field-border: 1px solid #475685;
+		--field-focus-ring-color: #475685;
+		--field-background-highlight: #f19c29;
+		--field-text-highlight: #0a0a0a;
+		--button-empty-text: #f1f1f1;
+		--star-color: #efcf00;
+		--timeline-border: 1px dotted #475685;
+	}
 
-  &:has([data-theme='dark']) {
-    --background-0: #050a18;
-    --background-1: #09112a;
-    --border-0: #09112a;
-    --border-highlight: #f19c29;
-    --text: #f1f1f1;
-    --text-low-contrast: #646464;
-    --focus-ring-color: #f1f1f1;
+	&:has([data-theme="dark"]) {
+		--background-0: #050a18;
+		--background-1: #09112a;
+		--border-0: #09112a;
+		--border-highlight: #f19c29;
+		--text: #f1f1f1;
+		--text-low-contrast: #646464;
+		--focus-ring-color: #f1f1f1;
 
-    --background-highlight: #475685;
-    --field-border: 1px solid #475685;
-    --field-focus-ring-color: #475685;
-    --field-background-highlight: #f19c29;
-    --field-text-highlight: #0a0a0a;
-    --button-empty-text: #f1f1f1;
-    --star-color: #efcf00;
-    --timeline-border: 1px dotted #475685;
-  }
+		--background-highlight: #475685;
+		--field-border: 1px solid #475685;
+		--field-focus-ring-color: #475685;
+		--field-background-highlight: #f19c29;
+		--field-text-highlight: #0a0a0a;
+		--button-empty-text: #f1f1f1;
+		--star-color: #efcf00;
+		--timeline-border: 1px dotted #475685;
+	}
 }
 
 /* Windows high contrast mode overrides */
 @media (forced-colors: active) {
-  :root {
-    --background-color: Canvas;
-    --focus-ring-color: Highlight;
-    --text-color: ButtonText;
-    --text-color-base: ButtonText;
-    --text-color-hover: ButtonText;
-    --text-color-disabled: GrayText;
-    --text-color-placeholder: ButtonText;
-    --link-color: LinkText;
-    --link-color-secondary: LinkText;
-    --link-color-pressed: LinkText;
-    --border-color: ButtonBorder;
-    --border-color-hover: ButtonBorder;
-    --border-color-pressed: ButtonBorder;
-    --border-color-disabled: GrayText;
-    --field-background: Field;
-    --field-text-color: FieldText;
-    --overlay-background: Canvas;
-    --button-background: ButtonFace;
-    --button-background-pressed: ButtonFace;
-    --highlight-background: Highlight;
-    --highlight-background-pressed: Highlight;
-    --highlight-background-invalid: LinkText;
-    --highlight-foreground: HighlightText;
-    --highlight-foreground-pressed: HighlightText;
-    --invalid-color: LinkText;
-    --invalid-color-pressed: LinkText;
-  }
+	:root {
+		--background-color: Canvas;
+		--focus-ring-color: Highlight;
+		--text-color: ButtonText;
+		--text-color-base: ButtonText;
+		--text-color-hover: ButtonText;
+		--text-color-disabled: GrayText;
+		--text-color-placeholder: ButtonText;
+		--link-color: LinkText;
+		--link-color-secondary: LinkText;
+		--link-color-pressed: LinkText;
+		--border-color: ButtonBorder;
+		--border-color-hover: ButtonBorder;
+		--border-color-pressed: ButtonBorder;
+		--border-color-disabled: GrayText;
+		--field-background: Field;
+		--field-text-color: FieldText;
+		--overlay-background: Canvas;
+		--button-background: ButtonFace;
+		--button-background-pressed: ButtonFace;
+		--highlight-background: Highlight;
+		--highlight-background-pressed: Highlight;
+		--highlight-background-invalid: LinkText;
+		--highlight-foreground: HighlightText;
+		--highlight-foreground-pressed: HighlightText;
+		--invalid-color: LinkText;
+		--invalid-color-pressed: LinkText;
+	}
 }
 
 html,
 body {
-  height: 100%;
-  color: var(--text);
+	height: 100%;
+	color: var(--text);
 }
 
 .theme-provider {
-  display: contents;
+	display: contents;
 }
 
 main {
-  min-height: 100%;
-  background: var(--background-1);
-  overflow: auto;
+	min-height: 100%;
+	background: var(--background-1);
+	overflow: auto;
 }
 
 h1,
@@ -216,180 +219,180 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 900;
+	font-weight: 900;
 }
 
 h1 {
-  font-size: 1.5em;
+	font-size: 1.5em;
 }
 
 h2 {
-  font-size: 1.4em;
+	font-size: 1.4em;
 }
 
 h3 {
-  font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 h4 {
-  font-size: 1.15em;
+	font-size: 1.15em;
 }
 
 a {
-  color: var(--text);
+	color: var(--text);
 
-  &:visited {
-    color: var(--text);
-  }
+	&:visited {
+		color: var(--text);
+	}
 
-  &:hover {
-    text-decoration-thickness: 2px;
-  }
+	&:hover {
+		text-decoration-thickness: 2px;
+	}
 
-  &:focus {
-    outline: var(--focus-ring);
-    outline-width: 3px;
-    outline-offset: var(--focus-ring-offset);
-  }
+	&:focus {
+		outline: var(--focus-ring);
+		outline-width: 3px;
+		outline-offset: var(--focus-ring-offset);
+	}
 }
 
 a:has(img) {
-  &:hover {
-    outline: var(--focus-ring);
-    outline-width: 3px;
-    outline-offset: var(--focus-ring-offset);
-  }
+	&:hover {
+		outline: var(--focus-ring);
+		outline-width: 3px;
+		outline-offset: var(--focus-ring-offset);
+	}
 }
 
 button,
 a.button {
-  border: none;
-  border-radius: var(--border-radius);
-  padding: 0.5rem;
-  background-color: var(--button-background);
-  color: var(--button-text);
-  cursor: pointer;
+	border: none;
+	border-radius: var(--border-radius);
+	padding: 0.5rem;
+	background-color: var(--button-background);
+	color: var(--button-text);
+	cursor: pointer;
 
-  &:hover {
-    text-decoration: none;
-    background: var(--button-background-hover);
-  }
+	&:hover {
+		text-decoration: none;
+		background: var(--button-background-hover);
+	}
 
-  &:focus {
-    outline: var(--focus-ring);
-    outline-width: 3px;
-    outline-offset: var(--focus-ring-offset);
-  }
+	&:focus {
+		outline: var(--focus-ring);
+		outline-width: 3px;
+		outline-offset: var(--focus-ring-offset);
+	}
 }
 
 button:has(svg),
 .button:has(svg) {
-  width: 42px;
-  height: 42px;
-  padding: 0.25rem;
-  border: 2px solid var(--button-background);
-  background: transparent;
-  border-radius: var(--border-radius);
-  color: var(--button-empty-text);
+	width: 42px;
+	height: 42px;
+	padding: 0.25rem;
+	border: 2px solid var(--button-background);
+	background: transparent;
+	border-radius: var(--border-radius);
+	color: var(--button-empty-text);
 
-  svg {
-    width: 100%;
-    height: auto;
-  }
+	svg {
+		width: 100%;
+		height: auto;
+	}
 
-  &:hover {
-    background: var(--button-background);
-    color: var(--button-text);
-  }
+	&:hover {
+		background: var(--button-background);
+		color: var(--button-text);
+	}
 }
 
 label:has(input),
 label:has(textarea),
 label:has(select) {
-  display: block;
-  margin-block-end: 0.5rem;
+	display: block;
+	margin-block-end: 0.5rem;
 
-  input,
-  textarea,
-  select {
-    display: block;
-    width: 100%;
-    padding: 0.5rem;
-  }
+	input,
+	textarea,
+	select {
+		display: block;
+		width: 100%;
+		padding: 0.5rem;
+	}
 }
 
 input,
 textarea,
 select {
-  border: var(--field-border);
-  border-radius: var(--border-radius);
-  background: var(--field-background);
-  color: var(--field-color);
+	border: var(--field-border);
+	border-radius: var(--border-radius);
+	background: var(--field-background);
+	color: var(--field-color);
 
-  &:focus {
-    outline: var(--focus-ring);
-    outline-color: var(--field-focus-ring-color);
-  }
+	&:focus {
+		outline: var(--focus-ring);
+		outline-color: var(--field-focus-ring-color);
+	}
 }
 
 option {
-  background: var(--button-background);
-  padding: 0.25rem;
+	background: var(--button-background);
+	padding: 0.25rem;
 
-  &:hover,
-  &:checked {
-    background: var(--background-highlight);
-    color: var(--text-highlight);
-  }
+	&:hover,
+	&:checked {
+		background: var(--background-highlight);
+		color: var(--text-highlight);
+	}
 }
 
 textarea {
-  height: 8rem;
+	height: 8rem;
 }
 
 table {
-  border: 1px solid var(--border-0);
-  text-align: left;
+	border: 1px solid var(--border-0);
+	text-align: left;
 }
 
 table .number {
-  text-align: right;
+	text-align: right;
 }
 
 table th,
 table tr,
 table td {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--border-0);
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--border-0);
 }
 
 .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
 }
 
 /* Skeleton */
 .skeleton {
-  background: var(--background-0);
-  background: linear-gradient(
-    110deg,
-    var(--background-0) 8%,
-    var(--background-1) 18%,
-    var(--background-0) 33%
-  );
-  background-size: 200% 100%;
-  animation: 1.5s shine linear infinite;
+	background: var(--background-0);
+	background: linear-gradient(
+		110deg,
+		var(--background-0) 8%,
+		var(--background-1) 18%,
+		var(--background-0) 33%
+	);
+	background-size: 200% 100%;
+	animation: 1.5s shine linear infinite;
 }
 
 @keyframes shine {
-  to {
-    background-position-x: -200%;
-  }
+	to {
+		background-position-x: -200%;
+	}
 }

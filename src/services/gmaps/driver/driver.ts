@@ -1,270 +1,301 @@
-import * as Types from './types';
-import { mToKm, sToMin } from '../../../utils/formatMeasures';
+import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+import Zod from "zod";
 
-const Driver = class {
-  private config: Types.Config;
-  private GeocoderService: Types.TGeocoder;
-  private DistanceMatrixService: Types.TDistanceMatrixService;
-  private BoundsService: Types.TBounds;
-  private AutocompleteService: Types.TAutocompleteService;
-  private Autocomplete: Types.TAutocomplete | undefined;
-  private MapService: Types.TMapService;
-  private Map: Types.TMap | undefined;
-  private UnitSystem: Types.TUnitSystem;
-  private MarkerService: Types.TMarker;
-  private Animation: Types.TAnimation;
-  private Current: Types.TCurrent;
-  private Listeners: Types.TListener[];
+import type { Location } from "../transportCost";
+import { mToKm, msToMin } from "@/utils/formatMeasures";
+import {
+	DestinationIcon,
+	FastestIcon,
+	SlowestIcon,
+} from "@/components/icons/map";
 
-  constructor(mapsService: Types.TMaps, config: Types.Config) {
-    this.config = config;
-    this.GeocoderService = new mapsService.Geocoder();
-    this.DistanceMatrixService = new mapsService.DistanceMatrixService();
-    this.BoundsService = new mapsService.LatLngBounds();
-    this.AutocompleteService = mapsService.places.Autocomplete;
-    this.MapService = mapsService.Map;
-    this.MarkerService = mapsService.Marker;
-    this.UnitSystem = mapsService.UnitSystem.METRIC;
-    this.Animation = mapsService.Animation;
-    this.Listeners = [];
+const DestinationSchema = Zod.object({
+	resourceName: Zod.string(),
+	formattedAddress: Zod.string(),
+	location: Zod.object({
+		lat: Zod.number(),
+		lng: Zod.number(),
+	}),
+});
 
-    this.Current = {
-      origins: [...this.config.origins],
-      routes: [],
-      currentMarkers: [],
-    };
-  }
+let isMapsInitialised = false;
 
-  public initAutocomplete: () => void = () => {
-    const {
-      autocomplete: { div, settings },
-    } = this.config;
+export class InputDriver {
+	constructor() {}
 
-    this.Autocomplete = new this.AutocompleteService(
-      document.getElementById(div),
-      settings
-    );
-    this.Autocomplete?.addListener('place_changed', this.placeSelection);
-  };
+	init = async (
+		container: HTMLElement,
+		listener: (destination: Location) => void,
+	) => {
+		if (!isMapsInitialised) {
+			setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+			isMapsInitialised = true;
+		}
 
-  public initMap: () => void = () => {
-    const { div, mapConfig } = this.config;
+		// @ts-expect-error
+		const { PlaceAutocompleteElement } = await importLibrary("places");
 
-    this.Map = new this.MapService(document.getElementById(div), mapConfig);
-  };
+		const autocompleteElement = new PlaceAutocompleteElement({
+			includedRegionCodes: ["it"],
+		});
 
-  public subscribe: (listener: Types.TListener) => void = (listener) =>
-    (this.Listeners = [...this.Listeners, listener]);
+		container.appendChild(autocompleteElement);
 
-  private dispatch: () => void = () =>
-    this.Listeners.forEach((listener) => listener(this.Current));
+		autocompleteElement.addEventListener(
+			"gmp-select",
+			async (
+				event: google.maps.places.PlaceAutocompleteElementEventMap["gmp-select"],
+			) => {
+				const data = await this.placeSelected(event);
+				listener(data);
+			},
+		);
+	};
 
-  private geocodePromise: (
-    place: Types.GeocodePromise
-  ) => Promise<Types.GeocodeResults[]> = (place) => {
-    return new Promise((resolve, reject) => {
-      this.GeocoderService.geocode(place, (results, status) => {
-        if (status !== 'OK') {
-          reject('There has been an error');
-        } else {
-          resolve(results);
-        }
-      });
-    });
-  };
+	placeSelected = async (
+		event: google.maps.places.PlacePredictionSelectEvent,
+	) => {
+		const { placePrediction } = event;
+		const place = placePrediction.toPlace();
 
-  private getDistanceMatrixPromise: (
-    distanceObject: Types.DistanceObject
-  ) => Promise<Types.DistanceMatrixResults> = (distanceObject) => {
-    return new Promise((resolve, reject) => {
-      this.DistanceMatrixService.getDistanceMatrix(
-        distanceObject,
-        (response, status) => {
-          if (status !== 'OK') {
-            reject(status);
-          } else {
-            resolve(response);
-          }
-        }
-      );
-    });
-  };
+		const placeData = await place.fetchFields({
+			fields: ["formattedAddress", "location"],
+		});
+		const destination = await placeData.place.toJSON();
 
-  private showGeocodedAddressOnMap: (
-    address: Types.GeocodePromise,
-    asDestination: boolean,
-    fastest?: boolean
-  ) => Promise<void> = async (address, asDestination, fastest) => {
-    const {
-      icons: { destination, origin, faster },
-    } = this.config;
-    const { currentMarkers } = this.Current;
+		const parsed = DestinationSchema.parse(destination);
 
-    const icon = asDestination ? destination : fastest ? faster : origin;
+		return {
+			id: parsed.resourceName,
+			name: parsed.formattedAddress,
+			address: parsed.formattedAddress,
+			coordinates: parsed.location,
+		};
+	};
+}
 
-    try {
-      const results = await this.geocodePromise(address);
-
-      this.Map?.fitBounds(
-        this.BoundsService.extend(results[0].geometry.location)
-      );
-      this.Current = {
-        ...this.Current,
-        // push the markers in place, we want an animation for the quicker route
-        currentMarkers: [
-          ...currentMarkers,
-          new this.MarkerService({
-            map: this.Map,
-            position: results[0].geometry.location,
-            icon: icon,
-            ...(fastest && { animation: this.Animation.DROP }),
-          }),
-        ],
-      };
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  private clearMarkers: () => void = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.Current.currentMarkers.forEach((marker: any) => marker.setMap(null));
-    this.Current.currentMarkers = [];
-  };
-
-  private setDistances: (distanceMatrix: Types.DistanceMatrixResults) => void =
-    async (distanceMatrix) => {
-      const { originAddresses, destinationAddresses, rows } = distanceMatrix;
-      const { origins } = this.Current;
-
-      this.clearMarkers();
-
-      // Geocode all addresses from origins
-      originAddresses.forEach(async (address) => {
-        await this.showGeocodedAddressOnMap(
-          {
-            address: address,
-          },
-          false
-        );
-      });
-
-      // Geocode all addresses from destination
-      destinationAddresses.forEach(async (address) => {
-        await this.showGeocodedAddressOnMap(
-          {
-            address: address,
-          },
-          true
-        );
-      });
-
-      const calculatedRoutes = rows.map(({ elements }, i): Types.Route => {
-        // gmaps returns the value in seconds
-        const duration = Math.floor(sToMin(elements[0].duration.value));
-        // gmaps returns the value in metres
-        const km = Math.floor(mToKm(elements[0].distance.value));
-        const cost = this.calculateCost(duration);
-
-        return {
-          name: origins[i].name,
-          address: originAddresses[i],
-          duration,
-          km,
-          cost,
-        };
-      });
-
-      this.Current = {
-        ...this.Current,
-        routes: calculatedRoutes,
-      };
-    };
-
-  private calculateQuickestRoute: () => Types.Route = () => {
-    const { routes } = this.Current;
-
-    if (!routes) {
-      throw new Error();
-    }
-
-    // we set the aggregator to equal the route on the first run
-    // then we compare the duration for each route with the existing one
-    // and swap if the new one if faster
-    return routes.reduce<Types.Route>(
-      (quickest, route) =>
-        quickest
-          ? quickest.duration <= route.duration
-            ? quickest
-            : route
-          : route,
-      // TODO: fix reduce types
-      null as unknown as Types.Route
-    );
-  };
-
-  private calculateCost: (routeMinutes: number) => string = (routeMinutes) => {
-    const { costPerMinute, hourBase, minimumCost } = this.config.costs;
-
-    // if car is 1 minute => truck is 1.5 minutes
-    const truckMinutes = routeMinutes * 1.5;
-
-    const costToRun = truckMinutes * costPerMinute;
-
-    // Find Cost
-    const cost = costToRun + hourBase;
-    // total or minimum
-    const resultingCost = minimumCost <= cost ? cost : minimumCost;
-
-    return resultingCost.toFixed(2);
-  };
-
-  public placeSelection: () => Promise<void> = async () => {
-    const place = this.Autocomplete?.getPlace();
-    const {
-      geometry: { location },
-      formatted_address: destinationName,
-    } = place;
-    const { distanceMatrixOptions } = this.config;
-    const { origins } = this.Current;
-    const originsNames = origins.map((origin) => origin.name);
-
-    // set destination
-    this.Current = {
-      ...this.Current,
-      destination: destinationName,
-    };
-
-    // get distances
-    const distanceMatrix = await this.getDistanceMatrixPromise({
-      origins: originsNames,
-      destinations: [location],
-      ...distanceMatrixOptions,
-      unitSystem: this.UnitSystem,
-    });
-    // show distances on map and set to state
-    this.setDistances(distanceMatrix);
-
-    // get quickest route
-    const quickestRoute = this.calculateQuickestRoute();
-    try {
-      // show the marker for quickest route on the map
-      await this.showGeocodedAddressOnMap(
-        { address: quickestRoute.address },
-        false,
-        true
-      );
-    } catch (e) {
-      console.error(e);
-    }
-    // set total
-    this.Current = {
-      ...this.Current,
-      cost: quickestRoute.cost,
-    };
-
-    this.dispatch();
-  };
+export type MapConfig = {
+	center: { lat: number; lng: number };
+	zoom: number;
+	mapId: string;
 };
 
-export { Driver };
+type Config = MapConfig & {
+	distanceMatrixOptions: {
+		travelMode: "DRIVING";
+		avoidHighways: boolean;
+		avoidTolls: boolean;
+	};
+};
+
+const markersConfig = {
+	default: {
+		icon: SlowestIcon,
+		className: ["map-marker"],
+		title: "Piu lento",
+	},
+	fastest: {
+		icon: FastestIcon,
+		className: ["fastest", "map-marker"],
+		title: "Piu veloce",
+	},
+	destination: {
+		icon: DestinationIcon,
+		className: ["destination", "map-marker"],
+		title: "Destinazione",
+	},
+};
+
+export class MapDriver {
+	private map: google.maps.Map | undefined = undefined;
+	private config: Config | undefined;
+	private orderedOrigins: Location[] = [];
+	private destination: Location | undefined;
+	private markers: google.maps.marker.AdvancedMarkerElement[] = [];
+	private line: google.maps.Polyline | undefined = undefined;
+
+	constructor() {}
+
+	public async init(container: HTMLElement, config: Config) {
+		if (!isMapsInitialised) {
+			setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+			isMapsInitialised = true;
+		}
+
+		this.config = config;
+
+		const { Map } = await importLibrary("maps");
+
+		this.map = new Map(container, this.config);
+	}
+
+	public async calculateDistances({
+		origins,
+		destination,
+	}: {
+		origins: Location[];
+		destination: Location;
+	}) {
+		if (!this.config) {
+			throw new Error("Map config not initialised");
+		}
+
+		this.destination = destination;
+
+		const { RouteMatrix } = await google.maps.importLibrary("routes");
+		const { UnitSystem } = await google.maps.importLibrary("core");
+
+		const request: google.maps.routes.ComputeRouteMatrixRequest = {
+			origins: origins.map((o) => o.coordinates),
+			destinations: [destination.coordinates],
+			...this.config.distanceMatrixOptions,
+			units: UnitSystem.METRIC,
+			fields: ["distanceMeters", "durationMillis"],
+		};
+
+		const { matrix } = await RouteMatrix.computeRouteMatrix(request);
+
+		const calculatedRoutes = matrix.rows.map((row, i) => {
+			if (!row.items[0].durationMillis || !row.items[0].distanceMeters) {
+				throw new Error("No duration or distance");
+			}
+
+			// gmaps returns the value in milliseconds
+			const duration = Math.ceil(msToMin(row.items[0].durationMillis));
+			// gmaps returns the value in metres
+			const km = Math.floor(mToKm(row.items[0].distanceMeters));
+
+			return {
+				id: origins[i].id,
+				duration,
+				km,
+			};
+		});
+
+		const orderedRoutes = calculatedRoutes.sort(
+			(a, b) => a.duration - b.duration,
+		);
+
+		this.orderedOrigins = orderedRoutes
+			.map((route) => origins.find((o) => o.id === route.id))
+			.filter((o): o is Location => o !== undefined);
+
+		this.paint();
+
+		return orderedRoutes;
+	}
+
+	private paint = async () => {
+		this.clearMap();
+
+		if (!this.destination || !this.orderedOrigins.length || !this.map) {
+			return;
+		}
+
+		const [fastestOrigin, ...restOrigins] = this.orderedOrigins;
+
+		const markers = [];
+
+		for (const origin of restOrigins) {
+			const marker = await this.getMarker(origin.coordinates, "default");
+			markers.push(marker);
+		}
+
+		const fastestMarker = await this.getMarker(
+			fastestOrigin.coordinates,
+			"fastest",
+		);
+		markers.push(fastestMarker);
+
+		const destinationMarker = await this.getMarker(
+			this.destination.coordinates,
+			"destination",
+		);
+		markers.push(destinationMarker);
+
+		this.markers = markers;
+
+		await this.drawLine();
+		await this.extendBounds();
+	};
+
+	private getMarker = async (
+		address: {
+			lat: number;
+			lng: number;
+		},
+		type: "default" | "fastest" | "destination",
+	) => {
+		const { AdvancedMarkerElement } = await importLibrary("marker");
+
+		const icon = markersConfig[type].icon;
+		const classNames = markersConfig[type].className;
+		const title = markersConfig[type].title;
+
+		const parser = new DOMParser();
+
+		// A marker with a custom inline SVG.
+		const pinSvg = parser.parseFromString(
+			icon,
+			"image/svg+xml",
+		).documentElement;
+		pinSvg.classList.add(...classNames);
+
+		const marker = new AdvancedMarkerElement({
+			map: this.map,
+			position: address,
+			title,
+			anchorLeft: "-50%",
+			anchorTop: "-50%",
+		});
+		marker.append(pinSvg);
+
+		return marker;
+	};
+
+	private clearMap: () => void = () => {
+		this.markers.forEach((marker) => {
+			marker.map = null;
+		});
+		this.markers = [];
+
+		if (this.line) {
+			this.line.setMap(null);
+			this.line = undefined;
+		}
+	};
+
+	private extendBounds = async () => {
+		if (!this.destination || !this.orderedOrigins.length || !this.map) {
+			return;
+		}
+
+		const { LatLngBounds } = await importLibrary("core");
+
+		const bounds = new LatLngBounds();
+		for (const position of [...this.orderedOrigins, this.destination]) {
+			this.map.fitBounds(bounds.extend(position.coordinates), 60);
+		}
+	};
+
+	private drawLine = async () => {
+		if (!this.map || !this.orderedOrigins.length || !this.destination) {
+			return;
+		}
+
+		const { Polyline } = await importLibrary("maps");
+
+		const [fastestOrigin] = this.orderedOrigins;
+
+		const path = new Polyline({
+			map: this.map,
+			// TODO: switch to lat, lng
+			path: [fastestOrigin.coordinates, this.destination.coordinates],
+			strokeColor: "#1e9542",
+			strokeOpacity: 1.0,
+			strokeWeight: 2,
+		});
+
+		this.line = path;
+	};
+}

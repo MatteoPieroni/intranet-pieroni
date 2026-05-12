@@ -1,30 +1,47 @@
 .route {
-  border-radius: var(--border-radius);
-  padding: 1rem;
-  margin-block-end: 1rem;
-  background: var(--background-0);
+	border-radius: var(--border-radius);
+	padding: 1rem;
+	margin-block-end: 1rem;
+	background: var(--background-0);
 
-  &[data-quickest] {
-    background-color: var(--background-success);
-    color: var(--text-success);
-  }
+	&[data-quickest] {
+		background-color: var(--background-success);
+		color: var(--text-success);
+	}
 }
 
 .route h2 {
-  margin-block-end: 0.75rem;
-  font-size: 1.2em;
+	margin-block-end: 0.75rem;
+	font-size: 1.2em;
 }
 
 .destination {
-  margin-block-start: 1rem;
-  margin-block-end: 0.5rem;
-  font-size: 1.2em;
+	margin-block-start: 1rem;
+	margin-block-end: 0.5rem;
+	font-size: 1.2em;
 }
 
 .cost {
-  margin-block-end: 0.5rem;
+	margin-block-end: 0.5rem;
 }
 
 .otherDetails li {
-  margin-block-end: 0.25rem;
+	margin-block-end: 0.25rem;
+}
+
+:global(.map-marker) {
+	transform: scale(2);
+	fill: var(--map-marker-base);
+
+	&:global(.destination) {
+		fill: var(--map-marker-destination);
+	}
+
+	&:global(.destination .base) {
+		fill: var(--map-marker-base);
+	}
+
+	&:global(.fastest) {
+		fill: var(--map-marker-fastest);
+	}
 }
