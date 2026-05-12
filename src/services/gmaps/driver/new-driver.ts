@@ -3,6 +3,11 @@ import Zod from "zod";
 
 import { Location } from "../transportCost";
 import { mToKm, msToMin } from "@/utils/formatMeasures";
+import {
+	DestinationIcon,
+	FastestIcon,
+	SlowestIcon,
+} from "@/components/icons/map";
 
 const DestinationSchema = Zod.object({
 	resourceName: Zod.string(),
@@ -13,6 +18,8 @@ const DestinationSchema = Zod.object({
 	}),
 });
 
+let isMapsInitialised = false;
+
 export class InputDriver {
 	constructor() {}
 
@@ -20,8 +27,12 @@ export class InputDriver {
 		container: HTMLElement,
 		listener: (destination: Location) => void,
 	) => {
-		setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+		if (!isMapsInitialised) {
+			setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+			isMapsInitialised = true;
+		}
 
+		// @ts-expect-error
 		const { PlaceAutocompleteElement } = await importLibrary("places");
 
 		const autocompleteElement = new PlaceAutocompleteElement({
@@ -30,10 +41,15 @@ export class InputDriver {
 
 		container.appendChild(autocompleteElement);
 
-		autocompleteElement.addEventListener("gmp-select", async (event) => {
-			const data = await this.placeSelected(event);
-			listener(data);
-		});
+		autocompleteElement.addEventListener(
+			"gmp-select",
+			async (
+				event: google.maps.places.PlaceAutocompleteElementEventMap["gmp-select"],
+			) => {
+				const data = await this.placeSelected(event);
+				listener(data);
+			},
+		);
 	};
 
 	placeSelected = async (
@@ -67,18 +83,41 @@ export type MapConfig = {
 	mapId: string;
 };
 
+const markersConfig = {
+	default: {
+		icon: SlowestIcon,
+		className: ["map-marker"],
+		title: "Piu lento",
+	},
+	fastest: {
+		icon: FastestIcon,
+		className: ["fastest", "map-marker"],
+		title: "Piu veloce",
+	},
+	destination: {
+		icon: DestinationIcon,
+		className: ["destination", "map-marker"],
+		title: "Destinazione",
+	},
+};
+
 export class MapDriver {
 	private map: google.maps.Map | undefined = undefined;
 	private config: MapConfig | undefined;
-	private origins: Location[] = [];
+	private orderedOrigins: Location[] = [];
 	private destination: Location | undefined;
+	private markers: google.maps.marker.AdvancedMarkerElement[] = [];
+	private line: google.maps.Polyline | undefined = undefined;
 
 	constructor() {}
 
 	public async init(container: HTMLElement, config: MapConfig) {
-		this.config = config;
+		if (!isMapsInitialised) {
+			setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+			isMapsInitialised = true;
+		}
 
-		setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
+		this.config = config;
 
 		const { Map } = await importLibrary("maps");
 
@@ -99,10 +138,9 @@ export class MapDriver {
 		origins: Location[];
 		destination: Location;
 	}) {
-		this.origins = origins;
 		this.destination = destination;
 
-		const { Route, RouteMatrix } = await google.maps.importLibrary("routes");
+		const { RouteMatrix } = await google.maps.importLibrary("routes");
 
 		const request: google.maps.routes.ComputeRouteMatrixRequest = {
 			origins: origins.map((o) => ({
@@ -139,10 +177,145 @@ export class MapDriver {
 			};
 		});
 
+		const orderedRoutes = calculatedRoutes.sort(
+			(a, b) => a.duration - b.duration,
+		);
+
+		this.orderedOrigins = orderedRoutes
+			.map((route) => origins.find((o) => o.id === route.id))
+			.filter((o): o is Location => o !== undefined);
+
 		this.paint();
 
-		return calculatedRoutes;
+		return orderedRoutes;
 	}
 
-	private paint = () => {};
+	private paint = async () => {
+		this.clearMap();
+
+		if (!this.destination || !this.orderedOrigins.length || !this.map) {
+			return;
+		}
+
+		const [fastestOrigin, ...restOrigins] = this.orderedOrigins;
+
+		const markers = [];
+
+		for (const origin of restOrigins) {
+			const marker = await this.getMarker(origin.coordinates, "default");
+			markers.push(marker);
+		}
+
+		const fastestMarker = await this.getMarker(
+			fastestOrigin.coordinates,
+			"fastest",
+		);
+		markers.push(fastestMarker);
+
+		const destinationMarker = await this.getMarker(
+			this.destination.coordinates,
+			"destination",
+		);
+		markers.push(destinationMarker);
+
+		this.markers = markers;
+
+		await this.drawLine();
+		await this.extendBounds();
+	};
+
+	private getMarker = async (
+		address: {
+			latitude: number;
+			longitude: number;
+		},
+		type: "default" | "fastest" | "destination",
+	) => {
+		const { AdvancedMarkerElement } = await importLibrary("marker");
+
+		const icon = markersConfig[type].icon;
+		const classNames = markersConfig[type].className;
+		const title = markersConfig[type].title;
+
+		const parser = new DOMParser();
+
+		// A marker with a custom inline SVG.
+		const pinSvg = parser.parseFromString(
+			icon,
+			"image/svg+xml",
+		).documentElement;
+		pinSvg.classList.add(...classNames);
+
+		const marker = new AdvancedMarkerElement({
+			map: this.map,
+			position: { lat: address.latitude, lng: address.longitude },
+			title,
+			anchorLeft: "-50%",
+			anchorTop: "-50%",
+		});
+		marker.append(pinSvg);
+
+		return marker;
+	};
+
+	private clearMap: () => void = () => {
+		this.markers.forEach((marker) => {
+			marker.map = null;
+		});
+		this.markers = [];
+
+		if (this.line) {
+			this.line.setMap(null);
+			this.line = undefined;
+		}
+	};
+
+	private extendBounds = async () => {
+		if (!this.destination || !this.orderedOrigins.length || !this.map) {
+			return;
+		}
+
+		const { LatLngBounds } = await importLibrary("core");
+
+		const bounds = new LatLngBounds();
+		for (const position of [...this.orderedOrigins, this.destination]) {
+			this.map.fitBounds(
+				bounds.extend({
+					lat: position.coordinates.latitude,
+					lng: position.coordinates.longitude,
+				}),
+				60,
+			);
+		}
+	};
+
+	private drawLine = async () => {
+		if (!this.map || !this.orderedOrigins.length || !this.destination) {
+			return;
+		}
+
+		const { Polyline } = await importLibrary("maps");
+
+		const [fastestOrigin] = this.orderedOrigins;
+
+		const path = new Polyline({
+			map: this.map,
+			// TODO: switch to lat, lng
+			path: [
+				{
+					lat: fastestOrigin.coordinates.latitude,
+					lng: fastestOrigin.coordinates.longitude,
+				},
+				{
+					lat: this.destination.coordinates.latitude,
+					lng: this.destination.coordinates.longitude,
+				},
+			],
+			strokeColor: "#1e9542",
+			strokeOpacity: 1.0,
+			strokeWeight: 2,
+		});
+
+		this.line = path;
+	};
 }

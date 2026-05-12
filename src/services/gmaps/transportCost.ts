@@ -57,7 +57,7 @@ export type Location = {
 };
 
 type Route = {
-	id: string;
+	name: string;
 	km: number;
 	duration: number;
 	cost: string;
@@ -126,13 +126,10 @@ export const TransportCost = class {
 
 		const routesWithCost = routes.map((route) => ({
 			...route,
-			name: this.config.origins.find((o) => o.id === route.id)?.name,
+			name: this.config.origins.find((o) => o.id === route.id)?.name || "",
 			cost: this.calculateCost(route.duration),
 		}));
-		const orderedRoutes = routesWithCost.sort((a, b) =>
-			a.cost.localeCompare(b.cost),
-		);
-		this.State.routes = orderedRoutes;
+		this.State.routes = routesWithCost;
 
 		this.emit();
 	};
@@ -159,7 +156,6 @@ export const TransportCost = class {
 
 	private emit = () => {
 		this.State = { ...this.State };
-		console.log("emit", { state: this.State, listeners: this.Listeners });
 		this.Listeners.forEach((listener) => listener());
 	};
 

@@ -58,8 +58,6 @@ export const Map = ({
 		});
 	}, [transportCostMinimum, transportCostPerMinute, transportHourBase]);
 
-	console.log({ snapshot });
-
 	const { destination, routes } = snapshot;
 	const [quickestRoute, ...remainingRoutes] = routes;
 
