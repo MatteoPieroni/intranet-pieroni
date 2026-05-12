@@ -80,14 +80,6 @@ export type MapConfig = {
 	mapId: string;
 };
 
-type Config = MapConfig & {
-	distanceMatrixOptions: {
-		travelMode: "DRIVING";
-		avoidHighways: boolean;
-		avoidTolls: boolean;
-	};
-};
-
 const markersConfig = {
 	default: {
 		icon: SlowestIcon,
@@ -108,7 +100,7 @@ const markersConfig = {
 
 export class MapDriver {
 	private map: google.maps.Map | undefined = undefined;
-	private config: Config | undefined;
+	private config: MapConfig | undefined;
 	private orderedOrigins: Location[] = [];
 	private destination: Location | undefined;
 	private markers: google.maps.marker.AdvancedMarkerElement[] = [];
@@ -116,7 +108,7 @@ export class MapDriver {
 
 	constructor() {}
 
-	public async init(container: HTMLElement, config: Config) {
+	public async init(container: HTMLElement, config: MapConfig) {
 		if (!isMapsInitialised) {
 			setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS });
 			isMapsInitialised = true;
@@ -148,7 +140,6 @@ export class MapDriver {
 		const request: google.maps.routes.ComputeRouteMatrixRequest = {
 			origins: origins.map((o) => o.coordinates),
 			destinations: [destination.coordinates],
-			...this.config.distanceMatrixOptions,
 			units: UnitSystem.METRIC,
 			fields: ["distanceMeters", "durationMillis"],
 		};

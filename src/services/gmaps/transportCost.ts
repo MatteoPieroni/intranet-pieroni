@@ -22,11 +22,6 @@ export const mapConfig = {
 			},
 		},
 	],
-	distanceMatrixOptions: {
-		travelMode: "DRIVING" as const,
-		avoidHighways: false,
-		avoidTolls: false,
-	},
 	mapConfig: {
 		center: {
 			lat: 43.9084255,
@@ -67,11 +62,6 @@ type Config = {
 	mapConfig: MapConfig;
 	origins: Location[];
 	costs?: CostConfig;
-	distanceMatrixOptions: {
-		travelMode: "DRIVING";
-		avoidHighways: boolean;
-		avoidTolls: boolean;
-	};
 };
 
 type CostConfig = {
@@ -109,7 +99,6 @@ export const TransportCost = class {
 		this.InputDriver.init(inputContainer, this.onInputLocation);
 		this.MapDriver.init(mapContainer, {
 			...this.config.mapConfig,
-			distanceMatrixOptions: this.config.distanceMatrixOptions,
 		});
 		this.config.costs = costConfig;
 	};
