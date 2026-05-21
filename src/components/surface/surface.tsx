@@ -1,3 +1,4 @@
+import { HTMLAttributes } from "react";
 import styles from "./surface.module.css";
 
 type SurfaceProps = {
@@ -7,7 +8,7 @@ type SurfaceProps = {
 	interactive?: boolean;
 	radius?: "md";
 	children: React.ReactNode;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 const levelMap = {
 	0: styles.sLevel0,
@@ -25,6 +26,7 @@ export const Surface = ({
 	children,
 	interactive = false,
 	radius = "md",
+	...props
 }: SurfaceProps) => {
 	const classes = [
 		styles.surface,
@@ -39,7 +41,7 @@ export const Surface = ({
 		.join(" ");
 
 	return (
-		<div className={classes}>
+		<div className={classes} {...props}>
 			<div className={styles.surfaceContent}>{children}</div>
 		</div>
 	);
