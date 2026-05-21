@@ -1,0 +1,139 @@
+/* ─────────────────────────────────────────
+   Core structure
+   ───────────────────────────────────────── */
+
+.surface {
+	--surface-bg-0: var(--color-0);
+	--surface-bg-1: var(--color-1);
+	--surface-bg-2: var(--color-2);
+	--surface-bg-3: var(--color-3);
+	--surface-bg-4: var(--color-4);
+	--surface-bg-5: var(--color-5);
+
+	position: relative;
+	box-sizing: border-box;
+
+	/* Background layer — paints fill + outline ring */
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		z-index: 0;
+	}
+
+	/* Overlay layer — hover/press tints */
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		z-index: 1;
+		opacity: 0;
+		transition: opacity 120ms ease;
+		pointer-events: none;
+	}
+}
+
+/* Content wrapper — lifts children above bg + overlay */
+.surfaceContent {
+	position: relative;
+	z-index: 2;
+	height: 100%;
+}
+
+.sRadiusMd {
+	border-radius: var(--radius-md);
+}
+
+/* ─────────────────────────────────────────
+   Solid variant — levels 1–5
+   ───────────────────────────────────────── */
+
+.sLevel0::before {
+	background: var(--surface-bg-0);
+}
+.sLevel1::before {
+	background: var(--surface-bg-1);
+}
+.sLevel2::before {
+	background: var(--surface-bg-2);
+}
+.sLevel3::before {
+	background: var(--surface-bg-3);
+}
+.sLevel3::before {
+	background: var(--surface-bg-3);
+}
+.sLevel4::before {
+	background: var(--surface-bg-4);
+}
+.sLevel5::before {
+	background: var(--surface-bg-5);
+}
+
+/* ─────────────────────────────────────────
+   Solid-fill variant
+   ───────────────────────────────────────── */
+
+.s-solid-fill::before {
+	background: var(--surface-accent);
+}
+
+.s-solid-fill .surface-content {
+	color: var(--surface-accent-text);
+}
+
+/* ─────────────────────────────────────────
+   Outline ring
+   ───────────────────────────────────────── */
+
+/* For solid levels */
+.sOutline::before {
+	box-shadow: inset 0 0 0 1px var(--surface-outline);
+}
+
+/* For solid-fill (stays legible on accent bg) */
+.sOutlineFill::before {
+	box-shadow: inset 0 0 0 1px var(--surface-accent-outline);
+}
+
+/* ─────────────────────────────────────────
+   Interactive states (optional)
+   ───────────────────────────────────────── */
+
+.sHoverable:hover::after {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.05);
+
+	@media (prefers-color-scheme: dark) {
+		background: rgba(255, 255, 255, 0.06);
+	}
+}
+
+.sClickable {
+	cursor: pointer;
+	transition: transform 100ms ease;
+	-webkit-tap-highlight-color: transparent;
+
+	&:active {
+		transform: scale(0.98);
+	}
+
+	&:active::after {
+		opacity: 1;
+		background: rgba(0, 0, 0, 0.09);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		&:active::after {
+			background: rgba(255, 255, 255, 0.11);
+		}
+	}
+}
+
+/* Force pressed state (controlled) */
+.sPressed::after {
+	opacity: 1 !important;
+	background: rgba(0, 0, 0, 0.09) !important;
+}

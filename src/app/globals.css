@@ -80,6 +80,7 @@ h6 {
 	--border-highlight: #ee8900;
 	--border-radius: 5px;
 	--border-radius-smaller: 2px;
+	--radius-md: 0.75rem;
 	--text: #0d1b42;
 	--text-low-contrast: #cfcfcf;
 	--focus-ring: 2px solid var(--focus-ring-color);
@@ -116,6 +117,7 @@ h6 {
 	--map-marker-base: #646464;
 	--map-marker-destination: #ea4335;
 	--map-marker-fastest: #1e9542;
+	--surface-outline: rgba(0, 0, 0, 0.12);
 }
 
 /**
@@ -127,8 +129,15 @@ h6 {
 */
 :root:not(:has([data-theme="light"])) {
 	@media (prefers-color-scheme: dark) {
-		--background-0: #050a18;
-		--background-1: #09112a;
+		--color-0: oklch(12% 0.052 268);
+		--color-1: oklch(18.67% 0.052 268);
+		--color-2: oklch(25% 0.052 268);
+		--color-3: oklch(32% 0.052 268);
+		--color-4: oklch(50% 0.052 268);
+		--color-5: oklch(65% 0.052 268);
+
+		--background-0: var(--color-0);
+		--background-1: var(--color-1);
 		--border-0: #09112a;
 		--border-highlight: #f19c29;
 		--text: #f1f1f1;
@@ -143,6 +152,7 @@ h6 {
 		--button-empty-text: #f1f1f1;
 		--star-color: #efcf00;
 		--timeline-border: 1px dotted #475685;
+		--surface-outline: rgba(255, 255, 255, 0.12);
 	}
 
 	&:has([data-theme="dark"]) {
@@ -395,4 +405,16 @@ table td {
 	to {
 		background-position-x: -200%;
 	}
+}
+
+/* ─────────────────────────────────────────
+   Surface component — solid & solid-fill
+   ───────────────────────────────────────── */
+
+/* ── Customise these ── */
+:root {
+	/* Base colour for solid-fill variant */
+	--surface-accent: #1d4ed8;
+	--surface-accent-text: #ffffff;
+	--surface-accent-outline: rgba(255, 255, 255, 0.25);
 }
