@@ -1,244 +1,245 @@
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { forbidden, notFound } from 'next/navigation';
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { forbidden, notFound } from "next/navigation";
 
-import styles from './page.module.css';
-import template from '../../header-template.module.css';
-import { cachedGetUser, removeUserUpdate } from '@/services/firebase/server';
-import { RiscossiForm } from '@/components/riscosso-form/riscosso-form';
-import { PrintButton } from '@/components/print-button/print-button';
-import { formatDate } from '@/utils/formatDate';
-import { RiscossoCheck } from '@/components/riscosso-form/riscosso-check';
-import { checkCanEditRiscossi } from '@/services/firebase/server/permissions';
-import { AdminBadge } from '@/components/admin-badge/admin-badge';
-import { cachedGetUsers, cachedGetRiscosso } from '@/services/cache/firestore';
+import styles from "./page.module.css";
+import template from "../../header-template.module.css";
+import { cachedGetUser, removeUserUpdate } from "@/services/firebase/server";
+import { RiscossiForm } from "@/components/riscosso-form/riscosso-form";
+import { PrintButton } from "@/components/print-button/print-button";
+import { formatDate } from "@/utils/formatDate";
+import { RiscossoCheck } from "@/components/riscosso-form/riscosso-check";
+import { checkCanEditRiscossi } from "@/services/firebase/server/permissions";
+import { AdminBadge } from "@/components/admin-badge/admin-badge";
+import { cachedGetUsers, cachedGetRiscosso } from "@/services/cache/firestore";
+import { Surface } from "@/components/surface/surface";
 
 export const metadata: Metadata = {
-  title: 'Riscosso - Intranet Pieroni srl',
-  description: 'Intranet - riscosso',
+	title: "Riscosso - Intranet Pieroni srl",
+	description: "Intranet - riscosso",
 };
 
 const companies = {
-  pieroni: {
-    label: 'Pieroni srl',
-    img: 'pieroni-logo.jpg',
-  },
-  'pieroni-mostra': {
-    label: 'Pieroni in mostra',
-    img: 'pieroni-mostra-logo.jpg',
-  },
-  pellet: { label: 'Pellet', img: 'pieroni-pellet-logo.jpg' },
+	pieroni: {
+		label: "Pieroni srl",
+		img: "pieroni-logo.jpg",
+	},
+	"pieroni-mostra": {
+		label: "Pieroni in mostra",
+		img: "pieroni-mostra-logo.jpg",
+	},
+	pellet: { label: "Pellet", img: "pieroni-pellet-logo.jpg" },
 };
 
 const paymentMethods = {
-  assegno: 'Assegno',
-  contanti: 'Contanti',
-  bancomat: 'Bancomat',
+	assegno: "Assegno",
+	contanti: "Contanti",
+	bancomat: "Bancomat",
 };
-const documentTypes = { fattura: 'Fattura', DDT: 'DDT', impegno: 'Impegno' };
+const documentTypes = { fattura: "Fattura", DDT: "DDT", impegno: "Impegno" };
 
 export default async function Riscossi({
-  params,
+	params,
 }: {
-  params: Promise<{ id: string }>;
+	params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+	const { id } = await params;
 
-  const authHeader = (await headers()).get('Authorization');
-  const { currentUser } = await cachedGetUser(authHeader);
+	const authHeader = (await headers()).get("Authorization");
+	const { currentUser } = await cachedGetUser(authHeader);
 
-  if (!currentUser) {
-    throw new Error('User not found');
-  }
+	if (!currentUser) {
+		throw new Error("User not found");
+	}
 
-  const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
+	const canEditRiscossi = checkCanEditRiscossi(currentUser.permissions);
 
-  const [riscosso, users] = await Promise.all([
-    cachedGetRiscosso(authHeader, id),
-    canEditRiscossi ? cachedGetUsers(authHeader) : undefined,
-  ]);
+	const [riscosso, users] = await Promise.all([
+		cachedGetRiscosso(authHeader, id),
+		canEditRiscossi ? cachedGetUsers(authHeader) : undefined,
+	]);
 
-  if ('errorCode' in riscosso) {
-    if (riscosso.errorCode === 404) {
-      return notFound();
-    }
+	if ("errorCode" in riscosso) {
+		if (riscosso.errorCode === 404) {
+			return notFound();
+		}
 
-    if (riscosso.errorCode === 403) {
-      return forbidden();
-    }
+		if (riscosso.errorCode === 403) {
+			return forbidden();
+		}
 
-    throw new Error();
-  }
+		throw new Error();
+	}
 
-  const {
-    company,
-    date,
-    client,
-    docs,
-    total,
-    paymentMethod,
-    paymentChequeNumber,
-    paymentChequeValue,
-    verification,
-  } = riscosso;
-  const isAlreadyChecked = verification.isVerified;
-  const isArchive = 'isArchive' in riscosso;
+	const {
+		company,
+		date,
+		client,
+		docs,
+		total,
+		paymentMethod,
+		paymentChequeNumber,
+		paymentChequeValue,
+		verification,
+	} = riscosso;
+	const isAlreadyChecked = verification.isVerified;
+	const isArchive = "isArchive" in riscosso;
 
-  try {
-    // delete user updates relative to riscosso on page view
-    await removeUserUpdate(authHeader, currentUser.id, {
-      entityType: 'riscossi',
-      entityId: id,
-    });
-  } catch (e) {
-    console.error(e);
-  }
+	try {
+		// delete user updates relative to riscosso on page view
+		await removeUserUpdate(authHeader, currentUser.id, {
+			entityType: "riscossi",
+			entityId: id,
+		});
+	} catch (e) {
+		console.error(e);
+	}
 
-  const userVerification = users?.find(
-    (user) => user.id === verification.verifyAuthor
-  );
+	const userVerification = users?.find(
+		(user) => user.id === verification.verifyAuthor,
+	);
 
-  return (
-    <main className={template.page}>
-      <div className={template.header}>
-        <h1 className={styles.noPrint}>Riscosso {id}</h1>
-      </div>
+	return (
+		<main className={template.page}>
+			<div className={template.header}>
+				<h1 className={styles.noPrint}>Riscosso {id}</h1>
+			</div>
 
-      <div className={styles.container}>
-        {canEditRiscossi && (
-          <div className={`${styles.section} ${styles.noPrint}`}>
-            <div className={styles.sectionTitleContainer}>
-              <h2>Gestisci documento</h2>
-              <AdminBadge />
-            </div>
+			<div className={styles.container}>
+				{canEditRiscossi && (
+					<Surface level={0} className={`${styles.section} ${styles.noPrint}`}>
+						<div className={styles.sectionTitleContainer}>
+							<h2>Gestisci documento</h2>
+							<AdminBadge />
+						</div>
 
-            {isAlreadyChecked && (
-              <p className={styles.confirmation}>
-                Confermato da {userVerification?.email} il{' '}
-                {formatDate(verification.verifiedAt)}
-              </p>
-            )}
+						{isAlreadyChecked && (
+							<p className={styles.confirmation}>
+								Confermato da {userVerification?.email} il{" "}
+								{formatDate(verification.verifiedAt)}
+							</p>
+						)}
 
-            {!isArchive && (
-              <div>
-                <RiscossoCheck id={id} isVerified={verification.isVerified} />
-              </div>
-            )}
-          </div>
-        )}
+						{!isArchive && (
+							<div>
+								<RiscossoCheck id={id} isVerified={verification.isVerified} />
+							</div>
+						)}
+					</Surface>
+				)}
 
-        <div className={styles.section}>
-          <h2 className={styles.noPrint}>Documento</h2>
-          {isAlreadyChecked && (
-            <p className={styles.confirmation}>
-              Confermato il {formatDate(verification.verifiedAt)}
-            </p>
-          )}
-          <div className={`${styles.actionBar} ${styles.noPrint}`}>
-            <PrintButton />
-            {!isAlreadyChecked && canEditRiscossi && (
-              <a href="#edit" className="button">
-                Modifica
-              </a>
-            )}
-          </div>
-          <div className={styles.documentContainer}>
-            <div className={styles.document}>
-              <div className={styles.documentRow}>
-                <p className={styles.documentTitle}>
-                  {companies[company].label}
-                </p>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/assets/${companies[company].img}`} alt="" />
-              </div>
-              <div className={styles.documentRow}>
-                <p>
-                  Loc. Pastino, 67 – Diecimo
-                  <br />
-                  55020 Borgo a Mozzano (LU)
-                  <br />
-                  P. IVA 01798100465
-                </p>
+				<Surface level={0} className={styles.section}>
+					<h2 className={styles.noPrint}>Documento</h2>
+					{isAlreadyChecked && (
+						<p className={styles.confirmation}>
+							Confermato il {formatDate(verification.verifiedAt)}
+						</p>
+					)}
+					<div className={`${styles.actionBar} ${styles.noPrint}`}>
+						<PrintButton />
+						{!isAlreadyChecked && canEditRiscossi && (
+							<a href="#edit" className="button">
+								Modifica
+							</a>
+						)}
+					</div>
+					<Surface level={1} className={styles.documentContainer}>
+						<div className={styles.document}>
+							<div className={styles.documentRow}>
+								<p className={styles.documentTitle}>
+									{companies[company].label}
+								</p>
+								{/* eslint-disable-next-line @next/next/no-img-element */}
+								<img src={`/assets/${companies[company].img}`} alt="" />
+							</div>
+							<div className={styles.documentRow}>
+								<p>
+									Loc. Pastino, 67 – Diecimo
+									<br />
+									55020 Borgo a Mozzano (LU)
+									<br />
+									P. IVA 01798100465
+								</p>
 
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">Data</th>
-                      <th scope="col">Cliente</th>
-                      <th scope="col">Numero</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{formatDate(date)}</td>
-                      <td>{client}</td>
-                      <th scope="row">{id}</th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className={`${styles.documentRow} ${styles.alignCenter}`}>
-                <p className={styles.documentSubtitle}>Riscosso</p>
-              </div>
+								<table>
+									<thead>
+										<tr>
+											<th scope="col">Data</th>
+											<th scope="col">Cliente</th>
+											<th scope="col">Numero</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>{formatDate(date)}</td>
+											<td>{client}</td>
+											<th scope="row">{id}</th>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div className={`${styles.documentRow} ${styles.alignCenter}`}>
+								<p className={styles.documentSubtitle}>Riscosso</p>
+							</div>
 
-              <div className={styles.documentRow}>
-                <p className={styles.documentSectionTitle}>Riferimento</p>
-              </div>
-              <div className={`${styles.documentRow} ${styles.docsContainer}`}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">Numero</th>
-                      <th scope="col">Data</th>
-                      <th scope="col">Tipo</th>
-                      <th scope="col">Importo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {docs.map((doc) => (
-                      <tr key={doc.number}>
-                        <th scope="row">{doc.number}</th>
-                        <td>{formatDate(doc.date)}</td>
-                        <td>{documentTypes[doc.type]}</td>
-                        <td className="number">{doc.total} €</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+							<div className={styles.documentRow}>
+								<p className={styles.documentSectionTitle}>Riferimento</p>
+							</div>
+							<div className={`${styles.documentRow} ${styles.docsContainer}`}>
+								<table>
+									<thead>
+										<tr>
+											<th scope="col">Numero</th>
+											<th scope="col">Data</th>
+											<th scope="col">Tipo</th>
+											<th scope="col">Importo</th>
+										</tr>
+									</thead>
+									<tbody>
+										{docs.map((doc) => (
+											<tr key={doc.number}>
+												<th scope="row">{doc.number}</th>
+												<td>{formatDate(doc.date)}</td>
+												<td>{documentTypes[doc.type]}</td>
+												<td className="number">{doc.total} €</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
 
-              <div className={`${styles.documentRow} ${styles.alignRight}`}>
-                Totale pagato {total} €
-              </div>
-              <div className={styles.documentRow}>
-                <p className={styles.documentSectionTitle}>
-                  Modalità pagamento
-                </p>
-              </div>
-              <div className={styles.documentRow}>
-                {paymentMethods[paymentMethod]}
-                {paymentMethod === 'assegno' && (
-                  <>
-                    <br />
-                    N° assegno: {paymentChequeNumber} - Importo{' '}
-                    {paymentChequeValue}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        {!isAlreadyChecked && canEditRiscossi && (
-          <div id="edit" className={`${styles.noPrint} ${styles.section}`}>
-            <div className={styles.sectionTitleContainer}>
-              <h2>Modifica</h2>
-              <AdminBadge />
-            </div>
+							<div className={`${styles.documentRow} ${styles.alignRight}`}>
+								Totale pagato {total} €
+							</div>
+							<div className={styles.documentRow}>
+								<p className={styles.documentSectionTitle}>
+									Modalità pagamento
+								</p>
+							</div>
+							<div className={styles.documentRow}>
+								{paymentMethods[paymentMethod]}
+								{paymentMethod === "assegno" && (
+									<>
+										<br />
+										N° assegno: {paymentChequeNumber} - Importo{" "}
+										{paymentChequeValue}
+									</>
+								)}
+							</div>
+						</div>
+					</Surface>
+				</Surface>
+				{!isAlreadyChecked && canEditRiscossi && (
+					<div id="edit" className={`${styles.noPrint} ${styles.section}`}>
+						<div className={styles.sectionTitleContainer}>
+							<h2>Modifica</h2>
+							<AdminBadge />
+						</div>
 
-            <RiscossiForm riscosso={riscosso} />
-          </div>
-        )}
-      </div>
-    </main>
-  );
+						<RiscossiForm riscosso={riscosso} />
+					</div>
+				)}
+			</div>
+		</main>
+	);
 }
