@@ -12,7 +12,6 @@
 .section {
 	margin-block-end: 1.5rem;
 	padding: 1rem;
-	background-color: var(--background-0);
 }
 
 .sectionTitleContainer {
