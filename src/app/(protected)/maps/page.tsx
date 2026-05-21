@@ -6,6 +6,7 @@ import { getConfig, cachedGetUser } from "@/services/firebase/server";
 import styles from "./page.module.css";
 import { HomeIcon } from "@/components/icons/home";
 import { HeaderModal } from "@/components/header/header";
+import { Surface } from "@/components/surface/surface";
 
 const LazyMap = dynamic(() =>
 	import("@/components/map/map").then((mod) => mod.Map),
@@ -45,12 +46,12 @@ export default async function Maps() {
 			</div>
 			<div className={styles.container}>
 				<div className={styles.panel}>
-					<div className={styles.search}>
+					<Surface level={0} className={styles.search}>
 						<label htmlFor="autocomplete">
 							Inserisci l&#39;indirizzo
 							<div id="autocomplete-container"></div>
 						</label>
-					</div>
+					</Surface>
 					<LazyMap
 						transportCostMinimum={config.transportCostMinimum}
 						transportCostPerMinute={config.transportCostPerMinute}

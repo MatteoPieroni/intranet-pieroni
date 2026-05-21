@@ -1,3 +1,4 @@
+import { Surface } from "../surface/surface";
 import styles from "./map.module.css";
 
 interface RouteProps {
@@ -13,7 +14,7 @@ interface RouteProps {
 export const Route = ({ route, quickest }: RouteProps) => {
 	const { name, cost, km, duration } = route;
 	return (
-		<div className={styles.route} data-quickest={quickest}>
+		<Surface level={1} className={styles.route} data-quickest={quickest}>
 			<h2>{name}</h2>
 			<p className={styles.cost}>
 				<strong>{cost}€</strong> di trasporto
@@ -26,6 +27,6 @@ export const Route = ({ route, quickest }: RouteProps) => {
 					<strong>{km} km</strong> di distanza
 				</li>
 			</ul>
-		</div>
+		</Surface>
 	);
 };

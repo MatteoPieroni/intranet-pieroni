@@ -11,6 +11,7 @@ import {
 } from "@/services/gmaps";
 import { Route } from "./route";
 import styles from "./map.module.css";
+import { Surface } from "../surface/surface";
 
 type MapProps = {
 	transportCostMinimum: number;
@@ -68,7 +69,7 @@ export const Map = ({
 	return (
 		routes &&
 		routes.length > 0 && (
-			<div className={styles.results}>
+			<Surface level={0} className={styles.results}>
 				<h2 className={styles.destination}>
 					Destinazione
 					<br />
@@ -78,7 +79,7 @@ export const Map = ({
 				{remainingRoutes?.map((route) => (
 					<Route key={route.name} route={route} />
 				))}
-			</div>
+			</Surface>
 		)
 	);
 };
