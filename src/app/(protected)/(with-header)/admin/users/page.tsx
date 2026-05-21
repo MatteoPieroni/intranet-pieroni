@@ -1,67 +1,68 @@
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import type { Metadata } from 'next';
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
-import styles from '../page.module.css';
-import template from '../../header-template.module.css';
-import { UserForm } from '@/components/user-form/user-form';
-import { cachedGetUser } from '@/services/firebase/server';
-import { TeamForm } from '@/components/team-form/team-form';
-import { checkIsAdmin } from '@/services/firebase/server/permissions';
-import { cachedGetTeams, cachedGetUsers } from '@/services/cache/firestore';
+import styles from "../page.module.css";
+import template from "../../header-template.module.css";
+import { UserForm } from "@/components/user-form/user-form";
+import { cachedGetUser } from "@/services/firebase/server";
+import { TeamForm } from "@/components/team-form/team-form";
+import { checkIsAdmin } from "@/services/firebase/server/permissions";
+import { cachedGetTeams, cachedGetUsers } from "@/services/cache/firestore";
+import { Surface } from "@/components/surface/surface";
 
 export const metadata: Metadata = {
-  title: 'Admin utenti - Intranet Pieroni srl',
-  description: 'Intranet - gestisci le impostazioni utenti',
+	title: "Admin utenti - Intranet Pieroni srl",
+	description: "Intranet - gestisci le impostazioni utenti",
 };
 
 export default async function Admin() {
-  const authHeader = (await headers()).get('Authorization');
-  const { currentUser } = await cachedGetUser(authHeader);
+	const authHeader = (await headers()).get("Authorization");
+	const { currentUser } = await cachedGetUser(authHeader);
 
-  const isAdmin = checkIsAdmin(currentUser?.permissions);
+	const isAdmin = checkIsAdmin(currentUser?.permissions);
 
-  if (!isAdmin) {
-    return redirect('/');
-  }
+	if (!isAdmin) {
+		return redirect("/");
+	}
 
-  const [users, teams] = await Promise.all([
-    cachedGetUsers(authHeader),
-    cachedGetTeams(authHeader),
-  ]);
+	const [users, teams] = await Promise.all([
+		cachedGetUsers(authHeader),
+		cachedGetTeams(authHeader),
+	]);
 
-  return (
-    <main className={template.page}>
-      <div className={template.header}>
-        <h1>Gestisci gli utenti</h1>
-      </div>
+	return (
+		<main className={template.page}>
+			<div className={template.header}>
+				<h1>Gestisci gli utenti</h1>
+			</div>
 
-      <div className={styles.container}>
-        <div className={styles.section}>
-          <h2>Team</h2>
-          <div className={styles.linksContainer}>
-            {teams.map((team) => (
-              <TeamForm key={team.id} team={team} />
-            ))}
-            <TeamForm
-              team={{
-                name: '',
-                id: '',
-              }}
-              isNew
-            />
-          </div>
-        </div>
+			<div className={styles.container}>
+				<Surface level={0} className={styles.section}>
+					<h2>Team</h2>
+					<div className={styles.linksContainer}>
+						{teams.map((team) => (
+							<TeamForm key={team.id} team={team} />
+						))}
+						<TeamForm
+							team={{
+								name: "",
+								id: "",
+							}}
+							isNew
+						/>
+					</div>
+				</Surface>
 
-        <div className={styles.section}>
-          <h2>Utenti</h2>
-          <div className={styles.linksContainer}>
-            {users.map((user) => (
-              <UserForm user={user} key={user.id} availableTeams={teams} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+				<Surface level={0} className={styles.section}>
+					<h2>Utenti</h2>
+					<div className={styles.linksContainer}>
+						{users.map((user) => (
+							<UserForm user={user} key={user.id} availableTeams={teams} />
+						))}
+					</div>
+				</Surface>
+			</div>
+		</main>
+	);
 }
