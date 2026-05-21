@@ -1,22 +1,21 @@
 .container {
-  padding-inline: 1rem;
-  overflow: auto;
+	padding-inline: 1rem;
+	overflow: auto;
 }
 
 .section {
-  margin-block-end: 1.5rem;
-  padding: 1rem;
-  background-color: var(--background-0);
+	margin-block-end: 1.5rem;
+	padding: 1rem;
 
-  @media print {
-    padding: 0;
-  }
+	@media print {
+		padding: 0;
+	}
 }
 
 .section table {
-  width: 100%;
+	width: 100%;
 }
 
 .analytics {
-  text-align: center;
+	text-align: center;
 }
