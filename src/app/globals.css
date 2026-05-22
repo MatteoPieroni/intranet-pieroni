@@ -161,8 +161,13 @@ h6 {
 	}
 
 	&:has([data-theme="dark"]) {
-		--background-0: #050a18;
-		--background-1: #09112a;
+		--color-0: oklch(12% 0.052 268);
+		--color-1: oklch(18.67% 0.052 268);
+		--color-2: oklch(25% 0.052 268);
+		--color-3: oklch(32% 0.052 268);
+		--color-4: oklch(50% 0.052 268);
+		--color-5: oklch(65% 0.052 268);
+
 		--border-0: #09112a;
 		--border-highlight: #f19c29;
 		--text: #f1f1f1;
