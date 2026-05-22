@@ -74,12 +74,21 @@ h6 {
 */
 :root,
 :root:has([data-theme="light"]) {
-	--color-0: oklch(95% 0 0);
-	--color-1: oklch(85% 0 0);
-	--color-2: oklch(73% 0 0);
-	--color-3: oklch(48% 0 0);
-	--color-4: oklch(35% 0 0);
-	--color-5: oklch(20% 0 0);
+	--chroma: 0;
+	--hue: 0;
+	--lightness-0: 95%;
+	--lightness-1: 85%;
+	--lightness-2: 73%;
+	--lightness-3: 48%;
+	--lightness-4: 35%;
+	--lightness-5: 20%;
+
+	--color-0: oklch(var(--lightness-0) var(--chroma) var(--hue));
+	--color-1: oklch(var(--lightness-1) var(--chroma) var(--hue));
+	--color-2: oklch(var(--lightness-2) var(--chroma) var(--hue));
+	--color-3: oklch(var(--lightness-3) var(--chroma) var(--hue));
+	--color-4: oklch(var(--lightness-4) var(--chroma) var(--hue));
+	--color-5: oklch(var(--lightness-5) var(--chroma) var(--hue));
 
 	--background-0: var(--color-0);
 	--background-1: var(--color-1);
@@ -136,12 +145,14 @@ h6 {
 */
 :root:not(:has([data-theme="light"])) {
 	@media (prefers-color-scheme: dark) {
-		--color-0: oklch(12% 0.052 268);
-		--color-1: oklch(18.67% 0.052 268);
-		--color-2: oklch(25% 0.052 268);
-		--color-3: oklch(32% 0.052 268);
-		--color-4: oklch(50% 0.052 268);
-		--color-5: oklch(65% 0.052 268);
+		--chroma: 0.052;
+		--hue: 268;
+		--lightness-0: 12%;
+		--lightness-1: 18.67%;
+		--lightness-2: 25%;
+		--lightness-3: 32%;
+		--lightness-4: 50%;
+		--lightness-5: 65%;
 
 		--border-0: #09112a;
 		--border-highlight: #f19c29;
@@ -161,12 +172,14 @@ h6 {
 	}
 
 	&:has([data-theme="dark"]) {
-		--color-0: oklch(12% 0.052 268);
-		--color-1: oklch(18.67% 0.052 268);
-		--color-2: oklch(25% 0.052 268);
-		--color-3: oklch(32% 0.052 268);
-		--color-4: oklch(50% 0.052 268);
-		--color-5: oklch(65% 0.052 268);
+		--chroma: 0.052;
+		--hue: 268;
+		--lightness-0: 12%;
+		--lightness-1: 18.67%;
+		--lightness-2: 25%;
+		--lightness-3: 32%;
+		--lightness-4: 50%;
+		--lightness-5: 65%;
 
 		--border-0: #09112a;
 		--border-highlight: #f19c29;
@@ -289,7 +302,7 @@ button,
 a.button {
 	border: none;
 	border-radius: var(--border-radius);
-	padding: 0.5rem;
+	padding: 0.25rem 0.65rem;
 	background-color: var(--button-background);
 	color: var(--button-text);
 	cursor: pointer;
